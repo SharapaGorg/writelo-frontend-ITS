@@ -1,0 +1,101 @@
+{
+  "profile": {
+    "gifts": {
+      "header": "Подарочные подписки",
+      "activateLabel": "Активировать подарок",
+      "placeholder": "Вставьте ссылку",
+      "copy": "Скопировать",
+      "notActivated": "Не активирован",
+      "linkCopied": "Ссылка на подарок скопирована",
+      "activated": "Подарок активирован",
+      "invalidLink": "Ссылка недействительна"
+    },
+    "tariffPlan": {
+      "header": "Тарифный план",
+      "functionality": "Функционал",
+      "features": {
+        "search": "Поиск в интернете",
+        "responseStyle": "Стили ответа",
+        "projects": "Проекты",
+        "roles": "Роли"
+      }
+    },
+    "subscriptionTimer": {
+      "days": "д",
+      "hours": "ч",
+      "minutes": "м",
+      "seconds": "с"
+    },
+    "editAccount": {
+      "header": "Редактировать данные",
+      "fields": {
+        "fullName": "Полное имя",
+        "email": "Email",
+        "password": "Пароль"
+      },
+      "placeholders": {
+        "fullName": "Введите ваше полное имя",
+        "currentPassword": "Ваш текущий пароль",
+        "newPassword": "Введите новый пароль (минимум 8 символов)",
+        "confirmPassword": "Повторите новый пароль",
+        "verificationCode": "Введите код из письма",
+        "newEmail": "Введите новый email"
+      },
+      "labels": {
+        "currentPasswordConfirm": "Введите текущий пароль для подтверждения",
+        "currentPassword": "Текущий пароль",
+        "newPassword": "Новый пароль",
+        "confirmPassword": "Подтвердите новый пароль",
+        "verificationCode": "Код подтверждения",
+        "newEmail": "Новый email"
+      },
+      "buttons": {
+        "saveChanges": "Сохранить изменения",
+        "saving": "Сохранение",
+        "cancel": "Отменить",
+        "sendCode": "Отправить код подтверждения",
+        "sending": "Отправка...",
+        "resendCode": "Отправить повторно",
+        "forgotPassword": "Забыли пароль?",
+        "resetEmailSent": "Письмо отправлено",
+        "changeEmail": "Изменить email",
+        "resendEmail": "Отправить повторно",
+        "cancelChange": "Отменить"
+      },
+      "errors": {
+        "noEmail": "Email не найден"
+      },
+      "validation": {
+        "nameMinLength": "Имя должно содержать минимум 2 символа",
+        "emailInvalid": "Некорректный формат email",
+        "emailUnchanged": "Email не изменился",
+        "passwordRequired": "Введите текущий пароль для подтверждения",
+        "currentPasswordRequired": "Введите текущий пароль",
+        "newPasswordMinLength": "Новый пароль должен содержать минимум 8 символов",
+        "passwordMismatch": "Пароли не совпадают",
+        "codeMinLength": "Код должен содержать минимум 4 символа"
+      },
+      "messages": {
+        "codeSentTo": "Код отправлен на {email}",
+        "resendIn": "Повторно через {seconds}с",
+        "passwordResetSent": "Письмо отправлено",
+        "passwordResetSentDescription": "Ссылка для сброса пароля отправлена на {email}",
+        "pendingEmailChange": "Ожидает подтверждения: {email}",
+        "emailChangeSent": "Письмо отправлено",
+        "emailChangeSentDescription": "Ссылка для подтверждения отправлена на {email}",
+        "emailResent": "Письмо отправлено повторно",
+        "emailChangeCanceled": "Запрос на смену email отменён"
+      }
+    },
+    "dangerZone": {
+      "header": "Опасная зона",
+      "logout": "Выйти из аккаунта",
+      "logoutConfirm": {
+        "title": "Выход из аккаунта",
+        "description": "Вы уверены, что хотите выйти из аккаунта?",
+        "cancel": "Отмена",
+        "confirm": "Выйти"
+      }
+    }
+  }
+}

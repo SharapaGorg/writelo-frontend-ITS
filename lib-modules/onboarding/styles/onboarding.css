@@ -1,0 +1,219 @@
+/* Fix for custom popover interaction during onboarding */
+/* Allow interactions only on specific elements */
+.driver-active .driver-overlay {
+    pointer-events: none !important;
+}
+
+/* Ensure highlighted elements remain interactive */
+.driver-active .driver-highlighted-element,
+.driver-active .driver-highlighted-element * {
+    pointer-events: auto !important;
+}
+
+/* Make custom onboarding popover interactive */
+.driver-active .onboarding-custom-popover,
+.driver-active .onboarding-custom-popover * {
+    pointer-events: auto !important;
+}
+
+/*!* Onboarding Custom Styles *!*/
+/*!* Customize driver.js popover to match project styling *!*/
+
+/*.onboarding-popover {*/
+/*    @apply bg-background border border-border rounded-lg shadow-lg;*/
+/*    max-width: 320px !important;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-header {*/
+/*    @apply px-4 py-3 border-b border-border;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-title {*/
+/*    @apply text-lg font-semibold text-foreground m-0;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-description {*/
+/*    @apply px-4 py-3 text-sm text-muted-foreground leading-relaxed;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-footer {*/
+/*    @apply px-4 py-3 border-t border-border flex items-center justify-between gap-2;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-progress-text {*/
+/*    @apply text-xs text-muted-foreground;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-btn {*/
+/*    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;*/
+/*    min-height: 36px;*/
+/*    padding: 0 12px;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-next-btn {*/
+/*    @apply bg-primary text-primary-foreground shadow hover:bg-primary/90;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-prev-btn {*/
+/*    @apply border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-close-btn {*/
+/*    @apply border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground;*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-done-btn {*/
+/*    @apply bg-button-color text-button-text-color hover:opacity-90;*/
+/*}*/
+
+/*!* Highlight overlay styling *!*/
+/*.driver-overlay {*/
+/*    @apply bg-black/60;*/
+/*}*/
+
+/*.driver-highlighted-element {*/
+/*    @apply ring-2 ring-primary ring-offset-2 ring-offset-background rounded-lg;*/
+/*}*/
+
+/*!* Custom animations for onboarding *!*/
+/*.onboarding-popover {*/
+/*    animation: onboarding-fade-in 0.3s ease-out;*/
+/*}*/
+
+/*@keyframes onboarding-fade-in {*/
+/*    from {*/
+/*        opacity: 0;*/
+/*        transform: scale(0.95) translateY(-10px);*/
+/*    }*/
+/*    to {*/
+/*        opacity: 1;*/
+/*        transform: scale(1) translateY(0);*/
+/*    }*/
+/*}*/
+
+/*!* Responsive adjustments *!*/
+/*@media (max-width: 640px) {*/
+/*    .onboarding-popover {*/
+/*        max-width: 280px !important;*/
+/*        margin: 10px !important;*/
+/*    }*/
+/*    */
+/*    .onboarding-popover .driver-popover-footer {*/
+/*        @apply flex-col-reverse gap-2;*/
+/*    }*/
+/*    */
+/*    .onboarding-popover .driver-popover-btn {*/
+/*        @apply w-full;*/
+/*    }*/
+/*}*/
+
+/*!* Dark mode adjustments *!*/
+/*@media (prefers-color-scheme: dark) {*/
+/*    .onboarding-popover {*/
+/*        @apply bg-design-sub-background border-stone-800;*/
+/*    }*/
+/*    */
+/*    .onboarding-popover .driver-popover-title {*/
+/*        @apply text-design-text;*/
+/*    }*/
+/*    */
+/*    .onboarding-popover .driver-popover-description {*/
+/*        @apply text-stone-400;*/
+/*    }*/
+/*}*/
+
+/*!* Telegram theme integration *!*/
+/*.onboarding-popover {*/
+/*    background-color: var(--tg-theme-secondary-bg-color, hsl(var(--background)));*/
+/*    color: var(--tg-theme-text-color, hsl(var(--foreground)));*/
+/*}*/
+
+/*.onboarding-popover .driver-popover-next-btn,*/
+/*.onboarding-popover .driver-popover-done-btn {*/
+/*    background-color: var(--tg-theme-button-color, hsl(var(--primary)));*/
+/*    color: var(--tg-theme-button-text-color, hsl(var(--primary-foreground)));*/
+/*}*/
+
+/* Fix for dropdown interaction during onboarding */
+/*.driver-active .driver-highlighted-element select,*/
+/*.driver-active .driver-highlighted-element [role="combobox"],*/
+/*.driver-active .driver-highlighted-element [data-reka-select-content] {*/
+/*    position: relative;*/
+/*    z-index: 10001 !important;*/
+/*}*/
+
+/*!* Ensure dropdown content appears above overlay - targeting reka-ui portals *!*/
+/*[data-reka-select-content],*/
+/*[data-reka-dropdown-menu-content],*/
+/*[data-reka-popover-content] {*/
+/*    z-index: 10002 !important;*/
+/*}*/
+
+/*!* Also ensure the portal wrapper itself is above the overlay *!*/
+/*[data-reka-portal] {*/
+/*    z-index: 10002 !important;*/
+/*}*/
+
+/*!* Specific fix for Select component during onboarding *!*/
+/*.driver-active ~ [data-reka-portal] [data-reka-select-content],*/
+/*.driver-active ~ * [data-reka-select-content] {*/
+/*    z-index: 10002 !important;*/
+/*}*/
+
+/*!* Ensure portal content is interactive during onboarding *!*/
+/*.driver-active ~ [data-reka-portal] {*/
+/*    pointer-events: auto !important;*/
+/*}*/
+
+/*!* Additional fix for nested portal content *!*/
+/*.driver-active [data-reka-select-viewport],*/
+/*.driver-active [data-reka-select-item] {*/
+/*    pointer-events: auto !important;*/
+/*    cursor: pointer !important;*/
+/*}*/
+
+/*!* More aggressive fix for driver.js overlay interference *!*/
+/*.driver-overlay {*/
+/*    pointer-events: none !important;*/
+/*}*/
+
+/*.driver-highlighted-element,*/
+/*.driver-highlighted-element * {*/
+/*    pointer-events: auto !important;*/
+/*}*/
+
+/*!* Ensure all Select-related elements work during onboarding *!*/
+/*body.driver-active [data-reka-select-content],*/
+/*body.driver-active [data-reka-select-viewport],*/
+/*body.driver-active [data-reka-select-item] {*/
+/*    z-index: 999999 !important;*/
+/*    pointer-events: auto !important;*/
+/*}*/
+
+/*!* Force overlay to be behind dropdowns *!*/
+/*.driver-overlay {*/
+/*    z-index: 10000 !important;*/
+/*}*/
+
+/*!* Complete fix for settings section - disable all driver.js blocking *!*/
+/*#settings-section.driver-highlighted-element ~ .driver-overlay,*/
+/*.driver-highlighted-element#settings-section ~ .driver-overlay {*/
+/*    display: none !important;*/
+/*}*/
+
+/*!* When settings section is highlighted, ensure all interactions work *!*/
+/*.driver-highlighted-element#settings-section {*/
+/*    isolation: isolate;*/
+/*}*/
+
+/*!* Ensure Select dropdowns work by forcing them above everything *!*/
+/*.driver-active [role="listbox"],*/
+/*.driver-active [data-state="open"] {*/
+/*    z-index: 999999 !important;*/
+/*    position: relative !important;*/
+/*}*/
+
+/*!* Remove all pointer-events blocking from driver.js elements when settings is open *!*/
+/*.driver-highlighted-element#settings-section ~ * {*/
+/*    pointer-events: auto !important;*/
+/*}*/

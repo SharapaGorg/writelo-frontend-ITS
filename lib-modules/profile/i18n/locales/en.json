@@ -1,0 +1,101 @@
+{
+  "profile": {
+    "gifts": {
+      "header": "Gift Subscriptions",
+      "activateLabel": "Activate gift",
+      "placeholder": "Paste link",
+      "copy": "Copy",
+      "notActivated": "Not activated",
+      "linkCopied": "Gift link copied",
+      "activated": "Gift activated",
+      "invalidLink": "Invalid link"
+    },
+    "tariffPlan": {
+      "header": "Subscription Plan",
+      "functionality": "Features",
+      "features": {
+        "search": "Web Search",
+        "responseStyle": "Response Styles",
+        "projects": "Projects",
+        "roles": "Roles"
+      }
+    },
+    "subscriptionTimer": {
+      "days": "d",
+      "hours": "h",
+      "minutes": "m",
+      "seconds": "s"
+    },
+    "editAccount": {
+      "header": "Edit account data",
+      "fields": {
+        "fullName": "Full name",
+        "email": "Email",
+        "password": "Password"
+      },
+      "placeholders": {
+        "fullName": "Enter your full name",
+        "currentPassword": "Your current password",
+        "newPassword": "Enter new password (minimum 8 characters)",
+        "confirmPassword": "Repeat new password",
+        "verificationCode": "Enter code from email",
+        "newEmail": "Enter new email"
+      },
+      "labels": {
+        "currentPasswordConfirm": "Enter current password for confirmation",
+        "currentPassword": "Current password",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm new password",
+        "verificationCode": "Verification code",
+        "newEmail": "New email"
+      },
+      "buttons": {
+        "saveChanges": "Save changes",
+        "saving": "Saving",
+        "cancel": "Cancel",
+        "sendCode": "Send verification code",
+        "sending": "Sending...",
+        "resendCode": "Resend",
+        "forgotPassword": "Forgot password?",
+        "resetEmailSent": "Email sent",
+        "changeEmail": "Change email",
+        "resendEmail": "Resend",
+        "cancelChange": "Cancel"
+      },
+      "errors": {
+        "noEmail": "Email not found"
+      },
+      "validation": {
+        "nameMinLength": "Name must contain at least 2 characters",
+        "emailInvalid": "Invalid email format",
+        "emailUnchanged": "Email hasn't changed",
+        "passwordRequired": "Enter current password for confirmation",
+        "currentPasswordRequired": "Enter current password",
+        "newPasswordMinLength": "New password must contain at least 8 characters",
+        "passwordMismatch": "Passwords don't match",
+        "codeMinLength": "Code must contain at least 4 characters"
+      },
+      "messages": {
+        "codeSentTo": "Code sent to {email}",
+        "resendIn": "Resend in {seconds}s",
+        "passwordResetSent": "Email sent",
+        "passwordResetSentDescription": "Password reset link sent to {email}",
+        "pendingEmailChange": "Pending confirmation: {email}",
+        "emailChangeSent": "Email sent",
+        "emailChangeSentDescription": "Confirmation link sent to {email}",
+        "emailResent": "Email resent",
+        "emailChangeCanceled": "Email change request canceled"
+      }
+    },
+    "dangerZone": {
+      "header": "Danger Zone",
+      "logout": "Log out",
+      "logoutConfirm": {
+        "title": "Log out",
+        "description": "Are you sure you want to log out?",
+        "cancel": "Cancel",
+        "confirm": "Log out"
+      }
+    }
+  }
+}

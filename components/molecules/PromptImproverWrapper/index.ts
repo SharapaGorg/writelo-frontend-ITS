@@ -1,0 +1,1 @@
+export {default as PromptImproverWrapper} from './components/index.vue';

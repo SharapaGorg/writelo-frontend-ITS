@@ -1,0 +1,32 @@
+.invert-fade-enter-active, .invert-fade-leave-active {
+    transition: all 750ms ease;
+}
+
+.invert-fade-enter-from, .invert-fade-leave-to {
+    /*opacity: 0;*/
+    transform: translateY(70px);
+}
+
+.lazy-loading-enter-active, .lazy-loading-leave-active {
+    transition: all 250ms ease;
+    /*transition: opacity 250ms ease, transform 250ms ease;*/
+}
+
+.lazy-loading-enter-from, .lazy-loading-leave-to {
+    opacity: 0;
+    /*transform: translateY(70px);*/
+}
+
+.modal-fade-enter-active, .modal-fade-leave-active {
+    transition:
+            opacity 0.11s cubic-bezier(0.23, 1, 0.32, 1),
+            transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.modal-fade-enter-from, .modal-fade-leave-to {
+    opacity: 0;
+    transform: scale(0.9) translateZ(0);
+}
+.modal-fade-enter-to, .modal-fade-leave-from {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+}

@@ -1,0 +1,3 @@
+const useProfileStore = defineStore('profile', () => {
+
+})

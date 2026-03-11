@@ -1,0 +1,46 @@
+.top-bar-container {
+    @apply sticky top-0 w-screen bg-design-background
+    px-4 py-3 text-xl font-bold grid grid-cols-3 justify-items-end items-center
+}
+
+
+.send-message-field-container {
+    @apply w-full flex h-full items-center text-design-text gap-x-2
+}
+
+.send-message-field-container input, textarea {
+    @apply rounded-3xl bg-design-text-field flex-grow block outline-none px-6 py-3 resize-none
+}
+
+
+.send-message-field-container .send-message-icon {
+    @apply bg-design-text-field rounded-full p-2.5 w-[40px] cursor-pointer h-[40px]
+}
+
+.send-message-field-container .send-message-icon img {
+    @apply w-full h-full
+}
+
+.new-chat-suggestion-wrapper {
+    @apply fixed bottom-2 w-screen grid grid-cols-1 justify-items-center
+    z-[100]
+}
+
+.new-chat-suggestion {
+    @apply bg-blue-500 rounded-3xl w-fit px-4 py-2 flex items-center text-sm cursor-pointer gap-x-1
+}
+
+.new-chat-suggestion img {
+    @apply w-[18px] h-[18px]
+}
+
+.enable-search {
+    @apply border-2 border-solid w-fit rounded-2xl px-2 py-1.5
+    text-[14px] cursor-pointer bg-design-text-field
+    flex items-center gap-x-2 fixed z-[300] bottom-2 ml-5
+}
+
+.main-wrapper {
+    @apply flex flex-col h-full relative
+    overflow-y-hidden overflow-x-hidden
+}

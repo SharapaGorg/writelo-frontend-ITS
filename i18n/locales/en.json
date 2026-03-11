@@ -1,0 +1,270 @@
+{
+  "verify_page": {
+    "verifying": "Verifying your email...",
+    "success_title": "Email verified!",
+    "success_description": "Your account has been verified. You can now use the app.",
+    "error_title": "Verification failed",
+    "error_description": "The verification link is invalid or has expired.",
+    "no_token": "No verification token provided.",
+    "continue": "Continue to app",
+    "back_to_auth": "Back to sign in"
+  },
+  "welcome": "How can I help you today?",
+  "conversations": "Conversations",
+  "no-conversations": "You don't have any conversations yet",
+  "close": "Close",
+  "all_chats": "All Chats",
+  "today": "Today",
+  "last_7_days": "Last 7 days",
+  "last_30_days": "Last 30 days",
+  "settings": "Settings",
+  "settings-llm": "Language model",
+  "settings-lang": "Interface language",
+  "settings-style": "Response style",
+  "premium-btn": "Get plus",
+  "search": "Search",
+  "tariffs": "Tariffs",
+  "prompt-improver": {
+    "enhance": "Enhance",
+    "press-tab": "Press Tab to enhance"
+  },
+  "placeholder": "What is your question?",
+  "placeholder-premium": "What is your question for",
+  "toaster-copy-code": "Code copied to clipboard",
+  "toaster-copy-text": "Text copied to clipboard",
+  "toaster-share-success": "Link copied to clipboard!",
+  "toaster-share-error": "Failed to share conversation",
+  "toaster-delete-success": "Conversation deleted successfully!",
+  "toaster-delete-error": "Failed to delete conversation",
+  "share": "Share",
+  "add-to-project": "Move to project",
+  "copy-link": "Copy Link",
+  "unshare": "Unshare",
+  "delete": "Delete",
+  "toaster-unshare-success": "Conversation unshared successfully!",
+  "toaster-unshare-error": "Failed to unshare conversation",
+  "change-icon": "Change Icon",
+  "view-conversations": "View Conversations",
+  "project-name": "Project name",
+  "cancel": "Cancel",
+  "save": "Save",
+  "toaster-new-chat": "You are already in a new chat",
+  "toaster-restricted": "Unavailable on your plan",
+  "toaster-rate-limit": "Too many requests. Please try again later.",
+  "toaster-generic-error": "Something went wrong. Please try again.",
+  "toaster": {
+    "conversation-removed": "The conversation was successfully deleted",
+    "onboarding-complete": "Great! Tutorial complete. Enjoy using the app!"
+  },
+  "payment-providers": "Select payment method",
+  "bank-card": "Bank card",
+  "crypto-bot": "Crypto bot",
+  "telegram-stars": "Telegram stars",
+  "drop-files": "Drag and drop file",
+  "500": "Something went wrong",
+  "success-payment": "Successfully paid!",
+  "off": "OFF",
+  "on": "ON",
+  "launch_onboarding": "Launch Onboarding",
+  "changes-saved": "Changes saved",
+  "something-went-wrong" : "Something went wrong",
+  "sub-landing": {
+    "month": "month",
+    "subscribe": "Purchase",
+    "current-plan": "Current plan"
+  },
+  "roles": {
+    "switch": "Role",
+    "drawer-header": "Roles",
+    "example": "Example"
+  },
+  "editProjectInstructions": {
+    "context-button": "Edit instructions",
+    "header": "Edit Project Instructions",
+    "sub-header": "Add or update your project description",
+    "placeholder": "For example: I'm developing an SMM campaign for Supercell..."
+  },
+  "addProject": {
+    "header": "Add Project",
+    "sub-header": "Enter a name for your new project",
+    "placeholder": "Project name",
+    "action-button": "Create"
+  },
+  "renameProject": {
+    "header": "Rename project",
+    "placeholder": "Project name",
+    "new-title": "Enter a new name for this project"
+  },
+  "removeProject": {
+    "header": "Remove project",
+    "message": "This action is irreversible. You are deleting the project  «{ projectTitle }» from the servers.",
+    "success": "The project was successfully deleted"
+  },
+  "removeDialog": {
+    "header": "Are you sure?",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "message": "This action is irreversible. You are deleting the dialogue information «{ dialogTitle }» from the servers."
+  },
+  "loader": {
+    "conversation": {
+      "loading": "Loading conversation...",
+      "fetching": "Fetching messages...",
+      "preparing": "Preparing chat..."
+    },
+    "image": {
+      "loading": "Loading image...",
+      "processing": "Processing image...",
+      "optimizing": "Optimizing display..."
+    },
+    "file": {
+      "loading": "Loading file...",
+      "analyzing": "Analyzing content...",
+      "preparing": "Preparing document...",
+      "subtext": "This may take a moment"
+    },
+    "message": {
+      "sending": "Sending message...",
+      "processing": "Processing..."
+    },
+    "search": {
+      "searching": "Searching...",
+      "finding": "Finding results...",
+      "subtext": "Looking through all conversations"
+    },
+    "dialogs": {
+      "loading": "Loading your conversations...",
+      "fetching": "Fetching chat history...",
+      "organizing": "Organizing chats...",
+      "subtext": "Organizing by date"
+    },
+    "default": {
+      "loading": "Loading...",
+      "please_wait": "Please wait..."
+    }
+  },
+  "requestCounter": {
+    "title": "Request Limits",
+    "basic": "Basic",
+    "premium": "Premium"
+  },
+  "language": "Language",
+  "loading": {
+    "tips": {
+      "general": [
+        "You can attach images and documents to your messages",
+        "Try asking follow-up questions for deeper insights",
+        "I can help with code, writing, analysis, and more",
+        "Use Shift+Enter for multi-line messages",
+        "You can edit your previous messages",
+        "Click the copy button to save code snippets",
+        "I remember our entire conversation context",
+        "You can start a new chat anytime from the menu",
+        "Swipe left on a message to see more options",
+        "Your conversations are saved automatically"
+      ],
+      "coding": [
+        "I can explain code in multiple programming languages",
+        "Ask me to optimize your code for better performance",
+        "I can help debug errors - just paste the error message",
+        "Need tests? I can write unit tests for your code",
+        "I support syntax highlighting for 100+ languages",
+        "Ask me to review your code for best practices",
+        "I can convert code between different languages",
+        "Describe what you want, and I'll write the code",
+        "I can help with regex patterns and SQL queries",
+        "Ask me to explain complex algorithms step by step"
+      ],
+      "productivity": [
+        "I can summarize long documents for you",
+        "Ask me to help brainstorm ideas on any topic",
+        "I can help you write emails and letters",
+        "Need a plan? I can create detailed outlines",
+        "I can translate text between languages",
+        "Ask me to proofread and improve your writing",
+        "I can help with research and fact-checking",
+        "Need to learn something new? I'm a great tutor"
+      ],
+      "features": [
+        "Premium users get access to advanced models",
+        "File attachments help me understand your context better",
+        "I can analyze images and extract text from them",
+        "Voice messages are supported - just click the mic",
+        "Export our conversation anytime you need",
+        "Dark mode is available in settings",
+        "You can search through all your conversations",
+        "I support markdown formatting in responses"
+      ],
+      "fun": [
+        "I process text 10x faster than human reading speed",
+        "My training included millions of documents",
+        "I can speak over 50 languages fluently",
+        "I learn from patterns, not memorization",
+        "Each response is uniquely generated for you",
+        "I can maintain context across long conversations",
+        "My knowledge is regularly updated",
+        "I'm powered by advanced transformer architecture",
+        "I can understand context and nuance in language",
+        "I never get tired - available 24/7 for you"
+      ]
+    }
+  },
+  "imageGenerator": {
+    "title": "Image Generator",
+    "input": {
+      "hint": "You can skip attaching an image, then the picture will be generated only from your description"
+    },
+    "attachZone": {
+      "title": "Image",
+      "subtitle": "with maximum weight {maxSize}MB",
+      "dragHint": "Click or drag here",
+      "dragActive": "Drop file",
+      "loading": "Loading...",
+      "fileName": "File name",
+      "error": {
+        "invalidType": "Invalid file format. Supported: JPEG, PNG, GIF, WebP",
+        "tooLarge": "File too large. Maximum size: {maxSize}MB"
+      }
+    },
+    "prompt": {
+      "placeholder": "Turn the person's head in the picture 45 degrees to the right. Change the cloak color to red and put a wide-brimmed hat on them",
+      "label": "Instructions"
+    },
+    "aspectRatio": {
+      "title": "Aspect Ratio"
+    },
+    "generate": {
+      "button": "Generate Image",
+      "loading": "Generating...",
+      "error": "Error generating image"
+    },
+    "output": {
+      "title": "Image",
+      "subtitle": "Generated picture",
+      "loading": {
+        "title": "Generating Image",
+        "subtitle": "This may take a few seconds..."
+      },
+      "actions": {
+        "download": "Download",
+        "copy": "Copy",
+        "toChat": "To Chat",
+        "modify": "Modify"
+      }
+    },
+    "download": {
+      "success": "Image downloaded in {format} format",
+      "error": "Failed to download image",
+      "convertError": "Failed to convert image",
+      "loadError": "Failed to load image"
+    },
+    "copy": {
+      "success": "Image copied to clipboard",
+      "error": "Failed to copy image"
+    },
+    "history": {
+      "title": "History",
+      "empty": "No generated images"
+    }
+  }
+}

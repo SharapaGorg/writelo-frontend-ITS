@@ -1,0 +1,1 @@
+export {default as AttachedFileArea} from './ui/AttachedFileArea.vue'

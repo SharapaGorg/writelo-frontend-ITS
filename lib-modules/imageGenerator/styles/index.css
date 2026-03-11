@@ -1,0 +1,9 @@
+.image-generator-block {
+    @apply p-3 md:p-6 rounded-[20px] shadow-2xl
+    border-stone-200 border-2 dark:border-stone-800
+    flex-shrink-0 h-fit
+}
+
+.attach-image-zone__container_icon {
+    @apply w-[100px] h-[100px] text-muted-foreground;
+}

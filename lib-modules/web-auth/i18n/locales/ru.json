@@ -1,0 +1,107 @@
+{
+  "auth": {
+    "login": {
+      "title": "Вход",
+      "description": "Введите данные для входа в систему",
+      "email": "Email",
+      "password": "Пароль",
+      "submit": "Войти",
+      "no_account": "Нет аккаунта?",
+      "signup_link": "Зарегистрироваться",
+      "success": "Вход выполнен успешно!",
+      "error": "Ошибка входа. Попробуйте снова.",
+      "invalid_credentials": "Неверный email или пароль",
+      "email_not_verified": "Email не подтверждён. Проверьте почту.",
+      "forgot_password": "Забыли пароль?"
+    },
+    "forgot_password": {
+      "title": "Сброс пароля",
+      "description": "Введите email, и мы отправим ссылку для сброса",
+      "email": "Email",
+      "submit": "Отправить ссылку",
+      "back": "Назад к входу",
+      "success_title": "Проверьте почту",
+      "success_description": "Мы отправили ссылку для сброса пароля на {email}"
+    },
+    "reset_password": {
+      "title": "Новый пароль",
+      "description": "Введите новый пароль",
+      "password": "Новый пароль",
+      "confirm_password": "Подтвердите пароль",
+      "submit": "Сбросить пароль",
+      "success": "Пароль успешно изменён!",
+      "error": "Не удалось сбросить пароль"
+    },
+    "signup": {
+      "title": "Регистрация",
+      "description": "Создайте свой аккаунт",
+      "name": "Имя",
+      "name_placeholder": "Иван Иванов",
+      "email": "Email",
+      "password": "Пароль",
+      "password_placeholder": "Минимум 8 символов со спец. символами",
+      "confirm_password": "Подтвердите пароль",
+      "accept_terms": "Я согласен с условиями использования",
+      "submit": "Зарегистрироваться",
+      "have_account": "Уже есть аккаунт?",
+      "login_link": "Войти",
+      "success": "Регистрация прошла успешно!",
+      "error": "Ошибка регистрации. Попробуйте снова.",
+      "email_exists": "Этот email уже зарегистрирован"
+    },
+    "verification": {
+      "title": "Проверьте почту",
+      "description": "Мы отправили ссылку для подтверждения на {email}",
+      "check_inbox": "Перейдите по ссылке в письме, чтобы подтвердить аккаунт. Проверьте папку «Спам», если письма нет.",
+      "resend": "Отправить ещё раз",
+      "resend_cooldown": "Повторно через {seconds} сек.",
+      "code_resent": "Письмо отправлено!",
+      "back": "Назад к регистрации"
+    },
+    "google": {
+      "continue_with": "Продолжить с Google",
+      "success": "Вход через Google выполнен!",
+      "linked": "Google аккаунт привязан!",
+      "unlinked": "Google аккаунт отвязан!",
+      "unlink": "Отвязать",
+      "link": "Привязать",
+      "account_linked": "Аккаунт привязан",
+      "error": "Ошибка авторизации Google",
+      "unlink_confirm_title": "Отвязать Google?",
+      "unlink_confirm_description": "Вы уверены, что хотите отвязать Google аккаунт? Вы сможете привязать его снова в любое время.",
+      "cancel": "Отмена"
+    },
+    "yandex": {
+      "continue_with": "Войти через Яндекс"
+    },
+    "telegram": {
+      "continue_with": "Войти через Telegram",
+      "success": "Вход через Telegram выполнен!",
+      "linked": "Telegram аккаунт привязан!",
+      "unlinked": "Telegram аккаунт отвязан!",
+      "unlink": "Отвязать",
+      "account_linked": "Аккаунт привязан",
+      "error": "Ошибка авторизации Telegram",
+      "unlink_confirm_title": "Отвязать Telegram?",
+      "unlink_confirm_description": "Вы уверены, что хотите отвязать Telegram аккаунт? Вы сможете привязать его снова в любое время.",
+      "cancel": "Отмена"
+    },
+    "common": {
+      "or": "ИЛИ",
+      "support": "Поддержка:"
+    },
+    "validation": {
+      "email_required": "Email обязателен",
+      "email_invalid": "Введите корректный email адрес",
+      "password_required": "Пароль обязателен",
+      "password_min_length": "Пароль должен содержать минимум {min} символов",
+      "password_strength": "Пароль должен содержать заглавные, строчные буквы, цифры и специальные символы",
+      "name_required": "Имя обязательно",
+      "name_min_length": "Имя должно содержать минимум {min} символа",
+      "name_max_length": "Имя не должно превышать {max} символов",
+      "confirm_password_required": "Подтвердите пароль",
+      "passwords_dont_match": "Пароли не совпадают",
+      "accept_terms_required": "Вы должны принять условия использования"
+    }
+  }
+}
