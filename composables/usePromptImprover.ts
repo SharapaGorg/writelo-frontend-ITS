@@ -117,6 +117,12 @@ export function usePromptImprover(
         cleanupKeyboardListener();
     });
 
+    // Mark current text as processed (to prevent improver from showing)
+    const markAsProcessed = () => {
+        lastText.value = text.value;
+        showImprover.value = false;
+    };
+
     // Computed properties
     const buttonText = computed(() => {
         if (isMobile()) {
@@ -141,6 +147,7 @@ export function usePromptImprover(
         improvePrompt,
         setupKeyboardListener,
         cleanupKeyboardListener,
+        markAsProcessed,
 
         // UI helpers
         buttonText,

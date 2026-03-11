@@ -12,11 +12,12 @@
 
       <CrmPopup @click-action="clickActionButton"/>
 
-      <Transition name="lazy-loading">
-        <div v-if="useSettings().isPaidUser()" class="dialog-title">
-          {{ useCurrentConversationStore().conversationTitle }}
-        </div>
-      </Transition>
+      <ClientSelector v-if="useSettings().isPaidUser()" @open-create="showClientCreate = true" />
+
+      <ProjectCreateWindow
+        v-model:open="showClientCreate"
+        @save="onClientCreated"
+      />
 
       <TiersWindow @select-tier="selectTier">
         <Button size="sm" variant="premium" v-if="!useSettings().isPaidUser()" ref="getPlusButton">
@@ -51,12 +52,21 @@ import {PaymentProvider} from "~/scripts/shared/types/payment";
 import {ApiController} from "~/scripts/shared/api/controller";
 import CrmPopup from "~/components/molecules/CrmPopup.vue";
 import {ImageGeneratorNavbarButton} from "~/lib-modules/imageGenerator";
-import {DialogsSection, useCurrentConversation, useCurrentConversationStore} from "~/lib-modules/conversations";
+import {DialogsSection, useCurrentConversation} from "~/lib-modules/conversations";
+import ClientSelector from "~/components/molecules/ClientSelector.vue";
+import {ProjectCreateWindow, useProjectsStore} from "~/lib-modules/projects";
 
 const {t} = useI18n()
 
 const $env = useEnv();
 const apiController = new ApiController();
+const showClientCreate = ref(false);
+
+const onClientCreated = async (projectId: string) => {
+  const store = useProjectsStore();
+  await store.fetchProjects();
+  store.selectProject(projectId);
+}
 
 const getPlusButton: Ref<HTMLElement | null> = ref(null);
 
@@ -113,10 +123,5 @@ const clickActionButton = () => {
 
 
 <style scoped>
-
-.dialog-title {
-  @apply whitespace-nowrap overflow-hidden
-  text-ellipsis text-sm lg:text-[16px]
-}
 
 </style>

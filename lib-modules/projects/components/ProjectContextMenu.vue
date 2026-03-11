@@ -3,12 +3,12 @@
     <div id="project-context-menu">
       <ContextMenuItem @click="$emit('rename')" class="cursor-pointer">
         <Edit2 class="mr-2 h-4 w-4"/>
-        {{ t('renameProject.header') }}
+        {{ t('renameClient.header') }}
       </ContextMenuItem>
 
       <ContextMenuItem @click="$emit('editInstructions')" class="cursor-pointer">
         <Cog class="mr-2 h-4 w-4"/>
-        {{ t('editProjectInstructions.context-button') }}
+        {{ t('editClientInstructions.context-button') }}
       </ContextMenuItem>
 
       <ContextMenuItem
@@ -16,7 +16,7 @@
           class="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400"
       >
         <Trash2 class="mr-2 h-4 w-4"/>
-        {{ t('removeProject.header') }}
+        {{ t('removeClient.header') }}
       </ContextMenuItem>
     </div>
   </ContextMenuContent>

@@ -27,16 +27,16 @@ const isOpen = computed({
     <!--    </AlertDialogTrigger>-->
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>{{ t('removeDialog.header') }}</DialogTitle>
+        <DialogTitle>{{ t('removeTask.header') }}</DialogTitle>
         <DialogDescription>
-          {{ t('removeProject.message', {projectTitle: projectTitle}) }}
+          {{ t('removeClient.message', {projectTitle: projectTitle}) }}
         </DialogDescription>
       </DialogHeader>
       <DialogFooter>
         <DialogClose>
-          <Button variant="outline">{{ t('removeDialog.cancel') }}</Button>
+          <Button variant="outline">{{ t('removeTask.cancel') }}</Button>
         </DialogClose>
-        <Button @click="emit('approve'); isOpen = false">{{ t('removeDialog.continue') }}</Button>
+        <Button @click="emit('approve'); isOpen = false">{{ t('removeTask.continue') }}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

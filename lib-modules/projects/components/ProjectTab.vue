@@ -31,7 +31,6 @@ import {Button} from '~/components/ui/button'
 import {ContextMenu, ContextMenuTrigger} from '~/components/ui/context-menu'
 import type {Project, StoreProject} from '../types'
 import ProjectContextMenu from "./ProjectContextMenu.vue";
-import {useOnboarding} from "~/lib-modules/onboarding";
 
 const props = defineProps<{
   project: StoreProject
@@ -46,32 +45,12 @@ const emit = defineEmits<{
   editInstructions: []
 }>()
 
-const $onboarding = useOnboarding();
-let onboardingHandler: NodeJS.Timeout | null = null;
-
 const editInstructions = () => {
   emit('editInstructions');
-  setTimeout(() => {
-    if (onboardingHandler) {
-      clearTimeout(onboardingHandler);
-      onboardingHandler = null;
-    }
-  })
 }
 
 const handleContextMenuOpen = (isOpen: boolean) => {
-  if (isOpen) {
-    // контекстное меню открыто
-    if ($onboarding.isActive.value) {
-      setTimeout(() => {
-        $onboarding.next();
-      })
-    }
-  } else {
-    onboardingHandler = setTimeout(() => {
-      $onboarding.finish()
-    }, 100)
-  }
+  // Context menu state handler (onboarding removed)
 }
 </script>
 

@@ -3,8 +3,8 @@ import {getToasterPosition} from "~/scripts/features/utils/toater";
 import type {Composer} from "vue-i18n";
 
 
-export const toastProjectRemoved = (t_: Composer['t']) => {
-    toast.success(t_("removeProject.success"), {
+export const toastClientRemoved = (t_: Composer['t']) => {
+    toast.success(t_("removeClient.success"), {
         position: getToasterPosition()
     })
 }

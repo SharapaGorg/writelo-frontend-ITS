@@ -13,28 +13,6 @@
           <Spinner v-show="!$settings.loaded.value"/>
 
           <DrawerDescription v-show="$settings.loaded.value">
-            <DrawerHeader class="text-start pl-0 pb-1.5">{{ $t('settings-llm') }}</DrawerHeader>
-
-            <Select v-model="llm" :default-value="llm">
-              <SelectTrigger>
-                <SelectValue placeholder="Выберите языковую модель"/>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                      class="cursor-pointer"
-                      v-for="model in models as ModelType[]"
-                      :key="model.title"
-                      :value="model.title"
-                  >
-                    {{ model.title }} {{ model.isPremium ? '⭐' : '' }}
-                  </SelectItem>
-
-                  <slot></slot>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
             <DrawerHeader class="text-start pl-0 pb-1.5">{{ $t('settings-lang') }}</DrawerHeader>
 
             <MultiChoiceContainer
@@ -52,46 +30,17 @@
               </SelectItem>
             </MultiChoiceContainer>
 
-            <DrawerHeader class="text-start pl-0 pb-1.5">{{ $t('settings-style') }}</DrawerHeader>
-
-            <div @click="clickResponseStyles">
-              <MultiChoiceContainer
-                  v-model="responseStyle"
-                  :default-value="responseStyle"
-                  placeholder="Выберите стиль ответа"
-                  :disabled="!useSettings().hasFeature(FeatureType.responseStyle)"
-              >
-                <SelectItem
-                    v-for="style in responseStyles"
-                    :key="style.id"
-                    :value="style.id"
-                >
-                  {{ style.title }}
-                </SelectItem>
-              </MultiChoiceContainer>
-            </div>
-
             <SettingsSwtichers class="mt-5"/>
-
-            <Button
-                variant="secondary"
-                size="sm"
-                class="mb-4"
-                @click="isDrawerOpened = false; onboarding.start()"
-                v-if="!onboarding.isActive.value"
-            >
-              {{ t('launch_onboarding') }}
-            </Button>
 
             <ProfileBadge/>
 
-            <RequestCounter
+            <!-- <RequestCounter
                 :basic-remaining="userLimit?.basic?.left"
                 :basic-total="userLimit?.basic?.total"
                 :premium-remaining="userLimit?.premium?.left"
                 :premium-total="userLimit?.premium?.total"
                 class="-mt-2"
-            />
+            /> -->
 
             <!--          <UserSettingsSheet class="-mt-2"/>-->
           </DrawerDescription>
@@ -146,7 +95,7 @@ import type {UserLimits} from "~/scripts/shared/types/user";
 import {useOnboarding} from "~/lib-modules/onboarding";
 import {ProfileBadge} from "~/lib-modules/profile";
 
-const {t, locale} = useI18n()
+const {t, locale} = useI18n({ useScope: 'global' })
 const onboarding = useOnboarding()
 const route = useRoute()
 
@@ -240,6 +189,8 @@ const saveChanges = async () => {
 
   try {
     await $settings.saveChanges(newLang, newStyle, newLlm);
+    // Save to localStorage on success (same as LanguageSelector)
+    localStorage.setItem('preferred-locale', newLang);
   } catch (error) {
     // Rollback to previous values on error
     llm.value = prevLlm;

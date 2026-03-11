@@ -86,9 +86,9 @@ const handleDelete = async () => {
   try {
     await conversationStore.removeConversation(props.privateId, t)
 
-    // If user is currently viewing this dialog, navigate to home
+    // If user is currently viewing this dialog, navigate to new conversation
     if (isCurrentDialog) {
-      await navigateTo('/')
+      await navigateTo(Routes.newConversation)
     }
 
     toastDeleteSuccess(t)

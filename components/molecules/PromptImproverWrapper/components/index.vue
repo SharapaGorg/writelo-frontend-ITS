@@ -43,11 +43,17 @@ const {
   isImproving,
   improvePrompt,
   setupKeyboardListener,
+  markAsProcessed,
   buttonText,
   buttonTooltip
 } = usePromptImprover(text, {
   enabled: !props.disabled,
   ...props.options
+});
+
+// Expose methods for parent components
+defineExpose({
+  markAsProcessed
 });
 
 // Wrapper element ref

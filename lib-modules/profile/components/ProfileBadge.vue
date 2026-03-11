@@ -26,14 +26,14 @@ const pendingEmail = computed(() => user.value?.pendingEmail);
 
 <template>
   <NuxtLink
-      to="/profile"
+      to="/app/profile"
       class="w-full md:w-fit block cursor-default"
       :style="{ width : fullWidth ? '100%' : '' }"
   >
     <div
         class="profile-badge__container"
         :style="{ width : fullWidth ? '100%' : '' }"
-        :class="{ 'profile-badge_hover-effects' : currentRoute !== 'profile' }"
+        :class="{ 'profile-badge_hover-effects' : currentRoute !== 'app-profile' }"
     >
       <Avatar class="profile-badge__avatar">
         <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn"/>

@@ -1,5 +1,5 @@
 <template>
-  <Select v-model="selectedLang">
+  <Select v-model="locale">
     <SelectTrigger class="w-[120px]">
       <SelectValue/>
     </SelectTrigger>
@@ -19,15 +19,11 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {useI18n} from 'vue-i18n'
-import {computed} from 'vue'
+import {watch} from 'vue'
 
-const {locale} = useI18n()
+const {locale} = useI18n({ useScope: 'global' })
 
-const selectedLang = computed({
-  get: () => locale.value,
-  set: (val: string) => {
-    locale.value = val
-    localStorage.setItem('preferred-locale', val)
-  }
+watch(locale, (newVal) => {
+  localStorage.setItem('preferred-locale', newVal)
 })
 </script>

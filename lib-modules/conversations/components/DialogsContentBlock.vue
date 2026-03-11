@@ -10,9 +10,9 @@
         {{ t('no-conversations') }}
       </div>
 
-      <div>
-        <Spinner v-show="projectsStore.loading"/>
+      <DialogsSkeleton v-if="projectsStore.loading" />
 
+      <template v-else>
         <AccordionItem
             v-for="section in groups"
             :key="section.key + (projectsStore.selectedProjectId ?? 'all')"
@@ -36,7 +36,7 @@
             </div>
           </AccordionContent>
         </AccordionItem>
-      </div>
+      </template>
     </Accordion>
   </div>
 </template>
@@ -46,7 +46,7 @@ import {computed} from 'vue'
 import {useConversationsStore} from '~/stores/conversations'
 import {ProjectTabs, useProjectsStore} from '~/lib-modules/projects'
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '~/components/ui/accordion'
-import Spinner from '~/components/atoms/Spinner.vue'
+import DialogsSkeleton from './DialogsSkeleton.vue'
 import type {ChatsGroupSection} from "~/lib-modules/conversations";
 import {MenuDialogButton} from "~/lib-modules/conversations";
 

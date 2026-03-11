@@ -32,7 +32,7 @@
 
       <ProjectCreateWindow
           v-model:open="showAddDialog"
-          @save="createNewProject"
+          @save="onProjectCreated"
       />
 
       <ProjectRename
@@ -72,7 +72,7 @@ import {useProjectsStore} from "~/lib-modules/projects";
 import ProjectCreateWindow from "./ProjectCreateWindow.vue";
 import ProjectRename from "./ProjectRename.vue";
 import ProjectDeleteConfirmation from "./ProjectDeleteConfirmation.vue";
-import {toastProjectRemoved} from '../helpers/toaster'
+import {toastClientRemoved} from '../helpers/toaster'
 import ProjectEditInstructions from "~/lib-modules/projects/components/ProjectEditInstructions.vue";
 import {toastChangesSavedSuccess, toastSomeError} from "~/scripts/features/utils/toater";
 import {useOnboarding} from "~/lib-modules/onboarding";
@@ -96,16 +96,7 @@ const editInstructionsVisible = computed({
 
     if (value) {
       projectsStore.showModalWindow(ProjectsModalWindow.EditInstructions);
-
-      if (onboarding.isActive.value) {
-        onboarding.next();
-      }
-
       return;
-    }
-
-    if (onboarding.isActive.value) {
-      onboarding.finish();
     }
 
     projectsStore.hideModalWindow(ProjectsModalWindow.EditInstructions);
@@ -132,28 +123,14 @@ const handleProjectClick = async (project: StoreProject) => {
   }
 }
 
-let createProjectOnboardingHandler: NodeJS.Timeout | null = null;
+const onProjectCreated = async (projectId: string) => {
+  // Project already created in ProjectCreateWindow, just refresh the list
 
-watch(showAddDialog, (value: boolean) => {
-  createProjectOnboardingHandler = null;
+  // ну это конено полный пиздец, что у нас в сторе бизнес логика, разъебалово
+  await useProjectsStore().fetchProjects()
 
-  if (!value) {
-    createProjectOnboardingHandler = setTimeout(() => {
-      onboarding.finish();
-    }, 100);
-  }
-})
-
-const createNewProject = async (title: string) => {
-  setTimeout(() => {
-    if (createProjectOnboardingHandler) {
-      clearTimeout(createProjectOnboardingHandler);
-      createProjectOnboardingHandler = null;
-    }
-  })
-
-  await createProject({title})
-  onboarding.next();
+  // Auto-select the newly created project
+  projectsStore.selectProject(projectId)
 }
 
 type DialogAction = 'rename' | 'delete' | 'editInstructions'
@@ -203,7 +180,7 @@ const renameProject = async (newTitle: string) => {
 const removeProject = async () => {
   if (focusedProject.value) {
     await useProjects().deleteProject(focusedProject.value.id);
-    toastProjectRemoved(t);
+    toastClientRemoved(t);
   }
 }
 

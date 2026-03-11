@@ -47,8 +47,21 @@ async function init(locale?: any) {
     if (styleId) {
         state.responseStyle = config.responseStyles.find(item => item.id === styleId) || null
     }
-    state.language = profile.language
-    i18nLocale.value = state.language
+
+    // Only set language from server if user hasn't manually changed it locally
+    const localPreferredLocale = typeof window !== 'undefined'
+        ? localStorage.getItem('preferred-locale')
+        : null
+
+    if (localPreferredLocale && ['en', 'ru'].includes(localPreferredLocale)) {
+        // User has a local preference, use it
+        state.language = localPreferredLocale as Language
+        i18nLocale.value = localPreferredLocale
+    } else {
+        // No local preference, use server value
+        state.language = profile.language
+        i18nLocale.value = state.language
+    }
 
     state.loaded = true
 }
@@ -148,7 +161,7 @@ async function saveChanges(language_: string, responseStyle_: ResponseStyleType,
     state.llm = llm_
 
     try {
-        await apiController.saveSettings(language_, responseStyle_?.id ?? 0, llm_.name);
+        await apiController.saveSettings(language_, responseStyle_ ? responseStyle_.id : null, llm_.name);
     } catch (error) {
         // Rollback to previous values on error
         state.language = prevLanguage

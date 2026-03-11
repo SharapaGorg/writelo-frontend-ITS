@@ -51,7 +51,7 @@ export class ApiController {
         } catch {
             // Fallback if called outside Nuxt context
             return process.env.NODE_ENV === 'production'
-                ? 'https://neovision.space/api/'
+                ? 'https://writelo.io/api/'
                 : 'https://nv2.radolyn.com/api/';
         }
     }
@@ -67,15 +67,11 @@ export class ApiController {
      */
     private getAuthHeader(token: string): string {
         // InitData format contains auth_date= parameter
-        console.warn(`TOKEN: ${token}`);
-
         if (token && token.includes('hash=')) {
-            console.warn('USING TminiApp');
             return `TMiniApp ${token}`
         }
         // Otherwise it's a JWT from web auth
 
-        console.warn(`USING Bearer ${token}`);
         return `Bearer ${token}`
     }
 
@@ -451,7 +447,7 @@ export class ApiController {
      * Other settings, like current model or enabled tools are fetched from the last request to LLM
      * (other settings are memorized from the previous requests)
      */
-    async saveSettings(language: string, responseStyle: number, model: string | null): Promise<void> {
+    async saveSettings(language: string, responseStyle: number | null, model: string | null): Promise<void> {
         return this.request(ApiAliases.me, RequestMethod.PATCH, {
             language: language,
             currentStyle: responseStyle,

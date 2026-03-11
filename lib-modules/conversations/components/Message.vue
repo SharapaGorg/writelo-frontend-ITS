@@ -39,6 +39,16 @@
         :message-text="messageText"
         :show-reroll="!processing && !error && isLast"
     />
+
+    <!-- Text stats for assistant messages -->
+    <div
+      v-if="isAssistant && messageText && messageText.length && !editing && !processing"
+      class="text-xs text-muted-foreground mt-1 flex gap-3"
+    >
+      <span>{{ messageText.length }} {{ $t('charCounter.chars') }}</span>
+      <span>{{ countWords(messageText) }} {{ $t('charCounter.words') }}</span>
+      <span>{{ countSentences(messageText) }} {{ $t('charCounter.sentences') }}</span>
+    </div>
   </div>
 </template>
 
@@ -95,6 +105,18 @@ const saveEditedMessage = async () => {
 
 const isUser = props.role === Role.user;
 const isAssistant = props.role === Role.assistant;
+
+// Text statistics helpers
+const countWords = (text: string): number => {
+  if (!text?.trim()) return 0
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length
+}
+
+const countSentences = (text: string): number => {
+  if (!text?.trim()) return 0
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0)
+  return sentences.length
+}
 
 const {$mdRenderer} = useNuxtApp();
 

@@ -36,14 +36,14 @@ const resultDialogTitle = computed(() => {
     </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ $t('removeDialog.header') }}</AlertDialogTitle>
+        <AlertDialogTitle>{{ $t('removeTask.header') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          {{ $t('removeDialog.message', {dialogTitle: resultDialogTitle}) }}
+          {{ $t('removeTask.message', {dialogTitle: resultDialogTitle}) }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>{{ $t('removeDialog.cancel') }}</AlertDialogCancel>
-        <AlertDialogAction @click="emit('approve')">{{ $t('removeDialog.continue') }}</AlertDialogAction>
+        <AlertDialogCancel>{{ $t('removeTask.cancel') }}</AlertDialogCancel>
+        <AlertDialogAction @click="emit('approve')">{{ $t('removeTask.continue') }}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

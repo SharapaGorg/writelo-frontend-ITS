@@ -1,0 +1,20 @@
+User-agent: *
+# Block app pages
+Disallow: /app/
+Disallow: /verify-email
+Disallow: /reset-password
+Disallow: /forgot-password
+Disallow: /email-sent
+Disallow: /test
+
+# Allow SEO pages
+Allow: /
+Allow: /start
+Allow: /auth
+Allow: /landing
+
+# Sitemap
+Sitemap: https://writelo.io/sitemap.xml
+
+# Crawl-delay for polite bots
+Crawl-delay: 1

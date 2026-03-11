@@ -1,15 +1,26 @@
 export default defineNuxtConfig({
     modules: [
         "@nuxtjs/tailwindcss",
-        "shadcn-nuxt",
         "@nuxtjs/i18n",
         "@nuxt/image",
         "@pinia/nuxt",
-        "@sentry/nuxt"
     ],
 
     plugins: ["plugins/markdownit"],
-    ssr: false, // 👉 SPA-only, поэтому сервер рендерить страницы не будет
+
+    // Гибридный рендеринг: prerender для SEO-страниц, SPA для остального
+    ssr: true,
+    routeRules: {
+        // Prerender для SEO (статический HTML при билде + SSR включен явно)
+        '/': {ssr: true, prerender: true},
+        '/auth': {ssr: true, prerender: true},
+        '/auth/**': {ssr: true, prerender: true},
+        '/landing': {ssr: true, prerender: true},
+        '/start': {ssr: true, prerender: true},
+        // SPA для приложения и остального
+        '/app/**': {ssr: false},
+        '/**': {ssr: false},
+    },
 
     devtools: {enabled: false},
 
@@ -21,6 +32,30 @@ export default defineNuxtConfig({
 
     app: {
         head: {
+            htmlAttrs: {
+                lang: 'ru',
+            },
+            title: 'Writelo — AI-ассистент для SMM',
+            meta: [
+                {charset: 'utf-8'},
+                {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+                {
+                    name: 'description',
+                    content: 'AI-ассистент для создания контента в соцсетях. Посты, тексты и картинки за минуты. Бесплатный старт.'
+                },
+                // Open Graph
+                {property: 'og:type', content: 'website'},
+                {property: 'og:site_name', content: 'Writelo'},
+                {property: 'og:locale', content: 'ru_RU'},
+                {property: 'og:locale:alternate', content: 'en_US'},
+                // Twitter
+                {name: 'twitter:card', content: 'summary_large_image'},
+            ],
+            link: [
+                {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'},
+                {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
+                {rel: 'apple-touch-icon', href: '/apple-touch-icon.png'},
+            ],
             script: [
                 {src: "https://telegram.org/js/telegram-web-app.js?57", defer: true},
             ],
@@ -31,16 +66,12 @@ export default defineNuxtConfig({
         public: {
             appBaseUrl: process.env.NUXT_PUBLIC_APP_BASE_URL ||
                 (process.env.NODE_ENV === 'production'
-                    ? 'https://neovision.space'
+                    ? 'https://writelo.io'
                     : 'https://nv2.radolyn.com'),
             telegramBotUsername: process.env.NUXT_PUBLIC_TELEGRAM_BOT_USERNAME ||
                 (process.env.NODE_ENV === 'production'
-                    ? 'AIHubGPTBot'
+                    ? 'writelo_bot'
                     : 'test_neovision_bot'),
-            sentry: {
-                dsn: process.env.SENTRY_DSN,
-                environment: process.env.SENTRY_ENV || process.env.NODE_ENV,
-            },
         },
     },
 
@@ -52,10 +83,11 @@ export default defineNuxtConfig({
         "@/assets/css/transitions.css"
     ],
 
-    shadcn: {
-        prefix: "",
-        componentDir: "./components/ui",
-    },
+    // Only scan .vue files in components/ui to avoid duplicates from index.ts re-exports
+    components: [
+        {path: '~/components/ui', extensions: ['vue']},
+        {path: '~/components'},
+    ],
 
     build: {
         postcss: {
@@ -102,25 +134,14 @@ export default defineNuxtConfig({
     },
 
     nitro: {
-        experimental: {
-            wasm: true,
-        },
         prerender: {
-            routes: [],
+            routes: ['/', '/landing', '/start', '/auth'],
         },
+        // Ускоряем билд
+        minify: false,
     },
 
-    // 👉 Sentry интеграция
-    sentry: {
-        dsn: process.env.SENTRY_DSN,
-        tracesSampleRate: 1.0,
-        environment: process.env.SENTRY_ENV || process.env.NODE_ENV,
-    },
-
-    sourcemap: {
-        client: "hidden", // клиентский код не полностью доступен
-        server: true,     // серверные сорсмапы нужны, если используешь API через Nitro
-    },
+    sourcemap: false,
 
     i18n: {
         locales: [

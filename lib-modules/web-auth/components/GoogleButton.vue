@@ -41,7 +41,7 @@ const props = withDefaults(defineProps<{
   mode: 'signin'
 })
 
-const GOOGLE_CLIENT_ID = '539607744590-3qe02ljbiri7oivbtfmqp9l66eobia5m.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID = '753438069387-0cm5jv7j2ceseoein8q7ba5jqrq3tdg0.apps.googleusercontent.com'
 
 const {t} = useWebAuthI18n()
 const {locale} = useI18n()

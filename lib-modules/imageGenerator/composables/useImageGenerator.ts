@@ -58,6 +58,12 @@ export const useImageGenerator = () => {
 
         try {
             $store.setImage(file);
+
+            // Auto-prompt for img2img mode
+            if (!$store.prompt || $store.prompt.trim() === '') {
+                $store.setPrompt('Сделай похожую картинку');
+            }
+
             return true;
         } catch (e) {
             error.value = 'Ошибка загрузки файла';

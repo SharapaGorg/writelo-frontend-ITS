@@ -1,7 +1,8 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-    const publicRoutes = ['/auth', '/verify-email', '/reset-password']
+    const publicRoutes = ['/', '/landing', '/start', '/auth', '/verify-email', '/reset-password']
 
-    if (publicRoutes.includes(to.path)) {
+    // Allow routes that explicitly disable auth or are in publicRoutes
+    if (to.meta.auth === false || publicRoutes.includes(to.path)) {
         return
     }
 

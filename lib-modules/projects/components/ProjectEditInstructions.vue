@@ -1,13 +1,15 @@
 <template>
   <TextAreaModal
-      title="editProjectInstructions.header"
-      description="editProjectInstructions.sub-header"
-      placeholder="editProjectInstructions.placeholder"
+      title="editClientInstructions.header"
+      description="editClientInstructions.sub-header"
+      placeholder="editClientInstructions.placeholder"
       :open="open"
       :initial-value="project?.customInstructions || ''"
       @update:open="handleOpenChange"
       @save="handleSave"
       id="project-edit-instructions-modal"
+      size="lg"
+      :max-length="2000"
   />
 </template>
 

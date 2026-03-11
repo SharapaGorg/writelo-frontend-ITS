@@ -3,18 +3,21 @@ import {defineNuxtPlugin} from '#app'
 import i18n from '../scripts/shared/i18n'
 
 export default defineNuxtPlugin((nuxtApp) => {
-    // Проверить сохраненный язык в localStorage
-    const savedLocale = typeof window !== 'undefined'
-        ? localStorage.getItem('preferred-locale')
-        : null
+    // ВАЖНО: НЕ меняем locale до гидратации!
+    // Иначе будет hydration mismatch: сервер рендерит с 'ru', а клиент ожидает 'en'
 
-    if (savedLocale && ['en', 'ru'].includes(savedLocale)) {
-        i18n.global.locale.value = savedLocale
-    }
-
-    if (!savedLocale) {
-        i18n.global.locale.value = 'ru';
-    }
+    // Устанавливаем дефолтный locale (должен совпадать с тем, что на сервере)
+    i18n.global.locale.value = 'ru'
 
     nuxtApp.vueApp.use(i18n)
+
+    // Применяем сохраненный locale ПОСЛЕ гидратации
+    if (typeof window !== 'undefined') {
+        nuxtApp.hook('app:mounted', () => {
+            const savedLocale = localStorage.getItem('preferred-locale')
+            if (savedLocale && ['en', 'ru'].includes(savedLocale)) {
+                i18n.global.locale.value = savedLocale
+            }
+        })
+    }
 })

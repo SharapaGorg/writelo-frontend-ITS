@@ -25,7 +25,7 @@
     </client-only>
 
     <div class="flex-grow">
-      <RolesStore/>
+      <TemplatesDropdown @select="handleTemplateSelect"/>
     </div>
 
     <div class="flex gap-x-2" data-no-blur="true">
@@ -58,23 +58,27 @@ import {FeatureType} from "~/scripts/shared/types/common";
 import {toastFeatureUnavailable} from "~/scripts/features/utils/toater";
 import {useI18n} from 'vue-i18n'
 import {eventBus} from "~/composables/eventBus";
-import RolesStore from "~/components/organisms/RolesStore.vue";
+import TemplatesDropdown from "./TemplatesDropdown.vue";
 import {AttachMediaButton, SendMessageButton} from "~/lib-modules/conversations";
 import {ApiController} from "~/scripts/shared/api/controller";
 
 const {t} = useI18n();
 const apiController = new ApiController();
 
-const emit = defineEmits(['send', 'searchButtonClicked'])
+const emit = defineEmits(['send', 'searchButtonClicked', 'templateSelect'])
+
+const handleTemplateSelect = (text: string) => {
+  emit('templateSelect', text)
+}
 const props = defineProps<{
-  searchDisabled: Boolean,
   message: String,
   generationInProcess: Boolean
 }>();
 
 // ==== SEARCH ====
 const $settings = useSettings();
-const isSearchEnabled = ref($settings.getUser()?.searchEnabled || false);
+const isSearchEnabled = computed(() => $settings.user.value?.searchEnabled ?? false);
+const isUpdatingSearch = ref(false);
 
 const searchAvailable = computed(() => {
   return $settings.hasFeature(FeatureType.search);
@@ -107,29 +111,25 @@ const handleToggleClick = async () => {
     return;
   }
 
+  const user = $settings.user.value;
+  if (!user) return;
+
   const newSearchState = !isSearchEnabled.value;
-  isSearchEnabled.value = newSearchState;
-  
-  // Update the search state on the backend
+  user.searchEnabled = newSearchState;
+  isUpdatingSearch.value = true;
+
   try {
     await apiController.updateSearchEnabled(newSearchState);
   } catch (error) {
     console.error('Failed to update search settings:', error);
-    // Revert the state if the API call fails
-    isSearchEnabled.value = !newSearchState;
+    user.searchEnabled = !newSearchState;
+  } finally {
+    isUpdatingSearch.value = false;
   }
 }
 
-// Remove the old toggleSearch function since we're managing state manually now
-
 watch(isSearchEnabled, value => {
   useSettings().setToolState(FeatureType.search, value);
-})
-
-watch(settings.toolsEnabled, value => {
-  isSearchEnabled.value = value[FeatureType.search] || false;
-}, {
-  deep: true
 })
 
 const sendButtonDisabled = ref(true);
@@ -138,16 +138,6 @@ watch(() => props.message, value => {
 })
 
 
-watch(() => props.searchDisabled, () => {
-  isSearchEnabled.value = false;
-});
-
-// Watch for user data updates to sync the search state
-watch(() => $settings.getUser()?.searchEnabled, (newValue) => {
-  if (newValue !== undefined) {
-    isSearchEnabled.value = newValue;
-  }
-});
 
 </script>
 

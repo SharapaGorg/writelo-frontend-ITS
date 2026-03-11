@@ -25,6 +25,8 @@ import en from '../../i18n/locales/en.json'
 import ru from '../../i18n/locales/ru.json'
 
 const i18n = createI18n({
+    legacy: false,
+    globalInjection: true,
     locale: 'en',
     fallbackLocale: 'en',
     messages: {

@@ -31,7 +31,10 @@ export enum ApiAliases {
 }
 
 export enum Routes {
-    index = '/',
-    newConversation = '/conversations/new',
-    conversations = '/conversations/'
+    landing = '/',
+    app = '/app',
+    newConversation = '/app/conversations/new',
+    conversations = '/app/conversations/',
+    imageGenerator = '/app/image-generator',
+    profile = '/app/profile',
 }

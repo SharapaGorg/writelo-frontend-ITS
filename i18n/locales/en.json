@@ -1,4 +1,91 @@
 {
+  "landing": {
+    "hero": {
+      "slogan1": "Your ideas.",
+      "slogan2": "Our pace.",
+      "description": "AI tools for SMM professionals. Clients, trends, images — all in one place",
+      "cta": "Try for free",
+      "ctaSubtext": "No card required • 50 free requests"
+    },
+    "demo": {
+      "title": "See how it works",
+      "description": "From idea to finished post in a couple of minutes",
+      "videoPlaceholder": "Demo video"
+    },
+    "calculator": {
+      "title": "How much time will you save?",
+      "question": "How many posts do you make per week?",
+      "posts": "posts",
+      "hoursPerWeekShort": "hrs/week",
+      "hoursPerMonthShort": "hours per month",
+      "benefit": "That's like an extra workday every week",
+      "cta": "Start saving"
+    },
+    "pricing": {
+      "title": "Start saving time today",
+      "free": {
+        "name": "Free",
+        "description": "Get to know Writelo",
+        "features": {
+          "requests": "50 requests",
+          "clients": "1 client",
+          "search": "Trend analysis",
+          "promptImprover": "Prompt improvement",
+          "templates": "Templates"
+        },
+        "cta": "Try it"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$3",
+        "period": "/mo",
+        "description": "For active SMM specialists",
+        "features": {
+          "requests": "Unlimited requests",
+          "clients": "Up to 10 clients",
+          "search": "Trend analysis",
+          "images": "Image tools",
+          "unlimited": "100x limits",
+          "templates": "Templates",
+          "promptImprover": "Prompt improvement"
+        },
+        "cta": "Buy"
+      }
+    },
+    "footer": {
+      "telegram": "Telegram",
+      "support": "Support"
+    },
+    "seo": {
+      "title": "Writelo — AI for SMM | Social Media AI Assistant",
+      "description": "AI for SMM specialists. Create posts, texts and images in minutes. AI assistant with web search. Free start — 50 requests.",
+      "ogTitle": "Writelo — AI for SMM | Content in Minutes",
+      "ogDescription": "AI for social media. Posts, texts, images — no prompting needed. 50 free requests."
+    },
+    "features": {
+      "cta": "Try it",
+      "clients": {
+        "title": "Set up once — always in context",
+        "description": "Save client info: niche, tone of voice, target audience. AI considers this in every request"
+      },
+      "content": {
+        "title": "Content plan, posts, strategy — in minutes",
+        "description": "Basic SMM tasks now take minutes, not hours. AI handles the routine"
+      },
+      "trends": {
+        "title": "Current trends in two clicks",
+        "description": "AI finds what's being discussed right now. No manual monitoring needed"
+      },
+      "images": {
+        "title": "References without a designer",
+        "description": "Generate images from scratch or edit existing ones"
+      },
+      "prompt": {
+        "title": "Focus on the idea — we'll write the prompt",
+        "description": "AI enhances your prompt automatically. Just describe what you need"
+      }
+    }
+  },
   "verify_page": {
     "verifying": "Verifying your email...",
     "success_title": "Email verified!",
@@ -10,10 +97,14 @@
     "back_to_auth": "Back to sign in"
   },
   "welcome": "How can I help you today?",
-  "conversations": "Conversations",
-  "no-conversations": "You don't have any conversations yet",
+  "conversations": "Tasks",
+  "no-conversations": "You don't have any tasks yet",
   "close": "Close",
   "all_chats": "All Chats",
+  "clientSelector": {
+    "header": "Select Client",
+    "addNew": "Add Client"
+  },
   "today": "Today",
   "last_7_days": "Last 7 days",
   "last_30_days": "Last 30 days",
@@ -29,7 +120,7 @@
     "press-tab": "Press Tab to enhance"
   },
   "placeholder": "What is your question?",
-  "placeholder-premium": "What is your question for",
+  "placeholder-premium": "What is your question for Writelo?",
   "toaster-copy-code": "Code copied to clipboard",
   "toaster-copy-text": "Text copied to clipboard",
   "toaster-share-success": "Link copied to clipboard!",
@@ -37,7 +128,7 @@
   "toaster-delete-success": "Conversation deleted successfully!",
   "toaster-delete-error": "Failed to delete conversation",
   "share": "Share",
-  "add-to-project": "Move to project",
+  "add-to-project": "Move to client",
   "copy-link": "Copy Link",
   "unshare": "Unshare",
   "delete": "Delete",
@@ -53,7 +144,7 @@
   "toaster-rate-limit": "Too many requests. Please try again later.",
   "toaster-generic-error": "Something went wrong. Please try again.",
   "toaster": {
-    "conversation-removed": "The conversation was successfully deleted",
+    "conversation-removed": "The task was successfully deleted",
     "onboarding-complete": "Great! Tutorial complete. Enjoy using the app!"
   },
   "payment-providers": "Select payment method",
@@ -78,33 +169,66 @@
     "drawer-header": "Roles",
     "example": "Example"
   },
-  "editProjectInstructions": {
-    "context-button": "Edit instructions",
-    "header": "Edit Project Instructions",
-    "sub-header": "Add or update your project description",
+  "editClientInstructions": {
+    "context-button": "Edit brief",
+    "header": "Edit Client Brief",
+    "sub-header": "Update the instructions for this client",
     "placeholder": "For example: I'm developing an SMM campaign for Supercell..."
   },
-  "addProject": {
-    "header": "Add Project",
-    "sub-header": "Enter a name for your new project",
-    "placeholder": "Project name",
-    "action-button": "Create"
+  "addClient": {
+    "header": "Add Client",
+    "sub-header": "Fill in the brief for your new client",
+    "action-button": "Create Client",
+    "brandName": "Brand Name",
+    "brandNamePlaceholder": "e.g.: Coffee House Barista",
+    "niche": "Niche",
+    "nichePlaceholder": "Enter your niche or select from suggestions",
+    "description": "What they do / sell",
+    "descriptionPlaceholder": "Describe the business activity",
+    "targetAudience": "Target Audience",
+    "targetAudiencePlaceholder": "Gender, age, location, interests",
+    "communicationStyle": "Communication Style",
+    "communicationStylePlaceholder": "Describe the desired style or choose a preset",
+    "stopWords": "Stop Words",
+    "stopWordsPlaceholder": "Words separated by commas that shouldn't be used",
+    "postExamples": "Post Examples (optional)",
+    "postExamplesPlaceholder": "Paste 2-3 example posts in the desired style",
+    "niches": {
+      "beautySalon": "Beauty Salon",
+      "autoService": "Auto Service",
+      "coffeeShop": "Coffee Shop",
+      "fitness": "Fitness",
+      "clothingStore": "Clothing Store",
+      "restaurant": "Restaurant",
+      "dental": "Dental Clinic",
+      "realEstate": "Real Estate"
+    },
+    "styles": {
+      "friendly": "Friendly, informal",
+      "friendlyDesc": "Casual tone, be open and friendly",
+      "formal": "Formal, professional",
+      "formalDesc": "Professional tone, maintain formality",
+      "expert": "Expert",
+      "expertDesc": "Demonstrate expertise, use professional terminology",
+      "provocative": "Bold",
+      "provocativeDesc": "Use provocative style, be bold in statements"
+    }
   },
-  "renameProject": {
-    "header": "Rename project",
-    "placeholder": "Project name",
-    "new-title": "Enter a new name for this project"
+  "renameClient": {
+    "header": "Rename client",
+    "placeholder": "Client name",
+    "new-title": "Enter a new name for this client"
   },
-  "removeProject": {
-    "header": "Remove project",
-    "message": "This action is irreversible. You are deleting the project  «{ projectTitle }» from the servers.",
-    "success": "The project was successfully deleted"
+  "removeClient": {
+    "header": "Remove client",
+    "message": "This action is irreversible. You are deleting the client «{ projectTitle }» from the servers.",
+    "success": "The client was successfully deleted"
   },
-  "removeDialog": {
+  "removeTask": {
     "header": "Are you sure?",
     "continue": "Continue",
     "cancel": "Cancel",
-    "message": "This action is irreversible. You are deleting the dialogue information «{ dialogTitle }» from the servers."
+    "message": "This action is irreversible. You are deleting the task «{ dialogTitle }» from the servers."
   },
   "loader": {
     "conversation": {
@@ -130,12 +254,12 @@
     "search": {
       "searching": "Searching...",
       "finding": "Finding results...",
-      "subtext": "Looking through all conversations"
+      "subtext": "Looking through all tasks"
     },
-    "dialogs": {
-      "loading": "Loading your conversations...",
-      "fetching": "Fetching chat history...",
-      "organizing": "Organizing chats...",
+    "tasks": {
+      "loading": "Loading your tasks...",
+      "fetching": "Fetching history...",
+      "organizing": "Organizing tasks...",
       "subtext": "Organizing by date"
     },
     "default": {
@@ -207,6 +331,33 @@
         "I can understand context and nuance in language",
         "I never get tired - available 24/7 for you"
       ]
+    }
+  },
+  "charCounter": {
+    "chars": "chars",
+    "words": "words",
+    "sentences": "sent."
+  },
+  "templates": {
+    "button": "Templates",
+    "header": "Choose a template",
+    "items": {
+      "contentPlan": "Content Plan",
+      "reelsIdeas": "Reels/Video Ideas",
+      "contentStrategy": "Content Strategy",
+      "salesPost": "Sales Post",
+      "engagementPost": "Engagement Post",
+      "expertPost": "Expert Post",
+      "contentCategories": "Content Categories"
+    },
+    "prompts": {
+      "contentPlan": "You are \"GPT, the leading social media content creator\". Your tasks: generate many ideas, create diverse content — from blog posts to YouTube videos. You also know how to launch and maintain a social media audience.\nCreate a monthly content plan for the client [YOUR CLIENT]. The report needs a table with the main topic, content description, type (video or image) and post caption. Add relevant hashtags. The client expects 3 videos and 2 images per week (can be changed).\nYour client is a company [YOUR CLIENT], engaged in [DETAIL]. Recent content was related to [SPECIFY TOPIC]. Content should attract new customers. Ideas on the topic [SPECIFY TOPIC] are preferred, and any other suitable suggestions.",
+      "reelsIdeas": "Come up with 10 ideas for short videos (Reels/TikTok). For each idea specify: topic, brief 15-30 second script, on-screen text, what sound/music to use. Ideas should be trendy and engaging.",
+      "contentStrategy": "Create a content strategy for the company [YOUR CLIENT] for 1 month. Specify content goals, posting frequency, post types (engagement, reputation, sales) and KPIs for analysis.",
+      "salesPost": "Write a sales post using the AIDA framework for the product [YOUR CLIENT]. Include audience pain point, solution, benefit and a soft call to action.",
+      "engagementPost": "Write 5 engagement post ideas for the brand [YOUR CLIENT]. Include questions, challenges and phrases that encourage discussion.",
+      "expertPost": "Create an expert post for social media on the topic [TOPIC]. Use the format \"insight + value + advice\". Add a question at the end for engagement.",
+      "contentCategories": "Suggest 10 content categories for the company [YOUR CLIENT] social media. For each specify the goal, format and example topic."
     }
   },
   "imageGenerator": {

@@ -2,12 +2,12 @@
 
 import AttachImageZone from './AttachImageZone.vue'
 import ImageGeneratorPromptField from "./ImageGeneratorPromptField.vue"
-import ImagesAspectRatios from "./ImagesAspectRatios.vue"
 import GenerateImageButton from "./GenerateImageButton.vue";
 
 import {BadgeInfo} from 'lucide-vue-next'
 
 import '../styles/index.css'
+import ImagesAspectRatios from "./ImagesAspectRatios.vue";
 
 </script>
 

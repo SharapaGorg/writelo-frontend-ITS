@@ -13,8 +13,9 @@
     </Transition>
 
     <div class="send-message-container">
-      <div class="flex gap-x-2">
+      <div class="flex flex-col gap-x-2">
         <PromptImproverWrapper
+            ref="promptImprover"
             v-model="newMessage"
             :disabled="props.fieldDisabled || props.generationInProcess"
             class="w-full"
@@ -31,14 +32,23 @@
               ref="textarea"
           ></Textarea>
         </PromptImproverWrapper>
+        <!-- Text stats counter -->
+        <div
+          v-if="newMessage.length > 0"
+          class="text-xs text-muted-foreground text-right mt-1 flex gap-3 justify-end"
+        >
+          <span>{{ newMessage.length }} {{ t('charCounter.chars') }}</span>
+          <span>{{ countWords(newMessage) }} {{ t('charCounter.words') }}</span>
+          <span>{{ countSentences(newMessage) }} {{ t('charCounter.sentences') }}</span>
+        </div>
       </div>
 
       <BottomBar
           :generation-in-process="generationInProcess"
-          :search-disabled="searchDisabledTrigger"
           :message="newMessage"
           @send="sendMessage"
           @searchButtonClicked="onSearchButtonClicked"
+          @templateSelect="onTemplateSelect"
       />
     </div>
   </div>
@@ -67,12 +77,24 @@ const {hasAttachedFiles} = useAttachMedia();
 
 const textarea: Ref<null | HTMLInputElement> = ref(null);
 const scrollDownButton: Ref<null | HTMLElement> = ref(null);
-
-const searchDisabledTrigger = ref(false);
+const promptImprover = ref<InstanceType<typeof PromptImproverWrapper> | null>(null);
 
 // ==== TEXTAREA SETTINGS ====
 const ROWS_LIMIT = 7;
 const newMessage = ref("");
+
+// Text statistics helpers
+const countWords = (text: string): number => {
+  if (!text.trim()) return 0
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length
+}
+
+const countSentences = (text: string): number => {
+  if (!text.trim()) return 0
+  // Match sentence-ending punctuation followed by space or end of string
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0)
+  return sentences.length
+}
 
 const textareaFocus = () => {
   // Scroll handling is now done globally in telegramHack composable
@@ -84,6 +106,15 @@ const searchButtonClicked = ref(false);
 const onSearchButtonClicked = () => {
   setTimeout(() => {
     textarea.value.textarea.focus();
+  })
+}
+
+const onTemplateSelect = (text: string) => {
+  newMessage.value = text
+  nextTick(() => {
+    textarea.value?.textarea?.focus()
+    // Mark as processed to prevent prompt improver from showing
+    promptImprover.value?.markAsProcessed()
   })
 }
 
@@ -106,12 +137,6 @@ const sendMessage = () => {
   if (newMessage.value.trim()) {
     emit('send', newMessage.value);
     newMessage.value = "";
-
-    // trigger event in BottomBar via switching state
-    // searchDisabledTrigger.value = true;
-    // nextTick(() => {
-    //   searchDisabledTrigger.value = false;
-    // })
   }
 };
 
@@ -139,14 +164,10 @@ const handleKeydown = (event: KeyboardEvent) => {
 const $settings = useSettings();
 
 const placeholder = computed(() => {
-  const paid = `${t('placeholder-premium')} ${$settings.getLlm()?.title}?`;
-  const free = t('placeholder');
-
   if ($settings.subscription.value) {
-    return paid;
+    return t('placeholder-premium');
   }
-
-  return free;
+  return t('placeholder');
 })
 
 onMounted(() => {

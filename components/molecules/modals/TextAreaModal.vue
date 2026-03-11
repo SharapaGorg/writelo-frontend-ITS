@@ -31,11 +31,15 @@ const props = withDefaults(defineProps<{
   open: boolean,
   initialValue?: string, // начальное значение для текстового поля
   actionText?: string, // текст кнопки, которая обычно "Сохранить"
-  cancelText?: string // текст кнопки, которая обычно "Отмена"
+  cancelText?: string, // текст кнопки, которая обычно "Отмена"
+  maxLength?: number, // максимальная длина текста
+  size?: 'sm' | 'md' | 'lg' | 'xl' // размер модального окна
 }>(), {
   actionText: "save",
   cancelText: "cancel",
-  initialValue: ""
+  initialValue: "",
+  maxLength: 500,
+  size: 'md'
 })
 
 const emit = defineEmits<{
@@ -52,9 +56,28 @@ const {t} = useI18n();
 
 const text = ref("");
 const textareaField = ref<InstanceType<typeof Textarea> | null>(null);
-const MAX_LENGTH = 500;
 
-const remainingChars = computed(() => MAX_LENGTH - text.value.length);
+const remainingChars = computed(() => props.maxLength - text.value.length);
+
+const dialogSizeClass = computed(() => {
+  switch (props.size) {
+    case 'sm': return 'sm:max-w-sm'
+    case 'md': return 'sm:max-w-md'
+    case 'lg': return 'sm:max-w-2xl'
+    case 'xl': return 'sm:max-w-4xl'
+    default: return 'sm:max-w-md'
+  }
+});
+
+const textareaHeightClass = computed(() => {
+  switch (props.size) {
+    case 'sm': return 'min-h-[100px]'
+    case 'md': return 'min-h-[120px]'
+    case 'lg': return 'min-h-[250px]'
+    case 'xl': return 'min-h-[350px]'
+    default: return 'min-h-[120px]'
+  }
+});
 
 watch(() => props.open, (open) => {
   // устанавливать начальное значение и фокусировать на текстовом поле, когда форма открывается
@@ -68,10 +91,10 @@ watch(() => props.open, (open) => {
 })
 
 const handleInput = (value: string) => {
-  if (value.length <= MAX_LENGTH) {
+  if (value.length <= props.maxLength) {
     text.value = value;
   } else {
-    text.value = value.substring(0, MAX_LENGTH);
+    text.value = value.substring(0, props.maxLength);
   }
 }
 
@@ -88,7 +111,7 @@ const finalAction = () => {
 
 <template>
   <Dialog v-model:open="isOpen">
-    <DialogContent class="sm:max-w-md">
+    <DialogContent :class="dialogSizeClass">
       <div class="flex flex-col gap-y-4" :id="id">
         <DialogHeader>
           <DialogTitle>{{ t(title) }}</DialogTitle>
@@ -108,12 +131,12 @@ const finalAction = () => {
                 :modelValue="text"
                 @update:modelValue="handleInput"
                 :placeholder="t(placeholder)"
-                class="min-h-[120px] resize-none"
+                :class="[textareaHeightClass, 'resize-none']"
                 ref="textareaField"
             />
           </PromptImproverWrapper>
           <span class="text-xs text-muted-foreground text-right">
-            {{ remainingChars }}/{{ MAX_LENGTH }}
+            {{ remainingChars }}/{{ maxLength }}
           </span>
         </div>
       </div>

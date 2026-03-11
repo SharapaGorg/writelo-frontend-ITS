@@ -1,5 +1,6 @@
 // Components
 export {default as ProjectTabs} from './components/ProjectTabs.vue'
+export {default as ProjectCreateWindow} from './components/ProjectCreateWindow.vue'
 
 // Composables
 export {useProjects} from './composables/useProjects'

@@ -1,7 +1,7 @@
 <template>
   <SmallTextFieldModal
-      title="renameProject.header"
-      description="renameProject.new-title"
+      title="renameClient.header"
+      description="renameClient.new-title"
       placeholder="project-name"
       :open="open"
       :initial-value="project?.title || ''"
