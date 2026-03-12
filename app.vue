@@ -43,12 +43,31 @@ const $user = useUserController();
 
 const {locale} = useI18n();
 
-const publicPages = ['/', '/landing', '/start', '/auth']
+const publicPages = ['/', '/landing', '/start', '/auth', '/verify-email', '/reset-password', '/forgot-password', '/email-sent']
+const route = useRoute()
+
+function isPublicPath(path: string): boolean {
+  return publicPages.includes(path)
+}
 
 function isPublicPage(): boolean {
   if (import.meta.server) return false
-  return publicPages.includes(window.location.pathname)
+  return isPublicPath(window.location.pathname)
 }
+
+// Watch for route changes: initialize settings when navigating from public to app pages
+watch(() => route.path, (newPath, oldPath) => {
+  // Skip if navigating between public pages or staying on same page
+  if (isPublicPath(newPath) || !oldPath) return
+
+  // Only init if navigating FROM a public page TO a non-public page and settings not loaded
+  if (isPublicPath(oldPath) && !$settings.loaded.value) {
+    loading.value = true
+    $settings.init(locale).then(() => {
+      loading.value = false
+    })
+  }
+})
 
 watch(locale, () => {
   if (isPublicPage()) return
@@ -71,11 +90,14 @@ onMounted(() => {
 
 // Инициализация только на клиенте
 if (!import.meta.server) {
+  // Always init user controller so whenReady() resolves (needed for auth API calls)
+  const userInitPromise = $user.init()
+
   if (isPublicPage()) {
     loading.value = false
   } else {
     Promise.all([
-      $user.init(),
+      userInitPromise,
       $settings.init()
     ]).then(() => {
       loading.value = false
