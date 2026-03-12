@@ -1,6 +1,8 @@
 <template>
-  <div class="flex items-center justify-center h-full w-full">
-    <AuthForm/>
+  <div class="h-full w-full overflow-y-auto">
+    <div class="flex items-center justify-center min-h-full w-full py-6 px-2">
+      <AuthForm/>
+    </div>
   </div>
 </template>
 

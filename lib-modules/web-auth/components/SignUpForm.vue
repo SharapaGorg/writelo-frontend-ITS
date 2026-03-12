@@ -1,8 +1,8 @@
 <template>
   <Card class="w-full">
-    <CardHeader>
+    <CardHeader class="flex flex-row items-center justify-between">
       <CardTitle>{{ t('signup.title') }}</CardTitle>
-      <CardDescription>{{ t('signup.description') }}</CardDescription>
+      <LanguageSelector/>
     </CardHeader>
 
     <CardContent class="space-y-4">
@@ -81,7 +81,7 @@
 
 <!--      <YandexAuthButton/>-->
 
-      <div class="text-sm text-muted-foreground text-center" style="margin-top: 40px">
+      <div class="text-sm text-muted-foreground text-center mt-4">
         {{ t('signup.have_account') }}
         <Button variant="link" class="p-0 h-auto" @click="$emit('login')">
           {{ t('signup.login_link') }}
@@ -99,7 +99,8 @@
 </template>
 
 <script setup lang="ts">
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card'
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card'
+import LanguageSelector from '~/components/atoms/LanguageSelector.vue'
 import {Input} from '@/components/ui/input'
 import {Label} from '@/components/ui/label'
 import {Button} from '@/components/ui/button'

@@ -1,8 +1,8 @@
 <template>
   <Card class="w-full">
-    <CardHeader>
+    <CardHeader class="flex flex-row items-center justify-between">
       <CardTitle>{{ t('login.title') }}</CardTitle>
-      <CardDescription>{{ t('login.description') }}</CardDescription>
+      <LanguageSelector/>
     </CardHeader>
 
     <CardContent class="space-y-4">
@@ -72,7 +72,8 @@
 </template>
 
 <script setup lang="ts">
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card'
+import {Card, CardContent, CardFooter, CardHeader, CardTitle} from '@/components/ui/card'
+import LanguageSelector from '~/components/atoms/LanguageSelector.vue'
 import {Input} from '@/components/ui/input'
 import {Label} from '@/components/ui/label'
 import {Button} from '@/components/ui/button'
