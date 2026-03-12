@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Play } from 'lucide-vue-next'
+import { Settings, LoaderCircle } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import { useScrollAnimation } from '~/composables/useScrollAnimation'
 import { useVideoViewport } from '~/composables/useVideoViewport'
@@ -40,6 +40,35 @@ const slideClass = computed(() => {
 })
 
 const videoRef = ref<HTMLVideoElement | null>(null)
+const videoContainerRef = ref<HTMLElement | null>(null)
+const isVideoLoading = ref(true)
+const shouldPreload = ref(false)
+
+// Handle video loaded
+function onVideoCanPlay() {
+  isVideoLoading.value = false
+}
+
+// Preload video when it's close to viewport (500px margin)
+onMounted(() => {
+  if (!props.videoUrl) return
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) {
+        shouldPreload.value = true
+        observer.disconnect()
+      }
+    },
+    { rootMargin: '500px' }
+  )
+
+  if (videoContainerRef.value) {
+    observer.observe(videoContainerRef.value)
+  }
+
+  onUnmounted(() => observer.disconnect())
+})
 
 // Setup autoplay when in viewport
 useVideoViewport(videoRef, { threshold: 0.5 })
@@ -56,11 +85,12 @@ useVideoViewport(videoRef, { threshold: 0.5 })
     >
       <!-- Video/Visual -->
       <div
+        ref="videoContainerRef"
         class="w-full aspect-video rounded-2xl overflow-hidden border border-purple-500/30 bg-zinc-100 dark:bg-zinc-900 relative mb-8"
       >
-        <!-- Video element -->
+        <!-- Video element (only render when should preload) -->
         <video
-          v-if="videoUrl"
+          v-if="videoUrl && shouldPreload"
           ref="videoRef"
           :src="videoUrl"
           :poster="poster"
@@ -68,27 +98,30 @@ useVideoViewport(videoRef, { threshold: 0.5 })
           loop
           muted
           playsinline
-          preload="none"
+          preload="auto"
+          @canplay="onVideoCanPlay"
         />
 
-        <!-- Poster/Placeholder (only when no video) -->
-        <template v-if="!videoUrl">
-          <img
-            v-if="poster"
-            :src="poster"
-            alt=""
-            class="w-full h-full object-cover"
-          />
-          <div
-            v-else
-            class="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900"
-          />
+        <!-- Loading spinner for video -->
+        <div
+          v-if="videoUrl && isVideoLoading"
+          class="absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900"
+        >
+          <LoaderCircle class="w-10 h-10 text-purple-500 animate-spin" />
+        </div>
 
-          <!-- Play overlay (placeholder only) -->
-          <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+        <!-- Coming soon placeholder (when no video) -->
+        <template v-if="!videoUrl">
+          <div class="w-full h-full bg-gradient-to-br from-zinc-200 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900" />
+
+          <!-- Coming soon overlay -->
+          <div class="absolute inset-0 bg-black/30 flex flex-col items-center justify-center gap-3">
             <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-              <Play class="w-6 h-6 text-white ml-0.5" />
+              <Settings class="w-6 h-6 text-white" />
             </div>
+            <span class="text-white/90 text-sm font-medium px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+              {{ t('landing.features.comingSoon') }}
+            </span>
           </div>
         </template>
 

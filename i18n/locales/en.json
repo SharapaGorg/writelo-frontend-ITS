@@ -64,6 +64,7 @@
     },
     "features": {
       "cta": "Try it",
+      "comingSoon": "Video in development",
       "clients": {
         "title": "Set up once — always in context",
         "description": "Save client info: niche, tone of voice, target audience. AI considers this in every request"
