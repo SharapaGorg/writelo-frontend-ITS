@@ -7,9 +7,11 @@ import {Routes} from '~/scripts/shared/types'
 const {t} = useI18n()
 const router = useRouter()
 const userController = useUserController()
+const { $trackGoal } = useNuxtApp()
 const {elementRef, isVisible} = useScrollAnimation(0.2)
 
-function handleCTA() {
+function handleCTA(tier: 'free' | 'pro') {
+  $trackGoal('landing_cta_click', { button: `pricing_${tier}` })
   if (userController.getToken()) {
     router.push(Routes.newConversation)
   } else {
@@ -99,7 +101,7 @@ onUnmounted(() => {
           <Button
               variant="outline"
               class="w-full border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 mt-auto"
-              @click="handleCTA"
+              @click="handleCTA('free')"
           >
             {{ t('landing.pricing.free.cta') }}
           </Button>
@@ -156,7 +158,7 @@ onUnmounted(() => {
 
             <Button
                 class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 mt-auto text-white dark:text-white"
-                @click="handleCTA"
+                @click="handleCTA('pro')"
             >
               {{ t('landing.pricing.pro.cta') }}
             </Button>

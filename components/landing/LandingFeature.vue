@@ -7,6 +7,7 @@ import { Button } from '~/components/ui/button'
 
 const { t } = useI18n()
 const router = useRouter()
+const { $trackGoal } = useNuxtApp()
 
 interface Props {
   title: string
@@ -14,13 +15,20 @@ interface Props {
   videoUrl?: string
   poster?: string
   direction?: 'left' | 'right'
+  featureId?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   direction: 'left',
   videoUrl: '',
-  poster: ''
+  poster: '',
+  featureId: 'unknown'
 })
+
+function handleTryClick() {
+  $trackGoal('landing_cta_click', { button: `feature_${props.featureId}` })
+  router.push('/auth')
+}
 
 const { elementRef, isVisible } = useScrollAnimation(0.2)
 
@@ -102,7 +110,7 @@ useVideoViewport(videoRef, { threshold: 0.5 })
         <Button
           variant="outline"
           class="border-purple-500/50 text-purple-400 hover:bg-purple-500/10"
-          @click="router.push('/auth')"
+          @click="handleTryClick"
         >
           {{ t('landing.features.cta') }}
         </Button>

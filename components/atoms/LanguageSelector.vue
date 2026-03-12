@@ -22,8 +22,12 @@ import {useI18n} from 'vue-i18n'
 import {watch} from 'vue'
 
 const {locale} = useI18n({ useScope: 'global' })
+const { $trackGoal } = useNuxtApp()
 
-watch(locale, (newVal) => {
+watch(locale, (newVal, oldVal) => {
   localStorage.setItem('preferred-locale', newVal)
+  if (oldVal && newVal !== oldVal) {
+    $trackGoal('language_switch', { from: oldVal, to: newVal })
+  }
 })
 </script>

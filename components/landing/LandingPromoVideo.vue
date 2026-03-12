@@ -13,11 +13,13 @@ const props = withDefaults(defineProps<Props>(), {
   poster: '/landing/poster.png'
 })
 
+const { $trackGoal } = useNuxtApp()
 const { elementRef, isVisible } = useScrollAnimation(0.2)
 
 const hasStarted = ref(false)
 
 function startVideo() {
+  $trackGoal('landing_video_play', { video: 'promo' })
   hasStarted.value = true
 }
 </script>

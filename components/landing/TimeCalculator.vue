@@ -6,7 +6,22 @@ import { Button } from '~/components/ui/button'
 
 const { t } = useI18n()
 const router = useRouter()
+const { $trackGoal } = useNuxtApp()
 const { elementRef, isVisible } = useScrollAnimation(0.3)
+
+function handleStartSaving() {
+  $trackGoal('landing_cta_click', { button: 'calculator_start_saving' })
+  router.push('/auth')
+}
+
+const hasInteractedWithSlider = ref(false)
+
+function handleSliderChange() {
+  if (!hasInteractedWithSlider.value) {
+    hasInteractedWithSlider.value = true
+    $trackGoal('calculator_slider_used', { posts: posts.value })
+  }
+}
 
 const posts = ref(10)
 const minPosts = 5
@@ -54,6 +69,7 @@ const sliderPercent = computed(() => ((posts.value - minPosts) / (maxPosts - min
             :min="minPosts"
             :max="maxPosts"
             class="absolute inset-0 w-full h-2 opacity-0 cursor-pointer"
+            @change="handleSliderChange"
           />
 
           <!-- Thumb indicator -->
@@ -91,7 +107,7 @@ const sliderPercent = computed(() => ((posts.value - minPosts) / (maxPosts - min
 
       <Button
         class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white dark:text-white"
-        @click="router.push('/auth')"
+        @click="handleStartSaving"
       >
         {{ t('landing.calculator.cta') }}
       </Button>

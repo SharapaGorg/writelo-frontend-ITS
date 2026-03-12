@@ -38,6 +38,7 @@ const { t } = useI18n()
         :description="t('landing.features.clients.description')"
         video-url="/landing/clients.mp4"
         direction="left"
+        feature-id="clients"
       />
 
       <!-- Feature: Content -->
@@ -46,6 +47,7 @@ const { t } = useI18n()
         :description="t('landing.features.content.description')"
         video-url="/landing/content-plan.mp4"
         direction="right"
+        feature-id="content"
       />
 
       <!-- Feature: Prompt -->
@@ -53,6 +55,7 @@ const { t } = useI18n()
         :title="t('landing.features.prompt.title')"
         :description="t('landing.features.prompt.description')"
         direction="left"
+        feature-id="prompt"
       />
 
       <!-- Feature: Trends -->
@@ -60,6 +63,7 @@ const { t } = useI18n()
         :title="t('landing.features.trends.title')"
         :description="t('landing.features.trends.description')"
         direction="left"
+        feature-id="trends"
       />
 
       <!-- Feature: Images -->
@@ -68,6 +72,7 @@ const { t } = useI18n()
         :description="t('landing.features.images.description')"
         video-url="/landing/image-generator.mp4"
         direction="right"
+        feature-id="images"
       />
 
       <!-- Calculator -->

@@ -8,10 +8,12 @@ import { Routes } from '~/scripts/shared/types'
 const { t } = useI18n()
 const router = useRouter()
 const userController = useUserController()
+const { $trackGoal } = useNuxtApp()
 
 const { elementRef, isVisible } = useScrollAnimation(0.1)
 
 function handleCTA() {
+  $trackGoal('landing_cta_click', { button: 'hero_try_free' })
   if (userController.getToken()) {
     router.push(Routes.newConversation)
   } else {
