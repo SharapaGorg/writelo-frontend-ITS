@@ -3,13 +3,15 @@
 import CustomTextarea from "~/components/atoms/CustomTextarea.vue";
 import {useImageGeneratorStore} from "../stores";
 
-const {setPrompt} = useImageGeneratorStore();
+const store = useImageGeneratorStore();
+const {prompt} = toRefs(store);
 
 </script>
 
 <template>
   <CustomTextarea
-      @update:modelValue="setPrompt"
+      :modelValue="prompt"
+      @update:modelValue="store.setPrompt"
       :placeholder="$t('imageGenerator.prompt.placeholder')"
       :label="$t('imageGenerator.prompt.label')"
   />

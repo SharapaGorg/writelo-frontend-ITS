@@ -18,8 +18,15 @@ const emits = defineEmits<{
 
 const textareaRef = ref<typeof Textarea | null>(null);
 
-const textValue = ref<string>("");
+const textValue = ref<string>(props.modelValue || props.defaultValue || "");
 const remainingChars = computed(() => props.maxLength - textValue.value.length);
+
+// Watch for external changes to modelValue
+watch(() => props.modelValue, (newValue) => {
+  if (newValue !== undefined && newValue !== textValue.value) {
+    textValue.value = newValue;
+  }
+});
 
 const text = computed({
   get() {

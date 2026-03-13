@@ -2,6 +2,7 @@
 import {defineComponent} from 'vue'
 import {useImageGeneratorStore} from "../stores";
 import {useImageGenerator} from "~/lib-modules/imageGenerator/composables/useImageGenerator";
+import {useDemoGuard} from "~/lib-modules/demo-mode";
 import {Loader2} from 'lucide-vue-next';
 
 defineComponent({
@@ -11,10 +12,13 @@ defineComponent({
 const store = useImageGeneratorStore();
 const {isFilled, isGenerating} = toRefs(store);
 const imageGenerator = useImageGenerator();
+const {guardAction} = useDemoGuard();
 
 const handleGenerate = () => {
-  console.log('Generate button clicked, isFilled:', isFilled.value, 'isGenerating:', isGenerating.value);
-  imageGenerator.generate();
+  guardAction(() => {
+    console.log('Generate button clicked, isFilled:', isFilled.value, 'isGenerating:', isGenerating.value);
+    imageGenerator.generate();
+  });
 }
 
 </script>
