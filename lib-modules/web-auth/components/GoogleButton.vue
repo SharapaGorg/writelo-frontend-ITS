@@ -32,6 +32,7 @@ import {AuthApiController} from '../helpers/api'
 import {toast} from 'vue-sonner'
 import {getToasterPosition} from '~/scripts/features/utils/toater'
 import {Routes} from '~/scripts/shared/types'
+import {useDemoGuard} from '~/lib-modules/demo-mode'
 
 export type GoogleButtonMode = 'signin' | 'link'
 
@@ -48,6 +49,7 @@ const {locale} = useI18n()
 const userController = useUserController()
 const settings = useSettings()
 const authApi = new AuthApiController()
+const {guardAction} = useDemoGuard()
 
 const emit = defineEmits<{
   linked: []
@@ -56,6 +58,9 @@ const emit = defineEmits<{
 const isLoading = ref(false)
 
 function handleGoogleSignIn() {
+  // Block in demo mode when linking (mode === 'link')
+  if (props.mode === 'link' && guardAction(() => {})) return;
+
   isLoading.value = true
   openGooglePopup()
 }

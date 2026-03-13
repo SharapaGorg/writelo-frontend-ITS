@@ -1,5 +1,9 @@
 {
   "profile": {
+    "demoUser": {
+      "name": "Demo User",
+      "email": "demo{'@'}writelo.app"
+    },
     "gifts": {
       "header": "Gift Subscriptions",
       "activateLabel": "Activate gift",
@@ -15,9 +19,27 @@
       "functionality": "Features",
       "features": {
         "search": "Web Search",
-        "responseStyle": "Response Styles",
-        "projects": "Projects",
-        "roles": "Roles"
+        "clients": "Clients",
+        "templates": "Templates",
+        "imageGeneration": "Image Generation"
+      },
+      "demo": {
+        "title": "Demo",
+        "description": "Preview mode",
+        "featuresText": {
+          "interface": "Interface access",
+          "functionality": "Feature preview",
+          "demoData": "Demo data"
+        }
+      },
+      "pro": {
+        "title": "Pro",
+        "description": "Full access to all features",
+        "featuresText": {
+          "unlimited": "Unlimited requests",
+          "allModels": "All AI models",
+          "support": "Priority support"
+        }
       }
     },
     "subscriptionTimer": {

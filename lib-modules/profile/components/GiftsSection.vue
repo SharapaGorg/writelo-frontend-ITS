@@ -11,8 +11,10 @@ import {toast} from "vue-sonner";
 import {getToasterPosition} from "~/scripts/features/utils/toater";
 import {useProfileI18n} from "~/lib-modules/profile/composables/useProfileI18n";
 import {AutoCompleteBlocker} from "~/lib-modules/web-auth";
+import {useDemoGuard} from "~/lib-modules/demo-mode";
 
 const botUsername = useRuntimeConfig().public.telegramBotUsername;
+const {guardAction} = useDemoGuard();
 const GIFT_URL_PREFIX = `https://t.me/${botUsername}?start=`;
 
 const {t} = useProfileI18n();
@@ -32,6 +34,9 @@ const extractHash = (link: string): string => {
 };
 
 const activateGift = async () => {
+  // Block in demo mode
+  if (guardAction(() => {})) return;
+
   if (!giftLink.value.trim()) return;
 
   const hash = extractHash(giftLink.value);

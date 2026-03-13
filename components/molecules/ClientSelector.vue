@@ -5,6 +5,7 @@
         variant="outline"
         size="sm"
         class="max-w-[180px] gap-x-1.5"
+        :class="{ 'ring-2 ring-primary ring-offset-2 ring-offset-background': highlighted }"
       >
         <Users class="w-4 h-4 flex-shrink-0" />
         <span class="truncate">{{ currentClientName }}</span>
@@ -63,6 +64,12 @@ import {
 import { Users, User, ChevronDown, Inbox, Plus } from 'lucide-vue-next'
 import { useProjectsStore } from '~/lib-modules/projects'
 import { useCurrentConversation } from '~/lib-modules/conversations'
+
+const props = withDefaults(defineProps<{
+  highlighted?: boolean
+}>(), {
+  highlighted: false
+})
 
 const { t } = useI18n()
 const projectsStore = useProjectsStore()

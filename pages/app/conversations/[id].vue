@@ -39,7 +39,7 @@ import FileDropZone from "~/components/atoms/FileDropZone.vue";
 import {useTelegramViewportHack} from "~/composables/telegramHack";
 import {useProjectsStore} from "~/lib-modules/projects";
 import {useConversationsStore} from "~/stores/conversations";
-import { useDemoMode, DemoIndicator, isDemoConversation, getDemoConversation } from '~/lib-modules/demo-mode'
+import { useDemoMode, useDemoGuard, DemoIndicator, isDemoConversation, getDemoConversation } from '~/lib-modules/demo-mode'
 
 const {t} = useI18n();
 const conversationsStore = useConversationsStore();
@@ -50,7 +50,8 @@ const sendMessageSection = ref(null);
 useTelegramViewportHack();
 
 const apiController = new ApiController();
-const { isDemoMode, getDemoStream } = useDemoMode()
+const { isDemoMode, isGuestDemo, getDemoStream } = useDemoMode()
+const { openAuthModal } = useDemoGuard()
 
 let conversation_id = computed(() => {
   return useRoute().params.id
@@ -93,6 +94,12 @@ const myNewMessage = async (
     action: Action = Action.newMessage,
     message_id: number | undefined = undefined
 ) => {
+  // Block reroll/edit in demo mode - show auth modal
+  if (isGuestDemo.value && (action === Action.reroll || action === Action.edit)) {
+    openAuthModal()
+    return
+  }
+
   if (conversation_id.value === 'new') {
     const projectsStore = useProjectsStore();
     const newConversation = await apiController.createConversation(projectsStore.selectedProjectId);
@@ -318,7 +325,10 @@ const fillNewConversation = async (data: FillNewConversationType) => {
 }
 const stopGeneration = async () => {
   fieldDisabled.value = false;
-  await apiController.stopGeneration(conversation_id.value);
+  // Skip API call in demo mode
+  if (!isGuestDemo.value) {
+    await apiController.stopGeneration(conversation_id.value);
+  }
 }
 
 

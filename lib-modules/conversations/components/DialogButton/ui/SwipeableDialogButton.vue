@@ -6,8 +6,11 @@ import { Trash, Share2 } from "lucide-vue-next"
 import RemoveConfirmationAlert from "./RemoveConfirmationAlert.vue"
 import { useConversationsStore } from "~/stores/conversations"
 import { toast } from 'vue-sonner'
+import { useDemoGuard } from "~/lib-modules/demo-mode"
 
 const conversationStore = useConversationsStore()
+const { guardAction } = useDemoGuard()
+const { t } = useI18n()
 
 const props = defineProps<{
   privateId: string,
@@ -112,14 +115,24 @@ const navigateToConversation = () => {
 }
 
 // Handle share action
-const handleShare = async () => {
-  try {
-    await conversationStore.shareConversation(props.privateId)
-    toast.success('Conversation shared successfully!')
+const handleShare = () => {
+  guardAction(async () => {
+    try {
+      await conversationStore.shareConversation(props.privateId)
+      toast.success('Conversation shared successfully!')
+      closeSwipe()
+    } catch (error) {
+      toast.error('Failed to share conversation')
+    }
+  })
+}
+
+// Handle delete action
+const handleDelete = () => {
+  guardAction(async () => {
+    await conversationStore.removeConversation(props.privateId, t)
     closeSwipe()
-  } catch (error) {
-    toast.error('Failed to share conversation')
-  }
+  })
 }
 </script>
 
@@ -139,9 +152,9 @@ const handleShare = async () => {
         <Share2 class="w-5 h-5" />
       </button>
       
-      <RemoveConfirmationAlert 
-        :dialog-title="title" 
-        @approve="conversationStore.removeConversation(privateId, $t)"
+      <RemoveConfirmationAlert
+        :dialog-title="title"
+        @approve="handleDelete"
       >
         <button
           class="h-full px-6 bg-red-500 hover:bg-red-600 text-white transition-colors flex items-center justify-center"

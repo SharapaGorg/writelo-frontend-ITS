@@ -10,10 +10,13 @@ import {useWebAuthI18n} from "~/lib-modules/web-auth/composables/useWebAuthI18n"
 import {toast} from 'vue-sonner'
 import {getToasterPosition} from '~/scripts/features/utils/toater'
 import {isInTelegramApp} from "~/scripts/features/utils";
+import {useDemoGuard, useDemoMode} from "~/lib-modules/demo-mode";
 
 const settings = useSettings()
 const {t} = useWebAuthI18n()
 const authApi = new AuthApiController()
+const {guardAction} = useDemoGuard()
+const {isGuestDemo} = useDemoMode()
 
 const isUnlinking = ref(false)
 const showConfirmDialog = ref(false)
@@ -22,6 +25,14 @@ const isTelegramLinked = computed(() => {
   const user = settings.getUser()
   return user?.oAuthProviders?.includes(OAuthProvider.Telegram) ?? false
 })
+
+// In demo mode, use signin to actually authenticate; otherwise link to existing account
+const buttonMode = computed(() => isGuestDemo.value ? 'signin' : 'link')
+
+const openUnlinkDialog = () => {
+  if (guardAction(() => {})) return;
+  showConfirmDialog.value = true;
+}
 
 async function handleUnlink() {
   showConfirmDialog.value = false
@@ -53,13 +64,13 @@ async function handleUnlink() {
             variant="outline"
             size="sm"
             :disabled="isUnlinking"
-            @click="showConfirmDialog = true"
+            @click="openUnlinkDialog"
         >
           <Loader2 v-if="isUnlinking" class="w-4 h-4 animate-spin mr-2"/>
           {{ t('telegram.unlink') }}
         </Button>
       </div>
-      <TelegramLoginButton v-else mode="link"/>
+      <TelegramLoginButton v-else :mode="buttonMode"/>
     </template>
   </ProfilePageBlock>
 

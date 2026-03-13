@@ -1,18 +1,75 @@
 // ~/composables/settings.ts
 
 import {reactive, toRefs} from 'vue'
-import type {
-    ConfigType,
+import {
     FeatureType,
-    Language,
-    ModelType,
-    ResponseStyleType,
-    SubscriptionType
+    type ConfigType,
+    type Language,
+    type ModelType,
+    type ResponseStyleType,
+    type SubscriptionType
 } from '~/scripts/shared/types/common'
 import {ApiController} from '~/scripts/shared/api/controller'
 import {useI18n} from 'vue-i18n'
+import {useUserController} from '~/composables/user'
 
 const apiController = new ApiController();
+
+// Static demo config for guest demo mode
+const DEMO_CONFIG: ConfigType = {
+    models: [
+        {name: 'gpt-4o', title: 'GPT-4o'},
+        {name: 'claude-3-5-sonnet', title: 'Claude 3.5 Sonnet'}
+    ] as ModelType[],
+    responseStyles: [
+        {id: 1, title: 'Стандартный', description: ''}
+    ] as ResponseStyleType[],
+    languages: {ru: 'Русский', en: 'English'},
+    roles: [],
+    projectsConfig: {
+        maxCustomInstructionsLength: 2000
+    },
+    imagesConfig: {
+        aspectRatios: ['1:1', '16:9', '9:16', '4:3', '3:4']
+    },
+    subscriptions: [
+        {
+            id: 1,
+            price: 0,
+            title: 'Demo',
+            duration: 'P0D',
+            description: '',
+            features: [],
+            featuresText: []
+        },
+        {
+            id: 2,
+            price: 990,
+            title: 'Pro',
+            duration: 'P30D',
+            description: '',
+            features: [FeatureType.search, FeatureType.projects, FeatureType.templates, FeatureType.imageGeneration],
+            featuresText: []
+        }
+    ] as SubscriptionType[]
+};
+
+// Static demo user for guest demo mode
+const DEMO_USER = {
+    name: 'Демо Пользователь',
+    email: 'demo@writelo.app',
+    language: 'ru',
+    currentModel: 'gpt-4o',
+    currentStyle: 1,
+    currentRole: null,
+    subscriptionId: 1,
+    subscribedAt: null,
+    pendingEmail: null,
+    limits: {
+        basic: {left: 50, total: 50},
+        premium: {left: 0, total: 0}
+    }
+};
 
 const state = reactive({
     loaded: false,
@@ -29,6 +86,38 @@ const state = reactive({
 
 async function init(locale?: any) {
     const i18nLocale = locale || useI18n().locale
+    const userController = useUserController()
+
+    // Check if in demo mode (no token)
+    const isGuestDemo = !userController.getToken()
+
+    if (isGuestDemo) {
+        // Use static demo config and user
+        state.config = DEMO_CONFIG
+        state.llm = DEMO_CONFIG.models[0]
+        state.subscription = DEMO_CONFIG.subscriptions[0]
+        state.responseStyle = DEMO_CONFIG.responseStyles[0]
+        state.user = DEMO_USER
+        state.role = DEMO_USER.currentRole
+        state.subscriptionStart = DEMO_USER.subscribedAt
+
+        // Use local preference or default to ru
+        const localPreferredLocale = typeof window !== 'undefined'
+            ? localStorage.getItem('preferred-locale')
+            : null
+
+        if (localPreferredLocale && ['en', 'ru'].includes(localPreferredLocale)) {
+            state.language = localPreferredLocale as Language
+            i18nLocale.value = localPreferredLocale
+        } else {
+            state.language = 'ru'
+            i18nLocale.value = 'ru'
+        }
+
+        state.loaded = true
+        return
+    }
+
     const config = await apiController.getConfig()
     if (!config) return
     state.config = config
@@ -104,6 +193,10 @@ function getUser(): any | null {
 }
 
 async function refreshUserData(): Promise<void> {
+    // Skip in demo mode
+    const userController = useUserController()
+    if (!userController.getToken()) return
+
     const profile = await apiController.getMe()
     if (!profile) return
 

@@ -11,11 +11,19 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {Button} from '@/components/ui/button'
+import {useDemoGuard} from "~/lib-modules/demo-mode";
 
 const {t} = useProfileI18n()
 const userController = useUserController()
+const {guardAction} = useDemoGuard()
 
 const isDialogOpen = ref(false)
+
+const openLogoutDialog = () => {
+  // In demo mode, show auth modal instead
+  if (guardAction(() => {})) return;
+  isDialogOpen.value = true;
+}
 
 async function handleLogout() {
   userController.clearToken()
@@ -33,7 +41,7 @@ async function handleLogout() {
       <Button
           class="w-full"
           variant="destructive"
-          @click="isDialogOpen = true"
+          @click="openLogoutDialog"
       >
         {{ t('dangerZone.logout') }}
       </Button>

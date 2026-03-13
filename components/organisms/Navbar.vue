@@ -12,21 +12,19 @@
 
       <CrmPopup @click-action="clickActionButton"/>
 
-      <ClientSelector v-if="useSettings().isPaidUser()" @open-create="showClientCreate = true" />
+      <ClientSelector
+        v-if="useSettings().isPaidUser() || isGuestDemo"
+        :highlighted="isGuestDemo"
+        @open-create="showClientCreate = true"
+      />
 
       <ProjectCreateWindow
         v-model:open="showClientCreate"
         @save="onClientCreated"
       />
 
-      <!-- Demo mode: show login button -->
-      <Button v-if="isGuestDemo" size="sm" variant="premium" @click="goToAuth">
-        <LogIn class="w-4 h-4 mr-1" />
-        <div>{{ $t('demo.navbar.login') }}</div>
-      </Button>
-
       <!-- Logged in, not paid: show premium button -->
-      <TiersWindow v-else-if="!useSettings().isPaidUser()" @select-tier="selectTier">
+      <TiersWindow v-if="!useSettings().isPaidUser() && !isGuestDemo" @select-tier="selectTier">
         <Button size="sm" variant="premium" ref="getPlusButton">
           <Crown/>
           <div>{{ $t('premium-btn') }}</div>
@@ -50,7 +48,7 @@
 
 <script setup lang="ts">
 
-import {Crown, LogIn, MessageCirclePlus} from "lucide-vue-next";
+import {Crown, MessageCirclePlus} from "lucide-vue-next";
 import SettingsSection from "~/components/templates/SettingsSection.vue";
 import TiersWindow from "~/components/templates/TiersWindow.vue";
 import {useI18n} from 'vue-i18n'
@@ -65,17 +63,12 @@ import {ProjectCreateWindow, useProjectsStore} from "~/lib-modules/projects";
 import {useDemoMode, useDemoGuard} from "~/lib-modules/demo-mode";
 
 const {t} = useI18n()
-const router = useRouter()
 const {isGuestDemo} = useDemoMode()
 const {guardAction} = useDemoGuard()
 
 const $env = useEnv();
 const apiController = new ApiController();
 const showClientCreate = ref(false);
-
-const goToAuth = () => {
-  router.push('/auth')
-}
 
 const handleNewChat = () => {
   guardAction(() => {

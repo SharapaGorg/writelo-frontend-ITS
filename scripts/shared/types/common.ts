@@ -20,7 +20,9 @@ export enum FeatureType {
     responseStyle = 'response-style',
     model = 'model',
     roles = 'roles',
-    role = 'role' // e.g. role#NAME_OF_ROLE
+    role = 'role', // e.g. role#NAME_OF_ROLE
+    templates = 'templates',
+    imageGeneration = 'image-generation'
 }
 
 export type SubscriptionType = {

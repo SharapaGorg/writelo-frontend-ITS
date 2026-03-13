@@ -1,5 +1,6 @@
 import {defineStore} from 'pinia';
 import {ApiController} from '~/scripts/shared/api/controller';
+import {useDemoGuard} from '~/lib-modules/demo-mode';
 
 // Режимы редактирования
 export enum EditMode {
@@ -16,6 +17,7 @@ interface ValidationErrors {
 export const useAccountEditStore = defineStore('accountEdit', () => {
     const $settings = useSettings();
     const apiController = new ApiController();
+    const {guardAction} = useDemoGuard();
 
     // Инициализация с данными пользователя
     const user = computed(() => $settings.getUser());
@@ -67,6 +69,9 @@ export const useAccountEditStore = defineStore('accountEdit', () => {
 
     // Методы для работы с режимами
     const startEditName = () => {
+        // Block editing in demo mode
+        if (guardAction(() => {})) return;
+
         if (currentEditMode.value !== EditMode.NAME) {
             currentEditMode.value = EditMode.NAME;
             clearConfirmationFields();
@@ -74,6 +79,9 @@ export const useAccountEditStore = defineStore('accountEdit', () => {
     };
 
     const startEditEmail = () => {
+        // Block editing in demo mode
+        if (guardAction(() => {})) return;
+
         if (currentEditMode.value !== EditMode.EMAIL) {
             currentEditMode.value = EditMode.EMAIL;
             clearConfirmationFields();
@@ -81,6 +89,9 @@ export const useAccountEditStore = defineStore('accountEdit', () => {
     };
 
     const startEditPassword = () => {
+        // Block editing in demo mode
+        if (guardAction(() => {})) return;
+
         if (currentEditMode.value !== EditMode.PASSWORD) {
             currentEditMode.value = EditMode.PASSWORD;
             clearConfirmationFields();

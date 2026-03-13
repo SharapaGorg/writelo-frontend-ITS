@@ -28,6 +28,7 @@ import type {TelegramAuthData} from '../types'
 import {toast} from 'vue-sonner'
 import {getToasterPosition} from '~/scripts/features/utils/toater'
 import {Routes} from '~/scripts/shared/types'
+import {useDemoGuard} from '~/lib-modules/demo-mode'
 
 export type TelegramButtonMode = 'signin' | 'link'
 
@@ -47,6 +48,7 @@ const {locale} = useI18n()
 const userController = useUserController()
 const settings = useSettings()
 const authApi = new AuthApiController()
+const {guardAction} = useDemoGuard()
 
 const emit = defineEmits<{
   linked: []
@@ -61,6 +63,9 @@ const isDev = computed(() => {
 })
 
 function handleTelegramAuth() {
+  // Block in demo mode when linking (mode === 'link')
+  if (props.mode === 'link' && guardAction(() => {})) return;
+
   if (isDev.value) {
     handleDevAuth()
   } else {

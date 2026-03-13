@@ -1,5 +1,9 @@
 {
   "profile": {
+    "demoUser": {
+      "name": "Демо Пользователь",
+      "email": "demo{'@'}writelo.app"
+    },
     "gifts": {
       "header": "Подарочные подписки",
       "activateLabel": "Активировать подарок",
@@ -15,9 +19,27 @@
       "functionality": "Функционал",
       "features": {
         "search": "Поиск в интернете",
-        "responseStyle": "Стили ответа",
-        "projects": "Проекты",
-        "roles": "Роли"
+        "clients": "Клиенты",
+        "templates": "Шаблоны",
+        "imageGeneration": "Генерация изображений"
+      },
+      "demo": {
+        "title": "Демо",
+        "description": "Ознакомительный режим",
+        "featuresText": {
+          "interface": "Доступ к интерфейсу",
+          "functionality": "Просмотр функционала",
+          "demoData": "Демонстрационные данные"
+        }
+      },
+      "pro": {
+        "title": "Pro",
+        "description": "Полный доступ ко всем функциям",
+        "featuresText": {
+          "unlimited": "Безлимитные запросы",
+          "allModels": "Все модели AI",
+          "support": "Приоритетная поддержка"
+        }
       }
     },
     "subscriptionTimer": {

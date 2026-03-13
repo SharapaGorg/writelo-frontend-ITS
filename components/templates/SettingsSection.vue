@@ -94,8 +94,10 @@ import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVal
 import type {UserLimits} from "~/scripts/shared/types/user";
 import {useOnboarding} from "~/lib-modules/onboarding";
 import {ProfileBadge} from "~/lib-modules/profile";
+import {useDemoMode} from "~/lib-modules/demo-mode";
 
 const {t, locale} = useI18n({ useScope: 'global' })
+const {isGuestDemo} = useDemoMode()
 const onboarding = useOnboarding()
 const route = useRoute()
 
@@ -174,6 +176,14 @@ const saveChanges = async () => {
     return;
   }
 
+  // In demo mode, just update locale locally without API call
+  if (isGuestDemo.value) {
+    locale.value = language.value;
+    localStorage.setItem('preferred-locale', language.value);
+    beenChanged.value = false;
+    return;
+  }
+
   // Save previous values for rollback
   const prevLlm = llm.value;
   const prevLanguage = language.value;
@@ -214,6 +224,11 @@ watch(isDrawerOpened, async (value) => {
   await nextTick(() => {
     beenChanged.value = false;
   });
+
+  // Skip API call in demo mode
+  if (isGuestDemo.value) {
+    return;
+  }
 
   // Refetch user limits
   const me = await $api.getMe();

@@ -21,10 +21,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 import {useConversationAssignment} from "~/lib-modules/projects";
+import {useDemoGuard} from "~/lib-modules/demo-mode";
 
 const conversationStore = useConversationsStore()
 const {t} = useI18n()
 const {enterAssignmentMode} = useConversationAssignment()
+const {guardAction} = useDemoGuard()
 
 const props = defineProps<{
   privateId: string,
@@ -36,65 +38,73 @@ const props = defineProps<{
 const isShared = computed(() => !!props.shareId);
 
 // Handle share/copy link action
-const handleShare = async () => {
-  try {
-    // If already shared, use existing share_id, otherwise call API to share
-    let shareId = props.shareId
+const handleShare = () => {
+  guardAction(async () => {
+    try {
+      // If already shared, use existing share_id, otherwise call API to share
+      let shareId = props.shareId
 
-    if (!shareId) {
-      const result = await conversationStore.shareConversation(props.privateId)
-      shareId = result.shareId
+      if (!shareId) {
+        const result = await conversationStore.shareConversation(props.privateId)
+        shareId = result.shareId
+      }
+
+      // Create the shareable link
+      const baseUrl = useRuntimeConfig().public.appBaseUrl
+      const shareLink = `${baseUrl}/conversations/${shareId}`
+
+      // Copy to clipboard
+      await navigator.clipboard.writeText(shareLink)
+
+      toastShareSuccess(t);
+
+      const {$telegram} = useNuxtApp();
+      await $telegram.shareConversation(shareId);
+    } catch (error) {
+      console.error('Share error:', error)
+      toastShareError(t)
     }
-
-    // Create the shareable link
-    const baseUrl = useRuntimeConfig().public.appBaseUrl
-    const shareLink = `${baseUrl}/conversations/${shareId}`
-
-    // Copy to clipboard
-    await navigator.clipboard.writeText(shareLink)
-
-    toastShareSuccess(t);
-
-    const {$telegram} = useNuxtApp();
-    await $telegram.shareConversation(shareId);
-  } catch (error) {
-    console.error('Share error:', error)
-    toastShareError(t)
-  }
+  })
 }
 
 // Handle unshare action
-const handleUnshare = async () => {
-  try {
-    const result = await conversationStore.unshareConversation(props.privateId)
-    toastUnshareSuccess(t)
-  } catch (error) {
-    toastUnshareError(t)
-  }
+const handleUnshare = () => {
+  guardAction(async () => {
+    try {
+      await conversationStore.unshareConversation(props.privateId)
+      toastUnshareSuccess(t)
+    } catch (error) {
+      toastUnshareError(t)
+    }
+  })
 }
 
 // Handle add to project action
 const handleAddToProject = () => {
-  enterAssignmentMode(props.privateId, props.title)
+  guardAction(() => {
+    enterAssignmentMode(props.privateId, props.title)
+  })
 }
 
 // Handle delete action
-const handleDelete = async () => {
-  const currentRoute = useRoute()
-  const isCurrentDialog = currentRoute.params.id === props.privateId
+const handleDelete = () => {
+  guardAction(async () => {
+    const currentRoute = useRoute()
+    const isCurrentDialog = currentRoute.params.id === props.privateId
 
-  try {
-    await conversationStore.removeConversation(props.privateId, t)
+    try {
+      await conversationStore.removeConversation(props.privateId, t)
 
-    // If user is currently viewing this dialog, navigate to new conversation
-    if (isCurrentDialog) {
-      await navigateTo(Routes.newConversation)
+      // If user is currently viewing this dialog, navigate to new conversation
+      if (isCurrentDialog) {
+        await navigateTo(Routes.newConversation)
+      }
+
+      toastDeleteSuccess(t)
+    } catch (error) {
+      toastDeleteError(t)
     }
-
-    toastDeleteSuccess(t)
-  } catch (error) {
-    toastDeleteError(t)
-  }
+  })
 }
 
 </script>

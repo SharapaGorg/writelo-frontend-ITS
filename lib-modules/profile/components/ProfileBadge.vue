@@ -2,6 +2,7 @@
 import {defineComponent} from 'vue'
 import {UserRoundPen, Clock} from 'lucide-vue-next'
 import {useProfileI18n} from '../composables/useProfileI18n';
+import {useDemoMode} from '~/lib-modules/demo-mode';
 
 defineComponent({
   name: "ProfileBadge"
@@ -14,12 +15,29 @@ const props = withDefaults(defineProps<{
 });
 
 const {t} = useProfileI18n();
+const {isGuestDemo} = useDemoMode();
 const currentRoute = useRoute().name;
 const $settings = useSettings();
 
 const user = computed(() => $settings.getUser());
-const firstname = computed(() => user.value?.name.split(' ')[0]);
-const lastname = computed(() => user.value?.name.split(' ')[1] || "");
+
+const displayName = computed(() => {
+  if (isGuestDemo.value) {
+    return t('demoUser.name');
+  }
+  return user.value?.name ?? '';
+});
+
+const firstname = computed(() => displayName.value.split(' ')[0]);
+const lastname = computed(() => displayName.value.split(' ')[1] || "");
+
+const displayEmail = computed(() => {
+  if (isGuestDemo.value) {
+    return t('demoUser.email');
+  }
+  return user.value?.email ?? '';
+});
+
 const pendingEmail = computed(() => user.value?.pendingEmail);
 
 </script>
@@ -42,7 +60,7 @@ const pendingEmail = computed(() => user.value?.pendingEmail);
 
       <div class="flex flex-col">
         <span class="font-bold">{{ firstname }} {{ lastname }}</span>
-        <span>{{ user?.email }}</span>
+        <span>{{ displayEmail }}</span>
         <span v-if="pendingEmail" class="text-xs text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
           <Clock class="w-3 h-3"/>
           {{ pendingEmail }}

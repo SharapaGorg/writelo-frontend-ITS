@@ -6,17 +6,45 @@ import SubscriptionTimer from "./SubscriptionTimer.vue";
 import {FeatureType, type SubscriptionType} from "~/scripts/shared/types/common";
 import {Dot} from 'lucide-vue-next'
 import {useProfileI18n} from '../composables/useProfileI18n';
+import {useDemoMode} from '~/lib-modules/demo-mode';
 
 const $settings = useSettings();
 const {t} = useProfileI18n();
+const {isGuestDemo} = useDemoMode();
 
 const subscription = computed<SubscriptionType | null>(() => $settings.getSubscription());
 
+// Use localized strings for demo mode
+const subscriptionTitle = computed(() => {
+  if (isGuestDemo.value) {
+    return t('tariffPlan.demo.title');
+  }
+  return subscription.value?.title ?? '';
+});
+
+const subscriptionDescription = computed(() => {
+  if (isGuestDemo.value) {
+    return t('tariffPlan.demo.description');
+  }
+  return subscription.value?.description ?? '';
+});
+
+const subscriptionFeaturesText = computed(() => {
+  if (isGuestDemo.value) {
+    return [
+      t('tariffPlan.demo.featuresText.interface'),
+      t('tariffPlan.demo.featuresText.functionality'),
+      t('tariffPlan.demo.featuresText.demoData')
+    ];
+  }
+  return subscription.value?.featuresText ?? [];
+});
+
 const FEATURES_CHIPS = computed(() => ({
   [FeatureType.search]: t('tariffPlan.features.search'),
-  [FeatureType.projects]: t('tariffPlan.features.projects'),
-  [FeatureType.roles]: t('tariffPlan.features.roles'),
-  [FeatureType.responseStyle]: t('tariffPlan.features.responseStyle')
+  [FeatureType.projects]: t('tariffPlan.features.clients'),
+  [FeatureType.templates]: t('tariffPlan.features.templates'),
+  [FeatureType.imageGeneration]: t('tariffPlan.features.imageGeneration')
 }))
 
 </script>
@@ -30,18 +58,18 @@ const FEATURES_CHIPS = computed(() => ({
 
         <div v-if="subscription" class="flex flex-col gap-y-3">
           <div class="grid grid-cols-2 justify-items-end items-center gap-3">
-            <h1 class="text-xl font-bold w-full">{{ subscription.title }}</h1>
+            <h1 class="text-xl font-bold w-full">{{ subscriptionTitle }}</h1>
             <SubscriptionTimer v-if="subscription.price"/>
           </div>
 
-          <h3>{{ subscription.description }}</h3>
+          <h3>{{ subscriptionDescription }}</h3>
 
           <h3 class="font-bold">{{ t('tariffPlan.functionality') }}</h3>
 
           <div class="flex flex-col gap-y-1">
             <div
                 class="flex items-center -translate-x-3"
-                v-for="feature in subscription.featuresText"
+                v-for="feature in subscriptionFeaturesText"
                 :key="feature"
             >
               <Dot class="w-8 h-8 flex-shrink-0"/>
