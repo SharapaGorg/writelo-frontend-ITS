@@ -432,6 +432,9 @@
     "history": {
       "title": "History",
       "empty": "No generated images"
+    },
+    "demo": {
+      "prompt": "Make the dog a superhero, cape behind the back, motion effect of high speed, grass slightly burned, storm on the river in the background, super realistic graphics"
     }
   }
 }

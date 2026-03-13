@@ -1,4 +1,5 @@
 import {ApiController} from "~/scripts/shared/api/controller";
+import {useDemoMode, demoImageHistoryItem, isDemoImage, DEMO_IMAGE_OUTPUT_URL} from "~/lib-modules/demo-mode";
 import type {ImageHistoryItem} from "../types";
 
 const $api = new ApiController();
@@ -11,7 +12,17 @@ const isInitialized = ref(false);
 const LIMIT = 20;
 
 export const useImageHistory = () => {
+    const {isDemoMode} = useDemoMode();
+
     const fetchImages = async (reset: boolean = false) => {
+        // In demo mode, show demo image in history
+        if (isDemoMode.value) {
+            images.value = [demoImageHistoryItem];
+            isInitialized.value = true;
+            hasMore.value = false;
+            return;
+        }
+
         if (isLoading.value || (!hasMore.value && !reset)) return;
 
         if (reset) {
@@ -40,6 +51,10 @@ export const useImageHistory = () => {
 
     const getImageUrl = (image: ImageHistoryItem): string | null => {
         if (!image.accessHash) return null;
+        // Return demo image URL for demo images
+        if (isDemoImage(image.id)) {
+            return DEMO_IMAGE_OUTPUT_URL;
+        }
         return `${$api['domain']}/images/${image.id}_${image.accessHash}`;
     };
 

@@ -2,8 +2,15 @@
 
 import {useCurrentConversation} from "~/lib-modules/conversations";
 import {ImageGeneratorOutput, ImageGeneratorInput, ImageHistorySlider} from "~/lib-modules/imageGenerator";
+import {useDemoImageGenerator} from "~/lib-modules/imageGenerator/composables";
 
 useCurrentConversation().clearConversation();
+
+// Initialize demo state if in demo mode
+const { initializeDemoState } = useDemoImageGenerator();
+onMounted(() => {
+  initializeDemoState();
+});
 
 </script>
 
