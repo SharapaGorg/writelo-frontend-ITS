@@ -4,6 +4,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import type { DemoTemplate, DemoStreamOptions, UseDemoModeReturn } from '../types'
 import { CONTENT_PLAN_RESPONSE, REELS_IDEAS_RESPONSE } from '../content/responses'
+import { useUserController } from '~/composables/user'
 
 const DEMO_TEMPLATES: DemoTemplate[] = [
   {
@@ -75,18 +76,30 @@ const DEMO_STORAGE_KEY = 'demo-mode-active'
 
 export function useDemoMode(): UseDemoModeReturn {
   const route = useRoute()
+  const userController = useUserController()
 
   // Сохраняем флаг в sessionStorage при первом обнаружении
   if (import.meta.client && route.query.demo === 'true') {
     sessionStorage.setItem(DEMO_STORAGE_KEY, 'true')
   }
 
-  const isDemoMode = computed(() => {
+  // Manual demo: activated via ?demo=true or sessionStorage
+  const isManualDemo = computed(() => {
     if (route.query.demo === 'true') return true
     if (import.meta.client) {
       return sessionStorage.getItem(DEMO_STORAGE_KEY) === 'true'
     }
     return false
+  })
+
+  // Guest demo: activated when user is not logged in
+  const isGuestDemo = computed(() => {
+    return !userController.getToken()
+  })
+
+  // Demo mode is active if either manual or guest demo
+  const isDemoMode = computed(() => {
+    return isGuestDemo.value || isManualDemo.value
   })
 
   const getDemoStream = (messageText: string): ReadableStream<Uint8Array> | null => {
@@ -101,6 +114,7 @@ export function useDemoMode(): UseDemoModeReturn {
 
   return {
     isDemoMode,
+    isGuestDemo,
     getDemoStream
   }
 }

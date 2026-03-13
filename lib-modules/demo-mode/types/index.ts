@@ -15,5 +15,6 @@ export interface DemoStreamOptions {
 
 export interface UseDemoModeReturn {
   isDemoMode: ComputedRef<boolean>
+  isGuestDemo: ComputedRef<boolean> // true when demo due to unauthenticated
   getDemoStream: (messageText: string) => ReadableStream<Uint8Array> | null
 }
