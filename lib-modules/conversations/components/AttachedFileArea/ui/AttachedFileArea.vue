@@ -30,7 +30,7 @@ const {attachedFiles} = useAttachMedia();
   @apply flex items-center gap-x-2 px-5 pt-3 pb-[30px] rounded-t-3xl
   border-x-[1px] border-t-[1px] translate-y-5 -mt-[18px]
   backdrop-blur-lg bg-white/30 dark:bg-black/30
-  fixed bottom-[150px] w-screen
+  fixed bottom-[150px] w-screen  border-border
 }
 
 </style>

@@ -3,6 +3,7 @@ import {useDebounce} from '@vueuse/core';
 import {useI18n} from 'vue-i18n';
 import {isMobile} from '~/scripts/features/utils';
 import {ApiController} from '~/scripts/shared/api/controller';
+import {useDemoMode} from '~/lib-modules/demo-mode';
 
 export interface UsePromptImproverOptions {
     debounceMs?: number;
@@ -22,6 +23,7 @@ export function usePromptImprover(
 
     const {t} = useI18n();
     const $api = new ApiController();
+    const {isDemoMode} = useDemoMode();
 
     // State
     const isTyping = ref(false);
@@ -78,6 +80,23 @@ export function usePromptImprover(
         lastText.value = text.value;
 
         try {
+            // Demo mode: simulate loading and show demo message
+            if (isDemoMode.value) {
+                await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
+                const demoResult = t('prompt-improver.demo-result');
+                text.value = demoResult;
+                lastText.value = demoResult;
+
+                if (textareaElement.value) {
+                    textareaElement.value.focus();
+                    textareaElement.value.setSelectionRange(
+                        textareaElement.value.value.length,
+                        textareaElement.value.value.length
+                    );
+                }
+                return;
+            }
+
             const response = await $api.improvePrompt(text.value);
 
             if (response?.prompt && response.prompt !== text.value) {

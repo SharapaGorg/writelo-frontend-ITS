@@ -132,7 +132,8 @@
   "tariffs": "Tariffs",
   "prompt-improver": {
     "enhance": "Enhance",
-    "press-tab": "Press Tab to enhance"
+    "press-tab": "Press Tab to enhance",
+    "demo-result": "Here would be your improved prompt, optimized for AI understanding. Sign up to use this feature!"
   },
   "placeholder": "What is your question?",
   "placeholder-premium": "What is your question for Writelo?",
