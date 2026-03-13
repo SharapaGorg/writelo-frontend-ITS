@@ -1,7 +1,7 @@
 <!-- lib-modules/demo-mode/components/DemoAuthModal.vue -->
 <template>
   <Dialog :open="showAuthModal" @update:open="closeAuthModal">
-    <DialogContent class="sm:max-w-md !z-[100]" data-demo-auth-modal>
+    <DialogContent class="sm:max-w-md z-[100]">
       <DialogHeader>
         <DialogTitle>{{ t('demo.authModal.title') }}</DialogTitle>
         <DialogDescription>
@@ -40,9 +40,3 @@ function goToAuth() {
 }
 </script>
 
-<style>
-/* Target the overlay that's a sibling before our modal content */
-[data-state="open"]:has(+ [data-demo-auth-modal]) {
-  z-index: 100 !important;
-}
-</style>

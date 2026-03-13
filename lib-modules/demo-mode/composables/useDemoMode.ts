@@ -1,6 +1,6 @@
 // lib-modules/demo-mode/composables/useDemoMode.ts
 
-import { computed } from 'vue'
+import { computed, ref, getCurrentInstance } from 'vue'
 import { useRoute } from 'vue-router'
 import type { DemoTemplate, DemoStreamOptions, UseDemoModeReturn } from '../types'
 import { CONTENT_PLAN_RESPONSE, REELS_IDEAS_RESPONSE } from '../content/responses'
@@ -74,27 +74,50 @@ function sleep(ms: number): Promise<void> {
 
 const DEMO_STORAGE_KEY = 'demo-mode-active'
 
-export function useDemoMode(): UseDemoModeReturn {
-  const route = useRoute()
-  const userController = useUserController()
+// Module-level cache for demo mode state (updated when called from setup context)
+const cachedManualDemo = ref(false)
 
-  // Сохраняем флаг в sessionStorage при первом обнаружении
-  if (import.meta.client && route.query.demo === 'true') {
-    sessionStorage.setItem(DEMO_STORAGE_KEY, 'true')
+// Check if we're in Vue setup context
+function isInSetupContext(): boolean {
+  return getCurrentInstance() !== null
+}
+
+// Get manual demo state from storage (safe to call anywhere)
+function getManualDemoFromStorage(): boolean {
+  if (!import.meta.client) return false
+  return sessionStorage.getItem(DEMO_STORAGE_KEY) === 'true'
+}
+
+// Check if user has auth token (safe to call anywhere)
+function hasNoAuthToken(): boolean {
+  const userController = useUserController()
+  return !userController.getToken()
+}
+
+export function useDemoMode(): UseDemoModeReturn {
+  // Try to access route only if we're in setup context
+  if (isInSetupContext()) {
+    try {
+      const route = useRoute()
+      // Save to sessionStorage when demo query param is present
+      if (import.meta.client && route?.query?.demo === 'true') {
+        sessionStorage.setItem(DEMO_STORAGE_KEY, 'true')
+        cachedManualDemo.value = true
+      }
+    } catch {
+      // Ignore errors - we'll fall back to storage
+    }
   }
 
   // Manual demo: activated via ?demo=true or sessionStorage
   const isManualDemo = computed(() => {
-    if (route.query.demo === 'true') return true
-    if (import.meta.client) {
-      return sessionStorage.getItem(DEMO_STORAGE_KEY) === 'true'
-    }
-    return false
+    if (cachedManualDemo.value) return true
+    return getManualDemoFromStorage()
   })
 
   // Guest demo: activated when user is not logged in
   const isGuestDemo = computed(() => {
-    return !userController.getToken()
+    return hasNoAuthToken()
   })
 
   // Demo mode is active if either manual or guest demo

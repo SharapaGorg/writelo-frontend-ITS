@@ -61,6 +61,7 @@ import {eventBus} from "~/composables/eventBus";
 import TemplatesDropdown from "./TemplatesDropdown.vue";
 import {AttachMediaButton, SendMessageButton} from "~/lib-modules/conversations";
 import {ApiController} from "~/scripts/shared/api/controller";
+import {useDemoMode} from "~/lib-modules/demo-mode";
 
 const {t} = useI18n();
 const apiController = new ApiController();
@@ -77,10 +78,19 @@ const props = defineProps<{
 
 // ==== SEARCH ====
 const $settings = useSettings();
-const isSearchEnabled = computed(() => $settings.user.value?.searchEnabled ?? false);
+const {isDemoMode} = useDemoMode();
+const demoSearchEnabled = ref(false);
+const isSearchEnabled = computed(() => {
+  if (isDemoMode.value) {
+    return demoSearchEnabled.value;
+  }
+  return $settings.user.value?.searchEnabled ?? false;
+});
 const isUpdatingSearch = ref(false);
 
 const searchAvailable = computed(() => {
+  // In demo mode, allow toggle (it's just visual, sending is blocked anyway)
+  if (isDemoMode.value) return true;
   return $settings.hasFeature(FeatureType.search);
 });
 
@@ -105,6 +115,12 @@ const searchButtonClass = computed(() => {
 
 const handleToggleClick = async () => {
   emit('searchButtonClicked');
+
+  // In demo mode, just toggle local state (no API call needed)
+  if (isDemoMode.value) {
+    demoSearchEnabled.value = !demoSearchEnabled.value;
+    return;
+  }
 
   if (!searchAvailable.value) {
     toastFeatureUnavailable(t);

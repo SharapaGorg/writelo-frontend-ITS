@@ -14,7 +14,6 @@
 
       <ClientSelector
         v-if="useSettings().isPaidUser() || isGuestDemo"
-        :highlighted="isGuestDemo"
         @open-create="showClientCreate = true"
       />
 
