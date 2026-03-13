@@ -59,20 +59,17 @@ import {ImageGeneratorNavbarButton} from "~/lib-modules/imageGenerator";
 import {DialogsSection, useCurrentConversation} from "~/lib-modules/conversations";
 import ClientSelector from "~/components/molecules/ClientSelector.vue";
 import {ProjectCreateWindow, useProjectsStore} from "~/lib-modules/projects";
-import {useDemoMode, useDemoGuard} from "~/lib-modules/demo-mode";
+import {useDemoMode} from "~/lib-modules/demo-mode";
 
 const {t} = useI18n()
 const {isGuestDemo} = useDemoMode()
-const {guardAction} = useDemoGuard()
 
 const $env = useEnv();
 const apiController = new ApiController();
 const showClientCreate = ref(false);
 
 const handleNewChat = () => {
-  guardAction(() => {
-    useCurrentConversation().makeNewChat()
-  })
+  useCurrentConversation().makeNewChat()
 }
 
 const onClientCreated = async (projectId: string) => {

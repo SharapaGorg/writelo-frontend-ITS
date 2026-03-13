@@ -171,7 +171,7 @@ onUnmounted(() => {
 }
 
 .fullscreen-close {
-  @apply absolute top-4 right-4 p-2 text-white bg-white/20 rounded-full
+  @apply absolute top-14 right-4 p-2 text-white bg-white/20 rounded-full
   hover:bg-white/30 transition-colors z-10;
 }
 

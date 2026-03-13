@@ -145,8 +145,10 @@ import {
 } from '~/components/ui/dialog'
 import { Loader2 } from 'lucide-vue-next'
 import { ProjectsApiController } from '../helpers/api'
+import { useDemoGuard } from '~/lib-modules/demo-mode'
 
 const { t } = useI18n()
+const { guardAction } = useDemoGuard()
 const api = new ProjectsApiController()
 
 const props = defineProps<{
@@ -255,29 +257,31 @@ const resetForm = () => {
   selectedStyleKey.value = null
 }
 
-const handleSave = async () => {
+const handleSave = () => {
   if (!form.brandName.trim() || isSaving.value) return
 
-  isSaving.value = true
+  guardAction(async () => {
+    isSaving.value = true
 
-  try {
-    // Step 1: Create project with brand name as title
-    const project = await api.createProject(form.brandName.trim())
+    try {
+      // Step 1: Create project with brand name as title
+      const project = await api.createProject(form.brandName.trim())
 
-    // Step 2: Update project with assembled custom instructions
-    const customInstructions = buildPrompt()
-    await api.editProject(project.id, form.brandName.trim(), customInstructions)
+      // Step 2: Update project with assembled custom instructions
+      const customInstructions = buildPrompt()
+      await api.editProject(project.id, form.brandName.trim(), customInstructions)
 
-    // Emit save event with project ID
-    emit('save', project.id)
+      // Emit save event with project ID
+      emit('save', project.id)
 
-    // Close dialog and reset form
-    isOpen.value = false
-    resetForm()
-  } catch (error) {
-    console.error('Failed to create client:', error)
-  } finally {
-    isSaving.value = false
-  }
+      // Close dialog and reset form
+      isOpen.value = false
+      resetForm()
+    } catch (error) {
+      console.error('Failed to create client:', error)
+    } finally {
+      isSaving.value = false
+    }
+  })
 }
 </script>
