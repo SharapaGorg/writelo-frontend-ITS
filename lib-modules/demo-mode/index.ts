@@ -1,5 +1,6 @@
 export { useDemoMode } from './composables/useDemoMode'
 export { useDemoGuard } from './composables/useDemoGuard'
+export { default as DemoBanner } from './components/DemoBanner.vue'
 export { default as DemoIndicator } from './components/DemoIndicator.vue'
 export { default as DemoAuthModal } from './components/DemoAuthModal.vue'
 export * from './types'
