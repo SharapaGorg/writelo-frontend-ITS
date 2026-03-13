@@ -62,9 +62,10 @@ import {useI18n} from 'vue-i18n'
 import {isIOS, isMobile} from "~/scripts/features/utils";
 import {PromptImproverWrapper} from "~/components/molecules/PromptImproverWrapper";
 import {AttachedFileArea, BottomBar} from "~/lib-modules/conversations";
+import { useDemoGuard } from '~/lib-modules/demo-mode';
 
 const {t} = useI18n()
-
+const { guardAction } = useDemoGuard()
 
 const emit = defineEmits(['send']);
 const props = defineProps<{
@@ -135,8 +136,11 @@ const sendMessage = () => {
   }
 
   if (newMessage.value.trim()) {
-    emit('send', newMessage.value);
-    newMessage.value = "";
+    // Guard action in demo mode
+    guardAction(() => {
+      emit('send', newMessage.value);
+      newMessage.value = "";
+    })
   }
 };
 
