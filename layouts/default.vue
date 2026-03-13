@@ -3,6 +3,9 @@
 import Navbar from "~/components/organisms/Navbar.vue";
 import {useConversationsStore} from "~/stores/conversations";
 import {onMounted, onUnmounted} from "vue";
+import { DemoBanner, DemoAuthModal, useDemoMode } from "~/lib-modules/demo-mode";
+
+const { isGuestDemo } = useDemoMode();
 
 const conversationsStore = useConversationsStore();
 
@@ -26,7 +29,9 @@ const onMainWrapperScroll = () => {
 </script>
 
 <template>
-  <div class="main-wrapper" @scroll="onMainWrapperScroll">
+  <div class="main-wrapper" :class="{ 'pt-10': isGuestDemo }" @scroll="onMainWrapperScroll">
+    <DemoBanner />
+    <DemoAuthModal />
     <Navbar/>
     <slot/>
   </div>
