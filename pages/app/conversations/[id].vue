@@ -39,7 +39,7 @@ import FileDropZone from "~/components/atoms/FileDropZone.vue";
 import {useTelegramViewportHack} from "~/composables/telegramHack";
 import {useProjectsStore} from "~/lib-modules/projects";
 import {useConversationsStore} from "~/stores/conversations";
-import { useDemoMode, DemoIndicator } from '~/lib-modules/demo-mode'
+import { useDemoMode, DemoIndicator, isDemoConversation, getDemoConversation } from '~/lib-modules/demo-mode'
 
 const {t} = useI18n();
 const conversationsStore = useConversationsStore();
@@ -329,7 +329,25 @@ onBeforeMount(async () => {
 
   eventBus.on('fillNewConversation', fillNewConversation);
 
-  let response = await apiController.getConversation(conversation_id.value);
+  const conversationId = conversation_id.value as string
+
+  // Check if it's a demo conversation - load from static data instead of API
+  if (isDemoConversation(conversationId)) {
+    const demoConv = getDemoConversation(conversationId)
+    if (demoConv) {
+      messages.value = demoConv.messages
+      await nextTick(() => {
+        useCurrentConversationStore().setTitle(demoConv.title)
+      })
+
+      eventBus.on('rerollMessage', reroll);
+      eventBus.on('editMessage', editMessage)
+      eventBus.on('stopGeneration', stopGeneration);
+      return
+    }
+  }
+
+  let response = await apiController.getConversation(conversationId);
 
   if (response?.messages?.length) {
     messages.value = response.messages;
