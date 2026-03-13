@@ -19,8 +19,15 @@
         @save="onClientCreated"
       />
 
-      <TiersWindow @select-tier="selectTier">
-        <Button size="sm" variant="premium" v-if="!useSettings().isPaidUser()" ref="getPlusButton">
+      <!-- Demo mode: show login button -->
+      <Button v-if="isGuestDemo" size="sm" variant="premium" @click="goToAuth">
+        <LogIn class="w-4 h-4 mr-1" />
+        <div>{{ $t('demo.navbar.login') }}</div>
+      </Button>
+
+      <!-- Logged in, not paid: show premium button -->
+      <TiersWindow v-else-if="!useSettings().isPaidUser()" @select-tier="selectTier">
+        <Button size="sm" variant="premium" ref="getPlusButton">
           <Crown/>
           <div>{{ $t('premium-btn') }}</div>
         </Button>
@@ -34,7 +41,7 @@
     <div class="flex items-center gap-x-3">
       <SettingsSection/>
 
-      <Button size="icon" variant="secondary" @click="useCurrentConversation().makeNewChat()">
+      <Button size="icon" variant="secondary" @click="handleNewChat">
         <MessageCirclePlus/>
       </Button>
     </div>
@@ -43,7 +50,7 @@
 
 <script setup lang="ts">
 
-import {Crown, MessageCirclePlus} from "lucide-vue-next";
+import {Crown, LogIn, MessageCirclePlus} from "lucide-vue-next";
 import SettingsSection from "~/components/templates/SettingsSection.vue";
 import TiersWindow from "~/components/templates/TiersWindow.vue";
 import {useI18n} from 'vue-i18n'
@@ -55,12 +62,26 @@ import {ImageGeneratorNavbarButton} from "~/lib-modules/imageGenerator";
 import {DialogsSection, useCurrentConversation} from "~/lib-modules/conversations";
 import ClientSelector from "~/components/molecules/ClientSelector.vue";
 import {ProjectCreateWindow, useProjectsStore} from "~/lib-modules/projects";
+import {useDemoMode, useDemoGuard} from "~/lib-modules/demo-mode";
 
 const {t} = useI18n()
+const router = useRouter()
+const {isGuestDemo} = useDemoMode()
+const {guardAction} = useDemoGuard()
 
 const $env = useEnv();
 const apiController = new ApiController();
 const showClientCreate = ref(false);
+
+const goToAuth = () => {
+  router.push('/auth')
+}
+
+const handleNewChat = () => {
+  guardAction(() => {
+    useCurrentConversation().makeNewChat()
+  })
+}
 
 const onClientCreated = async (projectId: string) => {
   const store = useProjectsStore();
