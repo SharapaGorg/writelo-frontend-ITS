@@ -1,4 +1,18 @@
 {
+  "demo": {
+    "authModal": {
+      "title": "Sign in to continue",
+      "description": "Create an account or sign in to use all features",
+      "button": "Sign in"
+    },
+    "banner": {
+      "text": "You are in demo mode.",
+      "link": "Sign in for full access"
+    },
+    "navbar": {
+      "login": "Sign in"
+    }
+  },
   "landing": {
     "hero": {
       "slogan1": "Your ideas.",
