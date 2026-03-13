@@ -5,6 +5,7 @@ import {getChatsGroupsFormationArray} from '~/scripts/features/conversations/for
 import type {ShortConversationType} from '~/lib-modules/conversations'
 import {eventBus} from '~/composables/eventBus'
 import type {DialogTitleUpdated} from '~/composables/eventBus/types'
+import {useDemoMode, demoConversations} from '~/lib-modules/demo-mode'
 
 const apiController = new ApiController()
 
@@ -24,9 +25,19 @@ export const useConversationsStore = defineStore('conversations', () => {
     const groups = computed(() => getChatsGroupsFormationArray(conversations.value))
 
     async function init() {
+        const { isGuestDemo } = useDemoMode()
+
         loading.value = true
         conversations.value = []
 
+        // In guest demo mode, use static demo conversations
+        if (isGuestDemo.value) {
+            conversations.value = [...demoConversations]
+            loading.value = false
+            return
+        }
+
+        // Normal flow - fetch from API
         const limit = 20
         for (let page = 0; page < 10; page++) {
             const pack = await apiController.getConversations(page * limit, limit)
