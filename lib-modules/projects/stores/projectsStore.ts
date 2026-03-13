@@ -10,6 +10,7 @@ import type {
 import {useConversationsStore} from '~/stores/conversations'
 import {moveConversationToFormationArray} from "~/lib-modules/projects";
 import {generateRandomHash} from "~/scripts/shared/utils";
+import {useDemoMode, demoClient, demoConversations} from '~/lib-modules/demo-mode';
 
 
 export const useProjectsStore = defineStore('projects', () => {
@@ -44,8 +45,16 @@ export const useProjectsStore = defineStore('projects', () => {
 
         loading.value = true
 
+        // Check if conversations are already cached (including demo project)
         if (projectsConversations.has(id)) {
             currentConversations.value = projectsConversations.get(id)!
+            loading.value = false
+            return
+        }
+
+        // In guest demo mode, don't fetch from API
+        const { isGuestDemo } = useDemoMode()
+        if (isGuestDemo.value) {
             loading.value = false
             return
         }
@@ -70,7 +79,30 @@ export const useProjectsStore = defineStore('projects', () => {
     }
 
     const fetchProjects = async () => {
+        const { isGuestDemo } = useDemoMode()
+
+        console.log('[projectsStore] fetchProjects called, isGuestDemo:', isGuestDemo.value)
+
         loading.value = true
+
+        // In guest demo mode, return demo project instead of fetching from API
+        if (isGuestDemo.value) {
+            const demoProjectId = 'demo-writelo'
+            console.log('[projectsStore] Creating demo project:', demoClient.name)
+            projects.value = [{
+                id: demoProjectId,
+                title: demoClient.name,
+                customInstructions: demoClient.description,
+                createdAt: new Date().toISOString(),
+                modifiedAt: new Date().toISOString()
+            }]
+            // Pre-populate demo project conversations
+            projectsConversations.set(demoProjectId, [...demoConversations])
+            console.log('[projectsStore] Demo projects set:', projects.value)
+            loading.value = false
+            return
+        }
+
         try {
             projects.value = await api.getProjects()
         } catch (err) {
