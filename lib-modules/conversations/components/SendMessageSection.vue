@@ -194,7 +194,7 @@ defineExpose({
 }
 
 .send-message-container {
-  @apply w-full p-5 rounded-t-3xl border-x-[1px] border-t-[1px] bg-white dark:bg-black
+  @apply w-full p-5 rounded-t-3xl border-x border-t border-border bg-white dark:bg-black
   fixed bottom-0 left-0 z-20
 }
 
