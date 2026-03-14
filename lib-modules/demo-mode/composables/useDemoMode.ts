@@ -22,9 +22,9 @@ const DEMO_TEMPLATES: DemoTemplate[] = [
 ]
 
 const DEFAULT_OPTIONS: DemoStreamOptions = {
-  baseDelay: 15,
-  variance: 10,
-  punctuationDelay: 80
+  baseDelay: 5,
+  variance: 3,
+  punctuationDelay: 20
 }
 
 function createDemoStream(
@@ -38,7 +38,7 @@ function createDemoStream(
   return new ReadableStream({
     async start(controller) {
       // Имитируем небольшую начальную задержку
-      await sleep(300)
+      await sleep(100)
 
       // Отправляем символы по одному
       for (const char of response) {
@@ -54,12 +54,12 @@ function createDemoStream(
       }
 
       // Отправляем title
-      await sleep(200)
+      await sleep(50)
       const titleData = JSON.stringify({ action: 'set_title', title })
       controller.enqueue(encoder.encode(`data: ${titleData}\n\n`))
 
       // Завершаем стрим
-      await sleep(100)
+      await sleep(30)
       const endData = JSON.stringify({ action: 'response_end', success: true })
       controller.enqueue(encoder.encode(`data: ${endData}\n\n`))
 

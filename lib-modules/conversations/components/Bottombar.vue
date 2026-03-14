@@ -98,9 +98,9 @@ const searchAvailable = computed(() => {
 // Search button styles that exactly match the original toggle styles
 const searchButtonClass = computed(() => {
   const baseStyles = `
-    select-none inline-flex items-center justify-center gap-x-1.5 rounded-2xl text-sm font-medium 
-    transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring 
-    disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 
+    select-none inline-flex items-center justify-center gap-x-1.5 rounded-2xl text-sm font-medium
+    transition-colors focus:outline-none focus-visible:outline-none
+    disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0
     h-9 px-2.5 min-w-9 border border-input shadow-sm transition-all duration-200
   `;
 
