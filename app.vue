@@ -32,7 +32,6 @@
 import {Toaster} from "~/components/ui/sonner";
 import AppLoader from "~/components/atoms/AppLoader.vue";
 import {useTelegramViewportHack} from "~/composables/telegramHack";
-import {useIOSKeyboard} from "~/composables/useIOSKeyboard";
 import OnboardingPopover from "~/lib-modules/onboarding/components/OnboardingPopover.vue";
 
 // На сервере (SSR/prerender) не показываем loading — контент должен быть в HTML для SEO
@@ -83,9 +82,6 @@ watch(locale, () => {
 
 // Initialize iOS keyboard fix (client-side only)
 useTelegramViewportHack();
-
-// Initialize iOS Safari keyboard height tracking
-useIOSKeyboard();
 
 // Check dark mode only on client after hydration
 onMounted(() => {

@@ -195,9 +195,7 @@ defineExpose({
 
 .send-message-container {
   @apply w-full p-5 rounded-t-3xl border-x border-t border-border bg-white dark:bg-black
-  fixed left-0 z-20;
-  /* iOS Safari keyboard fix: use CSS variable set by useIOSKeyboard */
-  bottom: var(--ios-keyboard-height, 0px);
+  fixed bottom-0 left-0 z-20
 }
 
 </style>

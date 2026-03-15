@@ -8,11 +8,9 @@ import {isIOS} from "~/scripts/features/utils";
  * Based on extensive research of Telegram WebApp iOS issues
  */
 export function useTelegramViewportHack() {
+    if (typeof window === 'undefined') return
     if (!isIOS()) return
-
-    // Only apply Telegram-specific hacks when actually in Telegram WebApp
-    // This prevents breaking normal Safari behavior with keyboard
-    if (typeof window === 'undefined' || !window.Telegram?.WebApp) return
+    if (!window.Telegram?.WebApp) return
 
     let isKeyboardVisible = false
     let touchSimulationTimer: number | null = null

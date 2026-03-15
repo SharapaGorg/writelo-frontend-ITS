@@ -36,6 +36,7 @@ import {eventBus, type EventEditMessage} from '~/composables/eventBus'
 import type {FillNewConversationType} from "~/composables/eventBus/types";
 import {FeatureType} from "~/scripts/shared/types/common";
 import FileDropZone from "~/components/atoms/FileDropZone.vue";
+import {useTelegramViewportHack} from "~/composables/telegramHack";
 import {useProjectsStore} from "~/lib-modules/projects";
 import {useConversationsStore} from "~/stores/conversations";
 import { useDemoMode, useDemoGuard, DemoIndicator, isDemoConversation, getDemoConversation } from '~/lib-modules/demo-mode'
@@ -44,6 +45,9 @@ const {t} = useI18n();
 const conversationsStore = useConversationsStore();
 
 const sendMessageSection = ref(null);
+
+// Only use for click-outside-to-unfocus functionality
+useTelegramViewportHack();
 
 const apiController = new ApiController();
 const { isDemoMode, isGuestDemo, getDemoStream } = useDemoMode()
