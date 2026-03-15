@@ -27,11 +27,12 @@ const fileInput = ref<HTMLInputElement | null>(null);
 
 const fileTypes = ref([]);
 
-onBeforeMount(async () => {
-  const {extensions} = await apiController.getFileTypes();
+onMounted(async () => {
+  const response = await apiController.getFileTypes();
+  if (!response?.extensions) return;
 
-  for (let key in extensions) {
-    fileTypes.value = [...fileTypes.value, ...extensions[key]];
+  for (let key in response.extensions) {
+    fileTypes.value = [...fileTypes.value, ...response.extensions[key]];
   }
 })
 
