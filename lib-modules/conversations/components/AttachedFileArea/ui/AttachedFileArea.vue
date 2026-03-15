@@ -1,5 +1,5 @@
 <template>
-  <div class="attached-file-container" :style="{ bottom : height + 'px' }">
+  <div class="attached-file-container" :style="{ bottom: `calc(${height}px + var(--ios-keyboard-height, 0px))` }">
     <div class="flex flex-col gap-y-2 w-full">
       <AttachedMedia
           v-for="item in attachedFiles"

@@ -17,7 +17,7 @@ onMounted(() => {
 <template>
   <Transition name="lazy-loading">
     <div
-        :style="{ bottom : isShit ? '182px' : '152px' }"
+        :style="{ bottom: `calc(${isShit ? '182px' : '152px'} + var(--ios-keyboard-height, 0px))` }"
         class="w-full fixed flex justify-center pb-2"
         v-if="isScrollDownButtonVisible"
     >
