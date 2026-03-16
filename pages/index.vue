@@ -14,7 +14,7 @@ useSeoMeta({
   robots: 'index, follow',
   title: () => t('landing.seo.title'),
   description: () => t('landing.seo.description'),
-  keywords: 'ИИ для SMM, AI для SMM, нейросеть для соцсетей, AI-ассистент, генерация контента, SMM автоматизация',
+  keywords: 'Райтелло, Writelo, ИИ для SMM, AI для SMM, нейросеть для соцсетей, AI-ассистент, генерация контента, SMM автоматизация',
   ogTitle: () => t('landing.seo.ogTitle'),
   ogDescription: () => t('landing.seo.ogDescription'),
   ogImage: '/og-image.svg',
@@ -42,7 +42,8 @@ useHead({
             '@id': 'https://writelo.io/#website',
             'url': 'https://writelo.io/',
             'name': 'Writelo',
-            'description': 'AI-ассистент для создания контента в соцсетях',
+            'alternateName': 'Райтелло',
+            'description': 'Райтелло — AI-ассистент для создания контента в соцсетях',
             'potentialAction': {
               '@type': 'SearchAction',
               'target': 'https://writelo.io/start',
@@ -53,6 +54,7 @@ useHead({
             '@type': 'Organization',
             '@id': 'https://writelo.io/#organization',
             'name': 'Writelo',
+            'alternateName': 'Райтелло',
             'url': 'https://writelo.io/',
             'logo': 'https://writelo.io/og-image.svg'
           },

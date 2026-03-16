@@ -9,10 +9,11 @@ definePageMeta({
 // SEO Meta Tags
 useSeoMeta({
   robots: 'index, follow',
-  title: 'Начать работу — Writelo',
-  description: 'Начните создавать контент для соцсетей с AI-ассистентом Writelo. Бесплатный старт, без регистрации через Telegram.',
-  ogTitle: 'Начать работу с Writelo',
-  ogDescription: 'AI-ассистент для SMM. Создавайте посты, тексты и картинки за минуты.',
+  title: 'Начать работу — Writelo (Райтелло)',
+  description: 'Начните создавать контент для соцсетей с AI-ассистентом Writelo (Райтелло). Бесплатный старт, без регистрации через Telegram.',
+  keywords: 'Райтелло, Writelo, SMM ассистент, AI для соцсетей',
+  ogTitle: 'Начать работу с Writelo (Райтелло)',
+  ogDescription: 'Райтелло — AI-ассистент для SMM. Создавайте посты, тексты и картинки за минуты.',
   ogUrl: 'https://writelo.io/start',
 })
 

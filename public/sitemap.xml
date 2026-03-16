@@ -5,7 +5,7 @@
   <!-- Homepage (landing) -->
   <url>
     <loc>https://writelo.io/</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ru" href="https://writelo.io/"/>
@@ -16,7 +16,7 @@
   <!-- Start page (entry to app) -->
   <url>
     <loc>https://writelo.io/start</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
@@ -24,7 +24,7 @@
   <!-- Auth page -->
   <url>
     <loc>https://writelo.io/auth</loc>
-    <lastmod>2026-03-11</lastmod>
+    <lastmod>2026-03-16</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>

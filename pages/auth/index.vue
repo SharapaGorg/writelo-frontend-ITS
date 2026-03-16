@@ -16,10 +16,11 @@ definePageMeta({
 
 // SEO Meta Tags
 useSeoMeta({
-  title: 'Вход — Writelo',
-  description: 'Войдите в Writelo — AI-ассистент для создания контента в соцсетях. Регистрация через Google, Telegram или email.',
-  ogTitle: 'Вход в Writelo',
-  ogDescription: 'AI-ассистент для SMM. Войдите или зарегистрируйтесь бесплатно.',
+  title: 'Вход — Writelo (Райтелло)',
+  description: 'Войдите в Writelo (Райтелло) — AI-ассистент для создания контента в соцсетях. Регистрация через Google, Telegram или email.',
+  keywords: 'Райтелло, Writelo, вход, регистрация, AI ассистент',
+  ogTitle: 'Вход в Writelo (Райтелло)',
+  ogDescription: 'Райтелло — AI-ассистент для SMM. Войдите или зарегистрируйтесь бесплатно.',
   ogUrl: 'https://writelo.io/auth',
   robots: 'index, follow',
 })
