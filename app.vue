@@ -31,7 +31,6 @@
 
 import {Toaster} from "~/components/ui/sonner";
 import AppLoader from "~/components/atoms/AppLoader.vue";
-import {useTelegramViewportHack} from "~/composables/telegramHack";
 import OnboardingPopover from "~/lib-modules/onboarding/components/OnboardingPopover.vue";
 
 // На сервере (SSR/prerender) не показываем loading — контент должен быть в HTML для SEO
@@ -80,9 +79,6 @@ watch(locale, () => {
   }, 500)
 });
 
-// Initialize iOS keyboard fix (client-side only)
-useTelegramViewportHack();
-
 // Check dark mode only on client after hydration
 onMounted(() => {
   isDark.value = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
@@ -112,25 +108,9 @@ if (!import.meta.server) {
 </script>
 
 <style scoped>
-
-/*
 .app-root {
-  min-height: var(--tg-viewport-stable-height);
-  height: var(--tg-viewport-stable-height, 100vh);
-  overscroll-behavior-x: none;
-  overscroll-behavior-y: none;
+  min-height: 100dvh;
+  height: 100dvh;
+  overscroll-behavior: none;
 }
-
- */
-
-
-.app-root {
-  /* Use dynamic viewport height from useTelegramViewportHack */
-  min-height: calc(var(--vh, 1vh) * 100);
-  height: calc(var(--vh, 1vh) * 100);
-  overscroll-behavior-x: none;
-  overscroll-behavior-y: none;
-}
-
-
 </style>

@@ -98,7 +98,7 @@ const countSentences = (text: string): number => {
 }
 
 const textareaFocus = () => {
-  // Scroll handling is now done globally in telegramHack composable
+  // Native browser/iOS keyboard handling
 }
 
 // Flag to track search button clicks

@@ -24,10 +24,9 @@
 html, body {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    min-height: calc(var(--vh, 1vh) * 100);
-    height: calc(var(--vh, 1vh) * 100);
-    overscroll-behavior-x: none;
-    overscroll-behavior-y: none;
+    min-height: 100dvh;
+    height: 100dvh;
+    overscroll-behavior: none;
     @apply overflow-y-hidden
 }
 

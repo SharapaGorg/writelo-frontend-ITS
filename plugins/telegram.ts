@@ -35,10 +35,25 @@ export default defineNuxtPlugin(() => {
                 async initConfiguration(): Promise<void> {
                     if (process.client && window.Telegram?.WebApp) {
                         await onWebAppReady();
-                        window.Telegram.WebApp.expand();
+                        const webApp = window.Telegram.WebApp;
 
-                        // Note: viewport control is now handled in useTelegramViewportHack composable
-                        // using the official Bot API 7.7+ disableVerticalSwipes method
+                        webApp.expand();
+
+                        // Disable swipe-to-close gesture (Bot API 7.7+)
+                        if (webApp.disableVerticalSwipes) {
+                            webApp.disableVerticalSwipes();
+                        }
+
+                        // Set header/background colors to match app theme
+                        const isDarkMode = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+                        const bgColor = isDarkMode ? '#0a0a0a' : '#ffffff';
+
+                        if (webApp.setHeaderColor) {
+                            webApp.setHeaderColor(bgColor);
+                        }
+                        if (webApp.setBackgroundColor) {
+                            webApp.setBackgroundColor(bgColor);
+                        }
                     }
                 },
                 async shareConversation(conversation_id: string): Promise<void> {
