@@ -71,6 +71,7 @@ const isSendingMessagesBlocked = computed(() => {
 })
 
 const fieldDisabled = ref(false); // is send-message field disabled
+const isStoppingGeneration = ref(false); // track user-initiated stop to avoid marking as error
 
 
 const loading = computed(() => {
@@ -224,10 +225,11 @@ const myNewMessage = async (
         useEnv().processMessageId.value = null;
 
         fieldDisabled.value = false;
-        if (!parsed.success) {
+        if (!parsed.success && !isStoppingGeneration.value) {
           messages.value[messages.value.length - 1].text += parsed.message || " \n**Server is busy**";
           messages.value[messages.value.length - 1].error = true;
         }
+        isStoppingGeneration.value = false;
 
         messages.value[messages.value.length - 1].processing = false;
       },
@@ -259,10 +261,11 @@ const myNewMessage = async (
         useEnv().processMessageId.value = null;
 
         fieldDisabled.value = false;
-        if (!parsed.success) {
+        if (!parsed.success && !isStoppingGeneration.value) {
           messages.value[messages.value.length - 1].text += parsed.error || " \n**Server is busy**";
           messages.value[messages.value.length - 1].error = true;
         }
+        isStoppingGeneration.value = false;
 
         messages.value[messages.value.length - 1].processing = false;
       }
@@ -320,7 +323,15 @@ const fillNewConversation = async (data: FillNewConversationType) => {
 
 }
 const stopGeneration = async () => {
+  isStoppingGeneration.value = true;
   fieldDisabled.value = false;
+
+  // Mark last message as not processing (it was interrupted, not errored)
+  const lastMessage = messages.value[messages.value.length - 1];
+  if (lastMessage) {
+    lastMessage.processing = false;
+  }
+
   // Skip API call in demo mode
   if (!isGuestDemo.value) {
     await apiController.stopGeneration(conversation_id.value);
