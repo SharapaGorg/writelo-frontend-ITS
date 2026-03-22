@@ -1,5 +1,5 @@
-import { ref, computed } from 'vue'
-import type { SocialNetwork, CalendarPost, InfoEvent } from '../types'
+import { ref, computed, watch } from 'vue'
+import type { SocialNetwork, CalendarPost, InfoEvent, PostStatus, ContentTag } from '../types'
 import { demoProjects } from '../data/demoData'
 
 export function useContentCalendar() {
@@ -8,6 +8,8 @@ export function useContentCalendar() {
   const selectedDate = ref<string | null>(null)
   const selectedPostId = ref<string | null>(null)
   const activeNetworks = ref<SocialNetwork[]>(['vk', 'youtube', 'telegram', 'instagram'])
+  const activeStatuses = ref<PostStatus[]>(['idea', 'draft', 'ready'])
+  const activeTags = ref<string[]>([]) // Empty = show all, non-empty = filter
   const currentMonth = ref<Date>(new Date())
 
   // Current project
@@ -15,11 +17,21 @@ export function useContentCalendar() {
     demoProjects.find(p => p.id === selectedProjectId.value) ?? demoProjects[0]
   )
 
-  // Filtered posts by active networks
+  // Reset tags when project changes
+  watch(selectedProjectId, () => {
+    activeTags.value = []
+  })
+
+  // Filtered posts by active networks, statuses, and tags
   const filteredPosts = computed(() =>
-    currentProject.value.posts.filter(post =>
-      post.networks.some(n => activeNetworks.value.includes(n))
-    )
+    currentProject.value.posts.filter(post => {
+      const matchesNetwork = post.networks.some(n => activeNetworks.value.includes(n))
+      const matchesStatus = activeStatuses.value.includes(post.status)
+      // If no tags selected, show all; otherwise filter by selected tags
+      const matchesTags = activeTags.value.length === 0 ||
+        post.tags.some(t => activeTags.value.includes(t))
+      return matchesNetwork && matchesStatus && matchesTags
+    })
   )
 
   // Posts for selected date
@@ -80,6 +92,28 @@ export function useContentCalendar() {
     }
   }
 
+  function toggleStatus(status: PostStatus) {
+    const index = activeStatuses.value.indexOf(status)
+    if (index === -1) {
+      activeStatuses.value.push(status)
+    } else if (activeStatuses.value.length > 1) {
+      activeStatuses.value.splice(index, 1)
+    }
+  }
+
+  function toggleTag(tagId: string) {
+    const index = activeTags.value.indexOf(tagId)
+    if (index === -1) {
+      activeTags.value.push(tagId)
+    } else {
+      activeTags.value.splice(index, 1)
+    }
+  }
+
+  function getTagById(tagId: string): ContentTag | undefined {
+    return currentProject.value.tags.find(t => t.id === tagId)
+  }
+
   function nextMonth() {
     const next = new Date(currentMonth.value)
     next.setMonth(next.getMonth() + 1)
@@ -98,6 +132,8 @@ export function useContentCalendar() {
     selectedDate,
     selectedPostId,
     activeNetworks,
+    activeStatuses,
+    activeTags,
     currentMonth,
     // Computed
     currentProject,
@@ -109,10 +145,13 @@ export function useContentCalendar() {
     getPostsForDate,
     hasInfoEvent,
     getInfoEvent,
+    getTagById,
     selectProject,
     selectDate,
     selectPost,
     toggleNetwork,
+    toggleStatus,
+    toggleTag,
     nextMonth,
     prevMonth,
     // Data

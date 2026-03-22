@@ -85,7 +85,7 @@ const calendarDays = computed((): DayInfo[] => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col">
     <!-- Month navigation -->
     <div class="flex items-center justify-between px-4 py-3">
       <Button variant="ghost" size="sm" @click="emit('prevMonth')">
@@ -111,7 +111,7 @@ const calendarDays = computed((): DayInfo[] => {
     </div>
 
     <!-- Calendar grid -->
-    <div class="grid grid-cols-7 gap-1 px-2 flex-1">
+    <div class="grid grid-cols-7 gap-1 px-2">
       <DayCell
         v-for="day in calendarDays"
         :key="day.date"

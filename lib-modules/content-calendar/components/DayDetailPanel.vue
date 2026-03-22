@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import PostCard from './PostCard.vue'
-import type { CalendarPost, InfoEvent } from '../types'
+import type { CalendarPost, InfoEvent, ContentTag } from '../types'
 
 const props = defineProps<{
   date: string
   posts: CalendarPost[]
   infoEvents: InfoEvent[]
+  projectTags: ContentTag[]
 }>()
 
 const emit = defineEmits<{
@@ -51,6 +52,7 @@ const formattedDate = computed(() => {
           v-for="post in posts"
           :key="post.id"
           :post="post"
+          :project-tags="projectTags"
           @select="emit('selectPost', $event)"
         />
       </div>

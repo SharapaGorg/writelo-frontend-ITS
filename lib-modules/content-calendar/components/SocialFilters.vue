@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Toggle } from '~/components/ui/toggle'
 import type { SocialNetwork } from '../types'
 
 const props = defineProps<{
@@ -25,19 +24,19 @@ function isActive(network: SocialNetwork): boolean {
 <template>
   <div class="flex items-center gap-2 px-6 py-3 border-b border-zinc-800 bg-zinc-900/50">
     <span class="text-sm text-zinc-500 mr-2">Соцсети:</span>
-    <Toggle
+    <button
       v-for="network in networks"
       :key="network.id"
-      :pressed="isActive(network.id)"
       :class="[
         'px-3 py-1.5 text-sm rounded-full border transition-all',
         isActive(network.id)
           ? `${network.color} border-transparent text-white`
           : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-white'
       ]"
+      :data-state="isActive(network.id) ? 'on' : 'off'"
       @click="emit('toggle', network.id)"
     >
       {{ network.label }}
-    </Toggle>
+    </button>
   </div>
 </template>

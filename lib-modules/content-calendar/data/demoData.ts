@@ -4,6 +4,12 @@ export const demoProjects: DemoProject[] = [
   {
     id: 'coffee-shop',
     name: 'Кофейня "Бодрость"',
+    tags: [
+      { id: 'tag-cs-1', name: 'Продающий', color: 'bg-emerald-500' },
+      { id: 'tag-cs-2', name: 'Экспертный', color: 'bg-indigo-500' },
+      { id: 'tag-cs-3', name: 'Охватный', color: 'bg-orange-500' },
+      { id: 'tag-cs-4', name: 'Личный', color: 'bg-rose-500' }
+    ],
     posts: [
       {
         id: 'cs-1',
@@ -12,6 +18,7 @@ export const demoProjects: DemoProject[] = [
         type: 'post',
         status: 'ready',
         networks: ['vk', 'telegram'],
+        tags: ['tag-cs-1'],
         date: '2026-03-15',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Latte',
         previews: {
@@ -33,6 +40,7 @@ export const demoProjects: DemoProject[] = [
         type: 'story',
         status: 'draft',
         networks: ['instagram'],
+        tags: ['tag-cs-3'],
         date: '2026-03-18',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Tiramisu',
         previews: {
@@ -49,6 +57,7 @@ export const demoProjects: DemoProject[] = [
         type: 'reels',
         status: 'idea',
         networks: ['instagram', 'youtube'],
+        tags: ['tag-cs-2'],
         date: '2026-03-22',
         previews: {
           instagram: { text: 'Закулисье: от зерна до чашки' },
@@ -61,6 +70,7 @@ export const demoProjects: DemoProject[] = [
         type: 'post',
         status: 'ready',
         networks: ['vk', 'telegram', 'instagram'],
+        tags: ['tag-cs-4', 'tag-cs-3'],
         date: '2026-03-08',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=8+March',
         previews: {
@@ -75,6 +85,7 @@ export const demoProjects: DemoProject[] = [
         type: 'post',
         status: 'idea',
         networks: ['vk', 'instagram'],
+        tags: ['tag-cs-1', 'tag-cs-4'],
         date: '2026-04-12',
         previews: {
           vk: { text: 'Принимаем заказы на пасхальные куличи!' },
@@ -96,6 +107,12 @@ export const demoProjects: DemoProject[] = [
   {
     id: 'blogger-anya',
     name: 'Блогер Аня',
+    tags: [
+      { id: 'tag-ba-1', name: 'Личный', color: 'bg-pink-500' },
+      { id: 'tag-ba-2', name: 'Реклама', color: 'bg-amber-500' },
+      { id: 'tag-ba-3', name: 'Вовлекающий', color: 'bg-cyan-500' },
+      { id: 'tag-ba-4', name: 'Лайфстайл', color: 'bg-violet-500' }
+    ],
     posts: [
       {
         id: 'ba-1',
@@ -103,6 +120,7 @@ export const demoProjects: DemoProject[] = [
         type: 'reels',
         status: 'ready',
         networks: ['instagram', 'youtube'],
+        tags: ['tag-ba-1', 'tag-ba-4'],
         date: '2026-03-16',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Morning',
         previews: {
@@ -116,6 +134,7 @@ export const demoProjects: DemoProject[] = [
         type: 'post',
         status: 'draft',
         networks: ['instagram', 'telegram'],
+        tags: ['tag-ba-2'],
         date: '2026-03-20',
         previews: {
           instagram: { text: 'Реклама нового бренда косметики' },
@@ -128,6 +147,7 @@ export const demoProjects: DemoProject[] = [
         type: 'story',
         status: 'idea',
         networks: ['instagram'],
+        tags: ['tag-ba-3'],
         date: '2026-03-25',
         previews: {
           instagram: { text: 'Отвечаю на ваши вопросы!' }
@@ -146,6 +166,12 @@ export const demoProjects: DemoProject[] = [
   {
     id: 'electronics-store',
     name: 'Магазин электроники',
+    tags: [
+      { id: 'tag-es-1', name: 'Продающий', color: 'bg-emerald-500' },
+      { id: 'tag-es-2', name: 'Экспертный', color: 'bg-indigo-500' },
+      { id: 'tag-es-3', name: 'Обзор', color: 'bg-blue-500' },
+      { id: 'tag-es-4', name: 'Акция', color: 'bg-red-500' }
+    ],
     posts: [
       {
         id: 'es-1',
@@ -153,6 +179,7 @@ export const demoProjects: DemoProject[] = [
         type: 'reels',
         status: 'ready',
         networks: ['youtube', 'vk'],
+        tags: ['tag-es-2', 'tag-es-3'],
         date: '2026-03-14',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=iPhone',
         previews: {
@@ -166,6 +193,7 @@ export const demoProjects: DemoProject[] = [
         type: 'post',
         status: 'ready',
         networks: ['vk', 'telegram', 'instagram'],
+        tags: ['tag-es-1', 'tag-es-4'],
         date: '2026-03-07',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Sale',
         previews: {
@@ -180,6 +208,7 @@ export const demoProjects: DemoProject[] = [
         type: 'post',
         status: 'draft',
         networks: ['vk', 'youtube'],
+        tags: ['tag-es-2', 'tag-es-3'],
         date: '2026-03-28',
         previews: {
           vk: { text: 'Какие наушники выбрать в 2026?' },
