@@ -19,6 +19,7 @@ useSeoMeta({
   ogDescription: () => t('landing.seo.ogDescription'),
   ogImage: '/og-image.svg',
   ogUrl: 'https://writelo.io/',
+  ogLocale: () => locale.value === 'en' ? 'en_US' : 'ru_RU',
 })
 
 // Schema.org structured data for SEO

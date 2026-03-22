@@ -9,20 +9,20 @@ definePageMeta({
 
 const { t, locale } = useI18n()
 
-// Насильно ставим русский
-onMounted(() => {
-  locale.value = 'ru'
-})
+// Насильно ставим русский сразу (для SSR)
+locale.value = 'ru'
 
 // SEO
 useSeoMeta({
   robots: 'index, follow',
   title: () => t('landing.seo.title'),
   description: () => t('landing.seo.description'),
+  keywords: 'Райтелло, Writelo, ИИ для SMM, AI для SMM, нейросеть для соцсетей, AI-ассистент',
   ogTitle: () => t('landing.seo.ogTitle'),
   ogDescription: () => t('landing.seo.ogDescription'),
   ogImage: '/og-image.svg',
   ogUrl: 'https://writelo.io/ru',
+  ogLocale: 'ru_RU',
 })
 
 useHead({

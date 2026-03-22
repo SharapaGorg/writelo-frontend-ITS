@@ -34,26 +34,12 @@ export default defineNuxtConfig({
 
     app: {
         head: {
-            htmlAttrs: {
-                lang: 'ru',
-            },
-            title: 'Writelo (Райтелло) — AI-ассистент для SMM',
             meta: [
                 {charset: 'utf-8'},
                 {name: 'viewport', content: 'width=device-width, initial-scale=1'},
-                {
-                    name: 'description',
-                    content: 'Writelo (Райтелло) — AI-ассистент для создания контента в соцсетях. Посты, тексты и картинки за минуты. Бесплатный старт.'
-                },
-                {
-                    name: 'keywords',
-                    content: 'Райтелло, Writelo, ИИ для SMM, AI для SMM, нейросеть для соцсетей, AI-ассистент'
-                },
-                // Open Graph
+                // Open Graph общие
                 {property: 'og:type', content: 'website'},
                 {property: 'og:site_name', content: 'Writelo'},
-                {property: 'og:locale', content: 'ru_RU'},
-                {property: 'og:locale:alternate', content: 'en_US'},
                 // Twitter
                 {name: 'twitter:card', content: 'summary_large_image'},
             ],
