@@ -23,12 +23,15 @@ export interface CalendarPost {
   id: string
   title: string
   description?: string
+  content?: string // Full post text content
   type: ContentType
   status: PostStatus
   networks: SocialNetwork[]
   tags: string[] // Tag IDs
   date: string // 'YYYY-MM-DD'
   image?: string
+  conversationId?: string // Link to conversation where this was created
+  publishedLinks?: Partial<Record<SocialNetwork, string>> // Links to published posts
   previews: Partial<Record<SocialNetwork, SocialPreviewData>>
 }
 

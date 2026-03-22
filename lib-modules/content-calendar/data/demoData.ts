@@ -15,12 +15,18 @@ export const demoProjects: DemoProject[] = [
         id: 'cs-1',
         title: 'Весенняя акция -20%',
         description: 'Скидка на все латте до конца марта',
+        content: 'Весна пришла — и мы решили порадовать вас! До конца марта скидка 20% на все виды латте: классический, карамельный, ванильный и наш фирменный "Бодрость".\n\nПриходите согреться и насладиться любимым напитком по приятной цене. Ждём вас каждый день с 8:00 до 22:00!',
         type: 'post',
         status: 'published',
         networks: ['vk', 'telegram'],
         tags: ['tag-cs-1'],
         date: '2026-03-15',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Latte',
+        conversationId: 'conv-demo-1',
+        publishedLinks: {
+          vk: 'https://vk.com/wall-123456_789',
+          telegram: 'https://t.me/coffeshop_bodrost/42'
+        },
         previews: {
           vk: {
             text: 'Весна пришла — латте подешевел! Скидка 20% на все латте до конца марта. Ждём вас!',
@@ -37,12 +43,14 @@ export const demoProjects: DemoProject[] = [
       {
         id: 'cs-2',
         title: 'Новый десерт: тирамису',
+        content: 'Встречайте новинку в нашем меню — итальянский тирамису по авторскому рецепту нашего шефа!\n\nНежные слои савоярди, пропитанные эспрессо, воздушный крем маскарпоне и лёгкая горчинка какао — идеальное сочетание для настоящих ценителей.',
         type: 'story',
         status: 'draft',
         networks: ['instagram'],
         tags: ['tag-cs-3'],
         date: '2026-03-18',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Tiramisu',
+        conversationId: 'conv-demo-3',
         previews: {
           instagram: {
             text: 'Новинка! Итальянский тирамису по авторскому рецепту',
@@ -67,12 +75,19 @@ export const demoProjects: DemoProject[] = [
       {
         id: 'cs-4',
         title: 'Поздравление с 8 марта',
+        content: 'Милые дамы! Поздравляем вас с Международным женским днём!\n\nСегодня всем девушкам — кофе в подарок к любому заказу. Приходите за хорошим настроением и ароматным напитком!\n\nС любовью, команда "Бодрость" ❤️',
         type: 'post',
         status: 'published',
         networks: ['vk', 'telegram', 'instagram'],
         tags: ['tag-cs-4', 'tag-cs-3'],
         date: '2026-03-08',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=8+March',
+        conversationId: 'conv-demo-2',
+        publishedLinks: {
+          vk: 'https://vk.com/wall-123456_788',
+          telegram: 'https://t.me/coffeshop_bodrost/41',
+          instagram: 'https://instagram.com/p/ABC123'
+        },
         previews: {
           vk: { text: 'Милые дамы! Поздравляем с 8 марта! Сегодня всем девушкам кофе в подарок', likes: 567, comments: 42, shares: 89 },
           telegram: { text: 'С 8 марта! Девушкам — кофе бесплатно', views: 3200 },
