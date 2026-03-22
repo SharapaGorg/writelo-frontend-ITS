@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import CalendarHeader from './CalendarHeader.vue'
 import SocialFilters from './SocialFilters.vue'
 import CalendarGrid from './CalendarGrid.vue'
@@ -39,9 +39,49 @@ const statusConfig = [
   { id: 'ready' as const, label: 'Готов', icon: 'ready', color: 'text-green-500' }
 ]
 
+// Tag combobox state
+const tagSearch = ref('')
+const tagDropdownOpen = ref(false)
+const tagInputRef = ref<HTMLInputElement | null>(null)
+
+const filteredTags = computed(() => {
+  const search = tagSearch.value.toLowerCase().trim()
+  if (!search) return currentProject.value.tags
+  return currentProject.value.tags.filter(tag =>
+    tag.name.toLowerCase().includes(search)
+  )
+})
+
+const selectedTagObjects = computed(() =>
+  activeTags.value
+    .map(id => currentProject.value.tags.find(t => t.id === id))
+    .filter(Boolean)
+)
+
+function handleTagSelect(tagId: string) {
+  toggleTag(tagId)
+  tagSearch.value = ''
+}
+
+function removeTag(tagId: string) {
+  toggleTag(tagId)
+}
+
+function openTagDropdown() {
+  tagDropdownOpen.value = true
+  nextTick(() => tagInputRef.value?.focus())
+}
+
+function closeTagDropdown() {
+  tagDropdownOpen.value = false
+  tagSearch.value = ''
+}
+
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') {
-    if (selectedPostId.value) {
+    if (tagDropdownOpen.value) {
+      closeTagDropdown()
+    } else if (selectedPostId.value) {
       selectPost(null)
     } else if (selectedDate.value) {
       selectDate(null)
@@ -122,24 +162,75 @@ onUnmounted(() => {
     <!-- Tag filter -->
     <div class="flex items-center gap-2 px-4 py-2 border-b border-zinc-800 bg-zinc-900/30">
       <span class="text-sm text-zinc-500">Теги:</span>
-      <button
-        v-for="tag in currentProject.tags"
-        :key="tag.id"
-        :class="[
-          'px-3 py-1 text-xs rounded-full border transition-all flex items-center gap-1.5',
-          activeTags.includes(tag.id)
-            ? [tag.color, 'border-transparent text-white']
-            : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-white'
-        ]"
-        @click="toggleTag(tag.id)"
-      >
-        <span
-          v-if="!activeTags.includes(tag.id)"
-          :class="['w-2 h-2 rounded-full', tag.color]"
-        />
-        {{ tag.name }}
-      </button>
-      <span v-if="activeTags.length === 0" class="text-xs text-zinc-600 ml-2">
+
+      <!-- Selected tags -->
+      <div class="flex items-center gap-1 flex-wrap">
+        <button
+          v-for="tag in selectedTagObjects"
+          :key="tag.id"
+          :class="['px-2 py-0.5 text-xs rounded-full flex items-center gap-1 text-white', tag.color]"
+          @click="removeTag(tag.id)"
+        >
+          {{ tag.name }}
+          <span class="text-white/70 hover:text-white">×</span>
+        </button>
+      </div>
+
+      <!-- Tag combobox -->
+      <div class="relative">
+        <button
+          class="px-3 py-1 text-xs rounded-full border border-zinc-700 bg-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 flex items-center gap-1"
+          @click="openTagDropdown"
+        >
+          <span>+ Добавить тег</span>
+        </button>
+
+        <!-- Dropdown -->
+        <div
+          v-if="tagDropdownOpen"
+          class="absolute top-full left-0 mt-1 w-56 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl z-50"
+        >
+          <div class="p-2 border-b border-zinc-700">
+            <input
+              ref="tagInputRef"
+              v-model="tagSearch"
+              type="text"
+              placeholder="Поиск тегов..."
+              class="w-full px-2 py-1 text-sm bg-zinc-900 border border-zinc-600 rounded text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-purple-500"
+              @keydown.escape="closeTagDropdown"
+            />
+          </div>
+          <div class="max-h-48 overflow-y-auto p-1">
+            <button
+              v-for="tag in filteredTags"
+              :key="tag.id"
+              :class="[
+                'w-full px-3 py-1.5 text-sm text-left rounded flex items-center gap-2 transition-colors',
+                activeTags.includes(tag.id)
+                  ? 'bg-zinc-700 text-white'
+                  : 'text-zinc-300 hover:bg-zinc-700'
+              ]"
+              @click="handleTagSelect(tag.id)"
+            >
+              <span :class="['w-2.5 h-2.5 rounded-full', tag.color]" />
+              <span>{{ tag.name }}</span>
+              <span v-if="activeTags.includes(tag.id)" class="ml-auto text-green-400">✓</span>
+            </button>
+            <div v-if="filteredTags.length === 0" class="px-3 py-2 text-sm text-zinc-500">
+              Ничего не найдено
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Click outside to close -->
+      <div
+        v-if="tagDropdownOpen"
+        class="fixed inset-0 z-40"
+        @click="closeTagDropdown"
+      />
+
+      <span v-if="activeTags.length === 0" class="text-xs text-zinc-600">
         (все)
       </span>
     </div>
