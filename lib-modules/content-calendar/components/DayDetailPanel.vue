@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PostCard from './PostCard.vue'
 import type { CalendarPost, InfoEvent, ContentTag } from '../types'
+import { getFunDayForDate } from '../data/funDays'
 
 const props = defineProps<{
   date: string
@@ -18,14 +19,25 @@ const formattedDate = computed(() => {
   const d = new Date(props.date)
   return d.toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' })
 })
+
+const funDay = computed(() => getFunDayForDate(props.date))
 </script>
 
 <template>
   <div class="border-t border-zinc-800 bg-zinc-900/80 backdrop-blur">
     <div class="flex items-center justify-between px-6 py-3 border-b border-zinc-800">
-      <h3 class="text-sm font-medium text-zinc-100">
-        {{ formattedDate }}
-      </h3>
+      <div class="flex items-center gap-3">
+        <h3 class="text-sm font-medium text-zinc-100">
+          {{ formattedDate }}
+        </h3>
+        <span
+          v-if="funDay"
+          class="px-2.5 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-xs text-purple-200 flex items-center gap-1.5"
+        >
+          <span v-if="funDay.emoji" class="text-sm">{{ funDay.emoji }}</span>
+          <span>{{ funDay.title }}</span>
+        </span>
+      </div>
       <button
         class="text-zinc-500 hover:text-white transition-colors"
         @click="emit('close')"

@@ -53,6 +53,12 @@ export interface NewsItem {
   url?: string
 }
 
+export interface FunDay {
+  date: string // 'MM-DD' format (without year)
+  title: string
+  emoji?: string
+}
+
 export interface DemoProject {
   id: string
   name: string
