@@ -73,6 +73,7 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
     networks: ['vk', 'telegram'], // Default networks
     tags: [],
     date: date,
+    sourceNewsId: news.id,
     previews: {}
   })
 

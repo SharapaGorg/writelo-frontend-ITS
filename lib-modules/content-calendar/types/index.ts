@@ -32,6 +32,7 @@ export interface CalendarPost {
   time?: string // 'HH:MM' (optional)
   image?: string
   conversationId?: string // Link to conversation where this was created
+  sourceNewsId?: string // Link to news item this was created from
   publishedLinks?: Partial<Record<SocialNetwork, string>> // Links to published posts
   previews: Partial<Record<SocialNetwork, SocialPreviewData>>
 }

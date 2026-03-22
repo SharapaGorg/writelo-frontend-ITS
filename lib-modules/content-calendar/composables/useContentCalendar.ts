@@ -150,6 +150,12 @@ export function useContentCalendar() {
     const postIndex = project.posts.findIndex(p => p.id === postId)
     if (postIndex === -1) return false
 
+    // Clear news tracking if this post was created from a news item
+    const post = project.posts[postIndex]
+    if (post.sourceNewsId && usedNews.value[post.sourceNewsId]) {
+      delete usedNews.value[post.sourceNewsId]
+    }
+
     project.posts.splice(postIndex, 1)
     return true
   }
