@@ -1,6 +1,6 @@
 import { ref, computed, watch, reactive } from 'vue'
 import type { SocialNetwork, CalendarPost, InfoEvent, PostStatus, ContentTag } from '../types'
-import { projects as initialDemoProjects } from '../data/demoData'
+import { demoProjects as initialDemoProjects } from '../data/demoData'
 
 export function useContentCalendar() {
   // Make projects reactive
