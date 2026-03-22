@@ -8,7 +8,7 @@ export function useContentCalendar() {
   const selectedDate = ref<string | null>(null)
   const selectedPostId = ref<string | null>(null)
   const activeNetworks = ref<SocialNetwork[]>(['vk', 'youtube', 'telegram', 'instagram'])
-  const activeStatuses = ref<PostStatus[]>(['idea', 'draft', 'ready'])
+  const activeStatuses = ref<PostStatus[]>(['idea', 'draft', 'ready', 'published'])
   const activeTags = ref<string[]>([]) // Empty = show all, non-empty = filter
   const currentMonth = ref<Date>(new Date())
 

@@ -2,7 +2,7 @@ export type ContentType = 'post' | 'story' | 'reels'
 
 export type SocialNetwork = 'vk' | 'youtube' | 'telegram' | 'instagram'
 
-export type PostStatus = 'idea' | 'draft' | 'ready'
+export type PostStatus = 'idea' | 'draft' | 'ready' | 'published'
 
 export interface ContentTag {
   id: string
