@@ -63,6 +63,7 @@ function resetEditForm() {
 
 function startEditing() {
   resetEditForm()
+  activeTab.value = 'content' // Always edit content
   isEditing.value = true
 }
 
@@ -248,8 +249,8 @@ const postTags = computed(() =>
       </button>
     </div>
 
-    <!-- Tabs -->
-    <div class="flex gap-1 px-4 py-2 border-b border-zinc-800">
+    <!-- Tabs (hidden when editing) -->
+    <div v-if="!isEditing" class="flex gap-1 px-4 py-2 border-b border-zinc-800">
       <Button
         :variant="activeTab === 'content' ? 'default' : 'ghost'"
         size="sm"
@@ -566,7 +567,7 @@ const postTags = computed(() =>
       <!-- Preview Tab -->
       <template v-else-if="activeTab === 'preview'">
         <!-- Network selector -->
-        <div class="flex gap-2 mb-4">
+        <div class="flex gap-2 mb-4 flex-wrap">
           <button
             v-for="network in post.networks"
             :key="network"
