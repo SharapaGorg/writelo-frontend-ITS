@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Button } from '~/components/ui/button'
 import { useScrollAnimation } from '~/composables/useScrollAnimation'
 import { Routes } from '~/scripts/shared/types'
+import { FileText, LayoutList, Search, Image, Type, Clock } from 'lucide-vue-next'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -21,14 +22,14 @@ const showFirstLine = ref(false)
 const showSecondLine = ref(false)
 const showContent = ref(false)
 
-// Stats ticker data
+// Stats ticker data with icons
 const stats = computed(() => [
-  { value: '10,123', label: t('landing.hero.ticker.posts') },
-  { value: '5,432', label: t('landing.hero.ticker.contentPlans') },
-  { value: '8,765', label: t('landing.hero.ticker.references') },
-  { value: '3,210', label: t('landing.hero.ticker.images') },
-  { value: '12,456,789', label: t('landing.hero.ticker.characters') },
-  { value: '2,345', label: t('landing.hero.ticker.hours') },
+  { value: '10,123', label: t('landing.hero.ticker.posts'), icon: FileText },
+  { value: '5,432', label: t('landing.hero.ticker.contentPlans'), icon: LayoutList },
+  { value: '8,765', label: t('landing.hero.ticker.references'), icon: Search },
+  { value: '3,210', label: t('landing.hero.ticker.images'), icon: Image },
+  { value: '12.4M', label: t('landing.hero.ticker.characters'), icon: Type },
+  { value: '2,345', label: t('landing.hero.ticker.hours'), icon: Clock },
 ])
 
 // Trigger staggered animation when section becomes visible
@@ -104,23 +105,35 @@ watch(isVisible, (visible) => {
 
     <!-- Stats ticker -->
     <div
-      class="absolute bottom-24 left-0 right-0 overflow-hidden transition-all duration-700 delay-500"
+      class="absolute bottom-20 left-0 right-0 overflow-hidden transition-all duration-700 delay-500"
       :class="showContent ? 'opacity-100' : 'opacity-0'"
     >
+      <!-- Fade edges -->
+      <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-zinc-950 to-transparent z-10 pointer-events-none" />
+      <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white dark:from-zinc-950 to-transparent z-10 pointer-events-none" />
+
       <div class="flex animate-marquee">
         <div
           v-for="(_, index) in 2"
           :key="index"
-          class="flex shrink-0"
+          class="flex shrink-0 gap-4 px-2"
         >
           <div
             v-for="stat in stats"
             :key="`${index}-${stat.label}`"
-            class="flex items-center gap-2 px-8 text-sm text-zinc-500 dark:text-zinc-400"
+            class="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 shadow-sm"
           >
-            <span class="font-semibold text-zinc-700 dark:text-zinc-300">{{ stat.value }}</span>
-            <span>{{ stat.label }}</span>
-            <span class="text-zinc-300 dark:text-zinc-600 ml-4">•</span>
+            <div class="p-2 rounded-lg bg-gradient-to-br from-purple-500/10 to-indigo-500/10">
+              <component :is="stat.icon" class="w-4 h-4 text-purple-500 dark:text-purple-400" />
+            </div>
+            <div class="flex flex-col">
+              <span class="text-lg font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                {{ stat.value }}
+              </span>
+              <span class="text-xs text-zinc-500 dark:text-zinc-400 whitespace-nowrap">
+                {{ stat.label }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
