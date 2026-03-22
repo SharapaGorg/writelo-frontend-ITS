@@ -7,6 +7,7 @@ import DayDetailPanel from './DayDetailPanel.vue'
 import NewsSidebar from './NewsSidebar.vue'
 import PostPreviewPanel from './PostPreviewPanel.vue'
 import { useContentCalendar } from '../composables/useContentCalendar'
+import type { NewsItem } from '../types'
 
 const {
   selectedProjectId,
@@ -31,6 +32,7 @@ const {
   nextMonth,
   prevMonth,
   updatePost,
+  createPost,
   createTag,
   projects
 } = useContentCalendar()
@@ -38,6 +40,26 @@ const {
 function handlePostUpdate(updates: any) {
   if (selectedPostId.value) {
     updatePost(selectedPostId.value, updates)
+  }
+}
+
+function handleNewsDropOnDate(date: string, news: NewsItem) {
+  const newPost = createPost({
+    title: news.title,
+    description: news.description,
+    content: '',
+    type: 'post',
+    status: 'idea',
+    networks: ['vk', 'telegram'], // Default networks
+    tags: [],
+    date: date,
+    previews: {}
+  })
+
+  if (newPost) {
+    // Select the date and the new post
+    selectDate(date)
+    selectPost(newPost.id)
   }
 }
 
@@ -259,6 +281,7 @@ onUnmounted(() => {
             @select-date="selectDate"
             @prev-month="prevMonth"
             @next-month="nextMonth"
+            @drop-news="handleNewsDropOnDate"
           />
         </div>
         <DayDetailPanel

@@ -127,6 +127,18 @@ export function useContentCalendar() {
     Object.assign(project.posts[postIndex], updates)
   }
 
+  function createPost(post: Omit<CalendarPost, 'id'>): CalendarPost | null {
+    const project = projects.find(p => p.id === selectedProjectId.value)
+    if (!project) return null
+
+    const newPost: CalendarPost = {
+      ...post,
+      id: `post-${Date.now()}`
+    }
+    project.posts.push(newPost)
+    return newPost
+  }
+
   // Random color for new tags
   const tagColors = [
     'bg-emerald-500', 'bg-indigo-500', 'bg-orange-500', 'bg-rose-500',
@@ -192,6 +204,7 @@ export function useContentCalendar() {
     nextMonth,
     prevMonth,
     updatePost,
+    createPost,
     createTag,
     // Data
     projects: projects

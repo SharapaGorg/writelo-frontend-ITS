@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { CalendarPost, SocialNetwork } from '../types'
+import { ref, computed } from 'vue'
+import type { CalendarPost, SocialNetwork, NewsItem } from '../types'
 
 const props = defineProps<{
   date: string
@@ -13,7 +14,39 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   select: [date: string]
+  dropNews: [date: string, news: NewsItem]
 }>()
+
+const isDragOver = ref(false)
+
+function handleDragOver(e: DragEvent) {
+  e.preventDefault()
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = 'copy'
+  }
+  isDragOver.value = true
+}
+
+function handleDragLeave() {
+  isDragOver.value = false
+}
+
+function handleDrop(e: DragEvent) {
+  e.preventDefault()
+  isDragOver.value = false
+
+  if (e.dataTransfer) {
+    const jsonData = e.dataTransfer.getData('application/json')
+    if (jsonData) {
+      try {
+        const news: NewsItem = JSON.parse(jsonData)
+        emit('dropNews', props.date, news)
+      } catch (err) {
+        console.error('Failed to parse dropped news data', err)
+      }
+    }
+  }
+}
 
 // Colors by content type (for status icons)
 const contentTypeColors: Record<string, string> = {
@@ -42,9 +75,13 @@ const hasMore = computed(() => props.posts.length > 4)
         ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-zinc-900')
         : 'bg-zinc-950 opacity-40',
       isSelected ? 'border-purple-500 ring-1 ring-purple-500' : (hasInfoEvent && isCurrentMonth ? 'border-amber-500/40 hover:border-amber-500/60' : 'border-zinc-800 hover:border-zinc-600'),
-      isToday && !isSelected ? 'border-purple-500/50' : ''
+      isToday && !isSelected ? 'border-purple-500/50' : '',
+      isDragOver ? 'border-green-500 bg-green-500/10 ring-1 ring-green-500' : ''
     ]"
     @click="emit('select', date)"
+    @dragover="handleDragOver"
+    @dragleave="handleDragLeave"
+    @drop="handleDrop"
   >
     <!-- Top row: day number + social icons -->
     <div class="flex items-start justify-between w-full">

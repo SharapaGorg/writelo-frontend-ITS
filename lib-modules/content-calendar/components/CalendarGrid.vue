@@ -22,6 +22,7 @@ const emit = defineEmits<{
   selectDate: [date: string]
   prevMonth: []
   nextMonth: []
+  dropNews: [date: string, news: any]
 }>()
 
 const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
@@ -131,6 +132,7 @@ const calendarDays = computed((): DayInfo[] => {
         :posts="getPostsForDate(day.date)"
         :has-info-event="hasInfoEvent(day.date)"
         @select="emit('selectDate', $event)"
+        @drop-news="(date, news) => emit('dropNews', date, news)"
       />
     </div>
   </div>
