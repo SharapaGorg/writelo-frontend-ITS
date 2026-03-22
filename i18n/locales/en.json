@@ -20,11 +20,13 @@
       "description": "AI tools for SMM professionals. Clients, trends, images — all in one place",
       "cta": "Try for free",
       "ctaSubtext": "No card required • 50 free requests",
-      "stats": {
-        "users": "1000+ users",
-        "rating": "4.8",
-        "contentPlans": "5000+ content plans created",
-        "posts": "10000+ posts written"
+      "ticker": {
+        "posts": "posts written",
+        "contentPlans": "content plans created",
+        "references": "references found",
+        "images": "images generated",
+        "characters": "characters written",
+        "hours": "hours in service"
       }
     },
     "demo": {

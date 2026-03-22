@@ -21,6 +21,16 @@ const showFirstLine = ref(false)
 const showSecondLine = ref(false)
 const showContent = ref(false)
 
+// Stats ticker data
+const stats = computed(() => [
+  { value: '10,123', label: t('landing.hero.ticker.posts') },
+  { value: '5,432', label: t('landing.hero.ticker.contentPlans') },
+  { value: '8,765', label: t('landing.hero.ticker.references') },
+  { value: '3,210', label: t('landing.hero.ticker.images') },
+  { value: '12,456,789', label: t('landing.hero.ticker.characters') },
+  { value: '2,345', label: t('landing.hero.ticker.hours') },
+])
+
 // Trigger staggered animation when section becomes visible
 watch(isVisible, (visible) => {
   if (visible) {
@@ -89,20 +99,29 @@ watch(isVisible, (visible) => {
           {{ t('landing.hero.cta') }}
         </Button>
 
-        <!-- Social proof -->
+      </div>
+    </div>
+
+    <!-- Stats ticker -->
+    <div
+      class="absolute bottom-24 left-0 right-0 overflow-hidden transition-all duration-700 delay-500"
+      :class="showContent ? 'opacity-100' : 'opacity-0'"
+    >
+      <div class="flex animate-marquee">
         <div
-          class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400 mt-6"
+          v-for="(_, index) in 2"
+          :key="index"
+          class="flex shrink-0"
         >
-          <span>{{ t('landing.hero.stats.users') }}</span>
-          <span class="text-zinc-300 dark:text-zinc-600">•</span>
-          <span class="flex items-center gap-1">
-            <span class="text-yellow-500">★</span>
-            {{ t('landing.hero.stats.rating') }}
-          </span>
-          <span class="text-zinc-300 dark:text-zinc-600">•</span>
-          <span>{{ t('landing.hero.stats.contentPlans') }}</span>
-          <span class="text-zinc-300 dark:text-zinc-600">•</span>
-          <span>{{ t('landing.hero.stats.posts') }}</span>
+          <div
+            v-for="stat in stats"
+            :key="`${index}-${stat.label}`"
+            class="flex items-center gap-2 px-8 text-sm text-zinc-500 dark:text-zinc-400"
+          >
+            <span class="font-semibold text-zinc-700 dark:text-zinc-300">{{ stat.value }}</span>
+            <span>{{ stat.label }}</span>
+            <span class="text-zinc-300 dark:text-zinc-600 ml-4">•</span>
+          </div>
         </div>
       </div>
     </div>
