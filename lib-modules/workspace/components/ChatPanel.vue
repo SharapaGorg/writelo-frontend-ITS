@@ -1,10 +1,11 @@
 <!-- lib-modules/workspace/components/ChatPanel.vue -->
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { MessagesSection, SendMessageSection } from '~/lib-modules/conversations'
+import { MessagesSection } from '~/lib-modules/conversations'
 import type { MessageType } from '~/lib-modules/conversations'
 import { ApiController } from '~/scripts/shared/api/controller'
 import Loader from '~/components/atoms/Loader.vue'
+import WorkspaceChatInput from './WorkspaceChatInput.vue'
 
 const props = defineProps<{
   chatId?: string
@@ -151,9 +152,9 @@ async function handleSend(messageText: string) {
         <MessagesSection :messages="messages" />
       </div>
 
-      <SendMessageSection
-        :field-disabled="fieldDisabled"
-        :generation-in-process="fieldDisabled"
+      <WorkspaceChatInput
+        :disabled="fieldDisabled"
+        :loading="fieldDisabled"
         @send="handleSend"
       />
     </template>
