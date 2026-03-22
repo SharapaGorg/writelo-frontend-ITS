@@ -131,9 +131,7 @@ function confirmPublish() {
   isPublishing.value = false
 }
 
-const canPublish = computed(() =>
-  props.post.status === 'ready' || props.post.status === 'draft'
-)
+const canPublish = computed(() => props.post.status === 'ready')
 
 function toggleEditNetwork(network: SocialNetwork) {
   const idx = editNetworks.value.indexOf(network)
