@@ -1,9 +1,14 @@
 <!-- pages/app/workspace.vue -->
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { WorkspaceLayout, useWorkspace, type Panel, type PanelType } from '~/lib-modules/workspace'
-import { MessagesSection, SendMessageSection } from '~/lib-modules/conversations'
-import { ImageGeneratorInput, ImageGeneratorOutput } from '~/lib-modules/imageGenerator'
+import {
+  WorkspaceLayout,
+  useWorkspace,
+  ChatPanel,
+  ImagePanel,
+  type Panel,
+  type PanelType
+} from '~/lib-modules/workspace'
 import { useCurrentConversationStore } from '~/lib-modules/conversations'
 import { isMobile } from '~/scripts/features/utils'
 
@@ -73,17 +78,8 @@ function handleOpenChat(panelId: string) {
       @open-chat="handleOpenChat"
     >
       <template v-for="panel in panels" :key="panel.id" #[`panel-${panel.id}`]="{ panel: p }">
-        <div v-if="p.type === 'chat'" class="flex flex-col h-full">
-          <div class="flex-1 overflow-auto">
-            <MessagesSection />
-          </div>
-          <SendMessageSection />
-        </div>
-
-        <div v-else-if="p.type === 'image'" class="flex flex-col h-full p-4 gap-4 overflow-auto">
-          <ImageGeneratorInput />
-          <ImageGeneratorOutput />
-        </div>
+        <ChatPanel v-if="p.type === 'chat'" :chat-id="p.chatId" />
+        <ImagePanel v-else-if="p.type === 'image'" />
       </template>
     </WorkspaceLayout>
 
