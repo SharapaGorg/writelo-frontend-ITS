@@ -89,6 +89,21 @@ watch(isVisible, (visible) => {
           {{ t('landing.hero.cta') }}
         </Button>
 
+        <!-- Social proof -->
+        <div
+          class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400 mt-6"
+        >
+          <span>{{ t('landing.hero.stats.users') }}</span>
+          <span class="text-zinc-300 dark:text-zinc-600">•</span>
+          <span class="flex items-center gap-1">
+            <span class="text-yellow-500">★</span>
+            {{ t('landing.hero.stats.rating') }}
+          </span>
+          <span class="text-zinc-300 dark:text-zinc-600">•</span>
+          <span>{{ t('landing.hero.stats.contentPlans') }}</span>
+          <span class="text-zinc-300 dark:text-zinc-600">•</span>
+          <span>{{ t('landing.hero.stats.posts') }}</span>
+        </div>
       </div>
     </div>
 

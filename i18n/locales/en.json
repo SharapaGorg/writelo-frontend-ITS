@@ -19,7 +19,13 @@
       "slogan2": "Our pace.",
       "description": "AI tools for SMM professionals. Clients, trends, images — all in one place",
       "cta": "Try for free",
-      "ctaSubtext": "No card required • 50 free requests"
+      "ctaSubtext": "No card required • 50 free requests",
+      "stats": {
+        "users": "1000+ users",
+        "rating": "4.8",
+        "contentPlans": "5000+ content plans",
+        "posts": "10000+ posts"
+      }
     },
     "demo": {
       "title": "See how it works",
