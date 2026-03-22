@@ -403,6 +403,13 @@ const postTags = computed(() =>
 
             <!-- Tag input with dropdown -->
             <div class="relative">
+              <!-- Click outside to close (must be before dropdown) -->
+              <div
+                v-if="tagDropdownOpen"
+                class="fixed inset-0 z-40"
+                @click="closeTagDropdown"
+              />
+
               <button
                 class="w-full px-3 py-2 text-sm text-left rounded-lg border border-zinc-700 bg-zinc-800 text-zinc-400 hover:border-zinc-600 flex items-center gap-2"
                 @click="openTagDropdown"
@@ -455,13 +462,6 @@ const postTags = computed(() =>
                   </div>
                 </div>
               </div>
-
-              <!-- Click outside to close -->
-              <div
-                v-if="tagDropdownOpen"
-                class="fixed inset-0 z-40"
-                @click="closeTagDropdown"
-              />
             </div>
           </div>
 
