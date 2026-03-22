@@ -226,6 +226,10 @@ onUnmounted(() => {
           <span class="w-2.5 h-2.5 rounded-full bg-pink-500" />
           <span>Рилс</span>
         </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+          <span>Статья</span>
+        </div>
       </div>
     </div>
     <!-- Tag filter -->

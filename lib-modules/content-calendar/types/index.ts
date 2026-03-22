@@ -1,4 +1,4 @@
-export type ContentType = 'post' | 'story' | 'reels'
+export type ContentType = 'post' | 'story' | 'reels' | 'article'
 
 export type SocialNetwork = 'vk' | 'youtube' | 'telegram' | 'instagram'
 

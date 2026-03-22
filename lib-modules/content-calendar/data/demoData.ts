@@ -106,6 +106,153 @@ export const demoProjects: DemoProject[] = [
           vk: { text: 'Принимаем заказы на пасхальные куличи!' },
           instagram: { text: 'Easter cakes pre-order is open!' }
         }
+      },
+      {
+        id: 'cs-6',
+        title: 'Кофе с собой',
+        content: 'Спешите на работу? Возьмите кофе с собой! Горячий, ароматный, в удобном стакане. Готовим за 2 минуты.',
+        type: 'story',
+        status: 'published',
+        networks: ['instagram', 'vk'],
+        tags: ['tag-cs-1'],
+        date: '2026-03-10',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Coffee+To+Go',
+        previews: {
+          instagram: { text: 'Кофе с собой за 2 минуты!', likes: 456, comments: 12 },
+          vk: { text: 'Горячий кофе с собой — готовим за 2 минуты!', likes: 189, comments: 8, shares: 5 }
+        }
+      },
+      {
+        id: 'cs-7',
+        title: 'Знакомьтесь: наш бариста',
+        content: 'Сергей работает у нас уже 3 года. Он знает более 50 рецептов и готовит лучший раф в городе!',
+        type: 'reels',
+        status: 'ready',
+        networks: ['instagram', 'youtube', 'vk'],
+        tags: ['tag-cs-4', 'tag-cs-2'],
+        date: '2026-03-12',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Barista',
+        previews: {
+          instagram: { text: 'Знакомьтесь — наш бариста Сергей!', likes: 1230, comments: 89 },
+          youtube: { text: 'Лучший бариста города | Бодрость', likes: 890, comments: 45 },
+          vk: { text: 'Наш бариста Сергей: 50 рецептов в голове!', likes: 567, comments: 34, shares: 23 }
+        }
+      },
+      {
+        id: 'cs-8',
+        title: 'Рецепт домашнего латте',
+        content: 'Делимся секретом идеального латте дома. Вам понадобится: эспрессо, молоко 3.2%, питчер...',
+        type: 'post',
+        status: 'draft',
+        networks: ['telegram', 'vk'],
+        tags: ['tag-cs-2'],
+        date: '2026-03-19',
+        previews: {
+          telegram: { text: 'Как приготовить латте дома: пошаговый рецепт', views: 0 },
+          vk: { text: 'Секрет идеального латте — рецепт от нашего бариста' }
+        }
+      },
+      {
+        id: 'cs-9',
+        title: 'Утренняя акция 7-9',
+        content: 'Каждое утро с 7 до 9 — скидка 15% на все напитки. Бодрое начало дня гарантировано!',
+        type: 'post',
+        status: 'published',
+        networks: ['vk', 'telegram', 'instagram'],
+        tags: ['tag-cs-1', 'tag-cs-3'],
+        date: '2026-03-05',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Morning+Sale',
+        publishedLinks: {
+          vk: 'https://vk.com/wall-123456_785',
+          telegram: 'https://t.me/coffeshop_bodrost/38'
+        },
+        previews: {
+          vk: { text: 'Утренняя акция! -15% с 7 до 9 утра', likes: 345, comments: 28, shares: 19 },
+          telegram: { text: 'Скидка 15% на всё с 7 до 9!', views: 2100 },
+          instagram: { text: 'Morning special: 15% off 7-9 AM', likes: 678, comments: 45 }
+        }
+      },
+      {
+        id: 'cs-10',
+        title: 'День рождения кофейни',
+        type: 'post',
+        status: 'idea',
+        networks: ['vk', 'telegram', 'instagram'],
+        tags: ['tag-cs-3', 'tag-cs-4'],
+        date: '2026-04-01',
+        previews: {
+          vk: { text: 'Нам 5 лет! Праздничные скидки весь день' },
+          telegram: { text: '5 лет Бодрости! Праздник для всех' },
+          instagram: { text: 'Happy 5th Birthday to us!' }
+        }
+      },
+      {
+        id: 'cs-11',
+        title: 'Новая кофемашина',
+        content: 'Мы обновили оборудование! Новая La Marzocco делает кофе ещё вкуснее. Приходите пробовать!',
+        type: 'story',
+        status: 'published',
+        networks: ['instagram'],
+        tags: ['tag-cs-2'],
+        date: '2026-03-03',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=New+Machine',
+        previews: {
+          instagram: { text: 'Новая кофемашина La Marzocco!', likes: 892, comments: 67 }
+        }
+      },
+      {
+        id: 'cs-12',
+        title: 'Викторина про кофе',
+        type: 'story',
+        status: 'ready',
+        networks: ['instagram', 'telegram'],
+        tags: ['tag-cs-3'],
+        date: '2026-03-24',
+        previews: {
+          instagram: { text: 'Угадай сорт кофе — получи скидку!' },
+          telegram: { text: 'Викторина! Угадай сорт — получи промокод', views: 0 }
+        }
+      },
+      {
+        id: 'cs-13',
+        title: 'Летнее меню',
+        type: 'post',
+        status: 'idea',
+        networks: ['vk', 'instagram'],
+        tags: ['tag-cs-1', 'tag-cs-3'],
+        date: '2026-04-15',
+        previews: {
+          vk: { text: 'Анонс летнего меню: холодный кофе и лимонады' },
+          instagram: { text: 'Summer menu coming soon!' }
+        }
+      },
+      {
+        id: 'cs-14',
+        title: 'Отзыв клиента',
+        content: 'Спасибо Марии за тёплые слова! "Лучший кофе в районе, хожу только сюда уже 2 года"',
+        type: 'post',
+        status: 'draft',
+        networks: ['vk', 'telegram'],
+        tags: ['tag-cs-4'],
+        date: '2026-03-26',
+        previews: {
+          vk: { text: 'Отзыв нашей постоянной гостьи Марии' },
+          telegram: { text: 'Спасибо за отзыв!', views: 0 }
+        }
+      },
+      {
+        id: 'cs-15',
+        title: 'Кофейный мастер-класс',
+        type: 'post',
+        status: 'idea',
+        networks: ['vk', 'instagram', 'telegram'],
+        tags: ['tag-cs-2', 'tag-cs-3'],
+        date: '2026-04-05',
+        previews: {
+          vk: { text: 'Приглашаем на мастер-класс по латте-арту!' },
+          instagram: { text: 'Latte art workshop — sign up now!' },
+          telegram: { text: 'МК по латте-арту: запись открыта', views: 0 }
+        }
       }
     ],
     infoEvents: [

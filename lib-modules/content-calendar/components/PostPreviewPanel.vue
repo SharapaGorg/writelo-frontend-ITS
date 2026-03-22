@@ -5,7 +5,7 @@ import InstagramPreview from './previews/InstagramPreview.vue'
 import VkPreview from './previews/VkPreview.vue'
 import YouTubePreview from './previews/YouTubePreview.vue'
 import TelegramPreview from './previews/TelegramPreview.vue'
-import type { CalendarPost, SocialNetwork, PostStatus, ContentTag } from '../types'
+import type { CalendarPost, SocialNetwork, PostStatus, ContentTag, ContentType } from '../types'
 
 const props = defineProps<{
   post: CalendarPost
@@ -30,6 +30,7 @@ const isEditing = ref(false)
 const editTitle = ref('')
 const editContent = ref('')
 const editStatus = ref<PostStatus>('idea')
+const editType = ref<ContentType>('post')
 const editNetworks = ref<SocialNetwork[]>([])
 const editTags = ref<string[]>([])
 const editDate = ref('')
@@ -69,6 +70,7 @@ function resetEditForm() {
   editTitle.value = props.post.title
   editContent.value = props.post.content || ''
   editStatus.value = props.post.status
+  editType.value = props.post.type
   editNetworks.value = [...props.post.networks]
   editTags.value = [...props.post.tags]
   editDate.value = props.post.date
@@ -96,6 +98,7 @@ function saveChanges() {
     title: editTitle.value,
     content: editContent.value,
     status: editStatus.value,
+    type: editType.value,
     networks: editNetworks.value,
     tags: editTags.value,
     date: editDate.value,
@@ -264,6 +267,13 @@ const editableStatuses: { value: PostStatus; label: string }[] = [
   { value: 'draft', label: 'Черновик' },
   { value: 'ready', label: 'Готов' },
   { value: 'published', label: 'Опубликован' }
+]
+
+const contentTypes: { value: ContentType; label: string; color: string }[] = [
+  { value: 'post', label: 'Пост', color: 'bg-blue-500' },
+  { value: 'story', label: 'Сторис', color: 'bg-purple-500' },
+  { value: 'reels', label: 'Рилс', color: 'bg-pink-500' },
+  { value: 'article', label: 'Статья', color: 'bg-emerald-500' }
 ]
 
 const statusInfo: Record<PostStatus, { label: string; class: string }> = {
@@ -551,6 +561,27 @@ const postTags = computed(() =>
                 @click="editStatus = s.value"
               >
                 {{ s.label }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Content Type -->
+          <div class="mb-4">
+            <label class="text-xs text-zinc-500 mb-2 block">Тип контента</label>
+            <div class="flex gap-2 flex-wrap">
+              <button
+                v-for="t in contentTypes"
+                :key="t.value"
+                :class="[
+                  'px-3 py-1.5 rounded text-sm transition-colors flex items-center gap-2',
+                  editType === t.value
+                    ? `${t.color} text-white`
+                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                ]"
+                @click="editType = t.value"
+              >
+                <span :class="['w-2 h-2 rounded-full', t.color]" />
+                {{ t.label }}
               </button>
             </div>
           </div>

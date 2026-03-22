@@ -52,7 +52,8 @@ function handleDrop(e: DragEvent) {
 const contentTypeColors: Record<string, string> = {
   post: 'text-blue-500',
   story: 'text-purple-500',
-  reels: 'text-pink-500'
+  reels: 'text-pink-500',
+  article: 'text-emerald-500'
 }
 
 // Unique social networks from all posts
