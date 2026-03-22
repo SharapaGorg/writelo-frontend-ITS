@@ -15,14 +15,18 @@ export function useContentCalendar() {
   const activeTags = ref<string[]>([]) // Empty = show all, non-empty = filter
   const currentMonth = ref<Date>(new Date())
 
+  // Track which news items have been used (newsId -> date)
+  const usedNews = ref<Record<string, string>>({})
+
   // Current project
   const currentProject = computed(() =>
     projects.find(p => p.id === selectedProjectId.value) ?? projects[0]
   )
 
-  // Reset tags when project changes
+  // Reset tags and usedNews when project changes
   watch(selectedProjectId, () => {
     activeTags.value = []
+    usedNews.value = {}
   })
 
   // Filtered posts by active networks, statuses, and tags
@@ -150,6 +154,14 @@ export function useContentCalendar() {
     return true
   }
 
+  function markNewsAsUsed(newsId: string, date: string) {
+    usedNews.value[newsId] = date
+  }
+
+  function getNewsUsedDate(newsId: string): string | null {
+    return usedNews.value[newsId] || null
+  }
+
   // Random color for new tags
   const tagColors = [
     'bg-emerald-500', 'bg-indigo-500', 'bg-orange-500', 'bg-rose-500',
@@ -218,7 +230,10 @@ export function useContentCalendar() {
     createPost,
     deletePost,
     createTag,
+    markNewsAsUsed,
+    getNewsUsedDate,
     // Data
-    projects: projects
+    projects: projects,
+    usedNews
   }
 }

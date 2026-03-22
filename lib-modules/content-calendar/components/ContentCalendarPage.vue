@@ -35,6 +35,8 @@ const {
   createPost,
   deletePost,
   createTag,
+  markNewsAsUsed,
+  usedNews,
   projects
 } = useContentCalendar()
 
@@ -75,9 +77,9 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
   })
 
   if (newPost) {
-    // Select the date and the new post
-    selectDate(date)
-    selectPost(newPost.id)
+    // Mark news as used with the date
+    markNewsAsUsed(news.id, date)
+    // Don't auto-select - keep showing news sidebar
   }
 }
 
@@ -324,6 +326,7 @@ onUnmounted(() => {
       <NewsSidebar
         v-else
         :news="currentProject.news"
+        :used-news="usedNews"
       />
     </div>
   </div>

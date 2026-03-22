@@ -4,6 +4,7 @@ import type { NewsItem } from '../types'
 
 const props = defineProps<{
   news: NewsItem[]
+  usedNews: Record<string, string>
 }>()
 </script>
 
@@ -14,7 +15,12 @@ const props = defineProps<{
       <p class="text-xs text-zinc-500 mt-0.5">Перетащите в календарь для создания идеи</p>
     </div>
     <div class="flex-1 overflow-y-auto p-3 space-y-2">
-      <NewsCard v-for="item in news" :key="item.id" :news="item" />
+      <NewsCard
+        v-for="item in news"
+        :key="item.id"
+        :news="item"
+        :used-date="usedNews[item.id]"
+      />
     </div>
   </aside>
 </template>
