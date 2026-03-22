@@ -55,13 +55,12 @@ function handlePostDelete() {
 
 function handleCreateChat() {
   if (selectedPostId.value) {
-    // Generate a demo conversation ID
+    // Generate a conversation ID and link it to the post
     const conversationId = `conv-${Date.now()}`
     updatePost(selectedPostId.value, { conversationId })
 
-    // In real app, this would redirect to create a new conversation
-    // For demo, we just link the fake ID
-    // window.location.href = `/app?conversation=${conversationId}`
+    // Open chat in new tab
+    window.open(`/app?conversation=${conversationId}`, '_blank')
   }
 }
 
