@@ -1,8 +1,11 @@
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, reactive } from 'vue'
 import type { SocialNetwork, CalendarPost, InfoEvent, PostStatus, ContentTag } from '../types'
-import { demoProjects } from '../data/demoData'
+import { projects as initialDemoProjects } from '../data/demoData'
 
 export function useContentCalendar() {
+  // Make projects reactive
+  const projects = reactive([...initialDemoProjects])
+
   // State
   const selectedProjectId = ref<string>('coffee-shop')
   const selectedDate = ref<string | null>(null)
@@ -14,7 +17,7 @@ export function useContentCalendar() {
 
   // Current project
   const currentProject = computed(() =>
-    demoProjects.find(p => p.id === selectedProjectId.value) ?? demoProjects[0]
+    projects.find(p => p.id === selectedProjectId.value) ?? projects[0]
   )
 
   // Reset tags when project changes
@@ -115,7 +118,7 @@ export function useContentCalendar() {
   }
 
   function updatePost(postId: string, updates: Partial<CalendarPost>) {
-    const project = demoProjects.find(p => p.id === selectedProjectId.value)
+    const project = projects.find(p => p.id === selectedProjectId.value)
     if (!project) return
 
     const postIndex = project.posts.findIndex(p => p.id === postId)
@@ -135,7 +138,7 @@ export function useContentCalendar() {
   ]
 
   function createTag(name: string): string {
-    const project = demoProjects.find(p => p.id === selectedProjectId.value)
+    const project = projects.find(p => p.id === selectedProjectId.value)
     if (!project) return ''
 
     // Check if tag already exists
@@ -194,6 +197,6 @@ export function useContentCalendar() {
     updatePost,
     createTag,
     // Data
-    projects: demoProjects
+    projects: projects
   }
 }
