@@ -209,31 +209,37 @@ const postTags = computed(() =>
 <template>
   <aside class="w-96 border-l border-zinc-800 bg-zinc-900 flex flex-col">
     <!-- Header -->
-    <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
+    <div class="flex items-center gap-3 px-4 py-3 border-b border-zinc-800">
       <template v-if="isEditing">
         <input
           v-model="editTitle"
-          class="flex-1 bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-sm text-zinc-200 focus:outline-none focus:border-purple-500"
+          class="flex-1 min-w-0 bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-sm text-zinc-200 focus:outline-none focus:border-purple-500"
           placeholder="Заголовок"
         />
       </template>
-      <h3 v-else class="text-sm font-medium text-zinc-200 truncate pr-2">{{ post.title }}</h3>
-      <div class="flex items-center gap-2 flex-shrink-0">
-        <button
-          v-if="canEdit && !isEditing"
-          class="text-zinc-500 hover:text-purple-400 transition-colors"
-          title="Редактировать"
-          @click="startEditing"
-        >
-          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-          </svg>
-        </button>
-        <button class="text-zinc-500 hover:text-white transition-colors" @click="emit('close')">
-          ✕
-        </button>
-      </div>
+      <h3 v-else class="flex-1 min-w-0 text-sm font-medium text-zinc-200 truncate">{{ post.title }}</h3>
+      <button
+        class="flex-shrink-0 text-zinc-500 hover:text-white transition-colors p-1"
+        @click="emit('close')"
+      >
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Edit button bar -->
+    <div v-if="canEdit && !isEditing" class="px-4 py-2 border-b border-zinc-800">
+      <button
+        class="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
+        @click="startEditing"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+        Редактировать
+      </button>
     </div>
 
     <!-- Tabs -->
