@@ -29,6 +29,7 @@ export interface CalendarPost {
   networks: SocialNetwork[]
   tags: string[] // Tag IDs
   date: string // 'YYYY-MM-DD'
+  time?: string // 'HH:MM' (optional)
   image?: string
   conversationId?: string // Link to conversation where this was created
   publishedLinks?: Partial<Record<SocialNetwork, string>> // Links to published posts
