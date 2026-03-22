@@ -46,6 +46,7 @@ export interface InfoEvent {
 export interface NewsItem {
   id: string
   title: string
+  description?: string
   source: string
   date: string
   url?: string

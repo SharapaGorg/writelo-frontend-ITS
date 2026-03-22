@@ -52,10 +52,20 @@ function handlePostDelete() {
 }
 
 function handleNewsDropOnDate(date: string, news: NewsItem) {
+  // Build content from news description and URL
+  let content = ''
+  if (news.description) {
+    content += news.description
+  }
+  if (news.url) {
+    content += content ? '\n\n' : ''
+    content += `Источник: ${news.source}\n${news.url}`
+  }
+
   const newPost = createPost({
     title: news.title,
     description: news.description,
-    content: '',
+    content: content,
     type: 'post',
     status: 'idea',
     networks: ['vk', 'telegram'], // Default networks

@@ -114,9 +114,30 @@ export const demoProjects: DemoProject[] = [
       { id: 'ie-3', title: '1 Мая', date: '2026-05-01', description: 'День труда' }
     ],
     news: [
-      { id: 'n-1', title: 'Цены на кофе выросли на 15%', source: 'РБК', date: '2026-03-20' },
-      { id: 'n-2', title: 'Тренд: овсяное молоко обогнало миндальное', source: 'VC.ru', date: '2026-03-18' },
-      { id: 'n-3', title: 'Starbucks открыл 100-ю кофейню в России', source: 'Коммерсант', date: '2026-03-15' }
+      {
+        id: 'n-1',
+        title: 'Цены на кофе выросли на 15%',
+        description: 'Мировые цены на кофе достигли максимума за последние 10 лет из-за засухи в Бразилии. Эксперты прогнозируют дальнейший рост цен в ближайшие месяцы.',
+        source: 'РБК',
+        date: '2026-03-20',
+        url: 'https://rbc.ru/business/coffee-prices-2026'
+      },
+      {
+        id: 'n-2',
+        title: 'Тренд: овсяное молоко обогнало миндальное',
+        description: 'По данным исследования Nielsen, продажи овсяного молока в России выросли на 340% за год. Потребители выбирают его за экологичность и нейтральный вкус.',
+        source: 'VC.ru',
+        date: '2026-03-18',
+        url: 'https://vc.ru/food/oat-milk-trend'
+      },
+      {
+        id: 'n-3',
+        title: 'Starbucks открыл 100-ю кофейню в России',
+        description: 'Американская сеть кофеен отмечает юбилей на российском рынке. Компания планирует открыть ещё 50 точек до конца года.',
+        source: 'Коммерсант',
+        date: '2026-03-15',
+        url: 'https://kommersant.ru/starbucks-100'
+      }
     ]
   },
   {
@@ -174,8 +195,22 @@ export const demoProjects: DemoProject[] = [
       { id: 'ie-ba-2', title: 'День блогера', date: '2026-04-17' }
     ],
     news: [
-      { id: 'n-ba-1', title: 'Instagram тестирует новый алгоритм рекомендаций', source: 'TechCrunch', date: '2026-03-19' },
-      { id: 'n-ba-2', title: 'YouTube Shorts обгоняет TikTok по просмотрам', source: 'The Verge', date: '2026-03-17' }
+      {
+        id: 'n-ba-1',
+        title: 'Instagram тестирует новый алгоритм рекомендаций',
+        description: 'Соцсеть начала тестировать AI-алгоритм, который лучше понимает интересы пользователей. Блогеры отмечают рост охватов на 20-30%.',
+        source: 'TechCrunch',
+        date: '2026-03-19',
+        url: 'https://techcrunch.com/instagram-algorithm-2026'
+      },
+      {
+        id: 'n-ba-2',
+        title: 'YouTube Shorts обгоняет TikTok по просмотрам',
+        description: 'Короткие видео на YouTube набирают 50 млрд просмотров в день. Платформа запускает новую программу монетизации для авторов Shorts.',
+        source: 'The Verge',
+        date: '2026-03-17',
+        url: 'https://theverge.com/youtube-shorts-tiktok'
+      }
     ]
   },
   {
@@ -236,9 +271,30 @@ export const demoProjects: DemoProject[] = [
       { id: 'ie-es-2', title: 'Чёрная пятница', date: '2026-11-27' }
     ],
     news: [
-      { id: 'n-es-1', title: 'Apple представит новые MacBook в апреле', source: 'Bloomberg', date: '2026-03-21' },
-      { id: 'n-es-2', title: 'Samsung выпустит складной планшет', source: 'The Verge', date: '2026-03-18' },
-      { id: 'n-es-3', title: 'Xiaomi выходит на рынок электромобилей', source: 'Reuters', date: '2026-03-15' }
+      {
+        id: 'n-es-1',
+        title: 'Apple представит новые MacBook в апреле',
+        description: 'Компания готовит обновление линейки ноутбуков с процессорами M4. Ожидается увеличение автономности до 24 часов и новый дизайн.',
+        source: 'Bloomberg',
+        date: '2026-03-21',
+        url: 'https://bloomberg.com/apple-macbook-m4'
+      },
+      {
+        id: 'n-es-2',
+        title: 'Samsung выпустит складной планшет',
+        description: 'Корейский гигант анонсировал первый в мире складной планшет с диагональю 17 дюймов. Старт продаж запланирован на осень 2026.',
+        source: 'The Verge',
+        date: '2026-03-18',
+        url: 'https://theverge.com/samsung-foldable-tablet'
+      },
+      {
+        id: 'n-es-3',
+        title: 'Xiaomi выходит на рынок электромобилей',
+        description: 'Xiaomi SU7 поступит в продажу в России уже летом. Электромобиль разгоняется до 100 км/ч за 2.8 секунды и проезжает до 800 км на одной зарядке.',
+        source: 'Reuters',
+        date: '2026-03-15',
+        url: 'https://reuters.com/xiaomi-ev-russia'
+      }
     ]
   }
 ]
