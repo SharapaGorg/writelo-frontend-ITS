@@ -109,9 +109,13 @@ export const demoProjects: DemoProject[] = [
       }
     ],
     infoEvents: [
-      { id: 'ie-1', title: '8 Марта', date: '2026-03-08', description: 'Международный женский день' },
-      { id: 'ie-2', title: 'Пасха', date: '2026-04-12', description: 'Православная Пасха' },
-      { id: 'ie-3', title: '1 Мая', date: '2026-05-01', description: 'День труда' }
+      { id: 'ie-1', title: 'Масленица', date: '2026-03-01', description: 'Прощёное воскресенье, последний день Масленицы' },
+      { id: 'ie-2', title: '8 Марта', date: '2026-03-08', description: 'Международный женский день' },
+      { id: 'ie-3', title: 'День числа Пи', date: '2026-03-14', description: '3.14 — праздник математиков и гиков' },
+      { id: 'ie-4', title: 'День счастья', date: '2026-03-20', description: 'Международный день счастья' },
+      { id: 'ie-5', title: 'День театра', date: '2026-03-27', description: 'Международный день театра' },
+      { id: 'ie-6', title: 'Пасха', date: '2026-04-12', description: 'Православная Пасха' },
+      { id: 'ie-7', title: '1 Мая', date: '2026-05-01', description: 'День труда' }
     ],
     news: [
       {
@@ -191,8 +195,11 @@ export const demoProjects: DemoProject[] = [
       }
     ],
     infoEvents: [
-      { id: 'ie-ba-1', title: '8 Марта', date: '2026-03-08' },
-      { id: 'ie-ba-2', title: 'День блогера', date: '2026-04-17' }
+      { id: 'ie-ba-1', title: 'Масленица', date: '2026-03-01', description: 'Прощёное воскресенье' },
+      { id: 'ie-ba-2', title: '8 Марта', date: '2026-03-08', description: 'Международный женский день' },
+      { id: 'ie-ba-3', title: 'День счастья', date: '2026-03-20', description: 'Делаем контент про позитив' },
+      { id: 'ie-ba-4', title: 'День театра', date: '2026-03-27', description: 'Коллаб с театром?' },
+      { id: 'ie-ba-5', title: 'День блогера', date: '2026-04-17' }
     ],
     news: [
       {
@@ -267,8 +274,10 @@ export const demoProjects: DemoProject[] = [
       }
     ],
     infoEvents: [
-      { id: 'ie-es-1', title: '8 Марта', date: '2026-03-08' },
-      { id: 'ie-es-2', title: 'Чёрная пятница', date: '2026-11-27' }
+      { id: 'ie-es-1', title: '8 Марта', date: '2026-03-08', description: 'Скидки на подарки для женщин' },
+      { id: 'ie-es-2', title: 'День числа Пи', date: '2026-03-14', description: 'Скидка 3.14% для гиков' },
+      { id: 'ie-es-3', title: 'День счастья', date: '2026-03-20', description: 'Акция «Счастливые часы»' },
+      { id: 'ie-es-4', title: 'Чёрная пятница', date: '2026-11-27' }
     ],
     news: [
       {
