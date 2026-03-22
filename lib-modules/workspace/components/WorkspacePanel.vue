@@ -45,8 +45,10 @@ const style = computed(() => ({
         :panel="panel"
         :title="title"
         :can-close="canClose"
+        :can-split="canSplit"
         :is-active="isActive"
         @close="emit('close')"
+        @split-right="(type) => emit('splitRight', type)"
       />
     </PanelContextMenu>
 
