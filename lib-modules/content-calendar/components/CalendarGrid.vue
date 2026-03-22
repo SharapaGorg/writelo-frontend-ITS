@@ -10,6 +10,14 @@ const props = defineProps<{
   hasInfoEvent: (date: string) => boolean
 }>()
 
+// Format date as YYYY-MM-DD without timezone conversion
+function formatDateLocal(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 const emit = defineEmits<{
   selectDate: [date: string]
   prevMonth: []
@@ -41,7 +49,7 @@ const calendarDays = computed((): DayInfo[] => {
   if (startDay < 0) startDay = 6
 
   const days: DayInfo[] = []
-  const today = new Date().toISOString().split('T')[0]
+  const today = formatDateLocal(new Date())
 
   // Previous month days
   const prevMonthLastDay = new Date(year, month, 0).getDate()
@@ -49,7 +57,7 @@ const calendarDays = computed((): DayInfo[] => {
     const dayNum = prevMonthLastDay - i
     const date = new Date(year, month - 1, dayNum)
     days.push({
-      date: date.toISOString().split('T')[0],
+      date: formatDateLocal(date),
       dayNumber: dayNum,
       isCurrentMonth: false,
       isToday: false
@@ -59,7 +67,7 @@ const calendarDays = computed((): DayInfo[] => {
   // Current month days
   for (let d = 1; d <= lastDay.getDate(); d++) {
     const date = new Date(year, month, d)
-    const dateStr = date.toISOString().split('T')[0]
+    const dateStr = formatDateLocal(date)
     days.push({
       date: dateStr,
       dayNumber: d,
@@ -73,7 +81,7 @@ const calendarDays = computed((): DayInfo[] => {
   for (let d = 1; d <= remaining; d++) {
     const date = new Date(year, month + 1, d)
     days.push({
-      date: date.toISOString().split('T')[0],
+      date: formatDateLocal(date),
       dayNumber: d,
       isCurrentMonth: false,
       isToday: false
