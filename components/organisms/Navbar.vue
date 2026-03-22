@@ -3,6 +3,7 @@
     <div class="flex items-center gap-x-3 w-full">
       <DialogsSection/>
       <ImageGeneratorNavbarButton/>
+      <WorkspaceNavbarButton/>
     </div>
 
     <div class="w-full flex justify-center items-center">
@@ -56,6 +57,7 @@ import {PaymentProvider} from "~/scripts/shared/types/payment";
 import {ApiController} from "~/scripts/shared/api/controller";
 import CrmPopup from "~/components/molecules/CrmPopup.vue";
 import {ImageGeneratorNavbarButton} from "~/lib-modules/imageGenerator";
+import {WorkspaceNavbarButton} from "~/lib-modules/workspace";
 import {DialogsSection, useCurrentConversation} from "~/lib-modules/conversations";
 import ClientSelector from "~/components/molecules/ClientSelector.vue";
 import {ProjectCreateWindow, useProjectsStore} from "~/lib-modules/projects";
