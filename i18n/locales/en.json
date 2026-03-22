@@ -78,8 +78,8 @@
       "contacts": "Contacts"
     },
     "footer": {
-      "telegram": "Telegram",
-      "support": "Support"
+      "start": "Get started",
+      "login": "Login"
     },
     "seo": {
       "title": "Writelo — AI for SMM | Social Media AI Assistant",

@@ -17,27 +17,14 @@ const { t } = useI18n()
             to="/start"
             class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
           >
-            Начать работу
+            {{ t('landing.footer.start') }}
           </NuxtLink>
           <NuxtLink
             to="/auth"
             class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
           >
-            Вход
+            {{ t('landing.footer.login') }}
           </NuxtLink>
-          <a
-            href="https://t.me/writelo"
-            target="_blank"
-            class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
-          >
-            {{ t('landing.footer.telegram') }}
-          </a>
-          <a
-            href="mailto:dushin.egor.dm@yandex.ru"
-            class="text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
-          >
-            {{ t('landing.footer.support') }}
-          </a>
         </nav>
 
         <div class="text-zinc-400 dark:text-zinc-500">

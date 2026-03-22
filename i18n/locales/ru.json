@@ -78,8 +78,8 @@
       "contacts": "Контакты"
     },
     "footer": {
-      "telegram": "Telegram",
-      "support": "Поддержка"
+      "start": "Начать работу",
+      "login": "Вход"
     },
     "seo": {
       "title": "Writelo (Райтелло) — ИИ для SMM | AI-ассистент для соцсетей",
