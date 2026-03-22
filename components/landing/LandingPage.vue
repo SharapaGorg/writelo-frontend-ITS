@@ -6,6 +6,7 @@ import LandingPromoVideo from '~/components/landing/LandingPromoVideo.vue'
 import LandingFeature from '~/components/landing/LandingFeature.vue'
 import TimeCalculator from '~/components/landing/TimeCalculator.vue'
 import LandingPricing from '~/components/landing/LandingPricing.vue'
+import LandingContacts from '~/components/landing/LandingContacts.vue'
 import LandingFooter from '~/components/landing/LandingFooter.vue'
 import LanguageSelector from '~/components/atoms/LanguageSelector.vue'
 
@@ -164,6 +165,9 @@ function closeMobileMenu() {
 
       <!-- Pricing -->
       <LandingPricing id="pricing"/>
+
+      <!-- Contacts -->
+      <LandingContacts />
     </main>
 
     <!-- Footer -->
