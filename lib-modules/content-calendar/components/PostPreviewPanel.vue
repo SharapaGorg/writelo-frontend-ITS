@@ -762,7 +762,8 @@ const postTags = computed(() =>
             <!-- Has linked chat -->
             <a
               v-if="post.conversationId"
-              :href="`/app?conversation=${post.conversationId}`"
+              :href="`/app/conversations/${post.conversationId}`"
+              target="_blank"
               class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

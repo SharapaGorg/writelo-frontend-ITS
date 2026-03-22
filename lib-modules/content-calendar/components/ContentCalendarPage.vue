@@ -60,7 +60,7 @@ function handleCreateChat() {
     updatePost(selectedPostId.value, { conversationId })
 
     // Open chat in new tab
-    window.open(`/app?conversation=${conversationId}`, '_blank')
+    window.open(`/app/conversations/${conversationId}`, '_blank')
   }
 }
 
