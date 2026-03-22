@@ -84,7 +84,7 @@ const hasMore = computed(() => props.posts.length > 4)
     <!-- Status icons (colored by content type) -->
     <div class="mt-auto flex gap-1.5 flex-wrap">
       <template v-for="post in visiblePosts" :key="post.id">
-        <!-- Idea: empty circle -->
+        <!-- Idea: lightbulb -->
         <svg
           v-if="post.status === 'idea'"
           :class="['w-5 h-5', contentTypeColors[post.type]]"
@@ -94,7 +94,7 @@ const hasMore = computed(() => props.posts.length > 4)
           stroke-width="2"
           :title="post.title"
         >
-          <circle cx="12" cy="12" r="9" />
+          <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
         </svg>
         <!-- Draft: half-filled circle -->
         <svg

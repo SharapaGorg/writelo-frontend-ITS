@@ -22,10 +22,10 @@ const typeLabels: Record<ContentType, string> = {
   reels: 'Рилс'
 }
 
-const statusIcons: Record<PostStatus, { icon: string; class: string; label: string }> = {
-  idea: { icon: '○', class: 'text-gray-400', label: 'Идея' },
-  draft: { icon: '◐', class: 'text-yellow-500', label: 'Черновик' },
-  ready: { icon: '●', class: 'text-green-500', label: 'Готов' }
+const statusLabels: Record<PostStatus, { class: string; label: string }> = {
+  idea: { class: 'text-gray-400', label: 'Идея' },
+  draft: { class: 'text-yellow-500', label: 'Черновик' },
+  ready: { class: 'text-green-500', label: 'Готов' }
 }
 
 const networkIcons: Record<SocialNetwork, string> = {
@@ -68,11 +68,22 @@ const postTags = computed(() =>
     </h4>
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-1.5">
-        <span :class="statusIcons[post.status].class">
-          {{ statusIcons[post.status].icon }}
-        </span>
+        <!-- Idea: lightbulb -->
+        <svg v-if="post.status === 'idea'" :class="['w-4 h-4', statusLabels[post.status].class]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+        </svg>
+        <!-- Draft: half-filled circle -->
+        <svg v-else-if="post.status === 'draft'" :class="['w-4 h-4', statusLabels[post.status].class]" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3a9 9 0 0 0 0 18V3z" fill="currentColor"/>
+          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+        </svg>
+        <!-- Ready: checkmark in circle -->
+        <svg v-else-if="post.status === 'ready'" :class="['w-4 h-4', statusLabels[post.status].class]" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M8 12l2.5 2.5L16 9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
         <span class="text-xs text-zinc-500">
-          {{ statusIcons[post.status].label }}
+          {{ statusLabels[post.status].label }}
         </span>
       </div>
       <!-- Tags -->

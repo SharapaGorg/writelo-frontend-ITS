@@ -34,9 +34,9 @@ const {
 } = useContentCalendar()
 
 const statusConfig = [
-  { id: 'idea' as const, label: 'Идея', icon: '○', color: 'text-zinc-400' },
-  { id: 'draft' as const, label: 'Черновик', icon: '◐', color: 'text-yellow-500' },
-  { id: 'ready' as const, label: 'Готов', icon: '●', color: 'text-green-500' }
+  { id: 'idea' as const, label: 'Идея', icon: 'idea', color: 'text-zinc-400' },
+  { id: 'draft' as const, label: 'Черновик', icon: 'draft', color: 'text-yellow-500' },
+  { id: 'ready' as const, label: 'Готов', icon: 'ready', color: 'text-green-500' }
 ]
 
 function handleKeydown(e: KeyboardEvent) {
@@ -85,7 +85,20 @@ onUnmounted(() => {
             ]"
             @click="toggleStatus(status.id)"
           >
-            <span :class="status.color">{{ status.icon }}</span>
+            <!-- Idea: lightbulb -->
+            <svg v-if="status.icon === 'idea'" :class="['w-4 h-4', status.color]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+            </svg>
+            <!-- Draft: half-filled circle -->
+            <svg v-else-if="status.icon === 'draft'" :class="['w-4 h-4', status.color]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3a9 9 0 0 0 0 18V3z" fill="currentColor"/>
+              <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <!-- Ready: checkmark in circle -->
+            <svg v-else-if="status.icon === 'ready'" :class="['w-4 h-4', status.color]" viewBox="0 0 24 24" fill="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 12l2.5 2.5L16 9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
             <span>{{ status.label }}</span>
           </button>
         </div>
