@@ -72,6 +72,11 @@
         "cta": "Buy"
       }
     },
+    "nav": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "contacts": "Contacts"
+    },
     "footer": {
       "telegram": "Telegram",
       "support": "Support"

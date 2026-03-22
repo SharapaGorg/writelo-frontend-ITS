@@ -72,6 +72,11 @@
         "cta": "Купить"
       }
     },
+    "nav": {
+      "features": "Возможности",
+      "pricing": "Цены",
+      "contacts": "Контакты"
+    },
     "footer": {
       "telegram": "Telegram",
       "support": "Поддержка"

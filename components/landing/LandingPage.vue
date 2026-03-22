@@ -22,7 +22,32 @@ const {t} = useI18n()
           <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
             Writelo
           </span>
-          <LanguageSelector/>
+
+          <!-- Desktop nav -->
+          <nav class="hidden md:flex items-center gap-8">
+            <a
+              href="#features"
+              class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+            >
+              {{ t('landing.nav.features') }}
+            </a>
+            <a
+              href="#pricing"
+              class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+            >
+              {{ t('landing.nav.pricing') }}
+            </a>
+            <a
+              href="#contacts"
+              class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+            >
+              {{ t('landing.nav.contacts') }}
+            </a>
+          </nav>
+
+          <div class="flex items-center gap-4">
+            <LanguageSelector/>
+          </div>
         </div>
       </div>
     </header>
@@ -36,6 +61,7 @@ const {t} = useI18n()
 
       <!-- Feature: Clients -->
       <LandingFeature
+          id="features"
           :title="t('landing.features.clients.title')"
           :description="t('landing.features.clients.description')"
           video-url="/landing/clients.mp4"
@@ -83,7 +109,7 @@ const {t} = useI18n()
       <TimeCalculator/>
 
       <!-- Pricing -->
-      <LandingPricing/>
+      <LandingPricing id="pricing"/>
     </main>
 
     <!-- Footer -->
