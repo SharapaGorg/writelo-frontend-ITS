@@ -121,7 +121,7 @@ watch(isVisible, (visible) => {
           <div
             v-for="stat in stats"
             :key="`${index}-${stat.label}`"
-            class="flex items-center gap-3 px-5 py-3 rounded-xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 shadow-sm"
+            class="flex items-center gap-3 px-5 py-3 rounded-xl bg-white dark:bg-zinc-900 md:bg-white/60 md:dark:bg-zinc-900/60 md:backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 shadow-sm"
           >
             <div class="p-2 rounded-lg bg-gradient-to-br from-purple-500/10 to-indigo-500/10">
               <component :is="stat.icon" class="w-4 h-4 text-purple-500 dark:text-purple-400" />
