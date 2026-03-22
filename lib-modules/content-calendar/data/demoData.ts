@@ -13,7 +13,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         networks: ['vk', 'telegram'],
         date: '2026-03-15',
-        image: '/demo/coffee-latte.jpg',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Latte',
         previews: {
           vk: {
             text: 'Весна пришла — латте подешевел! Скидка 20% на все латте до конца марта. Ждём вас!',
@@ -34,7 +34,7 @@ export const demoProjects: DemoProject[] = [
         status: 'draft',
         networks: ['instagram'],
         date: '2026-03-18',
-        image: '/demo/tiramisu.jpg',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Tiramisu',
         previews: {
           instagram: {
             text: 'Новинка! Итальянский тирамису по авторскому рецепту',
@@ -62,7 +62,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         networks: ['vk', 'telegram', 'instagram'],
         date: '2026-03-08',
-        image: '/demo/8march.jpg',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=8+March',
         previews: {
           vk: { text: 'Милые дамы! Поздравляем с 8 марта! Сегодня всем девушкам кофе в подарок', likes: 567, comments: 42, shares: 89 },
           telegram: { text: 'С 8 марта! Девушкам — кофе бесплатно', views: 3200 },
@@ -104,7 +104,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         networks: ['instagram', 'youtube'],
         date: '2026-03-16',
-        image: '/demo/morning.jpg',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Morning',
         previews: {
           instagram: { text: 'Мое идеальное утро за 60 секунд', likes: 12400, comments: 342 },
           youtube: { text: 'Моя утренняя рутина 2026 | Продуктивное утро', likes: 8900, comments: 234 }
@@ -154,7 +154,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         networks: ['youtube', 'vk'],
         date: '2026-03-14',
-        image: '/demo/iphone.jpg',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=iPhone',
         previews: {
           youtube: { text: 'iPhone 17 — честный обзор | Стоит ли покупать?', likes: 4500, comments: 678 },
           vk: { text: 'Обзор нового iPhone 17 уже на канале!', likes: 890, comments: 123, shares: 45 }
@@ -167,7 +167,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         networks: ['vk', 'telegram', 'instagram'],
         date: '2026-03-07',
-        image: '/demo/sale.jpg',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Sale',
         previews: {
           vk: { text: 'Скидки до 30% на технику для любимых!', likes: 234, comments: 45, shares: 67 },
           telegram: { text: 'Распродажа к 8 марта — скидки до 30%!', views: 5600 },
