@@ -110,6 +110,18 @@
         "title": "Focus on the idea — we'll write the prompt",
         "description": "AI enhances your prompt automatically. Just describe what you need"
       }
+    },
+    "contacts": {
+      "title": "Contacts",
+      "email": "Email us",
+      "feedback": {
+        "title": "Leave feedback",
+        "placeholder": "Your feedback or suggestion...",
+        "emailPlaceholder": "Email (optional)",
+        "submit": "Submit",
+        "success": "Thank you for your feedback!",
+        "charCount": "{count}/600"
+      }
     }
   },
   "verify_page": {
