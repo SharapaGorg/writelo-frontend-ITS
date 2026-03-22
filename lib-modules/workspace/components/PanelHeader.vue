@@ -1,6 +1,7 @@
 <!-- lib-modules/workspace/components/PanelHeader.vue -->
 <script setup lang="ts">
 import { computed } from 'vue'
+import { Image, MessageSquare } from 'lucide-vue-next'
 import type { Panel } from '../types'
 
 const props = defineProps<{
@@ -22,10 +23,6 @@ const displayTitle = computed(() => {
   return props.title || 'New Chat'
 })
 
-const icon = computed(() => {
-  return props.panel.type === 'image' ? 'image' : 'message-square'
-})
-
 function onContextMenu(e: MouseEvent) {
   e.preventDefault()
   emit('contextmenu', e)
@@ -39,13 +36,8 @@ function onContextMenu(e: MouseEvent) {
     @contextmenu="onContextMenu"
   >
     <div class="flex items-center gap-2 min-w-0">
-      <component
-        :is="icon === 'image' ? 'svg' : 'svg'"
-        class="w-4 h-4 shrink-0 text-muted-foreground"
-      >
-        <use v-if="icon === 'image'" href="/icons/image.svg#icon" />
-        <use v-else href="/icons/chats.svg#icon" />
-      </component>
+      <Image v-if="panel.type === 'image'" class="w-4 h-4 shrink-0 text-muted-foreground" />
+      <MessageSquare v-else class="w-4 h-4 shrink-0 text-muted-foreground" />
       <span class="text-sm truncate">{{ displayTitle }}</span>
     </div>
 
