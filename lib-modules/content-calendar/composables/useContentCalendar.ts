@@ -114,6 +114,19 @@ export function useContentCalendar() {
     return currentProject.value.tags.find(t => t.id === tagId)
   }
 
+  function updatePost(postId: string, updates: Partial<CalendarPost>) {
+    const project = demoProjects.find(p => p.id === selectedProjectId.value)
+    if (!project) return
+
+    const postIndex = project.posts.findIndex(p => p.id === postId)
+    if (postIndex === -1) return
+
+    // Don't allow editing published posts
+    if (project.posts[postIndex].status === 'published') return
+
+    Object.assign(project.posts[postIndex], updates)
+  }
+
   function nextMonth() {
     const next = new Date(currentMonth.value)
     next.setMonth(next.getMonth() + 1)
@@ -154,6 +167,7 @@ export function useContentCalendar() {
     toggleTag,
     nextMonth,
     prevMonth,
+    updatePost,
     // Data
     projects: demoProjects
   }

@@ -30,8 +30,15 @@ const {
   toggleTag,
   nextMonth,
   prevMonth,
+  updatePost,
   projects
 } = useContentCalendar()
+
+function handlePostUpdate(updates: any) {
+  if (selectedPostId.value) {
+    updatePost(selectedPostId.value, updates)
+  }
+}
 
 const statusConfig = [
   { id: 'idea' as const, label: 'Идея', icon: 'idea', color: 'text-zinc-400' },
@@ -266,7 +273,9 @@ onUnmounted(() => {
       <PostPreviewPanel
         v-if="selectedPost"
         :post="selectedPost"
+        :project-tags="currentProject.tags"
         @close="selectPost(null)"
+        @update="handlePostUpdate"
       />
       <NewsSidebar
         v-else
