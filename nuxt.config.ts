@@ -13,6 +13,8 @@ export default defineNuxtConfig({
     routeRules: {
         // Prerender для SEO (статический HTML при билде + SSR включен явно)
         '/': {ssr: true, prerender: true},
+        '/en': {ssr: true, prerender: true},
+        '/ru': {ssr: true, prerender: true},
         '/auth': {ssr: true, prerender: true},
         '/auth/**': {ssr: true, prerender: true},
         '/landing': {ssr: true, prerender: true},
@@ -140,7 +142,7 @@ export default defineNuxtConfig({
 
     nitro: {
         prerender: {
-            routes: ['/', '/landing', '/start', '/auth'],
+            routes: ['/', '/en', '/ru', '/landing', '/start', '/auth'],
         },
         // Ускоряем билд
         minify: false,

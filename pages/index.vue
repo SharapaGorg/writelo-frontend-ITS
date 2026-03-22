@@ -110,8 +110,8 @@ useHead({
     lang: () => locale.value
   },
   link: [
-    { rel: 'alternate', hreflang: 'ru', href: 'https://writelo.io/' },
-    { rel: 'alternate', hreflang: 'en', href: 'https://writelo.io/?lang=en' },
+    { rel: 'alternate', hreflang: 'ru', href: 'https://writelo.io/ru' },
+    { rel: 'alternate', hreflang: 'en', href: 'https://writelo.io/en' },
     { rel: 'alternate', hreflang: 'x-default', href: 'https://writelo.io/' },
     { rel: 'canonical', href: 'https://writelo.io/' },
   ],
