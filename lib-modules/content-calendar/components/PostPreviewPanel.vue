@@ -17,6 +17,7 @@ const emit = defineEmits<{
   close: []
   update: [updates: Partial<CalendarPost>]
   delete: []
+  createChat: []
 }>()
 
 type TabType = 'content' | 'preview'
@@ -750,18 +751,36 @@ const postTags = computed(() =>
             </span>
           </div>
 
-          <!-- Conversation Link -->
-          <div v-if="post.conversationId" class="mb-4 p-3 rounded-lg bg-zinc-800 border border-zinc-700">
-            <div class="text-xs text-zinc-500 mb-1">Диалог создания</div>
+          <!-- Brainstorm Chat Section -->
+          <div class="mb-4 p-3 rounded-lg bg-zinc-800 border border-zinc-700">
+            <div class="flex items-center gap-2 mb-2">
+              <svg class="w-4 h-4 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              <span class="text-xs text-zinc-400">Брейншторм</span>
+            </div>
+            <!-- Has linked chat -->
             <a
+              v-if="post.conversationId"
               :href="`/app?conversation=${post.conversationId}`"
-              class="text-sm text-purple-400 hover:text-purple-300 flex items-center gap-1"
+              class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
               </svg>
-              Открыть диалог
+              Открыть чат
             </a>
+            <!-- No linked chat -->
+            <button
+              v-else
+              class="flex items-center justify-center gap-2 w-full px-3 py-2 rounded-lg border border-dashed border-purple-500/50 hover:border-purple-500 hover:bg-purple-500/10 text-purple-400 text-sm transition-colors"
+              @click="emit('createChat')"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Создать чат для брейншторма
+            </button>
           </div>
 
           <!-- Published Links -->
