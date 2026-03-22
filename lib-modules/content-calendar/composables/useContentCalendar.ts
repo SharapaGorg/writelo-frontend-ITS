@@ -127,6 +127,30 @@ export function useContentCalendar() {
     Object.assign(project.posts[postIndex], updates)
   }
 
+  // Random color for new tags
+  const tagColors = [
+    'bg-emerald-500', 'bg-indigo-500', 'bg-orange-500', 'bg-rose-500',
+    'bg-cyan-500', 'bg-violet-500', 'bg-amber-500', 'bg-pink-500',
+    'bg-teal-500', 'bg-blue-500', 'bg-red-500', 'bg-green-500'
+  ]
+
+  function createTag(name: string): string {
+    const project = demoProjects.find(p => p.id === selectedProjectId.value)
+    if (!project) return ''
+
+    // Check if tag already exists
+    const existing = project.tags.find(t => t.name.toLowerCase() === name.toLowerCase())
+    if (existing) return existing.id
+
+    const newTag = {
+      id: `tag-${Date.now()}`,
+      name: name.trim(),
+      color: tagColors[Math.floor(Math.random() * tagColors.length)]
+    }
+    project.tags.push(newTag)
+    return newTag.id
+  }
+
   function nextMonth() {
     const next = new Date(currentMonth.value)
     next.setMonth(next.getMonth() + 1)
@@ -168,6 +192,7 @@ export function useContentCalendar() {
     nextMonth,
     prevMonth,
     updatePost,
+    createTag,
     // Data
     projects: demoProjects
   }

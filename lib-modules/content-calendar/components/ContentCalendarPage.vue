@@ -31,6 +31,7 @@ const {
   nextMonth,
   prevMonth,
   updatePost,
+  createTag,
   projects
 } = useContentCalendar()
 
@@ -274,6 +275,7 @@ onUnmounted(() => {
         v-if="selectedPost"
         :post="selectedPost"
         :project-tags="currentProject.tags"
+        :create-tag="createTag"
         @close="selectPost(null)"
         @update="handlePostUpdate"
       />
