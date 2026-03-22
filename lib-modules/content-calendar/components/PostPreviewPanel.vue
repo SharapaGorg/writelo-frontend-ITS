@@ -49,7 +49,10 @@ watch(() => props.post, () => {
   resetEditForm()
 }, { immediate: true })
 
-const showPreviewTab = computed(() => props.post.status !== 'idea')
+const showPreviewTab = computed(() => {
+  const status = isEditing.value ? editStatus.value : props.post.status
+  return status !== 'idea'
+})
 
 function resetEditForm() {
   editTitle.value = props.post.title
