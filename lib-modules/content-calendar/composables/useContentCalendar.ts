@@ -124,9 +124,6 @@ export function useContentCalendar() {
     const postIndex = project.posts.findIndex(p => p.id === postId)
     if (postIndex === -1) return
 
-    // Don't allow editing published posts
-    if (project.posts[postIndex].status === 'published') return
-
     Object.assign(project.posts[postIndex], updates)
   }
 

@@ -41,9 +41,9 @@ const tagInputRef = ref<HTMLInputElement | null>(null)
 // Publishing state
 const isPublishing = ref(false)
 const publishLinks = ref<Partial<Record<SocialNetwork, string>>>({})
+const showConfetti = ref(false)
 
 const isPublished = computed(() => props.post.status === 'published')
-const canEdit = computed(() => !isPublished.value)
 
 watch(() => props.post, () => {
   activeTab.value = 'content'
@@ -115,6 +115,13 @@ function cancelPublishing() {
   publishLinks.value = {}
 }
 
+function unpublish() {
+  emit('update', {
+    status: 'ready' as PostStatus,
+    publishedLinks: undefined
+  })
+}
+
 function confirmPublish() {
   // Filter out empty links
   const links: Partial<Record<SocialNetwork, string>> = {}
@@ -129,6 +136,12 @@ function confirmPublish() {
     publishedLinks: Object.keys(links).length > 0 ? links : undefined
   })
   isPublishing.value = false
+
+  // Trigger confetti celebration
+  showConfetti.value = true
+  setTimeout(() => {
+    showConfetti.value = false
+  }, 2500)
 }
 
 const canPublish = computed(() => props.post.status === 'ready')
@@ -230,7 +243,8 @@ const allNetworks: SocialNetwork[] = ['vk', 'youtube', 'telegram', 'instagram']
 const editableStatuses: { value: PostStatus; label: string }[] = [
   { value: 'idea', label: 'Идея' },
   { value: 'draft', label: 'Черновик' },
-  { value: 'ready', label: 'Готов' }
+  { value: 'ready', label: 'Готов' },
+  { value: 'published', label: 'Опубликован' }
 ]
 
 const statusInfo: Record<PostStatus, { label: string; class: string }> = {
@@ -264,7 +278,35 @@ const postTags = computed(() =>
 </script>
 
 <template>
-  <aside class="w-96 border-l border-zinc-800 bg-zinc-900 flex flex-col">
+  <aside class="w-96 border-l border-zinc-800 bg-zinc-900 flex flex-col relative overflow-hidden">
+    <!-- Confetti celebration -->
+    <div v-if="showConfetti" class="absolute inset-0 pointer-events-none z-50 overflow-hidden">
+      <!-- Confetti particles -->
+      <div
+        v-for="i in 50"
+        :key="i"
+        class="confetti-particle"
+        :style="{
+          '--delay': `${Math.random() * 0.5}s`,
+          '--x': `${(Math.random() - 0.5) * 400}px`,
+          '--y': `${Math.random() * -600 - 100}px`,
+          '--rotation': `${Math.random() * 720 - 360}deg`,
+          '--color': ['#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#06b6d4', '#ec4899'][Math.floor(Math.random() * 6)],
+          left: '50%',
+          top: '50%'
+        }"
+      />
+      <!-- Success checkmark glow -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="success-glow">
+          <svg class="w-24 h-24 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" class="success-circle" />
+            <path d="M8 12l2.5 2.5L16 9" class="success-check" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
     <!-- Header -->
     <div class="flex items-center gap-3 px-4 py-3 border-b border-zinc-800">
       <template v-if="isEditing">
@@ -286,7 +328,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Action buttons bar -->
-    <div v-if="canEdit && !isEditing && !isPublishing" class="px-4 py-2 border-b border-zinc-800 flex gap-2">
+    <div v-if="!isEditing && !isPublishing" class="px-4 py-2 border-b border-zinc-800 flex gap-2">
       <button
         class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
         @click="startEditing"
@@ -307,6 +349,17 @@ const postTags = computed(() =>
           <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
         </svg>
         Опубликовать
+      </button>
+      <button
+        v-if="isPublished"
+        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-sm font-medium transition-colors"
+        @click="unpublish"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+          <path d="M3 3v5h5"/>
+        </svg>
+        Снять с публикации
       </button>
     </div>
 
@@ -771,3 +824,89 @@ const postTags = computed(() =>
     </div>
   </aside>
 </template>
+
+<style scoped>
+.confetti-particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--color);
+  border-radius: 2px;
+  animation: confetti-explode 2s ease-out forwards;
+  animation-delay: var(--delay);
+  transform-origin: center;
+}
+
+.confetti-particle:nth-child(odd) {
+  border-radius: 50%;
+  width: 8px;
+  height: 8px;
+}
+
+.confetti-particle:nth-child(3n) {
+  width: 6px;
+  height: 12px;
+  border-radius: 1px;
+}
+
+@keyframes confetti-explode {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  10% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(0.5) rotate(var(--rotation));
+    opacity: 0;
+  }
+}
+
+.success-glow {
+  animation: success-pop 0.6s ease-out forwards;
+}
+
+@keyframes success-pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.success-circle {
+  stroke-dasharray: 63;
+  stroke-dashoffset: 63;
+  animation: draw-circle 0.4s ease-out 0.1s forwards;
+}
+
+.success-check {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+  animation: draw-check 0.3s ease-out 0.4s forwards;
+}
+
+@keyframes draw-circle {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes draw-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+</style>

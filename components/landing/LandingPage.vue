@@ -42,12 +42,12 @@ function scrollToTop() {
 
           <!-- Desktop nav -->
           <nav class="hidden md:flex items-center gap-8">
-            <NuxtLink
-              to="/ideas"
+            <a
+              href="#features"
               class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
             >
-              Идеи
-            </NuxtLink>
+              {{ t('landing.nav.features') }}
+            </a>
             <a
               href="#pricing"
               class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
@@ -90,13 +90,13 @@ function scrollToTop() {
           class="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md"
         >
           <nav class="container mx-auto px-4 py-4 flex flex-col gap-4">
-            <NuxtLink
-              to="/ideas"
+            <a
+              href="#features"
               class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
               @click="closeMobileMenu"
             >
-              Идеи
-            </NuxtLink>
+              {{ t('landing.nav.features') }}
+            </a>
             <a
               href="#pricing"
               class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
