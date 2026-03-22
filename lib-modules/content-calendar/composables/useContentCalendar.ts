@@ -139,6 +139,17 @@ export function useContentCalendar() {
     return newPost
   }
 
+  function deletePost(postId: string): boolean {
+    const project = projects.find(p => p.id === selectedProjectId.value)
+    if (!project) return false
+
+    const postIndex = project.posts.findIndex(p => p.id === postId)
+    if (postIndex === -1) return false
+
+    project.posts.splice(postIndex, 1)
+    return true
+  }
+
   // Random color for new tags
   const tagColors = [
     'bg-emerald-500', 'bg-indigo-500', 'bg-orange-500', 'bg-rose-500',
@@ -205,6 +216,7 @@ export function useContentCalendar() {
     prevMonth,
     updatePost,
     createPost,
+    deletePost,
     createTag,
     // Data
     projects: projects

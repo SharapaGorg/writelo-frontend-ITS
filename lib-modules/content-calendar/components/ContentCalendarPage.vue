@@ -33,6 +33,7 @@ const {
   prevMonth,
   updatePost,
   createPost,
+  deletePost,
   createTag,
   projects
 } = useContentCalendar()
@@ -40,6 +41,13 @@ const {
 function handlePostUpdate(updates: any) {
   if (selectedPostId.value) {
     updatePost(selectedPostId.value, updates)
+  }
+}
+
+function handlePostDelete() {
+  if (selectedPostId.value) {
+    deletePost(selectedPostId.value)
+    selectPost(null)
   }
 }
 
@@ -301,6 +309,7 @@ onUnmounted(() => {
         :create-tag="createTag"
         @close="selectPost(null)"
         @update="handlePostUpdate"
+        @delete="handlePostDelete"
       />
       <NewsSidebar
         v-else
