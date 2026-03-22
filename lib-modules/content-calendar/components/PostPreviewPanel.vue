@@ -227,7 +227,7 @@ const postTags = computed(() =>
       <h3 v-else class="flex-1 min-w-0 text-sm font-medium text-zinc-200 truncate">{{ post.title }}</h3>
       <button
         class="flex-shrink-0 text-zinc-500 hover:text-white transition-colors p-1"
-        @click="emit('close')"
+        @click="isEditing ? cancelEditing() : emit('close')"
       >
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 6L6 18M6 6l12 12"/>
