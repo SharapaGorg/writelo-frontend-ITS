@@ -410,10 +410,10 @@ const postTags = computed(() =>
                 <span>+ Добавить тег</span>
               </button>
 
-              <!-- Dropdown -->
+              <!-- Dropdown (opens upward to stay in bounds) -->
               <div
                 v-if="tagDropdownOpen"
-                class="absolute top-full left-0 right-0 mt-1 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl z-50"
+                class="absolute bottom-full left-0 right-0 mb-1 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl z-50"
               >
                 <div class="p-2 border-b border-zinc-700">
                   <input
