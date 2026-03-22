@@ -1,6 +1,6 @@
 <!-- pages/app/workspace.vue -->
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import { WorkspaceLayout, useWorkspace, type Panel, type PanelType } from '~/lib-modules/workspace'
 import { MessagesSection, SendMessageSection } from '~/lib-modules/conversations'
 import { ImageGeneratorInput, ImageGeneratorOutput } from '~/lib-modules/imageGenerator'
@@ -10,6 +10,8 @@ import { isMobile } from '~/scripts/features/utils'
 definePageMeta({
   layout: 'default'
 })
+
+const isReady = ref(false)
 
 const {
   panels,
@@ -22,8 +24,7 @@ const {
   splitPanel,
   setActivePanel,
   resizePanels,
-  resetSizes,
-  updatePanelChat
+  resetSizes
 } = useWorkspace()
 
 const conversationStore = useCurrentConversationStore()
@@ -34,6 +35,7 @@ onMounted(() => {
     return
   }
   initFromRoute()
+  isReady.value = true
 })
 
 function getPanelTitle(panel: Panel): string | undefined {
@@ -56,6 +58,7 @@ function handleOpenChat(panelId: string) {
 <template>
   <div class="h-[calc(100vh-var(--navbar-height,60px))]">
     <WorkspaceLayout
+      v-if="isReady && panels.length > 0"
       :panels="panels"
       :sizes="sizes"
       :active-panel-id="activePanelId"
@@ -83,5 +86,10 @@ function handleOpenChat(panelId: string) {
         </div>
       </template>
     </WorkspaceLayout>
+
+    <!-- Loading state -->
+    <div v-else class="flex items-center justify-center h-full">
+      <div class="text-muted-foreground">Loading workspace...</div>
+    </div>
   </div>
 </template>
