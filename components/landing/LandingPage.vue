@@ -13,32 +13,41 @@ import LanguageSelector from '~/components/atoms/LanguageSelector.vue'
 const {t} = useI18n()
 
 const mobileMenuOpen = ref(false)
+const containerRef = ref<HTMLElement | null>(null)
 
 function closeMobileMenu() {
   mobileMenuOpen.value = false
+}
+
+function scrollToTop() {
+  containerRef.value?.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 
 <template>
   <div
-      class="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 overflow-y-auto overflow-x-hidden h-screen">
+      ref="containerRef"
+      class="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 overflow-y-auto overflow-x-hidden h-screen scroll-smooth">
     <!-- Header -->
     <header
         class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
       <div class="container mx-auto px-4 max-w-6xl">
         <div class="flex items-center justify-between h-16">
-          <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+          <button
+            class="text-xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent"
+            @click="scrollToTop"
+          >
             Writelo
-          </span>
+          </button>
 
           <!-- Desktop nav -->
           <nav class="hidden md:flex items-center gap-8">
-            <a
-              href="#features"
+            <NuxtLink
+              to="/ideas"
               class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
             >
-              {{ t('landing.nav.features') }}
-            </a>
+              Идеи
+            </NuxtLink>
             <a
               href="#pricing"
               class="text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
@@ -81,13 +90,13 @@ function closeMobileMenu() {
           class="md:hidden border-t border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md"
         >
           <nav class="container mx-auto px-4 py-4 flex flex-col gap-4">
-            <a
-              href="#features"
+            <NuxtLink
+              to="/ideas"
               class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
               @click="closeMobileMenu"
             >
-              {{ t('landing.nav.features') }}
-            </a>
+              Идеи
+            </NuxtLink>
             <a
               href="#pricing"
               class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
