@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { generateUUID } from '~/scripts/features/utils'
 import CalendarHeader from './CalendarHeader.vue'
 import SocialFilters from './SocialFilters.vue'
 import CalendarGrid from './CalendarGrid.vue'
@@ -56,7 +57,7 @@ function handlePostDelete() {
 function handleCreateChat() {
   if (selectedPostId.value) {
     // Generate a conversation ID and link it to the post
-    const conversationId = `conv-${Date.now()}`
+    const conversationId = generateUUID()
     updatePost(selectedPostId.value, { conversationId })
 
     // Open chat in new tab
