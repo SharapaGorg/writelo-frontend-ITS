@@ -30,7 +30,8 @@ export interface CalendarPost {
   tags: string[] // Tag IDs
   date: string // 'YYYY-MM-DD'
   time?: string // 'HH:MM' (optional)
-  image?: string
+  image?: string // Single image (legacy)
+  images?: string[] // Multiple images (up to 10)
   conversationId?: string // Link to conversation where this was created
   sourceNewsId?: string // Link to news item this was created from
   publishedLinks?: Partial<Record<SocialNetwork, string>> // Links to published posts

@@ -3,6 +3,7 @@ import { ref, computed, watch, nextTick } from 'vue'
 import { Button } from '~/components/ui/button'
 import InstagramPreview from './previews/InstagramPreview.vue'
 import TimeInput from './TimeInput.vue'
+import PostImagesEditor from './PostImagesEditor.vue'
 import VkPreview from './previews/VkPreview.vue'
 import YouTubePreview from './previews/YouTubePreview.vue'
 import TelegramPreview from './previews/TelegramPreview.vue'
@@ -36,6 +37,7 @@ const editNetworks = ref<SocialNetwork[]>([])
 const editTags = ref<string[]>([])
 const editDate = ref('')
 const editTime = ref('')
+const editImages = ref<string[]>([])
 
 // Tag input state
 const tagSearch = ref('')
@@ -55,6 +57,17 @@ const isEditingLinks = ref(false)
 const editableLinks = ref<Partial<Record<SocialNetwork, string>>>({})
 
 const isPublished = computed(() => props.post.status === 'published')
+
+// Get display images - prefer images array, fallback to single image
+const displayImages = computed(() => {
+  if (props.post.images && props.post.images.length > 0) {
+    return props.post.images
+  }
+  if (props.post.image) {
+    return [props.post.image]
+  }
+  return []
+})
 
 watch(() => props.post, () => {
   activeTab.value = 'content'
@@ -80,6 +93,14 @@ function resetEditForm() {
   editTags.value = [...props.post.tags]
   editDate.value = props.post.date
   editTime.value = props.post.time || ''
+  // Initialize images from images array or fallback to single image
+  if (props.post.images && props.post.images.length > 0) {
+    editImages.value = [...props.post.images]
+  } else if (props.post.image) {
+    editImages.value = [props.post.image]
+  } else {
+    editImages.value = []
+  }
   tagSearch.value = ''
   tagDropdownOpen.value = false
   isPublishing.value = false
@@ -109,7 +130,9 @@ function saveChanges() {
     networks: editNetworks.value,
     tags: editTags.value,
     date: editDate.value,
-    time: editTime.value || undefined
+    time: editTime.value || undefined,
+    images: editImages.value.length > 0 ? editImages.value : undefined,
+    image: editImages.value.length > 0 ? editImages.value[0] : undefined
   })
   isEditing.value = false
 }
@@ -554,9 +577,10 @@ const postTags = computed(() =>
       <template v-if="activeTab === 'content'">
         <!-- Edit Mode -->
         <template v-if="isEditing">
-          <!-- Image (read-only for now) -->
-          <div v-if="post.image" class="mb-4 rounded-lg overflow-hidden opacity-60">
-            <img :src="post.image" :alt="post.title" class="w-full h-auto" />
+          <!-- Images Editor -->
+          <div class="mb-4">
+            <label class="text-xs text-zinc-500 mb-2 block">Изображения</label>
+            <PostImagesEditor v-model="editImages" />
           </div>
 
           <!-- Text Content -->
@@ -798,9 +822,22 @@ const postTags = computed(() =>
 
         <!-- View Mode -->
         <template v-else>
-          <!-- Image -->
-          <div v-if="post.image" class="mb-4 rounded-lg overflow-hidden">
-            <img :src="post.image" :alt="post.title" class="w-full h-auto" />
+          <!-- Images -->
+          <div v-if="displayImages.length > 0" class="mb-4">
+            <!-- Single image - full width -->
+            <div v-if="displayImages.length === 1" class="rounded-lg overflow-hidden">
+              <img :src="displayImages[0]" :alt="post.title" class="w-full h-auto" />
+            </div>
+            <!-- Multiple images - grid -->
+            <div v-else class="grid grid-cols-2 gap-2">
+              <div
+                v-for="(img, idx) in displayImages"
+                :key="img"
+                class="rounded-lg overflow-hidden aspect-square"
+              >
+                <img :src="img" :alt="`${post.title} ${idx + 1}`" class="w-full h-full object-cover" />
+              </div>
+            </div>
           </div>
 
           <!-- Text Content -->
