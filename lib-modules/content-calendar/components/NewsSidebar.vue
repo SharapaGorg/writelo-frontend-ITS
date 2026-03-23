@@ -9,12 +9,12 @@ const props = defineProps<{
 </script>
 
 <template>
-  <aside class="w-72 border-l border-zinc-800 bg-zinc-900/50 flex flex-col">
+  <aside class="w-full h-full bg-zinc-900/50 flex flex-col overflow-hidden">
     <div class="px-4 py-3 border-b border-zinc-800">
       <h3 class="text-sm font-medium text-zinc-300">Новости отрасли</h3>
       <p class="text-xs text-zinc-500 mt-0.5">Перетащите в календарь для создания идеи</p>
     </div>
-    <div class="flex-1 overflow-y-auto p-3 space-y-2">
+    <div class="flex-1 overflow-y-auto p-3 space-y-2 min-h-0">
       <NewsCard
         v-for="item in news"
         :key="item.id"

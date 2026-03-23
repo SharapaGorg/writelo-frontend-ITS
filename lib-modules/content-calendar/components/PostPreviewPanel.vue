@@ -346,7 +346,7 @@ const postTags = computed(() =>
 </script>
 
 <template>
-  <aside class="w-96 border-l border-zinc-800 bg-zinc-900 flex flex-col relative overflow-hidden">
+  <aside class="w-full h-full bg-zinc-900 flex flex-col relative overflow-hidden">
     <!-- Confetti celebration -->
     <div v-if="showConfetti" class="absolute inset-0 pointer-events-none z-50 overflow-hidden">
       <!-- Confetti particles -->
@@ -548,7 +548,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Content -->
-    <div class="flex-1 overflow-y-auto p-4">
+    <div class="flex-1 overflow-y-auto p-4 min-h-0">
       <!-- Content Tab -->
       <template v-if="activeTab === 'content'">
         <!-- Edit Mode -->

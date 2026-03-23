@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { generateUUID } from '~/scripts/features/utils'
 import CalendarHeader from './CalendarHeader.vue'
 import SocialFilters from './SocialFilters.vue'
@@ -125,6 +125,53 @@ const tagSearch = ref('')
 const tagDropdownOpen = ref(false)
 const tagInputRef = ref<HTMLInputElement | null>(null)
 
+// Sidebar resize state
+const SIDEBAR_STORAGE_KEY = 'content-calendar-sidebar-width'
+const SIDEBAR_MIN_WIDTH = 280
+const SIDEBAR_MAX_WIDTH = 600
+const SIDEBAR_DEFAULT_WIDTH = 384
+
+const sidebarWidth = ref(SIDEBAR_DEFAULT_WIDTH)
+const isResizing = ref(false)
+
+function loadSidebarWidth() {
+  const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY)
+  if (stored) {
+    const width = parseInt(stored, 10)
+    if (!isNaN(width) && width >= SIDEBAR_MIN_WIDTH && width <= SIDEBAR_MAX_WIDTH) {
+      sidebarWidth.value = width
+    }
+  }
+}
+
+function saveSidebarWidth() {
+  localStorage.setItem(SIDEBAR_STORAGE_KEY, String(sidebarWidth.value))
+}
+
+function startResize(e: MouseEvent) {
+  e.preventDefault()
+  isResizing.value = true
+  document.addEventListener('mousemove', onResize)
+  document.addEventListener('mouseup', stopResize)
+  document.body.style.cursor = 'col-resize'
+  document.body.style.userSelect = 'none'
+}
+
+function onResize(e: MouseEvent) {
+  if (!isResizing.value) return
+  const newWidth = window.innerWidth - e.clientX
+  sidebarWidth.value = Math.max(SIDEBAR_MIN_WIDTH, Math.min(SIDEBAR_MAX_WIDTH, newWidth))
+}
+
+function stopResize() {
+  isResizing.value = false
+  document.removeEventListener('mousemove', onResize)
+  document.removeEventListener('mouseup', stopResize)
+  document.body.style.cursor = ''
+  document.body.style.userSelect = ''
+  saveSidebarWidth()
+}
+
 const filteredTags = computed(() => {
   const search = tagSearch.value.toLowerCase().trim()
   if (!search) return currentProject.value.tags
@@ -172,6 +219,7 @@ function handleKeydown(e: KeyboardEvent) {
 
 onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
+  loadSidebarWidth()
 })
 
 onUnmounted(() => {
@@ -350,21 +398,33 @@ onUnmounted(() => {
           @create-post="handleCreatePost(selectedDate!)"
         />
       </div>
-      <PostPreviewPanel
-        v-if="selectedPost"
-        :post="selectedPost"
-        :project-tags="currentProject.tags"
-        :create-tag="createTag"
-        @close="selectPost(null)"
-        @update="handlePostUpdate"
-        @delete="handlePostDelete"
-        @create-chat="handleCreateChat"
-      />
-      <NewsSidebar
-        v-else
-        :news="currentProject.news"
-        :used-news="usedNews"
-      />
+      <!-- Resizable Sidebar -->
+      <div
+        class="relative flex-shrink-0 border-l border-zinc-800 h-full overflow-hidden"
+        :style="{ width: `${sidebarWidth}px` }"
+      >
+        <!-- Resize handle -->
+        <div
+          class="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-purple-500/50 transition-colors z-10"
+          :class="{ 'bg-purple-500/50': isResizing }"
+          @mousedown="startResize"
+        />
+        <PostPreviewPanel
+          v-if="selectedPost"
+          :post="selectedPost"
+          :project-tags="currentProject.tags"
+          :create-tag="createTag"
+          @close="selectPost(null)"
+          @update="handlePostUpdate"
+          @delete="handlePostDelete"
+          @create-chat="handleCreateChat"
+        />
+        <NewsSidebar
+          v-else
+          :news="currentProject.news"
+          :used-news="usedNews"
+        />
+      </div>
     </div>
   </div>
 </template>
