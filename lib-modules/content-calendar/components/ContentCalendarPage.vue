@@ -96,6 +96,23 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
   }
 }
 
+function handleCreatePost(date: string) {
+  const newPost = createPost({
+    title: 'Новый пост',
+    type: 'post',
+    status: 'idea',
+    networks: ['vk', 'telegram'],
+    tags: [],
+    date: date,
+    previews: {}
+  })
+
+  if (newPost) {
+    selectDate(date)
+    selectPost(newPost.id)
+  }
+}
+
 const statusConfig = [
   { id: 'idea' as const, label: 'Идея', icon: 'idea', color: 'text-zinc-400' },
   { id: 'draft' as const, label: 'Черновик', icon: 'draft', color: 'text-yellow-500' },
@@ -319,6 +336,7 @@ onUnmounted(() => {
             @prev-month="prevMonth"
             @next-month="nextMonth"
             @drop-news="handleNewsDropOnDate"
+            @create-post="handleCreatePost"
           />
         </div>
         <DayDetailPanel
@@ -329,6 +347,7 @@ onUnmounted(() => {
           :project-tags="currentProject.tags"
           @select-post="selectPost"
           @close="selectDate(null)"
+          @create-post="handleCreatePost(selectedDate!)"
         />
       </div>
       <PostPreviewPanel
