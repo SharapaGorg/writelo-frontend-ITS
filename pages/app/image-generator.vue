@@ -20,9 +20,9 @@ onMounted(() => {
       <ImageGeneratorInput/>
       <ImageGeneratorOutput/>
     </div>
-    <div class="image-history__wrapper">
-      <ImageHistorySlider/>
-    </div>
+<!--    <div class="image-history__wrapper">-->
+    <!--      <ImageHistorySlider/>-->
+    <!--    </div>-->
   </div>
 </template>
 
