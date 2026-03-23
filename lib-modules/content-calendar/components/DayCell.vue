@@ -15,9 +15,11 @@ const props = defineProps<{
 const emit = defineEmits<{
   select: [date: string]
   dropNews: [date: string, news: NewsItem]
+  createPost: [date: string]
 }>()
 
 const isDragOver = ref(false)
+const isHovered = ref(false)
 
 function handleDragOver(e: DragEvent) {
   e.preventDefault()
@@ -80,6 +82,8 @@ const hasMore = computed(() => props.posts.length > 4)
       isDragOver ? 'border-green-500 bg-green-500/10 ring-1 ring-green-500' : ''
     ]"
     @click="emit('select', date)"
+    @mouseenter="isHovered = true"
+    @mouseleave="isHovered = false"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
     @drop="handleDrop"
@@ -94,6 +98,19 @@ const hasMore = computed(() => props.posts.length > 4)
       >
         {{ dayNumber }}
       </span>
+
+      <!-- Add post button -->
+      <button
+        v-if="isCurrentMonth"
+        :class="[
+          'w-5 h-5 rounded-full bg-zinc-700 hover:bg-purple-600 text-white flex items-center justify-center text-sm font-bold transition-all',
+          isHovered ? 'opacity-100' : 'opacity-0'
+        ]"
+        @click.stop="emit('createPost', date)"
+        title="Создать пост"
+      >
+        +
+      </button>
 
       <!-- Social network icons -->
       <div class="flex items-center gap-1">
