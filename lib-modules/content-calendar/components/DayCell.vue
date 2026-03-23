@@ -92,13 +92,15 @@ const hasMore = computed(() => props.posts.length > 4)
     <button
       v-if="isCurrentMonth"
       :class="[
-        'absolute top-1 left-1 w-5 h-5 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center text-xs font-bold leading-none transition-all z-10',
+        'absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center transition-all z-10',
         isHovered ? 'opacity-100' : 'opacity-0'
       ]"
       @click.stop="emit('createPost', date)"
       title="Создать пост"
     >
-      +
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14" />
+      </svg>
     </button>
 
     <!-- Top row: day number + social icons -->

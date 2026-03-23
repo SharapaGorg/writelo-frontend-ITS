@@ -41,11 +41,13 @@ const funDay = computed(() => getFunDayForDate(props.date))
       </div>
       <div class="flex items-center gap-2">
         <button
-          class="w-7 h-7 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center text-lg font-bold leading-none transition-colors"
+          class="w-7 h-7 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center transition-colors"
           @click="emit('createPost')"
           title="Создать пост"
         >
-          +
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
         </button>
         <button
           class="text-zinc-500 hover:text-white transition-colors"

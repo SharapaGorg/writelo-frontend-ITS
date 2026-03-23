@@ -253,6 +253,158 @@ export const demoProjects: DemoProject[] = [
           instagram: { text: 'Latte art workshop — sign up now!' },
           telegram: { text: 'МК по латте-арту: запись открыта', views: 0 }
         }
+      },
+      {
+        id: 'cs-16',
+        title: 'История кофе: от Эфиопии до вашей чашки',
+        content: 'Кофе прошёл долгий путь от диких лесов Эфиопии до современных кофеен. Рассказываем, как пастух Калди открыл бодрящие свойства красных ягод, и как кофе завоевал весь мир...',
+        type: 'article',
+        status: 'published',
+        networks: ['telegram', 'vk'],
+        tags: ['tag-cs-2'],
+        date: '2026-03-02',
+        publishedLinks: {
+          telegram: 'https://t.me/coffeshop_bodrost/35',
+          vk: 'https://vk.com/@coffeebodrost-history'
+        },
+        previews: {
+          telegram: { text: 'Лонгрид: История кофе от Эфиопии до наших дней', views: 4500 },
+          vk: { text: 'Статья: Как кофе завоевал мир', likes: 234, comments: 45, shares: 78 }
+        }
+      },
+      {
+        id: 'cs-17',
+        title: 'Гид по альтернативным способам заваривания',
+        content: 'Пуровер, аэропресс, кемекс, френч-пресс — разбираемся в альтернативных способах заваривания кофе. Плюсы, минусы и для кого подойдёт каждый метод.',
+        type: 'article',
+        status: 'ready',
+        networks: ['telegram', 'vk'],
+        tags: ['tag-cs-2'],
+        date: '2026-03-15',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Brewing',
+        previews: {
+          telegram: { text: 'Полный гид по альтернативному завариванию кофе', views: 0 },
+          vk: { text: 'Статья: Пуровер, аэропресс, кемекс — что выбрать?' }
+        }
+      },
+      {
+        id: 'cs-18',
+        title: 'Кофе и здоровье: мифы и факты',
+        content: 'Вреден ли кофе? Сколько чашек можно пить в день? Разбираем популярные мифы о кофе с точки зрения науки.',
+        type: 'article',
+        status: 'draft',
+        networks: ['telegram'],
+        tags: ['tag-cs-2'],
+        date: '2026-03-28',
+        previews: {
+          telegram: { text: 'Статья: Мифы о кофе — что правда, а что нет', views: 0 }
+        }
+      },
+      {
+        id: 'cs-19',
+        title: 'Новый сорт: Кения АА',
+        content: 'Привезли свежую партию зерна из Кении! Яркая кислотность, ноты чёрной смородины и цитрусов.',
+        type: 'post',
+        status: 'published',
+        networks: ['vk', 'telegram', 'instagram'],
+        tags: ['tag-cs-1', 'tag-cs-2'],
+        date: '2026-03-08',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Kenya+AA',
+        publishedLinks: {
+          vk: 'https://vk.com/wall-123456_787',
+          telegram: 'https://t.me/coffeshop_bodrost/40'
+        },
+        previews: {
+          vk: { text: 'Новинка! Кения АА — яркий и фруктовый', likes: 178, comments: 23, shares: 12 },
+          telegram: { text: 'Привезли Кению АА! Пробуем?', views: 1890 },
+          instagram: { text: 'New arrival: Kenya AA beans!', likes: 456, comments: 34 }
+        }
+      },
+      {
+        id: 'cs-20',
+        title: 'Завтраки в Бодрости',
+        content: 'Теперь у нас можно позавтракать! Круассаны, тосты, яичница и овсянка — всё свежее и вкусное.',
+        type: 'post',
+        status: 'ready',
+        networks: ['vk', 'instagram'],
+        tags: ['tag-cs-1', 'tag-cs-3'],
+        date: '2026-03-22',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Breakfast',
+        previews: {
+          vk: { text: 'Открываем завтраки! Круассаны, тосты и не только', likes: 0, comments: 0, shares: 0 },
+          instagram: { text: 'Breakfast is served! 8-11 AM', likes: 0, comments: 0 }
+        }
+      },
+      {
+        id: 'cs-21',
+        title: 'Как правильно хранить кофе дома',
+        content: 'Многие хранят кофе неправильно и теряют весь аромат. Рассказываем о главных ошибках и как их избежать.',
+        type: 'article',
+        status: 'published',
+        networks: ['telegram', 'vk'],
+        tags: ['tag-cs-2'],
+        date: '2026-03-09',
+        publishedLinks: {
+          telegram: 'https://t.me/coffeshop_bodrost/39'
+        },
+        previews: {
+          telegram: { text: 'Как хранить кофе, чтобы он не терял аромат', views: 3200 },
+          vk: { text: 'Статья: 5 ошибок хранения кофе дома', likes: 145, comments: 28, shares: 56 }
+        }
+      },
+      {
+        id: 'cs-22',
+        title: 'Флэт уайт vs Капучино',
+        type: 'reels',
+        status: 'ready',
+        networks: ['instagram', 'youtube'],
+        tags: ['tag-cs-2', 'tag-cs-3'],
+        date: '2026-03-12',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Flat+White',
+        previews: {
+          instagram: { text: 'В чём разница? Флэт уайт vs Капучино', likes: 0, comments: 0 },
+          youtube: { text: 'Флэт уайт и Капучино: в чём разница | Бодрость', likes: 0, comments: 0 }
+        }
+      },
+      {
+        id: 'cs-23',
+        title: 'Весенний плейлист',
+        content: 'Собрали плейлист для весеннего настроения. Слушайте у нас или в Яндекс.Музыке!',
+        type: 'story',
+        status: 'published',
+        networks: ['instagram'],
+        tags: ['tag-cs-4', 'tag-cs-3'],
+        date: '2026-03-15',
+        previews: {
+          instagram: { text: 'Весенний плейлист от Бодрости!', likes: 567, comments: 23 }
+        }
+      },
+      {
+        id: 'cs-24',
+        title: 'Раф: история и рецепт',
+        content: 'Раф-кофе — российское изобретение! Рассказываем историю создания и делимся классическим рецептом.',
+        type: 'article',
+        status: 'draft',
+        networks: ['telegram', 'vk'],
+        tags: ['tag-cs-2'],
+        date: '2026-03-30',
+        previews: {
+          telegram: { text: 'Как появился раф-кофе и почему он такой вкусный', views: 0 },
+          vk: { text: 'История раф-кофе: от бара «Кофе Бин» до всей России' }
+        }
+      },
+      {
+        id: 'cs-25',
+        title: 'Субботний бранч',
+        type: 'story',
+        status: 'idea',
+        networks: ['instagram', 'vk'],
+        tags: ['tag-cs-3', 'tag-cs-1'],
+        date: '2026-03-22',
+        previews: {
+          instagram: { text: 'Субботний бранч в Бодрости!' },
+          vk: { text: 'Приглашаем на субботний бранч', likes: 0, comments: 0, shares: 0 }
+        }
       }
     ],
     infoEvents: [
@@ -339,6 +491,169 @@ export const demoProjects: DemoProject[] = [
         previews: {
           instagram: { text: 'Отвечаю на ваши вопросы!' }
         }
+      },
+      {
+        id: 'ba-4',
+        title: 'Мой гардероб на весну',
+        content: 'Показываю капсульный гардероб на весну 2026. 15 вещей — 30 образов!',
+        type: 'reels',
+        status: 'published',
+        networks: ['instagram', 'youtube'],
+        tags: ['tag-ba-4', 'tag-ba-1'],
+        date: '2026-03-08',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Wardrobe',
+        publishedLinks: {
+          instagram: 'https://instagram.com/p/wardrobe2026'
+        },
+        previews: {
+          instagram: { text: 'Капсульный гардероб на весну | 15 вещей', likes: 18500, comments: 890 },
+          youtube: { text: 'Капсульный гардероб весна 2026 | 30 образов из 15 вещей', likes: 12300, comments: 456 }
+        }
+      },
+      {
+        id: 'ba-5',
+        title: 'Влог из Дубая',
+        type: 'reels',
+        status: 'ready',
+        networks: ['youtube', 'instagram'],
+        tags: ['tag-ba-4', 'tag-ba-1'],
+        date: '2026-03-22',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Dubai',
+        previews: {
+          youtube: { text: 'Влог из Дубая | Что посмотреть за 3 дня', likes: 0, comments: 0 },
+          instagram: { text: 'Dubai vlog is coming!', likes: 0, comments: 0 }
+        }
+      },
+      {
+        id: 'ba-6',
+        title: 'Распаковка PR-посылок',
+        type: 'story',
+        status: 'published',
+        networks: ['instagram'],
+        tags: ['tag-ba-2', 'tag-ba-3'],
+        date: '2026-03-10',
+        previews: {
+          instagram: { text: 'Распаковка посылок от брендов!', likes: 8900, comments: 234 }
+        }
+      },
+      {
+        id: 'ba-7',
+        title: 'Мой уход за кожей',
+        content: 'Полная рутина ухода: утро и вечер. Все средства с ценами!',
+        type: 'reels',
+        status: 'draft',
+        networks: ['instagram', 'youtube'],
+        tags: ['tag-ba-4', 'tag-ba-1'],
+        date: '2026-03-28',
+        previews: {
+          instagram: { text: 'Мой уход за кожей 2026 | Утро + Вечер' },
+          youtube: { text: 'Уход за кожей: полная рутина с ценами' }
+        }
+      },
+      {
+        id: 'ba-8',
+        title: 'Челлендж: неделя без телефона',
+        type: 'reels',
+        status: 'idea',
+        networks: ['youtube', 'instagram'],
+        tags: ['tag-ba-3', 'tag-ba-1'],
+        date: '2026-04-01',
+        previews: {
+          youtube: { text: 'Неделя без телефона | Эксперимент' },
+          instagram: { text: 'Phone detox challenge!' }
+        }
+      },
+      {
+        id: 'ba-9',
+        title: 'Покупки на Wildberries',
+        content: 'Заказала 20 вещей — показываю что пришло и стоит ли брать',
+        type: 'reels',
+        status: 'ready',
+        networks: ['instagram', 'youtube'],
+        tags: ['tag-ba-4'],
+        date: '2026-03-14',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Haul',
+        previews: {
+          instagram: { text: 'Haul с Wildberries | Честный обзор', likes: 0, comments: 0 },
+          youtube: { text: 'Покупки на WB: 20 вещей за 15000₽', likes: 0, comments: 0 }
+        }
+      },
+      {
+        id: 'ba-10',
+        title: 'День со мной',
+        type: 'story',
+        status: 'published',
+        networks: ['instagram'],
+        tags: ['tag-ba-1'],
+        date: '2026-03-05',
+        previews: {
+          instagram: { text: 'День со мной в сторис', likes: 15600, comments: 0 }
+        }
+      },
+      {
+        id: 'ba-11',
+        title: 'Интеграция: приложение для медитации',
+        type: 'story',
+        status: 'draft',
+        networks: ['instagram'],
+        tags: ['tag-ba-2'],
+        date: '2026-03-30',
+        previews: {
+          instagram: { text: 'Реклама приложения для медитации' }
+        }
+      },
+      {
+        id: 'ba-12',
+        title: 'Макияж за 5 минут',
+        content: 'Быстрый повседневный макияж для тех, кто вечно опаздывает',
+        type: 'reels',
+        status: 'idea',
+        networks: ['instagram', 'youtube'],
+        tags: ['tag-ba-4', 'tag-ba-3'],
+        date: '2026-04-08',
+        previews: {
+          instagram: { text: '5 minute makeup tutorial' },
+          youtube: { text: 'Макияж за 5 минут | Быстро и красиво' }
+        }
+      },
+      {
+        id: 'ba-13',
+        title: 'Мои любимые книги',
+        type: 'post',
+        status: 'idea',
+        networks: ['telegram', 'instagram'],
+        tags: ['tag-ba-1', 'tag-ba-3'],
+        date: '2026-04-03',
+        previews: {
+          telegram: { text: 'Топ-10 книг, которые изменили мою жизнь', views: 0 },
+          instagram: { text: 'Books that changed my life' }
+        }
+      },
+      {
+        id: 'ba-14',
+        title: 'Отвечаю хейтерам',
+        type: 'reels',
+        status: 'draft',
+        networks: ['youtube'],
+        tags: ['tag-ba-1', 'tag-ba-3'],
+        date: '2026-03-18',
+        previews: {
+          youtube: { text: 'Читаю комментарии хейтеров | Без цензуры' }
+        }
+      },
+      {
+        id: 'ba-15',
+        title: 'Рецепт ПП-завтрака',
+        content: 'Вкусный и полезный завтрак за 10 минут. Овсянка, но не скучная!',
+        type: 'reels',
+        status: 'ready',
+        networks: ['instagram'],
+        tags: ['tag-ba-4'],
+        date: '2026-03-12',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Breakfast',
+        previews: {
+          instagram: { text: 'ПП-завтрак за 10 минут', likes: 0, comments: 0 }
+        }
       }
     ],
     infoEvents: [
@@ -417,6 +732,173 @@ export const demoProjects: DemoProject[] = [
         previews: {
           vk: { text: 'Какие наушники выбрать в 2026?' },
           youtube: { text: 'ТОП-5 наушников 2026 года | Сравнение' }
+        }
+      },
+      {
+        id: 'es-4',
+        title: 'Сравнение Galaxy S26 vs iPhone 17',
+        content: 'Детальное сравнение двух флагманов 2026 года. Камеры, производительность, автономность.',
+        type: 'reels',
+        status: 'ready',
+        networks: ['youtube', 'vk'],
+        tags: ['tag-es-2', 'tag-es-3'],
+        date: '2026-03-10',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Comparison',
+        previews: {
+          youtube: { text: 'Galaxy S26 vs iPhone 17 | Полное сравнение', likes: 8900, comments: 1234 },
+          vk: { text: 'Битва флагманов: Samsung vs Apple', likes: 2340, comments: 456, shares: 189 }
+        }
+      },
+      {
+        id: 'es-5',
+        title: 'Новинки с MWC 2026',
+        type: 'post',
+        status: 'published',
+        networks: ['telegram', 'vk'],
+        tags: ['tag-es-2'],
+        date: '2026-03-03',
+        publishedLinks: {
+          telegram: 'https://t.me/techstore/234',
+          vk: 'https://vk.com/wall-techstore_567'
+        },
+        previews: {
+          telegram: { text: 'Главные новинки MWC 2026: краткий обзор', views: 12400 },
+          vk: { text: 'MWC 2026: все анонсы в одном посте', likes: 890, comments: 123, shares: 67 }
+        }
+      },
+      {
+        id: 'es-6',
+        title: 'Розыгрыш AirPods Pro 3',
+        type: 'post',
+        status: 'ready',
+        networks: ['instagram', 'vk', 'telegram'],
+        tags: ['tag-es-4', 'tag-es-1'],
+        date: '2026-03-20',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Giveaway',
+        previews: {
+          instagram: { text: 'GIVEAWAY! AirPods Pro 3 — условия в посте', likes: 0, comments: 0 },
+          vk: { text: 'Розыгрыш наушников AirPods Pro 3!', likes: 0, comments: 0, shares: 0 },
+          telegram: { text: 'Розыгрыш AirPods Pro 3 — участвуй!', views: 0 }
+        }
+      },
+      {
+        id: 'es-7',
+        title: 'Как выбрать ноутбук',
+        content: 'Гайд по выбору ноутбука в 2026: на что обратить внимание, какие характеристики важны',
+        type: 'post',
+        status: 'draft',
+        networks: ['vk', 'telegram'],
+        tags: ['tag-es-2'],
+        date: '2026-03-25',
+        previews: {
+          vk: { text: 'Как выбрать ноутбук в 2026: полный гайд' },
+          telegram: { text: 'Гайд: выбираем ноутбук правильно', views: 0 }
+        }
+      },
+      {
+        id: 'es-8',
+        title: 'Краш-тест смартфонов',
+        type: 'reels',
+        status: 'idea',
+        networks: ['youtube', 'instagram'],
+        tags: ['tag-es-3'],
+        date: '2026-04-05',
+        previews: {
+          youtube: { text: 'Краш-тест: роняем флагманы 2026' },
+          instagram: { text: 'Phone drop test!' }
+        }
+      },
+      {
+        id: 'es-9',
+        title: 'Умный дом: с чего начать',
+        content: 'Собираем умный дом с нуля: колонки, лампочки, датчики. Бюджет от 10 000₽',
+        type: 'reels',
+        status: 'ready',
+        networks: ['youtube', 'vk'],
+        tags: ['tag-es-2'],
+        date: '2026-03-18',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Smart+Home',
+        previews: {
+          youtube: { text: 'Умный дом за 10000₽ | С чего начать', likes: 0, comments: 0 },
+          vk: { text: 'Собираем умный дом с нуля: гайд для новичков' }
+        }
+      },
+      {
+        id: 'es-10',
+        title: 'Обзор PlayStation 6',
+        type: 'reels',
+        status: 'idea',
+        networks: ['youtube'],
+        tags: ['tag-es-2', 'tag-es-3'],
+        date: '2026-04-15',
+        previews: {
+          youtube: { text: 'PlayStation 6: первые впечатления' }
+        }
+      },
+      {
+        id: 'es-11',
+        title: 'Скидки на аксессуары',
+        type: 'story',
+        status: 'published',
+        networks: ['instagram'],
+        tags: ['tag-es-1', 'tag-es-4'],
+        date: '2026-03-12',
+        previews: {
+          instagram: { text: 'Аксессуары со скидкой до 40%!', likes: 567, comments: 23 }
+        }
+      },
+      {
+        id: 'es-12',
+        title: 'Лайфхаки для iPhone',
+        content: '10 скрытых функций iOS, о которых вы не знали',
+        type: 'reels',
+        status: 'draft',
+        networks: ['instagram', 'youtube'],
+        tags: ['tag-es-2'],
+        date: '2026-03-22',
+        previews: {
+          instagram: { text: '10 секретных функций iPhone' },
+          youtube: { text: 'Скрытые функции iOS 19 | 10 лайфхаков' }
+        }
+      },
+      {
+        id: 'es-13',
+        title: 'Распродажа ко Дню космонавтики',
+        type: 'post',
+        status: 'idea',
+        networks: ['vk', 'telegram', 'instagram'],
+        tags: ['tag-es-1', 'tag-es-4'],
+        date: '2026-04-12',
+        previews: {
+          vk: { text: 'Космические скидки 12 апреля!' },
+          telegram: { text: 'День космонавтики — скидки до 25%', views: 0 },
+          instagram: { text: 'Space sale! Up to 25% off' }
+        }
+      },
+      {
+        id: 'es-14',
+        title: 'Ответы на вопросы',
+        type: 'story',
+        status: 'ready',
+        networks: ['instagram'],
+        tags: ['tag-es-2'],
+        date: '2026-03-26',
+        previews: {
+          instagram: { text: 'Q&A: отвечаем на ваши вопросы о технике' }
+        }
+      },
+      {
+        id: 'es-15',
+        title: 'Новый робот-пылесос',
+        content: 'Обзор Xiaomi Robot Vacuum X20 Max: тестируем в реальной квартире',
+        type: 'reels',
+        status: 'draft',
+        networks: ['youtube', 'vk'],
+        tags: ['tag-es-2', 'tag-es-3'],
+        date: '2026-04-02',
+        previews: {
+          youtube: { text: 'Xiaomi X20 Max: честный обзор робота-пылесоса' },
+          vk: { text: 'Обзор нового робота-пылесоса Xiaomi' }
         }
       }
     ],

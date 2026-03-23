@@ -13,13 +13,15 @@ const emit = defineEmits<{
 const typeStyles: Record<ContentType, string> = {
   post: 'bg-blue-500/20 border-blue-500',
   story: 'bg-purple-500/20 border-purple-500',
-  reels: 'bg-pink-500/20 border-pink-500'
+  reels: 'bg-pink-500/20 border-pink-500',
+  article: 'bg-emerald-500/20 border-emerald-500'
 }
 
 const typeLabels: Record<ContentType, string> = {
   post: 'Пост',
   story: 'Сторис',
-  reels: 'Рилс'
+  reels: 'Рилс',
+  article: 'Статья'
 }
 
 const statusLabels: Record<PostStatus, { class: string; label: string }> = {
