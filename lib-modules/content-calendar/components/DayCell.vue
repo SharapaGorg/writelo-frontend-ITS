@@ -88,6 +88,19 @@ const hasMore = computed(() => props.posts.length > 4)
     @dragleave="handleDragLeave"
     @drop="handleDrop"
   >
+    <!-- Add post button (absolute, top-left corner) -->
+    <button
+      v-if="isCurrentMonth"
+      :class="[
+        'absolute top-1 left-1 w-5 h-5 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center text-xs font-bold leading-none transition-all z-10',
+        isHovered ? 'opacity-100' : 'opacity-0'
+      ]"
+      @click.stop="emit('createPost', date)"
+      title="Создать пост"
+    >
+      +
+    </button>
+
     <!-- Top row: day number + social icons -->
     <div class="flex items-start justify-between w-full">
       <span
@@ -98,19 +111,6 @@ const hasMore = computed(() => props.posts.length > 4)
       >
         {{ dayNumber }}
       </span>
-
-      <!-- Add post button -->
-      <button
-        v-if="isCurrentMonth"
-        :class="[
-          'w-5 h-5 rounded-full bg-zinc-700 hover:bg-purple-600 text-white flex items-center justify-center text-sm font-bold transition-all',
-          isHovered ? 'opacity-100' : 'opacity-0'
-        ]"
-        @click.stop="emit('createPost', date)"
-        title="Создать пост"
-      >
-        +
-      </button>
 
       <!-- Social network icons -->
       <div class="flex items-center gap-1">
