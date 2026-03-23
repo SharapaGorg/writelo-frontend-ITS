@@ -43,7 +43,7 @@ const postTags = computed(() =>
 <template>
   <button
     :class="[
-      'w-full p-3 rounded-lg border text-left transition-all hover:scale-[1.02]',
+      'w-full h-full p-3 rounded-lg border text-left transition-all hover:scale-[1.02] flex flex-col justify-start',
       typeStyles[post.type]
     ]"
     @click="emit('select', post.id)"
