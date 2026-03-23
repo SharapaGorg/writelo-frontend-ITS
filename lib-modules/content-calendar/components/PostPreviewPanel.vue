@@ -357,20 +357,33 @@ const postTags = computed(() =>
     </div>
 
     <!-- Action buttons bar -->
-    <div v-if="!isEditing && !isPublishing && !isDeleting" class="px-4 py-2 border-b border-zinc-800 flex gap-2">
-      <button
-        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
-        @click="startEditing"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-        </svg>
-        Редактировать
-      </button>
+    <div v-if="!isEditing && !isPublishing && !isDeleting" class="px-4 py-2 border-b border-zinc-800 flex flex-col gap-2">
+      <div class="flex gap-2">
+        <button
+          class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
+          @click="startEditing"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Редактировать
+        </button>
+        <button
+          class="flex items-center justify-center p-2 rounded-lg bg-zinc-800 hover:bg-red-600 text-zinc-400 hover:text-white text-sm transition-colors"
+          title="Удалить пост"
+          @click="startDeleting"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            <line x1="10" y1="11" x2="10" y2="17"/>
+            <line x1="14" y1="11" x2="14" y2="17"/>
+          </svg>
+        </button>
+      </div>
       <button
         v-if="canPublish"
-        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-medium transition-colors"
+        class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-medium transition-colors"
         @click="startPublishing"
       >
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -381,7 +394,7 @@ const postTags = computed(() =>
       </button>
       <button
         v-if="isPublished"
-        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-sm font-medium transition-colors"
+        class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-sm font-medium transition-colors"
         @click="unpublish"
       >
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -389,17 +402,6 @@ const postTags = computed(() =>
           <path d="M3 3v5h5"/>
         </svg>
         Снять с публикации
-      </button>
-      <button
-        class="flex items-center justify-center p-2 rounded-lg bg-zinc-800 hover:bg-red-600 text-zinc-400 hover:text-white text-sm transition-colors"
-        title="Удалить пост"
-        @click="startDeleting"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-          <line x1="10" y1="11" x2="10" y2="17"/>
-          <line x1="14" y1="11" x2="14" y2="17"/>
-        </svg>
       </button>
     </div>
 
