@@ -2,6 +2,7 @@
 import { ref, computed, watch, nextTick } from 'vue'
 import { Button } from '~/components/ui/button'
 import InstagramPreview from './previews/InstagramPreview.vue'
+import TimeInput from './TimeInput.vue'
 import VkPreview from './previews/VkPreview.vue'
 import YouTubePreview from './previews/YouTubePreview.vue'
 import TelegramPreview from './previews/TelegramPreview.vue'
@@ -577,12 +578,7 @@ const postTags = computed(() =>
                 type="date"
                 class="flex-1 bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-purple-500"
               />
-              <input
-                v-model="editTime"
-                type="time"
-                class="w-28 bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-purple-500"
-                placeholder="--:--"
-              />
+              <TimeInput v-model="editTime" />
             </div>
           </div>
 
