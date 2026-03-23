@@ -13,6 +13,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   selectPost: [postId: string]
   close: []
+  createPost: []
 }>()
 
 const formattedDate = computed(() => {
@@ -38,12 +39,21 @@ const funDay = computed(() => getFunDayForDate(props.date))
           <span>{{ funDay.title }}</span>
         </span>
       </div>
-      <button
-        class="text-zinc-500 hover:text-white transition-colors"
-        @click="emit('close')"
-      >
-        ✕
-      </button>
+      <div class="flex items-center gap-2">
+        <button
+          class="w-7 h-7 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center text-lg font-bold transition-colors"
+          @click="emit('createPost')"
+          title="Создать пост"
+        >
+          +
+        </button>
+        <button
+          class="text-zinc-500 hover:text-white transition-colors"
+          @click="emit('close')"
+        >
+          ✕
+        </button>
+      </div>
     </div>
     <div class="p-4">
       <div v-if="infoEvents.length > 0" class="mb-4">
