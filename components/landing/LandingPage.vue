@@ -8,6 +8,7 @@ import TimeCalculator from '~/components/landing/TimeCalculator.vue'
 import LandingPricing from '~/components/landing/LandingPricing.vue'
 import LandingContacts from '~/components/landing/LandingContacts.vue'
 import LandingFooter from '~/components/landing/LandingFooter.vue'
+import LandingCalendarShowcase from '~/components/landing/LandingCalendarShowcase.vue'
 import LanguageSelector from '~/components/atoms/LanguageSelector.vue'
 
 const {t} = useI18n()
@@ -119,6 +120,9 @@ function scrollToTop() {
     <main>
       <!-- Hero -->
       <LandingHero/>
+
+      <!-- Calendar Showcase -->
+      <LandingCalendarShowcase />
 
       <!-- Promo Video -->
       <LandingPromoVideo/>
