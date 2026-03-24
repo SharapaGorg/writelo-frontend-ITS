@@ -62,18 +62,18 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
 </script>
 
 <template>
-  <aside class="w-full h-full bg-zinc-900/50 flex flex-col overflow-hidden">
+  <aside class="w-full h-full bg-zinc-100/50 dark:bg-zinc-900/50 flex flex-col overflow-hidden">
     <!-- Tabs -->
     <div
       v-if="showTabs"
-      class="flex border-b border-zinc-800 bg-zinc-900"
+      class="flex border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900"
     >
       <button
         :class="[
           'flex-1 px-4 py-2.5 text-sm font-medium transition-colors',
           activeTab === 'context'
-            ? 'text-white border-b-2 border-purple-500 bg-zinc-800/50'
-            : 'text-zinc-400 hover:text-white hover:bg-zinc-800/30'
+            ? 'text-zinc-900 dark:text-white border-b-2 border-purple-500 bg-zinc-200/50 dark:bg-zinc-800/50'
+            : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/30 dark:hover:bg-zinc-800/30'
         ]"
         @click="activeTab = 'context'"
       >
@@ -83,8 +83,8 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
         :class="[
           'flex-1 px-4 py-2.5 text-sm font-medium transition-colors',
           activeTab === 'news'
-            ? 'text-white border-b-2 border-purple-500 bg-zinc-800/50'
-            : 'text-zinc-400 hover:text-white hover:bg-zinc-800/30'
+            ? 'text-zinc-900 dark:text-white border-b-2 border-purple-500 bg-zinc-200/50 dark:bg-zinc-800/50'
+            : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/30 dark:hover:bg-zinc-800/30'
         ]"
         @click="activeTab = 'news'"
       >
@@ -112,14 +112,14 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
         v-else-if="selectedDate && !selectedPost && activeTab === 'context'"
         class="h-full flex flex-col overflow-hidden"
       >
-        <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
           <div class="flex items-center gap-2 flex-wrap">
-            <h3 class="text-sm font-medium text-zinc-100">
+            <h3 class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
               {{ formattedDate }}
             </h3>
             <span
               v-if="funDay"
-              class="px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-xs text-purple-200 flex items-center gap-1"
+              class="px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-xs text-purple-600 dark:text-purple-200 flex items-center gap-1"
             >
               <span v-if="funDay.emoji" class="text-sm">{{ funDay.emoji }}</span>
               <span>{{ funDay.title }}</span>
@@ -136,7 +136,7 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
               </svg>
             </button>
             <button
-              class="text-zinc-500 hover:text-white transition-colors text-lg"
+              class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors text-lg"
               @click="emit('closeDate')"
             >
               ×
@@ -144,7 +144,7 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-3 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+        <div class="flex-1 overflow-y-auto p-3 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
           <div v-if="infoEvents.length > 0" class="mb-3 space-y-2">
             <div
               v-for="event in infoEvents"
@@ -153,7 +153,7 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
             >
               <span class="text-amber-400 mt-0.5">★</span>
               <div>
-                <span class="text-sm text-amber-200">{{ event.title }}</span>
+                <span class="text-sm text-amber-600 dark:text-amber-200">{{ event.title }}</span>
                 <p v-if="event.description" class="text-xs text-zinc-500 mt-0.5">
                   {{ event.description }}
                 </p>

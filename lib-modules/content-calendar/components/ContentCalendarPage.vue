@@ -238,7 +238,7 @@ onUnmounted(() => {
 
 <template>
   <div :class="[
-    'bg-zinc-950 text-zinc-100 flex flex-col overflow-hidden',
+    'bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col overflow-hidden',
     props.showcaseMode ? 'h-[700px]' : 'h-screen'
   ]">
     <CalendarHeader
@@ -246,7 +246,7 @@ onUnmounted(() => {
       :selected-project-id="selectedProjectId"
       @update:selected-project-id="selectProject"
     />
-    <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-800">
+    <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800">
       <div class="flex items-center gap-6">
         <SocialFilters
           :active-networks="activeNetworks"
@@ -261,8 +261,8 @@ onUnmounted(() => {
             :class="[
               'px-3 py-1.5 text-sm rounded-full border transition-all flex items-center gap-1.5',
               activeStatuses.includes(status.id)
-                ? 'bg-zinc-700 border-zinc-600 text-white'
-                : 'bg-zinc-800 border-zinc-700 text-zinc-500 hover:text-white'
+                ? 'bg-zinc-200 dark:bg-zinc-700 border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white'
+                : 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
             ]"
             @click="toggleStatus(status.id)"
           >
@@ -290,7 +290,7 @@ onUnmounted(() => {
         </div>
       </div>
       <!-- Content type legend -->
-      <div class="flex items-center gap-4 text-sm text-zinc-400">
+      <div class="flex items-center gap-4 text-sm text-zinc-500 dark:text-zinc-400">
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-full bg-blue-500" />
           <span>Пост</span>
@@ -310,7 +310,7 @@ onUnmounted(() => {
       </div>
     </div>
     <!-- Tag filter -->
-    <div class="flex items-center gap-2 px-4 py-2 border-b border-zinc-800 bg-zinc-900/30">
+    <div class="flex items-center gap-2 px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-900/30">
       <span class="text-sm text-zinc-500">Теги:</span>
 
       <!-- Selected tags -->
@@ -329,7 +329,7 @@ onUnmounted(() => {
       <!-- Tag combobox -->
       <div class="relative">
         <button
-          class="px-3 py-1 text-xs rounded-full border border-zinc-700 bg-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 flex items-center gap-1"
+          class="px-3 py-1 text-xs rounded-full border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-600 flex items-center gap-1"
           @click="openTagDropdown"
         >
           <span>+ Добавить тег</span>
@@ -338,27 +338,27 @@ onUnmounted(() => {
         <!-- Dropdown -->
         <div
           v-if="tagDropdownOpen"
-          class="absolute top-full left-0 mt-1 w-56 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl z-50"
+          class="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-xl z-50"
         >
-          <div class="p-2 border-b border-zinc-700">
+          <div class="p-2 border-b border-zinc-200 dark:border-zinc-700">
             <input
               ref="tagInputRef"
               v-model="tagSearch"
               type="text"
               placeholder="Поиск тегов..."
-              class="w-full px-2 py-1 text-sm bg-zinc-900 border border-zinc-600 rounded text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-purple-500"
+              class="w-full px-2 py-1 text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-600 rounded text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-purple-500"
               @keydown.escape="closeTagDropdown"
             />
           </div>
-          <div class="max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+          <div class="max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
             <button
               v-for="tag in filteredTags"
               :key="tag.id"
               :class="[
                 'w-full px-3 py-1.5 text-sm text-left rounded flex items-center gap-2 transition-colors',
                 activeTags.includes(tag.id)
-                  ? 'bg-zinc-700 text-white'
-                  : 'text-zinc-300 hover:bg-zinc-700'
+                  ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-white'
+                  : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700'
               ]"
               @click="handleTagSelect(tag.id)"
             >
@@ -385,7 +385,7 @@ onUnmounted(() => {
       </span>
     </div>
     <div class="flex-1 flex min-h-0">
-      <div class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+      <div class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
         <div class="p-4">
           <CalendarGrid
             :current-month="currentMonth"
@@ -402,7 +402,7 @@ onUnmounted(() => {
       </div>
       <!-- Resizable Sidebar -->
       <div
-        class="relative flex-shrink-0 border-l border-zinc-800 h-full overflow-hidden"
+        class="relative flex-shrink-0 border-l border-zinc-200 dark:border-zinc-800 h-full overflow-hidden"
         :style="{ width: `${effectiveSidebarWidth}px` }"
       >
         <!-- Resize handle (hidden in showcase mode) -->

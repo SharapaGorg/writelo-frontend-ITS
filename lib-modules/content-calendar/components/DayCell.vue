@@ -75,9 +75,9 @@ const hasMore = computed(() => props.posts.length > 4)
     :class="[
       'relative h-24 p-2 text-left transition-all border rounded-lg flex flex-col',
       isCurrentMonth
-        ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-zinc-900')
-        : 'bg-zinc-950 opacity-40',
-      isSelected ? 'border-purple-500 ring-1 ring-purple-500' : (hasInfoEvent && isCurrentMonth ? 'border-amber-500/40 hover:border-amber-500/60' : 'border-zinc-800 hover:border-zinc-600'),
+        ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-zinc-50 dark:bg-zinc-900')
+        : 'bg-zinc-100 dark:bg-zinc-950 opacity-40',
+      isSelected ? 'border-purple-500 ring-1 ring-purple-500' : (hasInfoEvent && isCurrentMonth ? 'border-amber-500/40 hover:border-amber-500/60' : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600'),
       isToday && !isSelected ? 'border-purple-500/50' : '',
       isDragOver ? 'border-green-500 bg-green-500/10 ring-1 ring-green-500' : ''
     ]"
@@ -108,7 +108,7 @@ const hasMore = computed(() => props.posts.length > 4)
       <span
         :class="[
           'text-sm font-medium',
-          isToday ? 'text-purple-400' : isCurrentMonth ? 'text-zinc-300' : 'text-zinc-600'
+          isToday ? 'text-purple-400' : isCurrentMonth ? 'text-zinc-700 dark:text-zinc-300' : 'text-zinc-400 dark:text-zinc-600'
         ]"
       >
         {{ dayNumber }}

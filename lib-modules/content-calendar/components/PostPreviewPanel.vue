@@ -400,7 +400,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Header -->
-    <div class="flex items-center gap-3 px-4 py-3 border-b border-zinc-800">
+    <div class="flex items-center gap-3 px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
       <template v-if="isEditing">
         <input
           v-model="editTitle"
@@ -420,7 +420,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Action buttons bar -->
-    <div v-if="!isEditing && !isPublishing && !isDeleting" class="px-4 py-2 border-b border-zinc-800 flex flex-col gap-2">
+    <div v-if="!isEditing && !isPublishing && !isDeleting" class="px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 flex flex-col gap-2">
       <div class="flex gap-2">
         <button
           class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
@@ -433,7 +433,7 @@ const postTags = computed(() =>
           Редактировать
         </button>
         <button
-          class="flex items-center justify-center p-2 rounded-lg bg-zinc-800 hover:bg-red-600 text-zinc-400 hover:text-white text-sm transition-colors"
+          class="flex items-center justify-center p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-red-600 text-zinc-500 dark:text-zinc-400 hover:text-white text-sm transition-colors"
           title="Удалить пост"
           @click="startDeleting"
         >
@@ -457,7 +457,7 @@ const postTags = computed(() =>
       </button>
       <button
         v-if="isPublished"
-        class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-sm font-medium transition-colors"
+        class="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 text-sm font-medium transition-colors"
         @click="unpublish"
       >
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -469,7 +469,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Delete confirmation -->
-    <div v-if="isDeleting" class="px-4 py-3 border-b border-zinc-800 bg-red-900/20">
+    <div v-if="isDeleting" class="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-red-900/20">
       <div class="flex items-center gap-2 mb-3">
         <svg class="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
@@ -488,7 +488,7 @@ const postTags = computed(() =>
           Удалить
         </button>
         <button
-          class="px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-sm transition-colors"
+          class="px-4 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 text-sm transition-colors"
           @click="cancelDeleting"
         >
           Отмена
@@ -497,7 +497,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Publishing form -->
-    <div v-if="isPublishing" class="px-4 py-3 border-b border-zinc-800 bg-green-900/20">
+    <div v-if="isPublishing" class="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-green-900/20">
       <div class="flex items-center gap-2 mb-3">
         <svg class="w-5 h-5 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
@@ -510,7 +510,7 @@ const postTags = computed(() =>
       <div class="space-y-2 mb-4">
         <div v-for="network in post.networks" :key="network" class="flex items-center gap-2">
           <!-- Network icon -->
-          <div class="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0">
+          <div class="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center flex-shrink-0">
             <svg v-if="network === 'vk'" class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.596-.19 1.365 1.26 2.178 1.818.616.422 1.084.33 1.084.33l2.178-.03s1.14-.07.598-.962c-.044-.073-.316-.659-1.627-1.861-1.372-1.26-1.188-1.055.464-3.233.996-1.356 1.47-2.184 1.338-2.537-.125-.337-.907-.248-.907-.248l-2.45.015s-.182-.025-.316.056c-.132.078-.216.263-.216.263s-.388 1.031-.904 1.908c-1.092 1.852-1.528 1.95-1.706 1.836-.416-.267-.312-1.074-.312-1.646 0-1.79.272-2.535-.529-2.728-.266-.065-.461-.107-1.14-.114-.87-.01-1.606.003-2.023.207-.278.136-.492.439-.362.457.162.022.529.1.724.364.252.343.243 1.113.243 1.113s.145 2.106-.337 2.368c-.332.18-.786-.187-1.762-1.867-.5-.86-.878-1.81-.878-1.81s-.073-.178-.203-.273c-.158-.116-.378-.153-.378-.153l-2.327.015s-.35.01-.478.162c-.114.135-.009.414-.009.414s1.825 4.267 3.893 6.417c1.896 1.972 4.046 1.842 4.046 1.842h.975z"/>
             </svg>
@@ -528,7 +528,7 @@ const postTags = computed(() =>
             v-model="publishLinks[network]"
             type="url"
             :placeholder="`Ссылка на ${networkLabels[network]}`"
-            class="flex-1 bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-green-500"
+            class="flex-1 bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded px-3 py-2 text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-green-500"
           />
         </div>
       </div>
@@ -544,7 +544,7 @@ const postTags = computed(() =>
           Подтвердить
         </button>
         <button
-          class="px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-sm transition-colors"
+          class="px-4 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 text-sm transition-colors"
           @click="cancelPublishing"
         >
           Отмена
@@ -553,7 +553,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Tabs (hidden when editing or publishing) -->
-    <div v-if="!isEditing && !isPublishing" class="flex gap-1 px-4 py-2 border-b border-zinc-800">
+    <div v-if="!isEditing && !isPublishing" class="flex gap-1 px-4 py-2 border-b border-zinc-200 dark:border-zinc-800">
       <Button
         :variant="activeTab === 'content' ? 'default' : 'ghost'"
         size="sm"
@@ -572,7 +572,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Content -->
-    <div class="flex-1 overflow-y-auto p-4 min-h-0 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+    <div class="flex-1 overflow-y-auto p-4 min-h-0 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
       <!-- Content Tab -->
       <template v-if="activeTab === 'content'">
         <!-- Edit Mode -->
@@ -588,7 +588,7 @@ const postTags = computed(() =>
             <label class="text-xs text-zinc-500 mb-1 block">Контент</label>
             <textarea
               v-model="editContent"
-              class="w-full bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-purple-500 min-h-[120px] resize-y"
+              class="w-full bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded px-3 py-2 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-purple-500 min-h-[120px] resize-y"
               placeholder="Текст поста..."
             />
           </div>
@@ -600,7 +600,7 @@ const postTags = computed(() =>
               <input
                 v-model="editDate"
                 type="date"
-                class="flex-1 bg-zinc-800 border border-zinc-700 rounded px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-purple-500"
+                class="flex-1 bg-zinc-50 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded px-3 py-2 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-purple-500"
               />
               <TimeInput v-model="editTime" />
             </div>
@@ -617,7 +617,7 @@ const postTags = computed(() =>
                   'px-3 py-1.5 rounded text-sm transition-colors',
                   editStatus === s.value
                     ? 'bg-purple-600 text-white'
-                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                 ]"
                 @click="editStatus = s.value"
               >
@@ -637,7 +637,7 @@ const postTags = computed(() =>
                   'px-3 py-1.5 rounded text-sm transition-colors flex items-center gap-2',
                   editType === t.value
                     ? `${t.color} text-white`
-                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                 ]"
                 @click="editType = t.value"
               >
@@ -657,7 +657,7 @@ const postTags = computed(() =>
                   'flex items-center gap-3 p-3 rounded-lg border transition-all',
                   editNetworks.includes('vk')
                     ? 'bg-blue-500/20 border-blue-500 text-white'
-                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600'
+                    : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600'
                 ]"
                 @click="toggleEditNetwork('vk')"
               >
@@ -676,7 +676,7 @@ const postTags = computed(() =>
                   'flex items-center gap-3 p-3 rounded-lg border transition-all',
                   editNetworks.includes('youtube')
                     ? 'bg-red-500/20 border-red-500 text-white'
-                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600'
+                    : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600'
                 ]"
                 @click="toggleEditNetwork('youtube')"
               >
@@ -695,7 +695,7 @@ const postTags = computed(() =>
                   'flex items-center gap-3 p-3 rounded-lg border transition-all',
                   editNetworks.includes('telegram')
                     ? 'bg-sky-500/20 border-sky-500 text-white'
-                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600'
+                    : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600'
                 ]"
                 @click="toggleEditNetwork('telegram')"
               >
@@ -714,7 +714,7 @@ const postTags = computed(() =>
                   'flex items-center gap-3 p-3 rounded-lg border transition-all',
                   editNetworks.includes('instagram')
                     ? 'bg-pink-500/20 border-pink-500 text-white'
-                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600'
+                    : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600'
                 ]"
                 @click="toggleEditNetwork('instagram')"
               >
@@ -777,7 +777,7 @@ const postTags = computed(() =>
                     @keydown.escape="closeTagDropdown"
                   />
                 </div>
-                <div class="max-h-40 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+                <div class="max-h-40 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
                   <!-- Create new tag option -->
                   <button
                     v-if="canCreateTag"
@@ -933,7 +933,7 @@ const postTags = computed(() =>
                   Сохранить
                 </button>
                 <button
-                  class="flex-1 px-3 py-2 bg-zinc-700 hover:bg-zinc-600 text-zinc-300 text-sm font-medium rounded-lg transition-colors"
+                  class="flex-1 px-3 py-2 bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-700 dark:text-zinc-300 text-sm font-medium rounded-lg transition-colors"
                   @click="cancelEditingLinks"
                 >
                   Отмена
@@ -1013,7 +1013,7 @@ const postTags = computed(() =>
               'flex items-center gap-2 px-3 py-2 rounded-lg border transition-all text-sm',
               previewNetwork === network
                 ? 'bg-zinc-700 border-zinc-600 text-white'
-                : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:border-zinc-600'
+                : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600'
             ]"
             @click="previewNetwork = network"
           >

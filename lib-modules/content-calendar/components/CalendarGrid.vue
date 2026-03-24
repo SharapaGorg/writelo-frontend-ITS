@@ -101,7 +101,7 @@ const calendarDays = computed((): DayInfo[] => {
       <Button variant="ghost" size="sm" @click="emit('prevMonth')">
         ◄
       </Button>
-      <h2 class="text-lg font-semibold capitalize text-zinc-100">
+      <h2 class="text-lg font-semibold capitalize text-zinc-900 dark:text-zinc-100">
         {{ monthName }}
       </h2>
       <Button variant="ghost" size="sm" @click="emit('nextMonth')">

@@ -22,7 +22,7 @@ function isActive(network: SocialNetwork): boolean {
 </script>
 
 <template>
-  <div class="flex items-center gap-2 px-6 py-3 border-b border-zinc-800 bg-zinc-900/50">
+  <div class="flex items-center gap-2 px-6 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-900/50">
     <span class="text-sm text-zinc-500 mr-2">Соцсети:</span>
     <button
       v-for="network in networks"
@@ -31,7 +31,7 @@ function isActive(network: SocialNetwork): boolean {
         'px-3 py-1.5 text-sm rounded-full border transition-all',
         isActive(network.id)
           ? `${network.color} border-transparent text-white`
-          : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-white'
+          : 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
       ]"
       :data-state="isActive(network.id) ? 'on' : 'off'"
       @click="emit('toggle', network.id)"

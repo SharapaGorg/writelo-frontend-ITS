@@ -32,8 +32,8 @@ function handleDragStart(e: DragEvent) {
     :class="[
       'p-3 rounded-lg border transition-all cursor-grab active:cursor-grabbing group relative',
       usedDate
-        ? 'bg-green-900/20 border-green-700/50 hover:border-green-600'
-        : 'bg-zinc-800/50 border-zinc-700 hover:border-zinc-600'
+        ? 'bg-green-100 dark:bg-green-900/20 border-green-300 dark:border-green-700/50 hover:border-green-400 dark:hover:border-green-600'
+        : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-600'
     ]"
     draggable="true"
     @dragstart="handleDragStart"
@@ -49,7 +49,7 @@ function handleDragStart(e: DragEvent) {
       {{ formattedUsedDate }}
     </div>
 
-    <h4 :class="['text-sm font-medium mb-1 line-clamp-2', usedDate ? 'text-zinc-300' : 'text-zinc-200']">
+    <h4 :class="['text-sm font-medium mb-1 line-clamp-2', usedDate ? 'text-zinc-600 dark:text-zinc-300' : 'text-zinc-800 dark:text-zinc-200']">
       {{ news.title }}
     </h4>
     <p v-if="news.description" class="text-xs text-zinc-400 mb-2 line-clamp-2">

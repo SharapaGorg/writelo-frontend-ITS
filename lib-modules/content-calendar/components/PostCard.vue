@@ -49,7 +49,7 @@ const postTags = computed(() =>
     @click="emit('select', post.id)"
   >
     <div class="flex items-center justify-between mb-2">
-      <span class="text-xs text-zinc-400">{{ typeLabels[post.type] }}</span>
+      <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ typeLabels[post.type] }}</span>
       <div class="flex gap-1">
         <!-- VK -->
         <svg v-if="post.networks.includes('vk')" class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
@@ -69,7 +69,7 @@ const postTags = computed(() =>
         </svg>
       </div>
     </div>
-    <h4 class="text-sm font-medium text-zinc-100 mb-2 line-clamp-2">
+    <h4 class="text-sm font-medium text-zinc-900 dark:text-zinc-100 mb-2 line-clamp-2">
       {{ post.title }}
     </h4>
     <div class="flex items-center gap-1.5">
