@@ -10,6 +10,12 @@ import PostPreviewPanel from './PostPreviewPanel.vue'
 import { useContentCalendar } from '../composables/useContentCalendar'
 import type { NewsItem } from '../types'
 
+const props = withDefaults(defineProps<{
+  showcaseMode?: boolean
+}>(), {
+  showcaseMode: false
+})
+
 const {
   selectedProjectId,
   selectedDate,
@@ -228,7 +234,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="h-screen bg-zinc-950 text-zinc-100 flex flex-col overflow-hidden">
+  <div :class="[
+    'bg-zinc-950 text-zinc-100 flex flex-col overflow-hidden',
+    props.showcaseMode ? 'h-[700px]' : 'h-screen'
+  ]">
     <CalendarHeader
       :projects="projects"
       :selected-project-id="selectedProjectId"
