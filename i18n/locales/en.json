@@ -113,6 +113,11 @@
         "description": "AI enhances your prompt automatically. Just describe what you need"
       }
     },
+    "calendar": {
+      "title": "Try the content calendar",
+      "description": "Plan posts, track statuses, find content opportunities. Right now — no signup required",
+      "cta": "Open full screen"
+    },
     "contacts": {
       "title": "Contacts",
       "email": "Email us",
