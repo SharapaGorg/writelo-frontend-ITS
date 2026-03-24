@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { generateUUID } from '~/scripts/features/utils'
 import CalendarHeader from './CalendarHeader.vue'
 import SocialFilters from './SocialFilters.vue'
 import CalendarGrid from './CalendarGrid.vue'
-import DayDetailPanel from './DayDetailPanel.vue'
-import NewsSidebar from './NewsSidebar.vue'
-import PostPreviewPanel from './PostPreviewPanel.vue'
+import SidebarContainer from './SidebarContainer.vue'
 import { useContentCalendar } from '../composables/useContentCalendar'
 import type { NewsItem } from '../types'
 
@@ -401,16 +399,6 @@ onUnmounted(() => {
             @create-post="handleCreatePost"
           />
         </div>
-        <DayDetailPanel
-          v-if="selectedDate"
-          :date="selectedDate"
-          :posts="postsForSelectedDate"
-          :info-events="infoEventsForSelectedDate"
-          :project-tags="currentProject.tags"
-          @select-post="selectPost"
-          @close="selectDate(null)"
-          @create-post="handleCreatePost(selectedDate!)"
-        />
       </div>
       <!-- Resizable Sidebar -->
       <div
@@ -424,20 +412,22 @@ onUnmounted(() => {
           :class="{ 'bg-purple-500/50': isResizing }"
           @mousedown="startResize"
         />
-        <PostPreviewPanel
-          v-if="selectedPost"
-          :post="selectedPost"
+        <SidebarContainer
+          :selected-date="selectedDate"
+          :selected-post="selectedPost"
+          :posts-for-date="postsForSelectedDate"
+          :info-events="infoEventsForSelectedDate"
           :project-tags="currentProject.tags"
-          :create-tag="createTag"
-          @close="selectPost(null)"
-          @update="handlePostUpdate"
-          @delete="handlePostDelete"
-          @create-chat="handleCreateChat"
-        />
-        <NewsSidebar
-          v-else
           :news="currentProject.news"
           :used-news="usedNews"
+          :create-tag="createTag"
+          @select-post="selectPost"
+          @close-date="selectDate(null)"
+          @close-post="selectPost(null)"
+          @create-post="handleCreatePost(selectedDate!)"
+          @update-post="handlePostUpdate"
+          @delete-post="handlePostDelete"
+          @create-chat="handleCreateChat"
         />
       </div>
     </div>
