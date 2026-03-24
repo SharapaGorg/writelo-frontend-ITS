@@ -140,6 +140,11 @@ const SIDEBAR_DEFAULT_WIDTH = 384
 const sidebarWidth = ref(SIDEBAR_DEFAULT_WIDTH)
 const isResizing = ref(false)
 
+// In showcase mode, use minimum width and disable resizing
+const effectiveSidebarWidth = computed(() =>
+  props.showcaseMode ? SIDEBAR_MIN_WIDTH : sidebarWidth.value
+)
+
 function loadSidebarWidth() {
   const stored = localStorage.getItem(SIDEBAR_STORAGE_KEY)
   if (stored) {
@@ -410,10 +415,11 @@ onUnmounted(() => {
       <!-- Resizable Sidebar -->
       <div
         class="relative flex-shrink-0 border-l border-zinc-800 h-full overflow-hidden"
-        :style="{ width: `${sidebarWidth}px` }"
+        :style="{ width: `${effectiveSidebarWidth}px` }"
       >
-        <!-- Resize handle -->
+        <!-- Resize handle (hidden in showcase mode) -->
         <div
+          v-if="!props.showcaseMode"
           class="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-purple-500/50 transition-colors z-10"
           :class="{ 'bg-purple-500/50': isResizing }"
           @mousedown="startResize"

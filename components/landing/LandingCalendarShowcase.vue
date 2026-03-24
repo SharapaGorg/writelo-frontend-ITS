@@ -1,19 +1,11 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useScrollAnimation } from '~/composables/useScrollAnimation'
-import { Button } from '~/components/ui/button'
 import { ContentCalendarPage } from '~/lib-modules/content-calendar'
 
 const { t } = useI18n()
-const router = useRouter()
-const { $trackGoal } = useNuxtApp()
 
 const { elementRef, isVisible } = useScrollAnimation(0.1)
-
-function handleCTA() {
-  $trackGoal('landing_cta_click', { button: 'calendar_open_full' })
-  router.push('/ideas')
-}
 </script>
 
 <template>
@@ -59,17 +51,6 @@ function handleCTA() {
         <div class="bg-zinc-950">
           <ContentCalendarPage :showcase-mode="true" />
         </div>
-      </div>
-
-      <!-- CTA button -->
-      <div class="text-center mt-8">
-        <Button
-          variant="outline"
-          class="border-purple-500/50 text-purple-600 dark:text-purple-400 hover:bg-purple-500/10"
-          @click="handleCTA"
-        >
-          {{ t('landing.calendar.cta') }}
-        </Button>
       </div>
     </div>
   </section>
