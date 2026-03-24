@@ -19,7 +19,7 @@ function handleCTA() {
 <template>
   <section
     ref="elementRef"
-    class="py-16 px-4"
+    class="hidden md:block py-16 px-4"
   >
     <div
       class="max-w-7xl mx-auto transition-all duration-700 ease-out"
