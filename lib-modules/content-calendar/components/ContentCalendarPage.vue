@@ -350,7 +350,7 @@ onUnmounted(() => {
               @keydown.escape="closeTagDropdown"
             />
           </div>
-          <div class="max-h-48 overflow-y-auto p-1">
+          <div class="max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
             <button
               v-for="tag in filteredTags"
               :key="tag.id"
@@ -385,7 +385,7 @@ onUnmounted(() => {
       </span>
     </div>
     <div class="flex-1 flex min-h-0">
-      <div class="flex-1 flex flex-col min-h-0 overflow-y-auto">
+      <div class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
         <div class="p-4">
           <CalendarGrid
             :current-month="currentMonth"

@@ -572,7 +572,7 @@ const postTags = computed(() =>
     </div>
 
     <!-- Content -->
-    <div class="flex-1 overflow-y-auto p-4 min-h-0">
+    <div class="flex-1 overflow-y-auto p-4 min-h-0 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
       <!-- Content Tab -->
       <template v-if="activeTab === 'content'">
         <!-- Edit Mode -->
@@ -777,7 +777,7 @@ const postTags = computed(() =>
                     @keydown.escape="closeTagDropdown"
                   />
                 </div>
-                <div class="max-h-40 overflow-y-auto p-1">
+                <div class="max-h-40 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
                   <!-- Create new tag option -->
                   <button
                     v-if="canCreateTag"

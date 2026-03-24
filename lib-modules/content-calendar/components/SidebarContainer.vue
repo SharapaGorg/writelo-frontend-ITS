@@ -144,7 +144,7 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-3">
+        <div class="flex-1 overflow-y-auto p-3 scrollbar-thin scrollbar-thumb-zinc-600 scrollbar-track-transparent">
           <div v-if="infoEvents.length > 0" class="mb-3 space-y-2">
             <div
               v-for="event in infoEvents"
