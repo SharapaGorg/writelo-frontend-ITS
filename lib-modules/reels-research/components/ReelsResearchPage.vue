@@ -10,21 +10,34 @@ const store = useReelsResearchStore()
 
 const isCalendarOpen = ref(false)
 const draggingReel = ref<ReelItem | null>(null)
+const wasDropped = ref(false)
 
 function handleDragStart(reel: ReelItem, _event: DragEvent) {
   draggingReel.value = reel
+  wasDropped.value = false
   isCalendarOpen.value = true
 }
 
+function handleDragEnd(_reel: ReelItem, _event: DragEvent) {
+  // Close panel only if not dropped (drop handler will close it)
+  // Small delay to let drop event fire first
+  setTimeout(() => {
+    if (!wasDropped.value) {
+      isCalendarOpen.value = false
+      draggingReel.value = null
+    }
+    wasDropped.value = false
+  }, 100)
+}
+
 function handleDrop(date: string, reel: ReelItem) {
-  // For now, just log - later can integrate with calendar API
-  console.log('Create post from reel:', reel.description, 'on date:', date)
-  // TODO: Call API to create post in calendar
+  wasDropped.value = true
+  console.log('Created post from reel:', reel.description, 'on date:', date)
   isCalendarOpen.value = false
   draggingReel.value = null
 }
 
-function handleModalClose() {
+function handlePanelClose() {
   isCalendarOpen.value = false
   draggingReel.value = null
 }
@@ -51,13 +64,16 @@ function handleModalClose() {
       </div>
 
       <!-- Grid -->
-      <ReelsGrid @drag-start="handleDragStart" />
+      <ReelsGrid
+        @drag-start="handleDragStart"
+        @drag-end="handleDragEnd"
+      />
 
-      <!-- Calendar Drop Modal -->
+      <!-- Calendar Drop Panel (slides from right) -->
       <CalendarDropModal
         :is-open="isCalendarOpen"
         :reel="draggingReel"
-        @close="handleModalClose"
+        @close="handlePanelClose"
         @drop="handleDrop"
       />
     </div>

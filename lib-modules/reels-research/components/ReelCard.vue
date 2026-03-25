@@ -7,6 +7,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   dragStart: [reel: ReelItem, event: DragEvent]
+  dragEnd: [reel: ReelItem, event: DragEvent]
 }>()
 
 function formatNumber(n: number): string {
@@ -29,6 +30,10 @@ function handleDragStart(event: DragEvent) {
   }
   emit('dragStart', props.reel, event)
 }
+
+function handleDragEnd(event: DragEvent) {
+  emit('dragEnd', props.reel, event)
+}
 </script>
 
 <template>
@@ -37,6 +42,7 @@ function handleDragStart(event: DragEvent) {
     draggable="true"
     @click="openReel"
     @dragstart="handleDragStart"
+    @dragend="handleDragEnd"
   >
     <!-- Thumbnail -->
     <div class="relative aspect-[9/16] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
