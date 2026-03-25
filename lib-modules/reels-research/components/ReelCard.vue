@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { ReelItem } from '../types'
-import { useReelsResearchStore } from '../stores/reelsResearchStore'
 
 const props = defineProps<{
   reel: ReelItem
 }>()
 
-const store = useReelsResearchStore()
+const emit = defineEmits<{
+  dragStart: [reel: ReelItem, event: DragEvent]
+}>()
 
 function formatNumber(n: number): string {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
@@ -14,20 +15,28 @@ function formatNumber(n: number): string {
   return n.toString()
 }
 
-function handleCardClick() {
+function openReel() {
   window.open(props.reel.url, '_blank')
 }
 
-function handleBookmarkClick(e: Event) {
-  e.stopPropagation()
-  store.toggleBookmark(props.reel)
+function handleDragStart(event: DragEvent) {
+  if (event.dataTransfer) {
+    event.dataTransfer.setData('application/json', JSON.stringify({
+      type: 'reel',
+      reel: props.reel
+    }))
+    event.dataTransfer.effectAllowed = 'copy'
+  }
+  emit('dragStart', props.reel, event)
 }
 </script>
 
 <template>
   <div
     class="group cursor-pointer rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 overflow-hidden transition-all hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-lg"
-    @click="handleCardClick"
+    draggable="true"
+    @click="openReel"
+    @dragstart="handleDragStart"
   >
     <!-- Thumbnail -->
     <div class="relative aspect-[9/16] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
@@ -45,23 +54,6 @@ function handleBookmarkClick(e: Event) {
           </svg>
         </div>
       </div>
-
-      <!-- Bookmark button (top-right) -->
-      <button
-        class="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 hover:bg-black/70 flex items-center justify-center transition-colors"
-        @click="handleBookmarkClick"
-      >
-        <svg
-          class="w-5 h-5 transition-colors"
-          :class="store.isBookmarked(reel.id) ? 'text-yellow-400 fill-yellow-400' : 'text-white'"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-        </svg>
-      </button>
 
       <!-- Views badge (bottom-left) -->
       <div class="absolute bottom-2 left-2 px-2 py-1 rounded-md bg-black/60 text-white text-xs font-medium flex items-center gap-1">
