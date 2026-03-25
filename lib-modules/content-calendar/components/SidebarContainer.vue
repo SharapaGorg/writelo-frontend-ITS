@@ -2,7 +2,6 @@
 import { ref, computed, watch } from 'vue'
 import PostPreviewPanel from './PostPreviewPanel.vue'
 import NewsSidebar from './NewsSidebar.vue'
-import { BookmarksSidebar } from '~/lib-modules/reels-research'
 import type { CalendarPost, InfoEvent, ContentTag, NewsItem, TrendItem } from '../types'
 import { getFunDayForDate } from '../data/funDays'
 import PostCard from './PostCard.vue'
@@ -30,7 +29,7 @@ const emit = defineEmits<{
   createChat: []
 }>()
 
-const activeTab = ref<'context' | 'news' | 'bookmarks'>('news')
+const activeTab = ref<'context' | 'news'>('news')
 
 const showTabs = computed(() =>
   props.selectedDate !== null || props.selectedPost !== null
@@ -92,17 +91,6 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
         @click="activeTab = 'news'"
       >
         Новости
-      </button>
-      <button
-        :class="[
-          'flex-1 px-4 py-2.5 text-sm font-medium transition-colors',
-          activeTab === 'bookmarks'
-            ? 'text-zinc-900 dark:text-white border-b-2 border-purple-500 bg-zinc-200/50 dark:bg-zinc-800/50'
-            : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/30 dark:hover:bg-zinc-800/30'
-        ]"
-        @click="activeTab = 'bookmarks'"
-      >
-        Закладки
       </button>
     </div>
 
@@ -190,15 +178,9 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
         </div>
       </div>
 
-      <!-- Bookmarks Sidebar -->
-      <BookmarksSidebar
-        v-else-if="activeTab === 'bookmarks'"
-        class="h-full"
-      />
-
       <!-- News Sidebar -->
       <NewsSidebar
-        v-else-if="activeTab === 'news'"
+        v-else
         :news="news"
         :used-news="usedNews"
         :trends="trends"

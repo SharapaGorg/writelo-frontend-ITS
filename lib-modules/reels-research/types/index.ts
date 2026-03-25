@@ -13,10 +13,6 @@ export interface ReelItem {
   category: ReelCategory
 }
 
-export interface BookmarkedReel extends ReelItem {
-  bookmarkedAt: string
-}
-
 export interface ReelsFilters {
   category: ReelCategory | 'all'
   sortBy: 'views' | 'likes' | 'comments'

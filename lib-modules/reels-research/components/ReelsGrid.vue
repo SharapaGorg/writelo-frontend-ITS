@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
 import ReelCard from './ReelCard.vue'
+import type { ReelItem } from '../types'
 
 const store = useReelsResearchStore()
+
+const emit = defineEmits<{
+  dragStart: [reel: ReelItem, event: DragEvent]
+}>()
 </script>
 
 <template>
@@ -11,6 +16,7 @@ const store = useReelsResearchStore()
       v-for="reel in store.filteredReels"
       :key="reel.id"
       :reel="reel"
+      @drag-start="(reel, event) => emit('dragStart', reel, event)"
     />
   </div>
 </template>
