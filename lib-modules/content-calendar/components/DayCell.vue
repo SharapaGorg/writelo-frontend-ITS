@@ -77,9 +77,9 @@ const uniqueNetworks = computed(() => {
   return Array.from(networks)
 })
 
-// Show max 6 posts with status icons
-const visiblePosts = computed(() => props.posts.slice(0, 6))
-const extraCount = computed(() => props.posts.length - 6)
+// Show max 4 posts with status icons
+const visiblePosts = computed(() => props.posts.slice(0, 4))
+const extraCount = computed(() => props.posts.length - 4)
 </script>
 
 <template>
@@ -151,17 +151,11 @@ const extraCount = computed(() => props.posts.length - 6)
       </div>
     </div>
 
-    <!-- Extra posts counter (absolute, bottom-right) -->
-    <span
-      v-if="extraCount > 0"
-      class="absolute bottom-1.5 right-1.5 text-[10px] font-bold text-white bg-zinc-500 dark:bg-zinc-600 rounded-full w-5 h-5 flex items-center justify-center"
-    >
-      +{{ extraCount }}
-    </span>
-
     <!-- Status icons (colored by content type) -->
-    <div class="mt-auto flex flex-wrap gap-1 overflow-hidden max-h-[40px]">
-      <template v-for="post in visiblePosts" :key="post.id">
+    <div class="mt-auto flex items-end gap-1.5">
+      <!-- Icons grid 2x2 -->
+      <div class="grid grid-cols-2 gap-0.5">
+        <template v-for="post in visiblePosts" :key="post.id">
         <!-- Idea: lightbulb -->
         <svg
           v-if="post.status === 'idea'"
@@ -209,7 +203,10 @@ const extraCount = computed(() => props.posts.length - 6)
           <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
           <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
         </svg>
-      </template>
+        </template>
+      </div>
+      <!-- Extra count -->
+      <span v-if="extraCount > 0" class="text-xs text-zinc-400">+{{ extraCount }}</span>
     </div>
   </button>
 </template>
