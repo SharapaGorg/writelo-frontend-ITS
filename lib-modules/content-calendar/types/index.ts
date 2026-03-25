@@ -54,6 +54,15 @@ export interface NewsItem {
   url?: string
 }
 
+export interface TrendItem {
+  id: string
+  name: string           // "#AI" or "Artificial Intelligence"
+  hashtag?: string       // "#AI" (optional, if different from name)
+  tweetsCount: number    // 12500
+  category: string       // "Технологии", "Бизнес", etc.
+  url: string            // Link to Twitter thread
+}
+
 export interface FunDay {
   date: string // 'MM-DD' format (without year)
   title: string
@@ -67,4 +76,5 @@ export interface DemoProject {
   posts: CalendarPost[]
   infoEvents: InfoEvent[]
   news: NewsItem[]
+  trends: TrendItem[]
 }
