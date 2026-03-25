@@ -30,9 +30,6 @@ function handleCategoryChange(category: ReelsFilters['category']) {
   store.setCategory(category)
 }
 
-function handleSortChange(sortBy: string) {
-  store.setSortBy(sortBy as ReelsFilters['sortBy'])
-}
 </script>
 
 <template>
@@ -57,7 +54,7 @@ function handleSortChange(sortBy: string) {
     <!-- Sort dropdown -->
     <div class="flex items-center gap-2">
       <span class="text-sm text-zinc-500">Сортировка:</span>
-      <Select :model-value="store.filters.sortBy" @update:model-value="handleSortChange">
+      <Select :model-value="store.filters.sortBy" @update:model-value="(v) => store.setSortBy(v as ReelsFilters['sortBy'])">
         <SelectTrigger class="w-[140px]">
           <SelectValue />
         </SelectTrigger>

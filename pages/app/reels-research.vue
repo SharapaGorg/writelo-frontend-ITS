@@ -2,7 +2,7 @@
 import { ReelsResearchPage } from '~/lib-modules/reels-research'
 
 definePageMeta({
-  layout: 'app'
+  layout: 'default'
 })
 </script>
 
