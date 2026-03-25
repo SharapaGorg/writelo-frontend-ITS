@@ -18,6 +18,9 @@ export function useContentCalendar() {
   // Track which news items have been used (newsId -> date)
   const usedNews = ref<Record<string, string>>({})
 
+  // Track which trends have been used (trendId -> date)
+  const usedTrends = ref<Record<string, string>>({})
+
   // Current project
   const currentProject = computed(() =>
     projects.find(p => p.id === selectedProjectId.value) ?? projects[0]
@@ -27,6 +30,7 @@ export function useContentCalendar() {
   watch(selectedProjectId, () => {
     activeTags.value = []
     usedNews.value = {}
+    usedTrends.value = {}
   })
 
   // Filtered posts by active networks, statuses, and tags
@@ -168,6 +172,14 @@ export function useContentCalendar() {
     return usedNews.value[newsId] || null
   }
 
+  function markTrendAsUsed(trendId: string, date: string) {
+    usedTrends.value[trendId] = date
+  }
+
+  function getTrendUsedDate(trendId: string): string | null {
+    return usedTrends.value[trendId] || null
+  }
+
   // Random color for new tags
   const tagColors = [
     'bg-emerald-500', 'bg-indigo-500', 'bg-orange-500', 'bg-rose-500',
@@ -238,8 +250,11 @@ export function useContentCalendar() {
     createTag,
     markNewsAsUsed,
     getNewsUsedDate,
+    markTrendAsUsed,
+    getTrendUsedDate,
     // Data
     projects: projects,
-    usedNews
+    usedNews,
+    usedTrends
   }
 }
