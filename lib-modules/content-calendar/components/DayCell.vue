@@ -86,7 +86,7 @@ const hasMore = computed(() => props.posts.length > 4)
   <button
     :data-calendar-date="date"
     :class="[
-      'day-cell relative h-24 p-2 text-left transition-all border rounded-lg flex flex-col',
+      'day-cell relative h-24 p-2 text-left transition-all border rounded-lg flex flex-col overflow-hidden',
       isCurrentMonth
         ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-zinc-50 dark:bg-zinc-900')
         : 'bg-zinc-100 dark:bg-zinc-950 opacity-40',
@@ -152,7 +152,7 @@ const hasMore = computed(() => props.posts.length > 4)
     </div>
 
     <!-- Status icons (colored by content type) -->
-    <div class="mt-auto flex gap-1.5 flex-wrap">
+    <div class="mt-auto flex gap-1 flex-wrap overflow-hidden max-h-[44px]">
       <template v-for="post in visiblePosts" :key="post.id">
         <!-- Idea: lightbulb -->
         <svg
