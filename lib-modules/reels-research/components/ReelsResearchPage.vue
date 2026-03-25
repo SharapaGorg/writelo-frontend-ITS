@@ -1,49 +1,59 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
+import { useContentCalendar } from '~/lib-modules/content-calendar'
 import ReelsFilters from './ReelsFilters.vue'
 import ReelsGrid from './ReelsGrid.vue'
 import CalendarDropModal from './CalendarDropModal.vue'
 import type { ReelItem } from '../types'
 
 const store = useReelsResearchStore()
+const { createPost } = useContentCalendar()
 
 const isCalendarOpen = ref(false)
 const draggingReel = ref<ReelItem | null>(null)
-const wasDropped = ref(false)
 
-// Open calendar on mousedown
-function handleMouseDown(reel: ReelItem) {
+function handleDragStart(reel: ReelItem) {
   draggingReel.value = reel
-  wasDropped.value = false
   isCalendarOpen.value = true
 }
 
-// Close calendar on global mouseup (unless dropped)
-function handleGlobalMouseUp() {
-  if (!isCalendarOpen.value) return
+function handleDragEnd(reel: ReelItem, x: number, y: number) {
+  // Find if we dropped on a calendar day cell
+  const elements = document.elementsFromPoint(x, y)
+  const dayCell = elements.find(el => el.hasAttribute('data-calendar-date'))
 
-  // Small delay to let drop event fire first
-  setTimeout(() => {
-    if (!wasDropped.value) {
-      isCalendarOpen.value = false
-      draggingReel.value = null
+  if (dayCell) {
+    const date = dayCell.getAttribute('data-calendar-date')
+    if (date) {
+      handleDrop(date, reel)
+      return
     }
-    wasDropped.value = false
-  }, 50)
+  }
+
+  // No valid drop target - close calendar
+  isCalendarOpen.value = false
+  draggingReel.value = null
 }
 
-onMounted(() => {
-  window.addEventListener('mouseup', handleGlobalMouseUp)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('mouseup', handleGlobalMouseUp)
-})
-
 function handleDrop(date: string, reel: ReelItem) {
-  wasDropped.value = true
-  console.log('Created post from reel:', reel.description, 'on date:', date)
+  // Create post from reel
+  createPost({
+    title: reel.description.slice(0, 50) + (reel.description.length > 50 ? '...' : ''),
+    description: reel.description,
+    content: `Источник: ${reel.url}\n\nАвтор: ${reel.author}\n\n${reel.description}`,
+    type: 'reels',
+    status: 'idea',
+    networks: ['instagram'],
+    tags: [],
+    date,
+    image: reel.thumbnail,
+    sourceReelId: reel.id,
+    previews: {
+      instagram: { text: reel.description }
+    }
+  })
+
   isCalendarOpen.value = false
   draggingReel.value = null
 }
@@ -76,7 +86,8 @@ function handlePanelClose() {
 
       <!-- Grid -->
       <ReelsGrid
-        @mouse-down="handleMouseDown"
+        @drag-start="handleDragStart"
+        @drag-end="handleDragEnd"
       />
 
       <!-- Calendar Drop Panel (slides from right) -->

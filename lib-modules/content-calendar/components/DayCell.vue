@@ -84,8 +84,9 @@ const hasMore = computed(() => props.posts.length > 4)
 
 <template>
   <button
+    :data-calendar-date="date"
     :class="[
-      'relative h-24 p-2 text-left transition-all border rounded-lg flex flex-col',
+      'day-cell relative h-24 p-2 text-left transition-all border rounded-lg flex flex-col',
       isCurrentMonth
         ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-zinc-50 dark:bg-zinc-900')
         : 'bg-zinc-100 dark:bg-zinc-950 opacity-40',

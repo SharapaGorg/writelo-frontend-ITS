@@ -6,8 +6,8 @@ import type { ReelItem } from '../types'
 const store = useReelsResearchStore()
 
 const emit = defineEmits<{
-  dragStart: [reel: ReelItem, event: DragEvent]
-  mouseDown: [reel: ReelItem]
+  dragStart: [reel: ReelItem]
+  dragEnd: [reel: ReelItem, x: number, y: number]
 }>()
 </script>
 
@@ -17,8 +17,8 @@ const emit = defineEmits<{
       v-for="reel in store.filteredReels"
       :key="reel.id"
       :reel="reel"
-      @drag-start="(reel, event) => emit('dragStart', reel, event)"
-      @mouse-down="(reel) => emit('mouseDown', reel)"
+      @drag-start="(reel) => emit('dragStart', reel)"
+      @drag-end="(reel, x, y) => emit('dragEnd', reel, x, y)"
     />
   </div>
 </template>

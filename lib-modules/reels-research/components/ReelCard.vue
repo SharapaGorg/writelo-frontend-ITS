@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
+import interact from 'interactjs'
 import type { ReelItem } from '../types'
 
 const props = defineProps<{
@@ -7,12 +8,13 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  dragStart: [reel: ReelItem, event: DragEvent]
-  mouseDown: [reel: ReelItem]
+  dragStart: [reel: ReelItem]
+  dragMove: [reel: ReelItem, x: number, y: number]
+  dragEnd: [reel: ReelItem, x: number, y: number]
 }>()
 
-// Track if we started a drag to prevent click
-const didDrag = ref(false)
+const cardRef = ref<HTMLElement | null>(null)
+const isDragging = ref(false)
 
 function formatNumber(n: number): string {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
@@ -22,39 +24,47 @@ function formatNumber(n: number): string {
 
 function openReel() {
   // Don't open if we were dragging
-  if (didDrag.value) {
-    didDrag.value = false
-    return
-  }
+  if (isDragging.value) return
   window.open(props.reel.url, '_blank')
 }
 
-function handleMouseDown() {
-  didDrag.value = false
-  emit('mouseDown', props.reel)
-}
+onMounted(() => {
+  if (!cardRef.value) return
 
-function handleDragStart(event: DragEvent) {
-  didDrag.value = true
+  interact(cardRef.value).draggable({
+    inertia: false,
+    listeners: {
+      start() {
+        isDragging.value = true
+        emit('dragStart', props.reel)
+      },
+      move(event) {
+        emit('dragMove', props.reel, event.clientX, event.clientY)
+      },
+      end(event) {
+        // Delay reset so click handler sees isDragging=true
+        setTimeout(() => {
+          isDragging.value = false
+        }, 100)
+        emit('dragEnd', props.reel, event.clientX, event.clientY)
+      }
+    }
+  })
+})
 
-  if (event.dataTransfer) {
-    event.dataTransfer.setData('application/json', JSON.stringify({
-      type: 'reel',
-      reel: props.reel
-    }))
-    event.dataTransfer.effectAllowed = 'copy'
+onUnmounted(() => {
+  if (cardRef.value) {
+    interact(cardRef.value).unset()
   }
-  emit('dragStart', props.reel, event)
-}
+})
 </script>
 
 <template>
   <div
-    class="group cursor-pointer rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 overflow-hidden transition-all hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-lg"
-    draggable="true"
+    ref="cardRef"
+    class="group cursor-grab rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 overflow-hidden transition-all hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-lg touch-none"
+    :class="{ 'cursor-grabbing': isDragging }"
     @click="openReel"
-    @mousedown="handleMouseDown"
-    @dragstart="handleDragStart"
   >
     <!-- Thumbnail -->
     <div class="relative aspect-[9/16] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
