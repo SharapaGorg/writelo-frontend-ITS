@@ -441,6 +441,47 @@ export const demoProjects: DemoProject[] = [
         date: '2026-03-15',
         url: 'https://kommersant.ru/starbucks-100'
       }
+    ],
+    trends: [
+      {
+        id: 'tr-cs-1',
+        name: '#CoffeeTrends',
+        hashtag: '#CoffeeTrends',
+        tweetsCount: 15200,
+        category: 'Еда и напитки',
+        url: 'https://twitter.com/search?q=%23CoffeeTrends'
+      },
+      {
+        id: 'tr-cs-2',
+        name: '#SpecialtyCoffee',
+        hashtag: '#SpecialtyCoffee',
+        tweetsCount: 8400,
+        category: 'Еда и напитки',
+        url: 'https://twitter.com/search?q=%23SpecialtyCoffee'
+      },
+      {
+        id: 'tr-cs-3',
+        name: '#MorningRoutine',
+        hashtag: '#MorningRoutine',
+        tweetsCount: 42300,
+        category: 'Лайфстайл',
+        url: 'https://twitter.com/search?q=%23MorningRoutine'
+      },
+      {
+        id: 'tr-cs-4',
+        name: '#SmallBusiness',
+        hashtag: '#SmallBusiness',
+        tweetsCount: 28900,
+        category: 'Бизнес',
+        url: 'https://twitter.com/search?q=%23SmallBusiness'
+      },
+      {
+        id: 'tr-cs-5',
+        name: 'Латте арт',
+        tweetsCount: 5600,
+        category: 'Творчество',
+        url: 'https://twitter.com/search?q=latte%20art'
+      }
     ]
   },
   {
@@ -679,6 +720,47 @@ export const demoProjects: DemoProject[] = [
         source: 'The Verge',
         date: '2026-03-17',
         url: 'https://theverge.com/youtube-shorts-tiktok'
+      }
+    ],
+    trends: [
+      {
+        id: 'tr-ba-1',
+        name: '#OOTD',
+        hashtag: '#OOTD',
+        tweetsCount: 89200,
+        category: 'Мода',
+        url: 'https://twitter.com/search?q=%23OOTD'
+      },
+      {
+        id: 'tr-ba-2',
+        name: '#ContentCreator',
+        hashtag: '#ContentCreator',
+        tweetsCount: 34500,
+        category: 'Блогинг',
+        url: 'https://twitter.com/search?q=%23ContentCreator'
+      },
+      {
+        id: 'tr-ba-3',
+        name: '#SkinCare',
+        hashtag: '#SkinCare',
+        tweetsCount: 67800,
+        category: 'Красота',
+        url: 'https://twitter.com/search?q=%23SkinCare'
+      },
+      {
+        id: 'tr-ba-4',
+        name: '#TravelBlogger',
+        hashtag: '#TravelBlogger',
+        tweetsCount: 23400,
+        category: 'Путешествия',
+        url: 'https://twitter.com/search?q=%23TravelBlogger'
+      },
+      {
+        id: 'tr-ba-5',
+        name: 'Весенний макияж',
+        tweetsCount: 12100,
+        category: 'Красота',
+        url: 'https://twitter.com/search?q=spring%20makeup'
       }
     ]
   },
@@ -932,6 +1014,47 @@ export const demoProjects: DemoProject[] = [
         source: 'Reuters',
         date: '2026-03-15',
         url: 'https://reuters.com/xiaomi-ev-russia'
+      }
+    ],
+    trends: [
+      {
+        id: 'tr-es-1',
+        name: '#TechNews',
+        hashtag: '#TechNews',
+        tweetsCount: 156000,
+        category: 'Технологии',
+        url: 'https://twitter.com/search?q=%23TechNews'
+      },
+      {
+        id: 'tr-es-2',
+        name: '#AI',
+        hashtag: '#AI',
+        tweetsCount: 892000,
+        category: 'Технологии',
+        url: 'https://twitter.com/search?q=%23AI'
+      },
+      {
+        id: 'tr-es-3',
+        name: '#Gadgets',
+        hashtag: '#Gadgets',
+        tweetsCount: 45600,
+        category: 'Технологии',
+        url: 'https://twitter.com/search?q=%23Gadgets'
+      },
+      {
+        id: 'tr-es-4',
+        name: '#SmartHome',
+        hashtag: '#SmartHome',
+        tweetsCount: 34200,
+        category: 'Технологии',
+        url: 'https://twitter.com/search?q=%23SmartHome'
+      },
+      {
+        id: 'tr-es-5',
+        name: 'iPhone 17',
+        tweetsCount: 234000,
+        category: 'Гаджеты',
+        url: 'https://twitter.com/search?q=iPhone%2017'
       }
     ]
   }
