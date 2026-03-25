@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from '~/components/ui/button'
 import DayCell from './DayCell.vue'
-import type { CalendarPost } from '../types'
+import type { CalendarPost, TrendItem } from '../types'
 
 const props = defineProps<{
   currentMonth: Date
@@ -23,6 +23,7 @@ const emit = defineEmits<{
   prevMonth: []
   nextMonth: []
   dropNews: [date: string, news: any]
+  dropTrend: [date: string, trend: TrendItem]
   createPost: [date: string]
 }>()
 
@@ -134,6 +135,7 @@ const calendarDays = computed((): DayInfo[] => {
         :has-info-event="hasInfoEvent(day.date)"
         @select="emit('selectDate', $event)"
         @drop-news="(date, news) => emit('dropNews', date, news)"
+        @drop-trend="(date, trend) => emit('dropTrend', date, trend)"
         @create-post="emit('createPost', $event)"
       />
     </div>

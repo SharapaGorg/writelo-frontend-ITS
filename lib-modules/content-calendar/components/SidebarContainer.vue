@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import PostPreviewPanel from './PostPreviewPanel.vue'
 import NewsSidebar from './NewsSidebar.vue'
 import { BookmarksSidebar } from '~/lib-modules/reels-research'
-import type { CalendarPost, InfoEvent, ContentTag, NewsItem } from '../types'
+import type { CalendarPost, InfoEvent, ContentTag, NewsItem, TrendItem } from '../types'
 import { getFunDayForDate } from '../data/funDays'
 import PostCard from './PostCard.vue'
 
@@ -15,6 +15,8 @@ const props = defineProps<{
   projectTags: ContentTag[]
   news: NewsItem[]
   usedNews: Record<string, string>
+  trends: TrendItem[]
+  usedTrends: Record<string, string>
   createTag: (name: string) => string
 }>()
 
@@ -199,6 +201,8 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
         v-else-if="activeTab === 'news'"
         :news="news"
         :used-news="usedNews"
+        :trends="trends"
+        :used-trends="usedTrends"
         class="h-full"
       />
     </div>
