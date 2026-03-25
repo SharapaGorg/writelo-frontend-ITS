@@ -21,6 +21,9 @@ export function useContentCalendar() {
   // Track which trends have been used (trendId -> date)
   const usedTrends = ref<Record<string, string>>({})
 
+  // Track which reels have been used (reelId -> date)
+  const usedReels = ref<Record<string, string>>({})
+
   // Current project
   const currentProject = computed(() =>
     projects.find(p => p.id === selectedProjectId.value) ?? projects[0]
@@ -31,6 +34,7 @@ export function useContentCalendar() {
     activeTags.value = []
     usedNews.value = {}
     usedTrends.value = {}
+    usedReels.value = {}
   })
 
   // Filtered posts by active networks, statuses, and tags
@@ -165,6 +169,11 @@ export function useContentCalendar() {
       delete usedTrends.value[post.sourceTrendId]
     }
 
+    // Clear reel tracking if this post was created from a reel
+    if (post.sourceReelId && usedReels.value[post.sourceReelId]) {
+      delete usedReels.value[post.sourceReelId]
+    }
+
     project.posts.splice(postIndex, 1)
     return true
   }
@@ -183,6 +192,14 @@ export function useContentCalendar() {
 
   function getTrendUsedDate(trendId: string): string | null {
     return usedTrends.value[trendId] || null
+  }
+
+  function markReelAsUsed(reelId: string, date: string) {
+    usedReels.value[reelId] = date
+  }
+
+  function getReelUsedDate(reelId: string): string | null {
+    return usedReels.value[reelId] || null
   }
 
   // Random color for new tags
@@ -257,9 +274,12 @@ export function useContentCalendar() {
     getNewsUsedDate,
     markTrendAsUsed,
     getTrendUsedDate,
+    markReelAsUsed,
+    getReelUsedDate,
     // Data
     projects: projects,
     usedNews,
-    usedTrends
+    usedTrends,
+    usedReels
   }
 }
