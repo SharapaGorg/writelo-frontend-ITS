@@ -2,6 +2,7 @@
 import { Button } from '~/components/ui/button'
 import DayCell from './DayCell.vue'
 import type { CalendarPost, TrendItem } from '../types'
+import type { ReelItem } from '~/lib-modules/reels-research'
 
 const props = defineProps<{
   currentMonth: Date
@@ -24,6 +25,7 @@ const emit = defineEmits<{
   nextMonth: []
   dropNews: [date: string, news: any]
   dropTrend: [date: string, trend: TrendItem]
+  dropReel: [date: string, reel: ReelItem]
   createPost: [date: string]
 }>()
 
@@ -136,6 +138,7 @@ const calendarDays = computed((): DayInfo[] => {
         @select="emit('selectDate', $event)"
         @drop-news="(date, news) => emit('dropNews', date, news)"
         @drop-trend="(date, trend) => emit('dropTrend', date, trend)"
+        @drop-reel="(date, reel) => emit('dropReel', date, reel)"
         @create-post="emit('createPost', $event)"
       />
     </div>
