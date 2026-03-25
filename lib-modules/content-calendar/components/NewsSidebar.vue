@@ -1,15 +1,26 @@
 <script setup lang="ts">
 import NewsCard from './NewsCard.vue'
-import type { NewsItem } from '../types'
+import TrendsSection from './TrendsSection.vue'
+import type { NewsItem, TrendItem } from '../types'
 
 const props = defineProps<{
   news: NewsItem[]
   usedNews: Record<string, string>
+  trends: TrendItem[]
+  usedTrends: Record<string, string>
 }>()
 </script>
 
 <template>
   <aside class="w-full h-full bg-zinc-100/50 dark:bg-zinc-900/50 flex flex-col overflow-hidden">
+    <!-- Trends Section -->
+    <TrendsSection
+      v-if="trends.length > 0"
+      :trends="trends"
+      :used-trends="usedTrends"
+    />
+
+    <!-- News Section -->
     <div class="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
       <h3 class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Новости отрасли</h3>
       <p class="text-xs text-zinc-500 mt-0.5">Перетащите в календарь для создания идеи</p>
