@@ -77,9 +77,9 @@ const uniqueNetworks = computed(() => {
   return Array.from(networks)
 })
 
-// Show max 4 posts with status icons
-const visiblePosts = computed(() => props.posts.slice(0, 4))
-const hasMore = computed(() => props.posts.length > 4)
+// Show max 3 posts with status icons (leave room for +N counter)
+const visiblePosts = computed(() => props.posts.slice(0, 3))
+const extraCount = computed(() => props.posts.length - 3)
 </script>
 
 <template>
@@ -152,12 +152,12 @@ const hasMore = computed(() => props.posts.length > 4)
     </div>
 
     <!-- Status icons (colored by content type) -->
-    <div class="mt-auto flex gap-1 flex-wrap overflow-hidden max-h-[44px]">
+    <div class="mt-auto flex items-center gap-1">
       <template v-for="post in visiblePosts" :key="post.id">
         <!-- Idea: lightbulb -->
         <svg
           v-if="post.status === 'idea'"
-          :class="['w-5 h-5', contentTypeColors[post.type]]"
+          :class="['w-4 h-4 flex-shrink-0', contentTypeColors[post.type]]"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -169,7 +169,7 @@ const hasMore = computed(() => props.posts.length > 4)
         <!-- Draft: half-filled circle -->
         <svg
           v-else-if="post.status === 'draft'"
-          :class="['w-5 h-5', contentTypeColors[post.type]]"
+          :class="['w-4 h-4 flex-shrink-0', contentTypeColors[post.type]]"
           viewBox="0 0 24 24"
           fill="currentColor"
           :title="post.title"
@@ -180,7 +180,7 @@ const hasMore = computed(() => props.posts.length > 4)
         <!-- Ready: checkmark in circle -->
         <svg
           v-else-if="post.status === 'ready'"
-          :class="['w-5 h-5', contentTypeColors[post.type]]"
+          :class="['w-4 h-4 flex-shrink-0', contentTypeColors[post.type]]"
           viewBox="0 0 24 24"
           fill="currentColor"
           :title="post.title"
@@ -191,7 +191,7 @@ const hasMore = computed(() => props.posts.length > 4)
         <!-- Published: rocket -->
         <svg
           v-else-if="post.status === 'published'"
-          :class="['w-5 h-5', contentTypeColors[post.type]]"
+          :class="['w-4 h-4 flex-shrink-0', contentTypeColors[post.type]]"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -202,7 +202,7 @@ const hasMore = computed(() => props.posts.length > 4)
           <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
         </svg>
       </template>
-      <span v-if="hasMore" class="text-sm text-zinc-500">+{{ posts.length - 4 }}</span>
+      <span v-if="extraCount > 0" class="text-xs font-medium text-zinc-500 flex-shrink-0">+{{ extraCount }}</span>
     </div>
   </button>
 </template>
