@@ -6,7 +6,7 @@ import SocialFilters from './SocialFilters.vue'
 import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
 import { useContentCalendar } from '../composables/useContentCalendar'
-import type { NewsItem } from '../types'
+import type { NewsItem, TrendItem } from '../types'
 
 const props = withDefaults(defineProps<{
   showcaseMode?: boolean
@@ -42,6 +42,8 @@ const {
   createTag,
   markNewsAsUsed,
   usedNews,
+  markTrendAsUsed,
+  usedTrends,
   projects
 } = useContentCalendar()
 
@@ -97,6 +99,27 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
     // Mark news as used with the date
     markNewsAsUsed(news.id, date)
     // Don't auto-select - keep showing news sidebar
+  }
+}
+
+function handleDropTrend(date: string, trend: TrendItem) {
+  // Create a new post from the trend
+  const newPost = createPost({
+    title: trend.hashtag || trend.name,
+    description: trend.url,
+    type: 'post',
+    status: 'idea',
+    networks: [],
+    tags: [],
+    date: date,
+    sourceTrendId: trend.id,
+    previews: {}
+  })
+
+  if (newPost) {
+    markTrendAsUsed(trend.id, date)
+    selectDate(date)
+    selectPost(newPost.id)
   }
 }
 
@@ -396,6 +419,7 @@ onUnmounted(() => {
             @prev-month="prevMonth"
             @next-month="nextMonth"
             @drop-news="handleNewsDropOnDate"
+            @drop-trend="handleDropTrend"
             @create-post="handleCreatePost"
           />
         </div>
@@ -420,6 +444,8 @@ onUnmounted(() => {
           :project-tags="currentProject.tags"
           :news="currentProject.news"
           :used-news="usedNews"
+          :trends="currentProject.trends"
+          :used-trends="usedTrends"
           :create-tag="createTag"
           @select-post="selectPost"
           @close-date="selectDate(null)"
