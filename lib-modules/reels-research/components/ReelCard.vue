@@ -15,6 +15,7 @@ const emit = defineEmits<{
 
 const cardRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
+let ghostElement: HTMLElement | null = null
 
 function formatNumber(n: number): string {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
@@ -28,20 +29,63 @@ function openReel() {
   window.open(props.reel.url, '_blank')
 }
 
+function createGhost() {
+  if (!cardRef.value) return
+
+  // Create ghost element
+  ghostElement = cardRef.value.cloneNode(true) as HTMLElement
+  ghostElement.style.position = 'fixed'
+  ghostElement.style.width = `${cardRef.value.offsetWidth}px`
+  ghostElement.style.height = `${cardRef.value.offsetHeight}px`
+  ghostElement.style.pointerEvents = 'none'
+  ghostElement.style.zIndex = '9999'
+  ghostElement.style.opacity = '0.9'
+  ghostElement.style.transform = 'rotate(3deg) scale(1.02)'
+  ghostElement.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)'
+  ghostElement.style.transition = 'none'
+
+  document.body.appendChild(ghostElement)
+
+  // Prevent text selection during drag
+  document.body.style.userSelect = 'none'
+}
+
+function moveGhost(x: number, y: number) {
+  if (!ghostElement || !cardRef.value) return
+
+  const offsetX = cardRef.value.offsetWidth / 2
+  const offsetY = 20
+
+  ghostElement.style.left = `${x - offsetX}px`
+  ghostElement.style.top = `${y - offsetY}px`
+}
+
+function removeGhost() {
+  if (ghostElement) {
+    ghostElement.remove()
+    ghostElement = null
+  }
+  document.body.style.userSelect = ''
+}
+
 onMounted(() => {
   if (!cardRef.value) return
 
   interact(cardRef.value).draggable({
     inertia: false,
     listeners: {
-      start() {
+      start(event) {
         isDragging.value = true
+        createGhost()
+        moveGhost(event.clientX, event.clientY)
         emit('dragStart', props.reel)
       },
       move(event) {
+        moveGhost(event.clientX, event.clientY)
         emit('dragMove', props.reel, event.clientX, event.clientY)
       },
       end(event) {
+        removeGhost()
         // Delay reset so click handler sees isDragging=true
         setTimeout(() => {
           isDragging.value = false
@@ -53,6 +97,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  removeGhost()
   if (cardRef.value) {
     interact(cardRef.value).unset()
   }
