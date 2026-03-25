@@ -7,7 +7,6 @@ import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
 import { useContentCalendar } from '../composables/useContentCalendar'
 import type { NewsItem, TrendItem } from '../types'
-import type { BookmarkedReel } from '~/lib-modules/reels-research'
 
 const props = withDefaults(defineProps<{
   showcaseMode?: boolean
@@ -45,8 +44,6 @@ const {
   usedNews,
   markTrendAsUsed,
   usedTrends,
-  markReelAsUsed,
-  usedReels,
   projects
 } = useContentCalendar()
 
@@ -123,27 +120,6 @@ function handleDropTrend(date: string, trend: TrendItem) {
     markTrendAsUsed(trend.id, date)
     selectDate(date)
     selectPost(newPost.id)
-  }
-}
-
-function handleDropReel(date: string, reel: BookmarkedReel) {
-  const newPost = createPost({
-    title: reel.description.slice(0, 50) + (reel.description.length > 50 ? '...' : ''),
-    description: reel.description,
-    content: `Источник: ${reel.url}\n\nАвтор: ${reel.author}\n\n${reel.description}`,
-    type: 'reels',
-    status: 'idea',
-    networks: ['instagram'],
-    tags: [],
-    date,
-    image: reel.thumbnail,
-    sourceReelId: reel.id,
-    previews: {
-      instagram: { text: reel.description }
-    }
-  })
-  if (newPost) {
-    markReelAsUsed(reel.id, date)
   }
 }
 
@@ -444,7 +420,6 @@ onUnmounted(() => {
             @next-month="nextMonth"
             @drop-news="handleNewsDropOnDate"
             @drop-trend="handleDropTrend"
-            @drop-reel="handleDropReel"
             @create-post="handleCreatePost"
           />
         </div>

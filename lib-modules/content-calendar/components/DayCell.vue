@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { CalendarPost, SocialNetwork, NewsItem, TrendItem } from '../types'
-import type { BookmarkedReel } from '~/lib-modules/reels-research'
 
 const props = defineProps<{
   date: string
@@ -17,7 +16,6 @@ const emit = defineEmits<{
   select: [date: string]
   dropNews: [date: string, news: NewsItem]
   dropTrend: [date: string, trend: TrendItem]
-  dropReel: [date: string, reel: BookmarkedReel]
   createPost: [date: string]
 }>()
 
@@ -45,9 +43,7 @@ function handleDrop(e: DragEvent) {
     if (jsonData) {
       try {
         const data = JSON.parse(jsonData)
-        if (data.type === 'reel') {
-          emit('dropReel', props.date, data.reel as BookmarkedReel)
-        } else if (data._type === 'trend') {
+        if (data._type === 'trend') {
           // Remove the _type marker before emitting
           const { _type, ...trend } = data
           emit('dropTrend', props.date, trend as TrendItem)
