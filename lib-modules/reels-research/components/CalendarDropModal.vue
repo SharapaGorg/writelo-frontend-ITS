@@ -30,8 +30,8 @@ const islandPosition = ref({ top: 100, left: 100 })
 
 function calculateRandomPosition() {
   // Island dimensions
-  const islandWidth = 420
-  const islandHeight = 500
+  const islandWidth = 620
+  const islandHeight = 580
 
   // Screen dimensions with padding
   const padding = 40
@@ -98,7 +98,7 @@ function handleCreatePost(date: string) {
     >
       <div
         v-if="isOpen"
-        class="calendar-island fixed z-50 w-[420px]"
+        class="calendar-island fixed z-50 w-[620px]"
         :style="{ top: islandPosition.top + 'px', left: islandPosition.left + 'px' }"
       >
         <!-- Rainbow border wrapper -->
@@ -135,7 +135,7 @@ function handleCreatePost(date: string) {
             </div>
 
             <!-- Calendar -->
-            <div class="max-h-[400px] overflow-auto">
+            <div class="max-h-[520px] overflow-auto">
               <CalendarGrid
                 :current-month="currentMonth"
                 :selected-date="localSelectedDate"
