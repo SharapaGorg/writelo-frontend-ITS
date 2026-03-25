@@ -34,15 +34,19 @@ function calculateRandomPosition() {
   const islandHeight = 700
 
   // Screen dimensions with padding
-  const padding = 40
-  const maxX = window.innerWidth - islandWidth - padding
-  const maxY = window.innerHeight - islandHeight - padding
+  const padding = 20
+
+  // Calculate safe bounds (ensure island fits on screen)
+  const maxX = Math.max(padding, window.innerWidth - islandWidth - padding)
+  const maxY = Math.max(padding, window.innerHeight - islandHeight - padding)
 
   // Random position within safe bounds
   // Prefer right side of screen (where user is less likely to have mouse when dragging from left)
-  const minX = Math.max(padding, window.innerWidth * 0.4) // Start from 40% of screen
-  const left = Math.floor(Math.random() * (maxX - minX) + minX)
-  const top = Math.floor(Math.random() * (maxY - padding) + padding)
+  const minX = Math.max(padding, Math.min(window.innerWidth * 0.3, maxX))
+
+  // Calculate random position, clamped to valid range
+  const left = Math.max(padding, Math.min(maxX, Math.floor(Math.random() * (maxX - minX + 1) + minX)))
+  const top = Math.max(padding, Math.min(maxY, Math.floor(Math.random() * (maxY - padding + 1) + padding)))
 
   islandPosition.value = { top, left }
 }
