@@ -11,37 +11,22 @@ const store = useReelsResearchStore()
 const isCalendarOpen = ref(false)
 const draggingReel = ref<ReelItem | null>(null)
 const wasDropped = ref(false)
-const dragStartTime = ref(0)
-
-// Minimum drag duration to consider it a "real" drag (ms)
-const MIN_DRAG_DURATION = 200
 
 function handleDragStart(reel: ReelItem, _event: DragEvent) {
   draggingReel.value = reel
   wasDropped.value = false
-  dragStartTime.value = Date.now()
   isCalendarOpen.value = true
 }
 
 function handleDragEnd(_reel: ReelItem, _event: DragEvent) {
-  const dragDuration = Date.now() - dragStartTime.value
-
-  // If drag was too short, it was probably accidental - close immediately
-  if (dragDuration < MIN_DRAG_DURATION) {
-    isCalendarOpen.value = false
-    draggingReel.value = null
-    return
-  }
-
-  // Close panel only if not dropped (drop handler will close it)
-  // Longer delay to let drop event fire first
+  // Wait a bit for drop event to fire first
   setTimeout(() => {
     if (!wasDropped.value) {
       isCalendarOpen.value = false
       draggingReel.value = null
     }
     wasDropped.value = false
-  }, 150)
+  }, 50)
 }
 
 function handleDrop(date: string, reel: ReelItem) {
