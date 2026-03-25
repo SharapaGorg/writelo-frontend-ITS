@@ -160,6 +160,11 @@ export function useContentCalendar() {
       delete usedNews.value[post.sourceNewsId]
     }
 
+    // Clear trend tracking if this post was created from a trend
+    if (post.sourceTrendId && usedTrends.value[post.sourceTrendId]) {
+      delete usedTrends.value[post.sourceTrendId]
+    }
+
     project.posts.splice(postIndex, 1)
     return true
   }
