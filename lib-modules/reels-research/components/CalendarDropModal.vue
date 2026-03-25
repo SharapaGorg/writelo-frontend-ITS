@@ -195,4 +195,11 @@ function handleCreatePost(date: string) {
   filter: drop-shadow(0 0 20px rgba(147, 51, 234, 0.3))
           drop-shadow(0 0 40px rgba(59, 130, 246, 0.2));
 }
+
+/* Highlight day cell when dragging over it */
+:deep(.drag-over-highlight) {
+  border-color: #22c55e !important;
+  background-color: rgba(34, 197, 94, 0.1) !important;
+  box-shadow: 0 0 0 1px #22c55e, 0 0 12px rgba(34, 197, 94, 0.3) !important;
+}
 </style>

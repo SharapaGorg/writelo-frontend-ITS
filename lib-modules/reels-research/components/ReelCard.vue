@@ -16,6 +16,7 @@ const emit = defineEmits<{
 const cardRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
 let ghostElement: HTMLElement | null = null
+let lastHoveredCell: Element | null = null
 
 function formatNumber(n: number): string {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
@@ -68,6 +69,31 @@ function removeGhost() {
   document.body.style.userSelect = ''
 }
 
+function highlightCellUnderCursor(x: number, y: number) {
+  const elements = document.elementsFromPoint(x, y)
+  const cell = elements.find(el => el.hasAttribute('data-calendar-date'))
+
+  // Remove highlight from previous cell
+  if (lastHoveredCell && lastHoveredCell !== cell) {
+    lastHoveredCell.classList.remove('drag-over-highlight')
+  }
+
+  // Add highlight to current cell
+  if (cell) {
+    cell.classList.add('drag-over-highlight')
+    lastHoveredCell = cell
+  } else {
+    lastHoveredCell = null
+  }
+}
+
+function clearCellHighlight() {
+  if (lastHoveredCell) {
+    lastHoveredCell.classList.remove('drag-over-highlight')
+    lastHoveredCell = null
+  }
+}
+
 onMounted(() => {
   if (!cardRef.value) return
 
@@ -82,9 +108,11 @@ onMounted(() => {
       },
       move(event) {
         moveGhost(event.clientX, event.clientY)
+        highlightCellUnderCursor(event.clientX, event.clientY)
         emit('dragMove', props.reel, event.clientX, event.clientY)
       },
       end(event) {
+        clearCellHighlight()
         removeGhost()
         // Delay reset so click handler sees isDragging=true
         setTimeout(() => {
