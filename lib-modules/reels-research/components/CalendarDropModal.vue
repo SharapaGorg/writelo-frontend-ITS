@@ -31,7 +31,7 @@ const islandPosition = ref({ top: 100, left: 100 })
 function calculateRandomPosition() {
   // Island dimensions
   const islandWidth = 620
-  const islandHeight = 580
+  const islandHeight = 700
 
   // Screen dimensions with padding
   const padding = 40
@@ -135,7 +135,7 @@ function handleCreatePost(date: string) {
             </div>
 
             <!-- Calendar -->
-            <div class="max-h-[520px] overflow-auto">
+            <div class="p-2">
               <CalendarGrid
                 :current-month="currentMonth"
                 :selected-date="localSelectedDate"
