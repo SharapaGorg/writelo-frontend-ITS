@@ -8,11 +8,11 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   dragStart: [reel: ReelItem, event: DragEvent]
-  dragEnd: [reel: ReelItem, event: DragEvent]
+  mouseDown: [reel: ReelItem]
 }>()
 
-// Track if we're dragging to prevent click
-const wasDragging = ref(false)
+// Track if we started a drag to prevent click
+const didDrag = ref(false)
 
 function formatNumber(n: number): string {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
@@ -21,16 +21,21 @@ function formatNumber(n: number): string {
 }
 
 function openReel() {
-  // Don't open if we were just dragging
-  if (wasDragging.value) {
-    wasDragging.value = false
+  // Don't open if we were dragging
+  if (didDrag.value) {
+    didDrag.value = false
     return
   }
   window.open(props.reel.url, '_blank')
 }
 
+function handleMouseDown() {
+  didDrag.value = false
+  emit('mouseDown', props.reel)
+}
+
 function handleDragStart(event: DragEvent) {
-  wasDragging.value = true
+  didDrag.value = true
 
   if (event.dataTransfer) {
     event.dataTransfer.setData('application/json', JSON.stringify({
@@ -41,14 +46,6 @@ function handleDragStart(event: DragEvent) {
   }
   emit('dragStart', props.reel, event)
 }
-
-function handleDragEnd(event: DragEvent) {
-  emit('dragEnd', props.reel, event)
-  // Reset wasDragging after a tick so click handler sees it
-  setTimeout(() => {
-    wasDragging.value = false
-  }, 0)
-}
 </script>
 
 <template>
@@ -56,8 +53,8 @@ function handleDragEnd(event: DragEvent) {
     class="group cursor-pointer rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 overflow-hidden transition-all hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-lg"
     draggable="true"
     @click="openReel"
+    @mousedown="handleMouseDown"
     @dragstart="handleDragStart"
-    @dragend="handleDragEnd"
   >
     <!-- Thumbnail -->
     <div class="relative aspect-[9/16] overflow-hidden bg-zinc-100 dark:bg-zinc-900">

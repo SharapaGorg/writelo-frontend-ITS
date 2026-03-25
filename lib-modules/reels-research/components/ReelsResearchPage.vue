@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
 import ReelsFilters from './ReelsFilters.vue'
 import ReelsGrid from './ReelsGrid.vue'
@@ -12,14 +12,18 @@ const isCalendarOpen = ref(false)
 const draggingReel = ref<ReelItem | null>(null)
 const wasDropped = ref(false)
 
-function handleDragStart(reel: ReelItem, _event: DragEvent) {
+// Open calendar on mousedown
+function handleMouseDown(reel: ReelItem) {
   draggingReel.value = reel
   wasDropped.value = false
   isCalendarOpen.value = true
 }
 
-function handleDragEnd(_reel: ReelItem, _event: DragEvent) {
-  // Wait a bit for drop event to fire first
+// Close calendar on global mouseup (unless dropped)
+function handleGlobalMouseUp() {
+  if (!isCalendarOpen.value) return
+
+  // Small delay to let drop event fire first
   setTimeout(() => {
     if (!wasDropped.value) {
       isCalendarOpen.value = false
@@ -28,6 +32,14 @@ function handleDragEnd(_reel: ReelItem, _event: DragEvent) {
     wasDropped.value = false
   }, 50)
 }
+
+onMounted(() => {
+  window.addEventListener('mouseup', handleGlobalMouseUp)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('mouseup', handleGlobalMouseUp)
+})
 
 function handleDrop(date: string, reel: ReelItem) {
   wasDropped.value = true
@@ -64,8 +76,7 @@ function handlePanelClose() {
 
       <!-- Grid -->
       <ReelsGrid
-        @drag-start="handleDragStart"
-        @drag-end="handleDragEnd"
+        @mouse-down="handleMouseDown"
       />
 
       <!-- Calendar Drop Panel (slides from right) -->

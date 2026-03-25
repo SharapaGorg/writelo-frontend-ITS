@@ -7,7 +7,7 @@ const store = useReelsResearchStore()
 
 const emit = defineEmits<{
   dragStart: [reel: ReelItem, event: DragEvent]
-  dragEnd: [reel: ReelItem, event: DragEvent]
+  mouseDown: [reel: ReelItem]
 }>()
 </script>
 
@@ -18,7 +18,7 @@ const emit = defineEmits<{
       :key="reel.id"
       :reel="reel"
       @drag-start="(reel, event) => emit('dragStart', reel, event)"
-      @drag-end="(reel, event) => emit('dragEnd', reel, event)"
+      @mouse-down="(reel) => emit('mouseDown', reel)"
     />
   </div>
 </template>
