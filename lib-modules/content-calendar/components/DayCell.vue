@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { CalendarPost, SocialNetwork, NewsItem } from '../types'
+import type { CalendarPost, SocialNetwork, NewsItem, TrendItem } from '../types'
 
 const props = defineProps<{
   date: string
@@ -15,6 +15,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   select: [date: string]
   dropNews: [date: string, news: NewsItem]
+  dropTrend: [date: string, trend: TrendItem]
   createPost: [date: string]
 }>()
 
@@ -41,10 +42,16 @@ function handleDrop(e: DragEvent) {
     const jsonData = e.dataTransfer.getData('application/json')
     if (jsonData) {
       try {
-        const news: NewsItem = JSON.parse(jsonData)
-        emit('dropNews', props.date, news)
+        const data = JSON.parse(jsonData)
+        if (data._type === 'trend') {
+          // Remove the _type marker before emitting
+          const { _type, ...trend } = data
+          emit('dropTrend', props.date, trend as TrendItem)
+        } else {
+          emit('dropNews', props.date, data as NewsItem)
+        }
       } catch (err) {
-        console.error('Failed to parse dropped news data', err)
+        console.error('Failed to parse dropped data', err)
       }
     }
   }
