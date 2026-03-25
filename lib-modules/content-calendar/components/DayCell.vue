@@ -77,9 +77,9 @@ const uniqueNetworks = computed(() => {
   return Array.from(networks)
 })
 
-// Show max 3 posts with status icons (leave room for +N counter)
-const visiblePosts = computed(() => props.posts.slice(0, 3))
-const extraCount = computed(() => props.posts.length - 3)
+// Show max 6 posts with status icons
+const visiblePosts = computed(() => props.posts.slice(0, 6))
+const extraCount = computed(() => props.posts.length - 6)
 </script>
 
 <template>
@@ -151,8 +151,16 @@ const extraCount = computed(() => props.posts.length - 3)
       </div>
     </div>
 
+    <!-- Extra posts counter (absolute, bottom-right) -->
+    <span
+      v-if="extraCount > 0"
+      class="absolute bottom-1.5 right-1.5 text-[10px] font-bold text-white bg-zinc-500 dark:bg-zinc-600 rounded-full w-5 h-5 flex items-center justify-center"
+    >
+      +{{ extraCount }}
+    </span>
+
     <!-- Status icons (colored by content type) -->
-    <div class="mt-auto flex items-center gap-1">
+    <div class="mt-auto flex flex-wrap gap-1 overflow-hidden max-h-[40px]">
       <template v-for="post in visiblePosts" :key="post.id">
         <!-- Idea: lightbulb -->
         <svg
@@ -202,7 +210,6 @@ const extraCount = computed(() => props.posts.length - 3)
           <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
         </svg>
       </template>
-      <span v-if="extraCount > 0" class="text-xs font-medium text-zinc-500 flex-shrink-0">+{{ extraCount }}</span>
     </div>
   </button>
 </template>
