@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import type { ReelItem } from '../types'
 
 const props = defineProps<{
@@ -10,6 +11,10 @@ const emit = defineEmits<{
   dragEnd: [reel: ReelItem, event: DragEvent]
 }>()
 
+// Track drag state to prevent click after drag
+const isDragging = ref(false)
+const dragStartTime = ref(0)
+
 function formatNumber(n: number): string {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
   if (n >= 1000) return `${(n / 1000).toFixed(1)}K`
@@ -17,10 +22,17 @@ function formatNumber(n: number): string {
 }
 
 function openReel() {
+  // Don't open if we just finished dragging (within 300ms)
+  if (isDragging.value || Date.now() - dragStartTime.value < 300) {
+    return
+  }
   window.open(props.reel.url, '_blank')
 }
 
 function handleDragStart(event: DragEvent) {
+  isDragging.value = true
+  dragStartTime.value = Date.now()
+
   if (event.dataTransfer) {
     event.dataTransfer.setData('application/json', JSON.stringify({
       type: 'reel',
@@ -32,6 +44,10 @@ function handleDragStart(event: DragEvent) {
 }
 
 function handleDragEnd(event: DragEvent) {
+  // Keep isDragging true for a moment to block click
+  setTimeout(() => {
+    isDragging.value = false
+  }, 100)
   emit('dragEnd', props.reel, event)
 }
 </script>
