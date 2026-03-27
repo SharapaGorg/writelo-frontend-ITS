@@ -18,7 +18,7 @@ const {
   selectedProjectId,
   selectedDate,
   selectedPostId,
-  activeNetworks,
+  activeAccountIds,
   activeStatuses,
   activeTags,
   currentMonth,
@@ -28,10 +28,11 @@ const {
   selectedPost,
   getPostsForDate,
   hasInfoEvent,
+  getNetworksFromAccountIds,
   selectProject,
   selectDate,
   selectPost,
-  toggleNetwork,
+  toggleAccount,
   toggleStatus,
   toggleTag,
   nextMonth,
@@ -82,13 +83,16 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
     content += `Источник: ${news.source}\n${news.url}`
   }
 
+  // Get the first two account IDs from the current project as defaults
+  const defaultAccountIds = currentProject.value.accounts.slice(0, 2).map(a => a.id)
+
   const newPost = createPost({
     title: news.title,
     description: news.description,
     content: content,
     type: 'post',
     status: 'idea',
-    networks: ['vk', 'telegram'], // Default networks
+    accountIds: defaultAccountIds,
     tags: [],
     date: date,
     sourceNewsId: news.id,
@@ -103,13 +107,16 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
 }
 
 function handleDropTrend(date: string, trend: TrendItem) {
+  // Get the first two account IDs from the current project as defaults
+  const defaultAccountIds = currentProject.value.accounts.slice(0, 2).map(a => a.id)
+
   // Create a new post from the trend
   const newPost = createPost({
     title: trend.hashtag || trend.name,
     description: trend.url,
     type: 'post',
     status: 'idea',
-    networks: [],
+    accountIds: defaultAccountIds,
     tags: [],
     date: date,
     sourceTrendId: trend.id,
@@ -124,11 +131,14 @@ function handleDropTrend(date: string, trend: TrendItem) {
 }
 
 function handleCreatePost(date: string) {
+  // Get the first two account IDs from the current project as defaults
+  const defaultAccountIds = currentProject.value.accounts.slice(0, 2).map(a => a.id)
+
   const newPost = createPost({
     title: 'Новый пост',
     type: 'post',
     status: 'idea',
-    networks: ['vk', 'telegram'],
+    accountIds: defaultAccountIds,
     tags: [],
     date: date,
     previews: {}
@@ -272,8 +282,9 @@ onUnmounted(() => {
     <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800">
       <div class="flex items-center gap-6">
         <SocialFilters
-          :active-networks="activeNetworks"
-          @toggle="toggleNetwork"
+          :accounts="currentProject.accounts"
+          :active-account-ids="activeAccountIds"
+          @toggle="toggleAccount"
         />
         <!-- Status filter -->
         <div class="flex items-center gap-2">
@@ -415,6 +426,7 @@ onUnmounted(() => {
             :selected-date="selectedDate"
             :get-posts-for-date="getPostsForDate"
             :has-info-event="hasInfoEvent"
+            :accounts="currentProject.accounts"
             @select-date="selectDate"
             @prev-month="prevMonth"
             @next-month="nextMonth"
@@ -442,6 +454,7 @@ onUnmounted(() => {
           :posts-for-date="postsForSelectedDate"
           :info-events="infoEventsForSelectedDate"
           :project-tags="currentProject.tags"
+          :accounts="currentProject.accounts"
           :news="currentProject.news"
           :used-news="usedNews"
           :trends="currentProject.trends"

@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import PostPreviewPanel from './PostPreviewPanel.vue'
 import NewsSidebar from './NewsSidebar.vue'
-import type { CalendarPost, InfoEvent, ContentTag, NewsItem, TrendItem } from '../types'
+import type { CalendarPost, InfoEvent, ContentTag, NewsItem, TrendItem, SocialAccount } from '../types'
 import { getFunDayForDate } from '../data/funDays'
 import PostCard from './PostCard.vue'
 
@@ -12,6 +12,7 @@ const props = defineProps<{
   postsForDate: CalendarPost[]
   infoEvents: InfoEvent[]
   projectTags: ContentTag[]
+  accounts: SocialAccount[]
   news: NewsItem[]
   usedNews: Record<string, string>
   trends: TrendItem[]
@@ -101,6 +102,7 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
         v-if="selectedPost && activeTab === 'context'"
         :post="selectedPost"
         :project-tags="projectTags"
+        :accounts="accounts"
         :create-tag="createTag"
         class="h-full"
         @close="emit('closePost')"
@@ -169,6 +171,7 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
               :key="post.id"
               :post="post"
               :project-tags="projectTags"
+              :accounts="accounts"
               @select="emit('selectPost', $event)"
             />
           </div>

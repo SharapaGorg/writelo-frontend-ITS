@@ -4,6 +4,14 @@ export type SocialNetwork = 'vk' | 'youtube' | 'telegram' | 'instagram'
 
 export type PostStatus = 'idea' | 'draft' | 'ready' | 'published'
 
+export interface SocialAccount {
+  id: string
+  network: SocialNetwork
+  name: string
+  username: string
+  avatarUrl?: string
+}
+
 export interface ContentTag {
   id: string
   name: string
@@ -26,7 +34,7 @@ export interface CalendarPost {
   content?: string // Full post text content
   type: ContentType
   status: PostStatus
-  networks: SocialNetwork[]
+  accountIds: string[] // Social account IDs this post is published to
   tags: string[] // Tag IDs
   date: string // 'YYYY-MM-DD'
   time?: string // 'HH:MM' (optional)
@@ -74,6 +82,7 @@ export interface FunDay {
 export interface DemoProject {
   id: string
   name: string
+  accounts: SocialAccount[]
   tags: ContentTag[]
   posts: CalendarPost[]
   infoEvents: InfoEvent[]

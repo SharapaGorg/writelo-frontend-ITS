@@ -1,9 +1,33 @@
-import type { DemoProject } from '../types'
+import type { DemoProject, SocialAccount } from '../types'
+
+// Coffee Shop accounts
+const coffeeShopAccounts: SocialAccount[] = [
+  { id: 'coffee-vk-1', network: 'vk', name: 'Кофейня Бодрость VK', username: '@coffeebodrost' },
+  { id: 'coffee-tg-1', network: 'telegram', name: 'Кофейня Бодрость TG', username: '@coffeebodrost_tg' },
+  { id: 'coffee-ig-1', network: 'instagram', name: 'Кофейня Бодрость IG', username: '@coffee.bodrost' },
+  { id: 'coffee-yt-1', network: 'youtube', name: 'Кофейня Бодрость YouTube', username: '@CoffeeBodrost' }
+]
+
+// Blogger Anya accounts
+const bloggerAnyaAccounts: SocialAccount[] = [
+  { id: 'anya-ig-1', network: 'instagram', name: 'Аня Lifestyle', username: '@anya_lifestyle' },
+  { id: 'anya-yt-1', network: 'youtube', name: 'Аня Vlog', username: '@AnyaVlog' },
+  { id: 'anya-tg-1', network: 'telegram', name: 'Аня Blog', username: '@anya_blog' }
+]
+
+// Electronics Store accounts
+const electronicsStoreAccounts: SocialAccount[] = [
+  { id: 'tech-vk-1', network: 'vk', name: 'ТехноМаркет VK', username: '@technomarket' },
+  { id: 'tech-yt-1', network: 'youtube', name: 'ТехноМаркет YouTube', username: '@TechnoMarket' },
+  { id: 'tech-tg-1', network: 'telegram', name: 'ТехноМаркет TG', username: '@technomarket_tg' },
+  { id: 'tech-ig-1', network: 'instagram', name: 'ТехноМаркет IG', username: '@techno.market' }
+]
 
 export const demoProjects: DemoProject[] = [
   {
     id: 'coffee-shop',
     name: 'Кофейня "Бодрость"',
+    accounts: coffeeShopAccounts,
     tags: [
       { id: 'tag-cs-1', name: 'Продающий', color: 'bg-emerald-500' },
       { id: 'tag-cs-2', name: 'Экспертный', color: 'bg-indigo-500' },
@@ -18,7 +42,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Весна пришла — и мы решили порадовать вас! До конца марта скидка 20% на все виды латте: классический, карамельный, ванильный и наш фирменный "Бодрость".\n\nПриходите согреться и насладиться любимым напитком по приятной цене. Ждём вас каждый день с 8:00 до 22:00!',
         type: 'post',
         status: 'published',
-        networks: ['vk', 'telegram'],
+        accountIds: ['coffee-vk-1', 'coffee-tg-1'],
         tags: ['tag-cs-1'],
         date: '2026-03-15',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Latte',
@@ -46,7 +70,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Встречайте новинку в нашем меню — итальянский тирамису по авторскому рецепту нашего шефа!\n\nНежные слои савоярди, пропитанные эспрессо, воздушный крем маскарпоне и лёгкая горчинка какао — идеальное сочетание для настоящих ценителей.',
         type: 'story',
         status: 'draft',
-        networks: ['instagram'],
+        accountIds: ['coffee-ig-1'],
         tags: ['tag-cs-3'],
         date: '2026-03-18',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Tiramisu',
@@ -64,7 +88,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Как мы варим кофе',
         type: 'reels',
         status: 'idea',
-        networks: ['instagram', 'youtube'],
+        accountIds: ['coffee-ig-1', 'coffee-yt-1'],
         tags: ['tag-cs-2'],
         date: '2026-03-22',
         previews: {
@@ -78,7 +102,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Милые дамы! Поздравляем вас с Международным женским днём!\n\nСегодня всем девушкам — кофе в подарок к любому заказу. Приходите за хорошим настроением и ароматным напитком!\n\nС любовью, команда "Бодрость" ❤️',
         type: 'post',
         status: 'published',
-        networks: ['vk', 'telegram', 'instagram'],
+        accountIds: ['coffee-vk-1', 'coffee-tg-1', 'coffee-ig-1'],
         tags: ['tag-cs-4', 'tag-cs-3'],
         date: '2026-03-08',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=8+March',
@@ -99,7 +123,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Пасхальные куличи',
         type: 'post',
         status: 'idea',
-        networks: ['vk', 'instagram'],
+        accountIds: ['coffee-vk-1', 'coffee-ig-1'],
         tags: ['tag-cs-1', 'tag-cs-4'],
         date: '2026-04-12',
         previews: {
@@ -113,7 +137,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Спешите на работу? Возьмите кофе с собой! Горячий, ароматный, в удобном стакане. Готовим за 2 минуты.',
         type: 'story',
         status: 'published',
-        networks: ['instagram', 'vk'],
+        accountIds: ['coffee-ig-1', 'coffee-vk-1'],
         tags: ['tag-cs-1'],
         date: '2026-03-10',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Coffee+To+Go',
@@ -128,7 +152,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Сергей работает у нас уже 3 года. Он знает более 50 рецептов и готовит лучший раф в городе!',
         type: 'reels',
         status: 'ready',
-        networks: ['instagram', 'youtube', 'vk'],
+        accountIds: ['coffee-ig-1', 'coffee-yt-1', 'coffee-vk-1'],
         tags: ['tag-cs-4', 'tag-cs-2'],
         date: '2026-03-12',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Barista',
@@ -144,7 +168,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Делимся секретом идеального латте дома. Вам понадобится: эспрессо, молоко 3.2%, питчер...',
         type: 'post',
         status: 'draft',
-        networks: ['telegram', 'vk'],
+        accountIds: ['coffee-tg-1', 'coffee-vk-1'],
         tags: ['tag-cs-2'],
         date: '2026-03-19',
         previews: {
@@ -158,7 +182,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Каждое утро с 7 до 9 — скидка 15% на все напитки. Бодрое начало дня гарантировано!',
         type: 'post',
         status: 'published',
-        networks: ['vk', 'telegram', 'instagram'],
+        accountIds: ['coffee-vk-1', 'coffee-tg-1', 'coffee-ig-1'],
         tags: ['tag-cs-1', 'tag-cs-3'],
         date: '2026-03-05',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Morning+Sale',
@@ -177,7 +201,7 @@ export const demoProjects: DemoProject[] = [
         title: 'День рождения кофейни',
         type: 'post',
         status: 'idea',
-        networks: ['vk', 'telegram', 'instagram'],
+        accountIds: ['coffee-vk-1', 'coffee-tg-1', 'coffee-ig-1'],
         tags: ['tag-cs-3', 'tag-cs-4'],
         date: '2026-04-01',
         previews: {
@@ -192,7 +216,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Мы обновили оборудование! Новая La Marzocco делает кофе ещё вкуснее. Приходите пробовать!',
         type: 'story',
         status: 'published',
-        networks: ['instagram'],
+        accountIds: ['coffee-ig-1'],
         tags: ['tag-cs-2'],
         date: '2026-03-03',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=New+Machine',
@@ -205,7 +229,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Викторина про кофе',
         type: 'story',
         status: 'ready',
-        networks: ['instagram', 'telegram'],
+        accountIds: ['coffee-ig-1', 'coffee-tg-1'],
         tags: ['tag-cs-3'],
         date: '2026-03-24',
         previews: {
@@ -218,7 +242,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Летнее меню',
         type: 'post',
         status: 'idea',
-        networks: ['vk', 'instagram'],
+        accountIds: ['coffee-vk-1', 'coffee-ig-1'],
         tags: ['tag-cs-1', 'tag-cs-3'],
         date: '2026-04-15',
         previews: {
@@ -232,7 +256,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Спасибо Марии за тёплые слова! "Лучший кофе в районе, хожу только сюда уже 2 года"',
         type: 'post',
         status: 'draft',
-        networks: ['vk', 'telegram'],
+        accountIds: ['coffee-vk-1', 'coffee-tg-1'],
         tags: ['tag-cs-4'],
         date: '2026-03-26',
         previews: {
@@ -245,7 +269,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Кофейный мастер-класс',
         type: 'post',
         status: 'idea',
-        networks: ['vk', 'instagram', 'telegram'],
+        accountIds: ['coffee-vk-1', 'coffee-ig-1', 'coffee-tg-1'],
         tags: ['tag-cs-2', 'tag-cs-3'],
         date: '2026-04-05',
         previews: {
@@ -260,7 +284,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Кофе прошёл долгий путь от диких лесов Эфиопии до современных кофеен. Рассказываем, как пастух Калди открыл бодрящие свойства красных ягод, и как кофе завоевал весь мир...',
         type: 'article',
         status: 'published',
-        networks: ['telegram', 'vk'],
+        accountIds: ['coffee-tg-1', 'coffee-vk-1'],
         tags: ['tag-cs-2'],
         date: '2026-03-02',
         publishedLinks: {
@@ -278,7 +302,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Пуровер, аэропресс, кемекс, френч-пресс — разбираемся в альтернативных способах заваривания кофе. Плюсы, минусы и для кого подойдёт каждый метод.',
         type: 'article',
         status: 'ready',
-        networks: ['telegram', 'vk'],
+        accountIds: ['coffee-tg-1', 'coffee-vk-1'],
         tags: ['tag-cs-2'],
         date: '2026-03-15',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Brewing',
@@ -293,7 +317,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Вреден ли кофе? Сколько чашек можно пить в день? Разбираем популярные мифы о кофе с точки зрения науки.',
         type: 'article',
         status: 'draft',
-        networks: ['telegram'],
+        accountIds: ['coffee-tg-1'],
         tags: ['tag-cs-2'],
         date: '2026-03-28',
         previews: {
@@ -306,7 +330,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Привезли свежую партию зерна из Кении! Яркая кислотность, ноты чёрной смородины и цитрусов.',
         type: 'post',
         status: 'published',
-        networks: ['vk', 'telegram', 'instagram'],
+        accountIds: ['coffee-vk-1', 'coffee-tg-1', 'coffee-ig-1'],
         tags: ['tag-cs-1', 'tag-cs-2'],
         date: '2026-03-08',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Kenya+AA',
@@ -326,7 +350,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Теперь у нас можно позавтракать! Круассаны, тосты, яичница и овсянка — всё свежее и вкусное.',
         type: 'post',
         status: 'ready',
-        networks: ['vk', 'instagram'],
+        accountIds: ['coffee-vk-1', 'coffee-ig-1'],
         tags: ['tag-cs-1', 'tag-cs-3'],
         date: '2026-03-22',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Breakfast',
@@ -341,7 +365,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Многие хранят кофе неправильно и теряют весь аромат. Рассказываем о главных ошибках и как их избежать.',
         type: 'article',
         status: 'published',
-        networks: ['telegram', 'vk'],
+        accountIds: ['coffee-tg-1', 'coffee-vk-1'],
         tags: ['tag-cs-2'],
         date: '2026-03-09',
         publishedLinks: {
@@ -357,7 +381,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Флэт уайт vs Капучино',
         type: 'reels',
         status: 'ready',
-        networks: ['instagram', 'youtube'],
+        accountIds: ['coffee-ig-1', 'coffee-yt-1'],
         tags: ['tag-cs-2', 'tag-cs-3'],
         date: '2026-03-12',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Flat+White',
@@ -372,7 +396,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Собрали плейлист для весеннего настроения. Слушайте у нас или в Яндекс.Музыке!',
         type: 'story',
         status: 'published',
-        networks: ['instagram'],
+        accountIds: ['coffee-ig-1'],
         tags: ['tag-cs-4', 'tag-cs-3'],
         date: '2026-03-15',
         previews: {
@@ -385,7 +409,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Раф-кофе — российское изобретение! Рассказываем историю создания и делимся классическим рецептом.',
         type: 'article',
         status: 'draft',
-        networks: ['telegram', 'vk'],
+        accountIds: ['coffee-tg-1', 'coffee-vk-1'],
         tags: ['tag-cs-2'],
         date: '2026-03-30',
         previews: {
@@ -398,7 +422,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Субботний бранч',
         type: 'story',
         status: 'idea',
-        networks: ['instagram', 'vk'],
+        accountIds: ['coffee-ig-1', 'coffee-vk-1'],
         tags: ['tag-cs-3', 'tag-cs-1'],
         date: '2026-03-22',
         previews: {
@@ -487,6 +511,7 @@ export const demoProjects: DemoProject[] = [
   {
     id: 'blogger-anya',
     name: 'Блогер Аня',
+    accounts: bloggerAnyaAccounts,
     tags: [
       { id: 'tag-ba-1', name: 'Личный', color: 'bg-pink-500' },
       { id: 'tag-ba-2', name: 'Реклама', color: 'bg-amber-500' },
@@ -499,7 +524,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Утренняя рутина',
         type: 'reels',
         status: 'ready',
-        networks: ['instagram', 'youtube'],
+        accountIds: ['anya-ig-1', 'anya-yt-1'],
         tags: ['tag-ba-1', 'tag-ba-4'],
         date: '2026-03-16',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Morning',
@@ -513,7 +538,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Коллаб с брендом',
         type: 'post',
         status: 'draft',
-        networks: ['instagram', 'telegram'],
+        accountIds: ['anya-ig-1', 'anya-tg-1'],
         tags: ['tag-ba-2'],
         date: '2026-03-20',
         previews: {
@@ -526,7 +551,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Q&A сессия',
         type: 'story',
         status: 'idea',
-        networks: ['instagram'],
+        accountIds: ['anya-ig-1'],
         tags: ['tag-ba-3'],
         date: '2026-03-25',
         previews: {
@@ -539,7 +564,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Показываю капсульный гардероб на весну 2026. 15 вещей — 30 образов!',
         type: 'reels',
         status: 'published',
-        networks: ['instagram', 'youtube'],
+        accountIds: ['anya-ig-1', 'anya-yt-1'],
         tags: ['tag-ba-4', 'tag-ba-1'],
         date: '2026-03-08',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Wardrobe',
@@ -556,7 +581,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Влог из Дубая',
         type: 'reels',
         status: 'ready',
-        networks: ['youtube', 'instagram'],
+        accountIds: ['anya-yt-1', 'anya-ig-1'],
         tags: ['tag-ba-4', 'tag-ba-1'],
         date: '2026-03-22',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Dubai',
@@ -570,7 +595,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Распаковка PR-посылок',
         type: 'story',
         status: 'published',
-        networks: ['instagram'],
+        accountIds: ['anya-ig-1'],
         tags: ['tag-ba-2', 'tag-ba-3'],
         date: '2026-03-10',
         previews: {
@@ -583,7 +608,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Полная рутина ухода: утро и вечер. Все средства с ценами!',
         type: 'reels',
         status: 'draft',
-        networks: ['instagram', 'youtube'],
+        accountIds: ['anya-ig-1', 'anya-yt-1'],
         tags: ['tag-ba-4', 'tag-ba-1'],
         date: '2026-03-28',
         previews: {
@@ -596,7 +621,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Челлендж: неделя без телефона',
         type: 'reels',
         status: 'idea',
-        networks: ['youtube', 'instagram'],
+        accountIds: ['anya-yt-1', 'anya-ig-1'],
         tags: ['tag-ba-3', 'tag-ba-1'],
         date: '2026-04-01',
         previews: {
@@ -610,7 +635,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Заказала 20 вещей — показываю что пришло и стоит ли брать',
         type: 'reels',
         status: 'ready',
-        networks: ['instagram', 'youtube'],
+        accountIds: ['anya-ig-1', 'anya-yt-1'],
         tags: ['tag-ba-4'],
         date: '2026-03-14',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Haul',
@@ -624,7 +649,7 @@ export const demoProjects: DemoProject[] = [
         title: 'День со мной',
         type: 'story',
         status: 'published',
-        networks: ['instagram'],
+        accountIds: ['anya-ig-1'],
         tags: ['tag-ba-1'],
         date: '2026-03-05',
         previews: {
@@ -636,7 +661,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Интеграция: приложение для медитации',
         type: 'story',
         status: 'draft',
-        networks: ['instagram'],
+        accountIds: ['anya-ig-1'],
         tags: ['tag-ba-2'],
         date: '2026-03-30',
         previews: {
@@ -649,7 +674,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Быстрый повседневный макияж для тех, кто вечно опаздывает',
         type: 'reels',
         status: 'idea',
-        networks: ['instagram', 'youtube'],
+        accountIds: ['anya-ig-1', 'anya-yt-1'],
         tags: ['tag-ba-4', 'tag-ba-3'],
         date: '2026-04-08',
         previews: {
@@ -662,7 +687,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Мои любимые книги',
         type: 'post',
         status: 'idea',
-        networks: ['telegram', 'instagram'],
+        accountIds: ['anya-tg-1', 'anya-ig-1'],
         tags: ['tag-ba-1', 'tag-ba-3'],
         date: '2026-04-03',
         previews: {
@@ -675,7 +700,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Отвечаю хейтерам',
         type: 'reels',
         status: 'draft',
-        networks: ['youtube'],
+        accountIds: ['anya-yt-1'],
         tags: ['tag-ba-1', 'tag-ba-3'],
         date: '2026-03-18',
         previews: {
@@ -688,7 +713,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Вкусный и полезный завтрак за 10 минут. Овсянка, но не скучная!',
         type: 'reels',
         status: 'ready',
-        networks: ['instagram'],
+        accountIds: ['anya-ig-1'],
         tags: ['tag-ba-4'],
         date: '2026-03-12',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Breakfast',
@@ -767,6 +792,7 @@ export const demoProjects: DemoProject[] = [
   {
     id: 'electronics-store',
     name: 'Магазин электроники',
+    accounts: electronicsStoreAccounts,
     tags: [
       { id: 'tag-es-1', name: 'Продающий', color: 'bg-emerald-500' },
       { id: 'tag-es-2', name: 'Экспертный', color: 'bg-indigo-500' },
@@ -779,7 +805,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Обзор iPhone 17',
         type: 'reels',
         status: 'ready',
-        networks: ['youtube', 'vk'],
+        accountIds: ['tech-yt-1', 'tech-vk-1'],
         tags: ['tag-es-2', 'tag-es-3'],
         date: '2026-03-14',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=iPhone',
@@ -793,7 +819,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Распродажа к 8 марта',
         type: 'post',
         status: 'ready',
-        networks: ['vk', 'telegram', 'instagram'],
+        accountIds: ['tech-vk-1', 'tech-tg-1', 'tech-ig-1'],
         tags: ['tag-es-1', 'tag-es-4'],
         date: '2026-03-07',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Sale',
@@ -808,7 +834,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Топ-5 наушников 2026',
         type: 'post',
         status: 'draft',
-        networks: ['vk', 'youtube'],
+        accountIds: ['tech-vk-1', 'tech-yt-1'],
         tags: ['tag-es-2', 'tag-es-3'],
         date: '2026-03-28',
         previews: {
@@ -822,7 +848,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Детальное сравнение двух флагманов 2026 года. Камеры, производительность, автономность.',
         type: 'reels',
         status: 'ready',
-        networks: ['youtube', 'vk'],
+        accountIds: ['tech-yt-1', 'tech-vk-1'],
         tags: ['tag-es-2', 'tag-es-3'],
         date: '2026-03-10',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Comparison',
@@ -836,7 +862,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Новинки с MWC 2026',
         type: 'post',
         status: 'published',
-        networks: ['telegram', 'vk'],
+        accountIds: ['tech-tg-1', 'tech-vk-1'],
         tags: ['tag-es-2'],
         date: '2026-03-03',
         publishedLinks: {
@@ -853,7 +879,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Розыгрыш AirPods Pro 3',
         type: 'post',
         status: 'ready',
-        networks: ['instagram', 'vk', 'telegram'],
+        accountIds: ['tech-ig-1', 'tech-vk-1', 'tech-tg-1'],
         tags: ['tag-es-4', 'tag-es-1'],
         date: '2026-03-20',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Giveaway',
@@ -869,7 +895,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Гайд по выбору ноутбука в 2026: на что обратить внимание, какие характеристики важны',
         type: 'post',
         status: 'draft',
-        networks: ['vk', 'telegram'],
+        accountIds: ['tech-vk-1', 'tech-tg-1'],
         tags: ['tag-es-2'],
         date: '2026-03-25',
         previews: {
@@ -882,7 +908,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Краш-тест смартфонов',
         type: 'reels',
         status: 'idea',
-        networks: ['youtube', 'instagram'],
+        accountIds: ['tech-yt-1', 'tech-ig-1'],
         tags: ['tag-es-3'],
         date: '2026-04-05',
         previews: {
@@ -896,7 +922,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Собираем умный дом с нуля: колонки, лампочки, датчики. Бюджет от 10 000₽',
         type: 'reels',
         status: 'ready',
-        networks: ['youtube', 'vk'],
+        accountIds: ['tech-yt-1', 'tech-vk-1'],
         tags: ['tag-es-2'],
         date: '2026-03-18',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Smart+Home',
@@ -910,7 +936,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Обзор PlayStation 6',
         type: 'reels',
         status: 'idea',
-        networks: ['youtube'],
+        accountIds: ['tech-yt-1'],
         tags: ['tag-es-2', 'tag-es-3'],
         date: '2026-04-15',
         previews: {
@@ -922,7 +948,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Скидки на аксессуары',
         type: 'story',
         status: 'published',
-        networks: ['instagram'],
+        accountIds: ['tech-ig-1'],
         tags: ['tag-es-1', 'tag-es-4'],
         date: '2026-03-12',
         previews: {
@@ -935,7 +961,7 @@ export const demoProjects: DemoProject[] = [
         content: '10 скрытых функций iOS, о которых вы не знали',
         type: 'reels',
         status: 'draft',
-        networks: ['instagram', 'youtube'],
+        accountIds: ['tech-ig-1', 'tech-yt-1'],
         tags: ['tag-es-2'],
         date: '2026-03-22',
         previews: {
@@ -948,7 +974,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Распродажа ко Дню космонавтики',
         type: 'post',
         status: 'idea',
-        networks: ['vk', 'telegram', 'instagram'],
+        accountIds: ['tech-vk-1', 'tech-tg-1', 'tech-ig-1'],
         tags: ['tag-es-1', 'tag-es-4'],
         date: '2026-04-12',
         previews: {
@@ -962,7 +988,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Ответы на вопросы',
         type: 'story',
         status: 'ready',
-        networks: ['instagram'],
+        accountIds: ['tech-ig-1'],
         tags: ['tag-es-2'],
         date: '2026-03-26',
         previews: {
@@ -975,7 +1001,7 @@ export const demoProjects: DemoProject[] = [
         content: 'Обзор Xiaomi Robot Vacuum X20 Max: тестируем в реальной квартире',
         type: 'reels',
         status: 'draft',
-        networks: ['youtube', 'vk'],
+        accountIds: ['tech-yt-1', 'tech-vk-1'],
         tags: ['tag-es-2', 'tag-es-3'],
         date: '2026-04-02',
         previews: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import type { CalendarPost, SocialNetwork, NewsItem, TrendItem } from '../types'
+import type { CalendarPost, SocialNetwork, SocialAccount, NewsItem, TrendItem } from '../types'
 import type { ReelItem } from '~/lib-modules/reels-research'
 
 const props = defineProps<{
@@ -11,6 +11,7 @@ const props = defineProps<{
   isSelected: boolean
   posts: CalendarPost[]
   hasInfoEvent: boolean
+  accounts: SocialAccount[]
 }>()
 
 const emit = defineEmits<{
@@ -70,10 +71,17 @@ const contentTypeColors: Record<string, string> = {
   article: 'text-emerald-500'
 }
 
-// Unique social networks from all posts
+// Unique social networks from all posts (derived from account IDs)
 const uniqueNetworks = computed(() => {
   const networks = new Set<SocialNetwork>()
-  props.posts.forEach(post => post.networks.forEach(n => networks.add(n)))
+  props.posts.forEach(post => {
+    post.accountIds.forEach(accountId => {
+      const account = props.accounts.find(a => a.id === accountId)
+      if (account) {
+        networks.add(account.network)
+      }
+    })
+  })
   return Array.from(networks)
 })
 

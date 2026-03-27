@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from '~/components/ui/button'
 import DayCell from './DayCell.vue'
-import type { CalendarPost, TrendItem } from '../types'
+import type { CalendarPost, TrendItem, SocialAccount } from '../types'
 import type { ReelItem } from '~/lib-modules/reels-research'
 
 const props = defineProps<{
@@ -9,6 +9,7 @@ const props = defineProps<{
   selectedDate: string | null
   getPostsForDate: (date: string) => CalendarPost[]
   hasInfoEvent: (date: string) => boolean
+  accounts: SocialAccount[]
 }>()
 
 // Format date as YYYY-MM-DD without timezone conversion
@@ -135,6 +136,7 @@ const calendarDays = computed((): DayInfo[] => {
         :is-selected="selectedDate === day.date"
         :posts="getPostsForDate(day.date)"
         :has-info-event="hasInfoEvent(day.date)"
+        :accounts="accounts"
         @select="emit('selectDate', $event)"
         @drop-news="(date, news) => emit('dropNews', date, news)"
         @drop-trend="(date, trend) => emit('dropTrend', date, trend)"

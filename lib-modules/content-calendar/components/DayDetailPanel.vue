@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PostCard from './PostCard.vue'
-import type { CalendarPost, InfoEvent, ContentTag } from '../types'
+import type { CalendarPost, InfoEvent, ContentTag, SocialAccount } from '../types'
 import { getFunDayForDate } from '../data/funDays'
 
 const props = defineProps<{
@@ -8,6 +8,7 @@ const props = defineProps<{
   posts: CalendarPost[]
   infoEvents: InfoEvent[]
   projectTags: ContentTag[]
+  accounts: SocialAccount[]
 }>()
 
 const emit = defineEmits<{
@@ -77,6 +78,7 @@ const funDay = computed(() => getFunDayForDate(props.date))
           :key="post.id"
           :post="post"
           :project-tags="projectTags"
+          :accounts="accounts"
           @select="emit('selectPost', $event)"
         />
       </div>

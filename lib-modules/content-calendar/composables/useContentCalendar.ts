@@ -1,5 +1,5 @@
 import { ref, computed, watch, reactive } from 'vue'
-import type { SocialNetwork, CalendarPost, InfoEvent, PostStatus, ContentTag } from '../types'
+import type { SocialNetwork, CalendarPost, InfoEvent, PostStatus, ContentTag, SocialAccount } from '../types'
 import { demoProjects as initialDemoProjects } from '../data/demoData'
 
 export function useContentCalendar() {
@@ -10,7 +10,7 @@ export function useContentCalendar() {
   const selectedProjectId = ref<string>('coffee-shop')
   const selectedDate = ref<string | null>(null)
   const selectedPostId = ref<string | null>(null)
-  const activeNetworks = ref<SocialNetwork[]>(['vk', 'youtube', 'telegram', 'instagram'])
+  const activeAccountIds = ref<string[]>([])
   const activeStatuses = ref<PostStatus[]>(['idea', 'draft', 'ready', 'published'])
   const activeTags = ref<string[]>([]) // Empty = show all, non-empty = filter
   const currentMonth = ref<Date>(new Date())
@@ -26,22 +26,27 @@ export function useContentCalendar() {
     projects.find(p => p.id === selectedProjectId.value) ?? projects[0]
   )
 
-  // Reset tags and usedNews when project changes
+  // Reset tags, usedNews, and initialize activeAccountIds when project changes
   watch(selectedProjectId, () => {
     activeTags.value = []
     usedNews.value = {}
     usedTrends.value = {}
-  })
+    // Initialize with all accounts from the new project
+    const project = projects.find(p => p.id === selectedProjectId.value)
+    if (project) {
+      activeAccountIds.value = project.accounts.map(a => a.id)
+    }
+  }, { immediate: true })
 
-  // Filtered posts by active networks, statuses, and tags
+  // Filtered posts by active accounts, statuses, and tags
   const filteredPosts = computed(() =>
     currentProject.value.posts.filter(post => {
-      const matchesNetwork = post.networks.some(n => activeNetworks.value.includes(n))
+      const matchesAccount = post.accountIds.some(id => activeAccountIds.value.includes(id))
       const matchesStatus = activeStatuses.value.includes(post.status)
       // If no tags selected, show all; otherwise filter by selected tags
       const matchesTags = activeTags.value.length === 0 ||
         post.tags.some(t => activeTags.value.includes(t))
-      return matchesNetwork && matchesStatus && matchesTags
+      return matchesAccount && matchesStatus && matchesTags
     })
   )
 
@@ -94,13 +99,30 @@ export function useContentCalendar() {
     selectedPostId.value = postId
   }
 
-  function toggleNetwork(network: SocialNetwork) {
-    const index = activeNetworks.value.indexOf(network)
+  function toggleAccount(accountId: string) {
+    const index = activeAccountIds.value.indexOf(accountId)
     if (index === -1) {
-      activeNetworks.value.push(network)
-    } else if (activeNetworks.value.length > 1) {
-      activeNetworks.value.splice(index, 1)
+      activeAccountIds.value.push(accountId)
+    } else if (activeAccountIds.value.length > 1) {
+      activeAccountIds.value.splice(index, 1)
     }
+  }
+
+  // Helper to get account by ID
+  function getAccountById(accountId: string): SocialAccount | undefined {
+    return currentProject.value.accounts.find(a => a.id === accountId)
+  }
+
+  // Helper to get networks from account IDs (for components that still need network info)
+  function getNetworksFromAccountIds(accountIds: string[]): SocialNetwork[] {
+    const networks = new Set<SocialNetwork>()
+    for (const accountId of accountIds) {
+      const account = currentProject.value.accounts.find(a => a.id === accountId)
+      if (account) {
+        networks.add(account.network)
+      }
+    }
+    return Array.from(networks)
   }
 
   function toggleStatus(status: PostStatus) {
@@ -226,7 +248,7 @@ export function useContentCalendar() {
     selectedProjectId,
     selectedDate,
     selectedPostId,
-    activeNetworks,
+    activeAccountIds,
     activeStatuses,
     activeTags,
     currentMonth,
@@ -241,10 +263,12 @@ export function useContentCalendar() {
     hasInfoEvent,
     getInfoEvent,
     getTagById,
+    getAccountById,
+    getNetworksFromAccountIds,
     selectProject,
     selectDate,
     selectPost,
-    toggleNetwork,
+    toggleAccount,
     toggleStatus,
     toggleTag,
     nextMonth,
