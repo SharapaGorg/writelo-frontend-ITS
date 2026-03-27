@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import {
   ContentEditorLayout,
   EditorChatPanel,
+  EditorImagesPanel,
   useContentEditor
 } from '~/lib-modules/content-editor'
 
@@ -29,9 +30,7 @@ onMounted(() => {
   <ContentEditorLayout>
     <template #left-panel>
       <EditorChatPanel v-if="editorMode === 'chat'" />
-      <div v-else class="flex h-full items-center justify-center p-4 text-zinc-400">
-        <p class="text-sm">Image generation coming soon</p>
-      </div>
+      <EditorImagesPanel v-else />
     </template>
     <template #right-panel>
       <div class="flex h-full items-center justify-center p-4 text-zinc-400">
