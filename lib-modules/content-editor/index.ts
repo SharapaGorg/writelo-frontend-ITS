@@ -6,6 +6,7 @@ export { default as ImageStack } from './components/ImageStack.vue'
 export { default as ReelTimeline } from './components/ReelTimeline.vue'
 export { default as FrameEditor } from './components/FrameEditor.vue'
 export { default as ReelScriptPanel } from './components/ReelScriptPanel.vue'
+export { default as PostPreviewPanel } from './components/PostPreviewPanel.vue'
 
 // Composables
 export { useContentEditor } from './composables/useContentEditor'

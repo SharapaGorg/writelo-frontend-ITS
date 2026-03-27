@@ -5,6 +5,8 @@ import {
   ContentEditorLayout,
   EditorChatPanel,
   EditorImagesPanel,
+  ReelScriptPanel,
+  PostPreviewPanel,
   useContentEditor
 } from '~/lib-modules/content-editor'
 
@@ -13,7 +15,7 @@ definePageMeta({
 })
 
 const route = useRoute()
-const { currentDraft, createNewDraft, editorMode } = useContentEditor()
+const { currentDraft, createNewDraft, editorMode, isReel } = useContentEditor()
 
 onMounted(() => {
   const postId = route.params.postId as string | undefined
@@ -32,10 +34,10 @@ onMounted(() => {
       <EditorChatPanel v-if="editorMode === 'chat'" />
       <EditorImagesPanel v-else />
     </template>
+
     <template #right-panel>
-      <div class="flex h-full items-center justify-center p-4 text-zinc-400">
-        <p class="text-sm">Post preview coming soon</p>
-      </div>
+      <ReelScriptPanel v-if="isReel" />
+      <PostPreviewPanel v-else />
     </template>
   </ContentEditorLayout>
 </template>
