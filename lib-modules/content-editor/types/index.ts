@@ -1,4 +1,4 @@
-export type ContentType = 'post' | 'story' | 'reel' | 'carousel'
+export type ContentType = 'post' | 'story' | 'reel'
 export type EditorMode = 'chat' | 'images'
 
 export interface ContentDraft {

@@ -59,7 +59,6 @@ const contentTypeLabel = computed(() => {
     case 'post': return 'New Post'
     case 'story': return 'New Story'
     case 'reel': return 'New Reel'
-    case 'carousel': return 'New Carousel'
     default: return 'New Content'
   }
 })

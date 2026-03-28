@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Hash, CalendarIcon, Check, Save, Loader2 } from 'lucide-vue-next'
+import { CalendarIcon, Check, Save, Loader2 } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
 import { Input } from '~/components/ui/input'
@@ -34,15 +34,13 @@ const isActivePanel = computed(() => activePanel.value === 'right')
 const contentTypes: { value: ContentType; label: string }[] = [
   { value: 'post', label: 'Post' },
   { value: 'story', label: 'Story' },
-  { value: 'reel', label: 'Reel' },
-  { value: 'carousel', label: 'Carousel' }
+  { value: 'reel', label: 'Reel' }
 ]
 
 // Computed values from draft
 const selectedType = computed(() => currentDraft.value?.type ?? 'post')
 const images = computed(() => currentDraft.value?.images ?? [])
 const description = computed(() => currentDraft.value?.description ?? '')
-const hashtags = computed(() => currentDraft.value?.hashtags ?? [])
 const scheduledDate = computed(() => currentDraft.value?.scheduledDate ?? null)
 const status = computed(() => currentDraft.value?.status ?? 'draft')
 
@@ -58,20 +56,6 @@ const setContentType = (type: ContentType) => {
 const updateDescription = (value: string | number) => {
   updateDraft({ description: String(value) })
 }
-
-// Handle hashtags input (comma-separated or space-separated with #)
-const hashtagsInput = computed({
-  get: () => hashtags.value.join(' '),
-  set: (value: string) => {
-    // Split by space or comma, handle both #tag and tag formats
-    const tags = value
-      .split(/[\s,]+/)
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0)
-      .map(tag => tag.startsWith('#') ? tag : `#${tag}`)
-    updateDraft({ hashtags: tags })
-  }
-})
 
 // Handle scheduled date
 const updateScheduledDate = (event: Event) => {
@@ -140,7 +124,7 @@ const handleMarkReady = async () => {
         <ReelScriptPanel />
       </template>
 
-      <!-- Non-reel content: images, description, hashtags -->
+      <!-- Non-reel content: images, description, scheduled date -->
       <template v-else>
         <div class="space-y-6 p-4">
           <!-- Images Section -->
@@ -167,29 +151,6 @@ const handleMarkReady = async () => {
             <p class="text-xs text-zinc-500 dark:text-zinc-400">
               {{ description.length }} / 2200 characters
             </p>
-          </section>
-
-          <!-- Hashtags -->
-          <section class="space-y-2">
-            <label class="flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              <Hash class="h-4 w-4" />
-              Hashtags
-            </label>
-            <Input
-              v-model="hashtagsInput"
-              placeholder="#marketing #smm #content"
-              class="h-10"
-            />
-            <!-- Hashtag preview -->
-            <div v-if="hashtags.length > 0" class="flex flex-wrap gap-1.5">
-              <span
-                v-for="tag in hashtags"
-                :key="tag"
-                class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-              >
-                {{ tag }}
-              </span>
-            </div>
           </section>
 
           <!-- Scheduled Date -->
