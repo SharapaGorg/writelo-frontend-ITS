@@ -1,9 +1,12 @@
 import { storeToRefs } from 'pinia'
 import { useContentEditorStore } from '../stores/contentEditorStore'
+import { useContentProjectStore } from '~/lib-modules/content-calendar'
 import type { ContentType } from '../types'
 
 export const useContentEditor = () => {
   const store = useContentEditorStore()
+  const projectStore = useContentProjectStore()
+  const { currentProjectAccounts } = storeToRefs(projectStore)
   const {
     currentDraft,
     editorMode,
@@ -15,7 +18,8 @@ export const useContentEditor = () => {
     isChatProcessing,
     activePanel,
     conversationId,
-    postId
+    postId,
+    selectedAccountId
   } = storeToRefs(store)
 
   /**
@@ -99,6 +103,8 @@ export const useContentEditor = () => {
     activePanel,
     conversationId,
     postId,
+    selectedAccountId,
+    currentProjectAccounts,
 
     // Store actions
     setEditorMode: store.setEditorMode,
@@ -122,6 +128,7 @@ export const useContentEditor = () => {
     getLastMessage: store.getLastMessage,
     loadChatMessages: store.loadChatMessages,
     setActivePanel: store.setActivePanel,
+    selectAccount: store.selectAccount,
 
     // Composable actions
     startNewContent,
