@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Copy } from 'lucide-vue-next'
-import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
 import { useContentEditor } from '../composables/useContentEditor'
 import { BottomBar, AttachedFileArea, Message, Role } from '~/lib-modules/conversations'
@@ -24,8 +22,7 @@ const {
   updateChatMessageId,
   setChatProcessing,
   setConversationId,
-  getLastMessage,
-  appendToDescription
+  getLastMessage
 } = useContentEditor()
 
 const messagesContainer = ref<HTMLElement | null>(null)
@@ -230,10 +227,6 @@ const scrollToBottom = () => {
   }
 }
 
-const copyToPost = (text: string) => {
-  appendToDescription(text)
-}
-
 // Convert string role to Role enum
 const getRoleEnum = (role: 'user' | 'assistant'): Role => {
   return role === 'user' ? Role.user : Role.assistant
@@ -281,22 +274,6 @@ onUnmounted(() => {
           :error="message.error"
           :is-last="index === chatMessages.length - 1"
         />
-
-        <!-- Quick action: Add to description -->
-        <div
-          v-if="message.role === 'assistant' && !message.processing && message.text"
-          class="mt-2 ml-1"
-        >
-          <Button
-            variant="ghost"
-            size="sm"
-            class="h-7 px-2 text-xs"
-            @click="copyToPost(message.text)"
-          >
-            <Copy class="mr-1 h-3 w-3" />
-            {{ t('editor.addToDescription') }}
-          </Button>
-        </div>
       </div>
     </div>
 
