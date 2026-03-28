@@ -98,13 +98,6 @@ const contentTypeLabel = computed(() => {
           v-if="isLeftActive"
           class="absolute inset-0 border border-blue-400/50 dark:border-blue-500/40 rounded-sm pointer-events-none z-10"
         />
-        <!-- Active panel indicator -->
-        <div
-          v-if="isLeftActive"
-          class="absolute top-2 right-2 z-20 px-2 py-0.5 text-[10px] font-medium bg-blue-400/80 text-white rounded-full pointer-events-none"
-        >
-          Ctrl+V
-        </div>
         <!-- Mode switcher tabs -->
         <div class="flex border-b border-zinc-200 px-2 py-2 dark:border-zinc-800 select-none">
           <button
@@ -159,13 +152,6 @@ const contentTypeLabel = computed(() => {
           v-if="isRightActive"
           class="absolute inset-0 border border-blue-400/50 dark:border-blue-500/40 rounded-sm pointer-events-none z-10"
         />
-        <!-- Active panel indicator -->
-        <div
-          v-if="isRightActive"
-          class="absolute top-2 right-2 z-20 px-2 py-0.5 text-[10px] font-medium bg-blue-400/80 text-white rounded-full pointer-events-none"
-        >
-          Ctrl+V
-        </div>
         <slot name="right-panel" />
       </div>
     </div>
