@@ -16,6 +16,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
   const activePanel = ref<ActivePanel>('right')
   const conversationId = ref<string | null>(null)
   const postId = ref<string | null>(null)
+  const selectedAccountId = ref<string | null>(null)
 
   // Getters
   const isReel = computed(() => currentDraft.value?.type === 'reel')
@@ -53,6 +54,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     currentDraft.value = draft
     originalDraft.value = JSON.parse(JSON.stringify(draft))
     chatMessages.value = []
+    selectedAccountId.value = accountId
 
     return draft
   }
@@ -174,6 +176,14 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     postId.value = id
   }
 
+  const selectAccount = (accountId: string) => {
+    selectedAccountId.value = accountId
+    // Also update the draft if it exists
+    if (currentDraft.value) {
+      currentDraft.value = { ...currentDraft.value, accountId }
+    }
+  }
+
   // Stub for loading post data when API is ready
   const loadDraft = (post: {
     id: string
@@ -228,6 +238,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     activePanel: computed(() => activePanel.value),
     conversationId: computed(() => conversationId.value),
     postId: computed(() => postId.value),
+    selectedAccountId: computed(() => selectedAccountId.value),
 
     // Getters
     isReel,
@@ -254,6 +265,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     setChatProcessing,
     setConversationId,
     setPostId,
+    selectAccount,
     loadDraft,
     getLastMessage,
     loadChatMessages,
