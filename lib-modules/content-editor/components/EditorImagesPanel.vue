@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { ArrowRight } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import ImageDropZone, { type ImageAddEvent } from './ImageDropZone.vue'
@@ -22,16 +22,48 @@ const handlePanelFocus = () => {
   setActivePanel('left')
 }
 
-// Local state for reference images
+// Local state for reference images (url + file)
 const referenceImages = ref<string[]>([])
+const referenceFiles = ref<File[]>([])
 
 const handleAddImage = (event: ImageAddEvent) => {
   referenceImages.value.push(event.url)
+  referenceFiles.value.push(event.file)
 }
 
 const handleRemoveImage = (index: number) => {
   referenceImages.value.splice(index, 1)
+  referenceFiles.value.splice(index, 1)
 }
+
+// Sync first reference image with imageGeneratorStore for API
+watch(referenceFiles, (files) => {
+  if (files.length > 0) {
+    imageStore.setImage(files[0])
+  } else {
+    imageStore.clearImage()
+  }
+}, { immediate: true })
+
+// Reverse sync: when store.attachedImage changes externally (e.g. "modify" button)
+watch(() => imageStore.attachedImage, (file) => {
+  if (!file) return
+
+  // Check if this file is already in our list
+  const isAlreadyAdded = referenceFiles.value.some(f => f === file)
+  if (isAlreadyAdded) return
+
+  // Convert file to base64 and add to reference images
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    const url = e.target?.result as string
+    if (url) {
+      referenceImages.value = [url]
+      referenceFiles.value = [file]
+    }
+  }
+  reader.readAsDataURL(file)
+})
 
 // Add generated image to post
 const addToPost = () => {

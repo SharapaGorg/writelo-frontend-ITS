@@ -16,7 +16,6 @@ const {guardAction} = useDemoGuard();
 
 const handleGenerate = () => {
   guardAction(() => {
-    console.log('Generate button clicked, isFilled:', isFilled.value, 'isGenerating:', isGenerating.value);
     imageGenerator.generate();
   });
 }
