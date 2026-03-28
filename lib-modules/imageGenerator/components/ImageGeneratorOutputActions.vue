@@ -49,6 +49,13 @@ const modifyImage = () => {
       <Copy class="generator-output-image__icon"/>
       <span>{{ $t('imageGenerator.output.actions.copy') }}</span>
     </Button>
+
+    <SplitDownloadButton
+        v-model="selectedFormat"
+        :options="downloadOptions"
+        :button-prefix="$t('imageGenerator.output.actions.download')"
+        @download="handleDownload"
+    />
   </div>
 
   <div class="flex items-center gap-x-3">
@@ -57,12 +64,7 @@ const modifyImage = () => {
     <!--      <span>{{ $t('imageGenerator.output.actions.toChat') }}</span>-->
     <!--    </Button>-->
 
-    <SplitDownloadButton
-        v-model="selectedFormat"
-        :options="downloadOptions"
-        :button-prefix="$t('imageGenerator.output.actions.download')"
-        @download="handleDownload"
-    />
+
   </div>
 </template>
 

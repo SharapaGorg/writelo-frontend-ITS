@@ -111,7 +111,7 @@ const addToPost = () => {
         <GeneratorOutputImage />
 
         <!-- Add to Post button -->
-        <div v-if="imageStore.outputFile && !imageStore.isGenerating" class="mt-4">
+        <div v-if="imageStore.outputFile && !imageStore.isGenerating">
           <Button
             variant="secondary"
             size="sm"
