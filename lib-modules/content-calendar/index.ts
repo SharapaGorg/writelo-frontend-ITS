@@ -1,6 +1,7 @@
 export * from './types'
 export { demoProjects } from './data/demoData'
 export { useContentCalendar } from './composables/useContentCalendar'
+export { useContentProjectStore } from './stores/contentProjectStore'
 export { default as ContentCalendarPage } from './components/ContentCalendarPage.vue'
 export { default as CalendarGrid } from './components/CalendarGrid.vue'
 export { default as TrendChip } from './components/TrendChip.vue'
