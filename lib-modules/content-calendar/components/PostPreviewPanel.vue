@@ -71,6 +71,12 @@ const editableLinks = ref<Partial<Record<SocialNetwork, string>>>({})
 
 const isPublished = computed(() => props.post.status === 'published')
 
+const postAccounts = computed(() =>
+  props.post.accountIds
+    .map(accountId => props.accounts.find(a => a.id === accountId))
+    .filter((account): account is SocialAccount => !!account)
+)
+
 // Get display images - prefer images array, fallback to single image
 const displayImages = computed(() => {
   if (props.post.images && props.post.images.length > 0) {
@@ -140,7 +146,6 @@ function saveChanges() {
     content: editContent.value,
     status: editStatus.value,
     type: editType.value,
-    accountIds: editAccountIds.value,
     tags: editTags.value,
     date: editDate.value,
     time: editTime.value || undefined,
@@ -243,27 +248,6 @@ function saveEditedLinks() {
   isEditingLinks.value = false
   editableLinks.value = {}
 }
-
-function toggleEditAccount(accountId: string) {
-  const idx = editAccountIds.value.indexOf(accountId)
-  if (idx === -1) {
-    editAccountIds.value.push(accountId)
-  } else if (editAccountIds.value.length > 1) {
-    editAccountIds.value.splice(idx, 1)
-  }
-}
-
-// Get networks from edit account IDs
-const editNetworks = computed(() => {
-  const networks = new Set<SocialNetwork>()
-  for (const accountId of editAccountIds.value) {
-    const account = props.accounts.find(a => a.id === accountId)
-    if (account) {
-      networks.add(account.network)
-    }
-  }
-  return Array.from(networks)
-})
 
 // Tag management
 const filteredTags = computed(() => {
@@ -676,19 +660,10 @@ const postTags = computed(() =>
           <div class="mb-4">
             <label class="text-xs text-zinc-500 mb-2 block">Аккаунты</label>
             <div class="grid grid-cols-1 gap-2">
-              <button
-                v-for="account in accounts"
+              <div
+                v-for="account in postAccounts"
                 :key="account.id"
-                :class="[
-                  'flex items-center gap-3 p-3 rounded-lg border transition-all',
-                  editAccountIds.includes(account.id)
-                    ? account.network === 'vk' ? 'bg-blue-500/20 border-blue-500 text-white'
-                      : account.network === 'youtube' ? 'bg-red-500/20 border-red-500 text-white'
-                      : account.network === 'telegram' ? 'bg-sky-500/20 border-sky-500 text-white'
-                      : 'bg-pink-500/20 border-pink-500 text-white'
-                    : 'bg-zinc-50 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-600'
-                ]"
-                @click="toggleEditAccount(account.id)"
+                class="flex items-center gap-3 rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-zinc-700 dark:border-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-200"
               >
                 <!-- VK -->
                 <svg v-if="account.network === 'vk'" class="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
@@ -710,24 +685,11 @@ const postTags = computed(() =>
                   <span class="text-sm font-medium block truncate">{{ account.name }}</span>
                   <span class="text-xs text-zinc-500 block truncate">{{ account.username }}</span>
                 </div>
-                <svg
-                  v-if="editAccountIds.includes(account.id)"
-                  :class="[
-                    'w-4 h-4 ml-auto',
-                    account.network === 'vk' ? 'text-blue-400'
-                      : account.network === 'youtube' ? 'text-red-400'
-                      : account.network === 'telegram' ? 'text-sky-400'
-                      : 'text-pink-400'
-                  ]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                >
-                  <path d="M5 13l4 4L19 7"/>
-                </svg>
-              </button>
+              </div>
             </div>
+            <p class="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+              Аккаунт уже зафиксирован для этого поста и не меняется при редактировании.
+            </p>
           </div>
 
           <!-- Tags -->

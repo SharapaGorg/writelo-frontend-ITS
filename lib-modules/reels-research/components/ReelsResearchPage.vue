@@ -8,7 +8,7 @@ import CalendarDropModal from './CalendarDropModal.vue'
 import type { ReelItem } from '../types'
 
 const store = useReelsResearchStore()
-const { createPost } = useContentCalendar()
+const { createPost, currentProject } = useContentCalendar()
 
 const isCalendarOpen = ref(false)
 const draggingReel = ref<ReelItem | null>(null)
@@ -37,6 +37,10 @@ function handleDragEnd(reel: ReelItem, x: number, y: number) {
 }
 
 function handleDrop(date: string, reel: ReelItem) {
+  const instagramAccountIds = currentProject.value.accounts
+    .filter(account => account.network === 'instagram')
+    .map(account => account.id)
+
   // Create post from reel
   createPost({
     title: reel.description.slice(0, 50) + (reel.description.length > 50 ? '...' : ''),
@@ -44,7 +48,7 @@ function handleDrop(date: string, reel: ReelItem) {
     content: `Источник: ${reel.url}\n\nАвтор: ${reel.author}\n\n${reel.description}`,
     type: 'reels',
     status: 'idea',
-    networks: ['instagram'],
+    accountIds: instagramAccountIds,
     tags: [],
     date,
     image: reel.thumbnail,

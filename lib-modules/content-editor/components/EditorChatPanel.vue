@@ -18,7 +18,7 @@ const messagesContainer = ref<HTMLElement | null>(null)
 
 const sendMessage = async () => {
   const text = inputText.value.trim()
-  if (!text || isChatProcessing) return
+  if (!text || isChatProcessing.value) return
 
   inputText.value = ''
 

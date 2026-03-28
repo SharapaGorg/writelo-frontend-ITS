@@ -2,9 +2,9 @@
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import { generateUUID } from '~/scripts/features/utils'
 import CalendarHeader from './CalendarHeader.vue'
-import SocialFilters from './SocialFilters.vue'
 import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
+import AccountsSidebar from './AccountsSidebar.vue'
 import { useContentCalendar } from '../composables/useContentCalendar'
 import type { NewsItem, TrendItem } from '../types'
 
@@ -275,17 +275,12 @@ onUnmounted(() => {
     props.showcaseMode ? 'h-[700px]' : 'h-screen'
   ]">
     <CalendarHeader
-      :projects="projects"
-      :selected-project-id="selectedProjectId"
-      @update:selected-project-id="selectProject"
+      :brands="projects"
+      :selected-brand-id="selectedProjectId"
+      @update:selected-brand-id="selectProject"
     />
     <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800">
       <div class="flex items-center gap-6">
-        <SocialFilters
-          :accounts="currentProject.accounts"
-          :active-account-ids="activeAccountIds"
-          @toggle="toggleAccount"
-        />
         <!-- Status filter -->
         <div class="flex items-center gap-2">
           <span class="text-sm text-zinc-500">Статус:</span>
@@ -419,6 +414,13 @@ onUnmounted(() => {
       </span>
     </div>
     <div class="flex-1 flex min-h-0">
+      <!-- Left sidebar with accounts -->
+      <AccountsSidebar
+        :accounts="currentProject.accounts"
+        :active-account-ids="activeAccountIds"
+        @toggle="toggleAccount"
+      />
+
       <div class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
         <div class="p-4">
           <CalendarGrid

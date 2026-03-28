@@ -43,8 +43,8 @@ const setContentType = (type: ContentType) => {
 }
 
 // Handle description update
-const updateDescription = (value: string) => {
-  updateDraft({ description: value })
+const updateDescription = (value: string | number) => {
+  updateDraft({ description: String(value) })
 }
 
 // Handle hashtags input (comma-separated or space-separated with #)
@@ -96,7 +96,7 @@ const handleMarkReady = async () => {
 </script>
 
 <template>
-  <div class="flex h-full flex-col">
+  <div v-if="currentDraft" class="flex h-full flex-col">
     <!-- Content Type Selector -->
     <div class="border-b border-zinc-200 p-4 dark:border-zinc-800">
       <div class="flex items-center gap-1">

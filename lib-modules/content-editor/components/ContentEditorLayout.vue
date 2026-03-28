@@ -7,8 +7,8 @@ import { useContentEditor } from '../composables/useContentEditor'
 const { currentDraft, editorMode, setEditorMode, goBackToCalendar } = useContentEditor()
 
 const contentTypeLabel = computed(() => {
-  if (!currentDraft) return 'New Content'
-  switch (currentDraft.type) {
+  if (!currentDraft.value) return 'New Content'
+  switch (currentDraft.value.type) {
     case 'post': return 'New Post'
     case 'story': return 'New Story'
     case 'reel': return 'New Reel'

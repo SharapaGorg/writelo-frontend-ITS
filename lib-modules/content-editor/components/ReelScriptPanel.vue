@@ -99,8 +99,8 @@ const handleUploadVisual = () => {
 }
 
 // Handle description update
-const updateDescription = (value: string) => {
-  updateDraft({ description: value })
+const updateDescription = (value: string | number) => {
+  updateDraft({ description: String(value) })
 }
 
 // Handle hashtags input (comma-separated)

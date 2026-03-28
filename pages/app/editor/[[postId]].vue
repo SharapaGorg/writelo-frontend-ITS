@@ -22,7 +22,7 @@ onMounted(() => {
   if (postId) {
     // TODO: Load existing post via API
     console.log('Loading post:', postId)
-  } else if (!currentDraft) {
+  } else if (!currentDraft.value) {
     createNewDraft('post', 'default-account')
   }
 })

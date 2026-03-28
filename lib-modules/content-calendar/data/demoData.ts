@@ -2,10 +2,10 @@ import type { DemoProject, SocialAccount } from '../types'
 
 // Coffee Shop accounts
 const coffeeShopAccounts: SocialAccount[] = [
-  { id: 'coffee-vk-1', network: 'vk', name: 'Кофейня Бодрость VK', username: '@coffeebodrost' },
-  { id: 'coffee-tg-1', network: 'telegram', name: 'Кофейня Бодрость TG', username: '@coffeebodrost_tg' },
-  { id: 'coffee-ig-1', network: 'instagram', name: 'Кофейня Бодрость IG', username: '@coffee.bodrost' },
-  { id: 'coffee-yt-1', network: 'youtube', name: 'Кофейня Бодрость YouTube', username: '@CoffeeBodrost' }
+  { id: 'coffee-vk-1', network: 'vk', name: 'Кофейня Бодрость', username: '@coffeebodrost' },
+  { id: 'coffee-tg-1', network: 'telegram', name: 'Кофейня Бодрость', username: '@coffeebodrost_tg' },
+  { id: 'coffee-ig-1', network: 'instagram', name: 'Кофейня Бодрость', username: '@coffee.bodrost' },
+  { id: 'coffee-yt-1', network: 'youtube', name: 'Кофейня Бодрость', username: '@CoffeeBodrost' }
 ]
 
 // Blogger Anya accounts

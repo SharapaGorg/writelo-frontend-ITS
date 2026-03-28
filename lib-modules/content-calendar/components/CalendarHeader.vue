@@ -4,17 +4,17 @@ import { Button } from '~/components/ui/button'
 import type { DemoProject } from '../types'
 
 const props = defineProps<{
-  projects: DemoProject[]
-  selectedProjectId: string
+  brands: DemoProject[]
+  selectedBrandId: string
 }>()
 
 const emit = defineEmits<{
-  'update:selectedProjectId': [value: string]
+  'update:selectedBrandId': [value: string]
 }>()
 </script>
 
 <template>
-  <header class="flex items-center justify-between px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+  <header class="flex items-center justify-between px-6 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
     <!-- Logo -->
     <div class="flex items-center gap-2">
       <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
@@ -23,17 +23,17 @@ const emit = defineEmits<{
       <span class="text-zinc-500">/ Идеи</span>
     </div>
 
-    <!-- Project selector -->
+    <!-- Brand selector (centered) -->
     <Select
-      :model-value="selectedProjectId"
-      @update:model-value="emit('update:selectedProjectId', $event)"
+      :model-value="selectedBrandId"
+      @update:model-value="emit('update:selectedBrandId', $event)"
     >
-      <SelectTrigger class="w-[220px] bg-zinc-50 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700">
-        <SelectValue placeholder="Выберите проект" />
+      <SelectTrigger class="w-[200px] bg-zinc-50 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700">
+        <SelectValue placeholder="Выберите бренд" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem v-for="project in projects" :key="project.id" :value="project.id">
-          {{ project.name }}
+        <SelectItem v-for="brand in brands" :key="brand.id" :value="brand.id">
+          {{ brand.name }}
         </SelectItem>
       </SelectContent>
     </Select>

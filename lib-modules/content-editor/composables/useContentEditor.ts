@@ -1,9 +1,18 @@
+import { storeToRefs } from 'pinia'
 import { useContentEditorStore } from '../stores/contentEditorStore'
 import type { ContentType } from '../types'
 
 export const useContentEditor = () => {
   const store = useContentEditorStore()
-  const router = useRouter()
+  const {
+    currentDraft,
+    editorMode,
+    isSaving,
+    isReel,
+    hasUnsavedChanges,
+    chatMessages,
+    isChatProcessing
+  } = storeToRefs(store)
 
   /**
    * Start creating new content and navigate to editor
@@ -24,10 +33,10 @@ export const useContentEditor = () => {
    * Save draft via API (placeholder for now)
    */
   const saveDraft = async () => {
-    if (!store.currentDraft) return
+    if (!currentDraft.value) return
 
     // TODO: Implement actual API call
-    console.log('Saving draft:', store.currentDraft)
+    console.log('Saving draft:', currentDraft.value)
 
     // Mark as saved after successful save
     store.markAsSaved()
@@ -58,7 +67,7 @@ export const useContentEditor = () => {
    * Append text to existing description
    */
   const appendToDescription = (text: string) => {
-    const currentDescription = store.currentDraft?.description || ''
+    const currentDescription = currentDraft.value?.description || ''
     const newDescription = currentDescription
       ? `${currentDescription}\n\n${text}`
       : text
@@ -67,13 +76,13 @@ export const useContentEditor = () => {
 
   return {
     // State from store
-    currentDraft: store.currentDraft,
-    editorMode: store.editorMode,
-    isSaving: store.isSaving,
-    isReel: store.isReel,
-    hasUnsavedChanges: store.hasUnsavedChanges,
-    chatMessages: store.chatMessages,
-    isChatProcessing: store.isChatProcessing,
+    currentDraft,
+    editorMode,
+    isSaving,
+    isReel,
+    hasUnsavedChanges,
+    chatMessages,
+    isChatProcessing,
 
     // Store actions
     setEditorMode: store.setEditorMode,

@@ -2,7 +2,7 @@
 import { ContentCalendarPage } from '~/lib-modules/content-calendar'
 
 definePageMeta({
-  layout: 'app'
+  layout: 'calendar'
 })
 </script>
 

@@ -15,6 +15,7 @@ const emit = defineEmits<{
 
 const {
   currentMonth,
+  currentProject,
   getPostsForDate,
   hasInfoEvent,
   nextMonth,
@@ -63,6 +64,10 @@ function handleSelectDate(date: string) {
 }
 
 function handleDropReel(date: string, reel: ReelItem) {
+  const instagramAccountIds = currentProject.value.accounts
+    .filter(account => account.network === 'instagram')
+    .map(account => account.id)
+
   // Create post from reel
   createPost({
     title: reel.description.slice(0, 50) + (reel.description.length > 50 ? '...' : ''),
@@ -70,7 +75,7 @@ function handleDropReel(date: string, reel: ReelItem) {
     content: `Источник: ${reel.url}\n\nАвтор: ${reel.author}\n\n${reel.description}`,
     type: 'reels',
     status: 'idea',
-    networks: ['instagram'],
+    accountIds: instagramAccountIds,
     tags: [],
     date,
     image: reel.thumbnail,
@@ -145,6 +150,7 @@ function handleCreatePost(date: string) {
                 :selected-date="localSelectedDate"
                 :get-posts-for-date="getPostsForDate"
                 :has-info-event="hasInfoEvent"
+                :accounts="currentProject.accounts"
                 @select-date="handleSelectDate"
                 @prev-month="prevMonth"
                 @next-month="nextMonth"
