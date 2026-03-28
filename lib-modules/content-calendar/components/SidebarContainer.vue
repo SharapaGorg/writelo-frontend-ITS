@@ -17,7 +17,6 @@ const props = defineProps<{
   usedNews: Record<string, string>
   trends: TrendItem[]
   usedTrends: Record<string, string>
-  createTag: (name: string) => string
 }>()
 
 const emit = defineEmits<{
@@ -25,9 +24,7 @@ const emit = defineEmits<{
   closeDate: []
   closePost: []
   createPost: []
-  updatePost: [updates: Partial<CalendarPost>]
   deletePost: []
-  createChat: []
 }>()
 
 const activeTab = ref<'context' | 'news'>('news')
@@ -59,9 +56,6 @@ const funDay = computed(() =>
   props.selectedDate ? getFunDayForDate(props.selectedDate) : null
 )
 
-function handlePostUpdate(updates: Partial<CalendarPost>) {
-  emit('updatePost', updates)
-}
 </script>
 
 <template>
@@ -103,12 +97,9 @@ function handlePostUpdate(updates: Partial<CalendarPost>) {
         :post="selectedPost"
         :project-tags="projectTags"
         :accounts="accounts"
-        :create-tag="createTag"
         class="h-full"
         @close="emit('closePost')"
-        @update="handlePostUpdate"
         @delete="emit('deletePost')"
-        @create-chat="emit('createChat')"
       />
 
       <!-- Day Detail -->

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import interact from 'interactjs'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
@@ -13,6 +14,12 @@ const props = defineProps<{
 const emit = defineEmits<{
   seek: [second: number]
 }>()
+
+// Refs for dragging
+const handleRef = ref<HTMLElement | null>(null)
+const trackRef = ref<HTMLElement | null>(null)
+const isDragging = ref(false)
+const dragPosition = ref(0) // in pixels from left edge
 
 // Format time as M:SS
 const formatTime = (seconds: number): string => {
@@ -41,8 +48,9 @@ const secondMarkers = computed(() => {
   return markers
 })
 
-// Handle click on timeline bar
+// Handle click on timeline bar (only when not dragging)
 const handleTimelineClick = (event: MouseEvent) => {
+  if (isDragging.value) return
   const target = event.currentTarget as HTMLElement
   const rect = target.getBoundingClientRect()
   const clickX = event.clientX - rect.left
@@ -69,10 +77,66 @@ const currentPositionPercent = computed(() => {
   if (props.script.duration === 0) return 0
   return (props.currentSecond / props.script.duration) * 100
 })
+
+// Calculate displayed position (use drag position when dragging, otherwise from props)
+const displayPositionPercent = computed(() => {
+  if (isDragging.value && trackRef.value) {
+    const trackWidth = trackRef.value.getBoundingClientRect().width
+    return Math.max(0, Math.min(100, (dragPosition.value / trackWidth) * 100))
+  }
+  return currentPositionPercent.value
+})
+
+// Setup interactjs dragging
+onMounted(() => {
+  if (!handleRef.value || !trackRef.value) return
+
+  interact(handleRef.value).draggable({
+    listeners: {
+      start() {
+        isDragging.value = true
+        if (trackRef.value) {
+          const trackRect = trackRef.value.getBoundingClientRect()
+          dragPosition.value = (props.currentSecond / props.script.duration) * trackRect.width
+        }
+      },
+      move(event) {
+        if (!trackRef.value) return
+        const trackRect = trackRef.value.getBoundingClientRect()
+        // Calculate new position (only use horizontal movement)
+        dragPosition.value += event.dx
+        // Clamp to track bounds
+        dragPosition.value = Math.max(0, Math.min(dragPosition.value, trackRect.width))
+      },
+      end() {
+        if (!trackRef.value) return
+        const trackRect = trackRef.value.getBoundingClientRect()
+        const percentage = dragPosition.value / trackRect.width
+        const newSecond = Math.round(percentage * props.script.duration)
+        emit('seek', Math.max(0, Math.min(newSecond, props.script.duration)))
+        isDragging.value = false
+      }
+    }
+  })
+})
+
+onUnmounted(() => {
+  if (handleRef.value) {
+    interact(handleRef.value).unset()
+  }
+})
+
+// Update drag position when currentSecond changes externally (not during drag)
+watch(() => props.currentSecond, () => {
+  if (!isDragging.value && trackRef.value) {
+    const trackRect = trackRef.value.getBoundingClientRect()
+    dragPosition.value = (props.currentSecond / props.script.duration) * trackRect.width
+  }
+})
 </script>
 
 <template>
-  <div class="w-full space-y-2">
+  <div :class="cn('w-full space-y-2 select-none', isDragging && 'cursor-grabbing')">
     <!-- Time display -->
     <div class="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
       <span class="font-mono">{{ formatTime(currentSecond) }}</span>
@@ -94,6 +158,7 @@ const currentPositionPercent = computed(() => {
 
       <!-- Timeline bar -->
       <div
+        ref="trackRef"
         class="relative flex-1 h-12 cursor-pointer"
         @click="handleTimelineClick"
       >
@@ -125,16 +190,25 @@ const currentPositionPercent = computed(() => {
           </div>
         </div>
 
-        <!-- Current position marker -->
+        <!-- Current position marker (draggable) -->
         <div
-          :style="{ left: `${currentPositionPercent}%` }"
-          class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
+          ref="handleRef"
+          :style="{ left: `${displayPositionPercent}%` }"
+          :class="cn(
+            'absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 cursor-grab touch-none',
+            isDragging && 'cursor-grabbing'
+          )"
         >
           <div class="flex flex-col items-center">
             <!-- Vertical line -->
             <div class="h-6 w-0.5 rounded-full bg-white shadow-sm" />
             <!-- Handle -->
-            <div class="absolute top-1/2 -translate-y-1/2 h-4 w-4 rounded-full bg-white border-2 border-blue-500 shadow-md" />
+            <div
+              :class="cn(
+                'absolute top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-white border-2 border-blue-500 shadow-md transition-transform',
+                isDragging && 'scale-125 border-blue-600'
+              )"
+            />
           </div>
         </div>
       </div>

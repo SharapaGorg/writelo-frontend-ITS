@@ -71,16 +71,14 @@ const contentTypeColors: Record<string, string> = {
   article: 'text-emerald-500'
 }
 
-// Unique social networks from all posts (derived from account IDs)
+// Unique social networks from all posts (derived from account ID)
 const uniqueNetworks = computed(() => {
   const networks = new Set<SocialNetwork>()
   props.posts.forEach(post => {
-    post.accountIds.forEach(accountId => {
-      const account = props.accounts.find(a => a.id === accountId)
-      if (account) {
-        networks.add(account.network)
-      }
-    })
+    const account = props.accounts.find(a => a.id === post.accountId)
+    if (account) {
+      networks.add(account.network)
+    }
   })
   return Array.from(networks)
 })

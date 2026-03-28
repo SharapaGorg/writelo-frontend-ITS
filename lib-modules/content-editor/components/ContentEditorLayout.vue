@@ -1,10 +1,54 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import interact from 'interactjs'
 import { ArrowLeft, MessageSquare, Image } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
 
 const { currentDraft, editorMode, setEditorMode, goBackToCalendar } = useContentEditor()
+
+// Resizable panel state
+const leftPanelWidth = ref(50) // percentage
+const resizeHandleRef = ref<HTMLElement | null>(null)
+const containerRef = ref<HTMLElement | null>(null)
+const isDragging = ref(false)
+
+const MIN_PANEL_WIDTH = 25 // minimum 25%
+const MAX_PANEL_WIDTH = 75 // maximum 75%
+
+onMounted(() => {
+  if (!resizeHandleRef.value || !containerRef.value) return
+
+  interact(resizeHandleRef.value).draggable({
+    modifiers: [
+      interact.modifiers.restrictRect({
+        restriction: 'parent'
+      })
+    ],
+    listeners: {
+      start() {
+        isDragging.value = true
+      },
+      move(event) {
+        if (!containerRef.value) return
+        const containerRect = containerRef.value.getBoundingClientRect()
+        const newX = event.clientX - containerRect.left
+        const newPercent = (newX / containerRect.width) * 100
+        leftPanelWidth.value = Math.max(MIN_PANEL_WIDTH, Math.min(MAX_PANEL_WIDTH, newPercent))
+      },
+      end() {
+        isDragging.value = false
+      }
+    }
+  })
+})
+
+onUnmounted(() => {
+  if (resizeHandleRef.value) {
+    interact(resizeHandleRef.value).unset()
+  }
+})
 
 const contentTypeLabel = computed(() => {
   if (!currentDraft.value) return 'New Content'
@@ -19,9 +63,9 @@ const contentTypeLabel = computed(() => {
 </script>
 
 <template>
-  <div class="flex h-full flex-col">
+  <div :class="cn('flex h-full flex-col', isDragging && 'select-none')">
     <!-- Header -->
-    <header class="flex items-center gap-4 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+    <header class="flex items-center gap-4 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800 select-none">
       <Button
         variant="ghost"
         size="icon"
@@ -36,11 +80,14 @@ const contentTypeLabel = computed(() => {
     </header>
 
     <!-- Main content area -->
-    <div class="flex flex-1 overflow-hidden">
+    <div ref="containerRef" class="flex flex-1 overflow-hidden">
       <!-- Left panel -->
-      <div class="flex w-1/2 flex-col border-r border-zinc-200 dark:border-zinc-800">
+      <div
+        class="flex flex-col border-r border-zinc-200 dark:border-zinc-800"
+        :style="{ width: `${leftPanelWidth}%` }"
+      >
         <!-- Mode switcher tabs -->
-        <div class="flex border-b border-zinc-200 px-2 py-2 dark:border-zinc-800">
+        <div class="flex border-b border-zinc-200 px-2 py-2 dark:border-zinc-800 select-none">
           <button
             @click="setEditorMode('chat')"
             :class="cn(
@@ -73,8 +120,19 @@ const contentTypeLabel = computed(() => {
         </div>
       </div>
 
+      <!-- Resize handle -->
+      <div
+        ref="resizeHandleRef"
+        :class="cn(
+          'w-1 flex-shrink-0 cursor-col-resize bg-transparent hover:bg-blue-500/50 transition-colors',
+          isDragging && 'bg-blue-500'
+        )"
+      />
+
       <!-- Right panel -->
-      <div class="flex w-1/2 flex-col overflow-hidden">
+      <div
+        class="flex flex-1 flex-col overflow-hidden"
+      >
         <slot name="right-panel" />
       </div>
     </div>

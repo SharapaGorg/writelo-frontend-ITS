@@ -5,7 +5,6 @@ import {
   ContentEditorLayout,
   EditorChatPanel,
   EditorImagesPanel,
-  ReelScriptPanel,
   PostPreviewPanel,
   useContentEditor
 } from '~/lib-modules/content-editor'
@@ -15,7 +14,7 @@ definePageMeta({
 })
 
 const route = useRoute()
-const { currentDraft, createNewDraft, editorMode, isReel } = useContentEditor()
+const { currentDraft, createNewDraft, editorMode } = useContentEditor()
 
 onMounted(() => {
   const postId = route.params.postId as string | undefined
@@ -36,8 +35,7 @@ onMounted(() => {
     </template>
 
     <template #right-panel>
-      <ReelScriptPanel v-if="isReel" />
-      <PostPreviewPanel v-else />
+      <PostPreviewPanel />
     </template>
   </ContentEditorLayout>
 </template>

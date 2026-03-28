@@ -34,7 +34,7 @@ export interface CalendarPost {
   content?: string // Full post text content
   type: ContentType
   status: PostStatus
-  accountIds: string[] // Social account IDs this post is published to
+  accountId: string // Single social account ID this post belongs to
   tags: string[] // Tag IDs
   date: string // 'YYYY-MM-DD'
   time?: string // 'HH:MM' (optional)
@@ -44,8 +44,7 @@ export interface CalendarPost {
   sourceNewsId?: string // Link to news item this was created from
   sourceTrendId?: string // Link to trend item this was created from
   sourceReelId?: string // Link to reel item this was created from
-  publishedLinks?: Partial<Record<SocialNetwork, string>> // Links to published posts
-  previews: Partial<Record<SocialNetwork, SocialPreviewData>>
+  publishedLink?: string // Link to published post
 }
 
 export interface InfoEvent {

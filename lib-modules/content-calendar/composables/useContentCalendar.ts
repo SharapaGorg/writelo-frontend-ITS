@@ -41,7 +41,7 @@ export function useContentCalendar() {
   // Filtered posts by active accounts, statuses, and tags
   const filteredPosts = computed(() =>
     currentProject.value.posts.filter(post => {
-      const matchesAccount = post.accountIds.some(id => activeAccountIds.value.includes(id))
+      const matchesAccount = activeAccountIds.value.includes(post.accountId)
       const matchesStatus = activeStatuses.value.includes(post.status)
       // If no tags selected, show all; otherwise filter by selected tags
       const matchesTags = activeTags.value.length === 0 ||
@@ -113,17 +113,6 @@ export function useContentCalendar() {
     return currentProject.value.accounts.find(a => a.id === accountId)
   }
 
-  // Helper to get networks from account IDs (for components that still need network info)
-  function getNetworksFromAccountIds(accountIds: string[]): SocialNetwork[] {
-    const networks = new Set<SocialNetwork>()
-    for (const accountId of accountIds) {
-      const account = currentProject.value.accounts.find(a => a.id === accountId)
-      if (account) {
-        networks.add(account.network)
-      }
-    }
-    return Array.from(networks)
-  }
 
   function toggleStatus(status: PostStatus) {
     const index = activeStatuses.value.indexOf(status)
@@ -264,7 +253,6 @@ export function useContentCalendar() {
     getInfoEvent,
     getTagById,
     getAccountById,
-    getNetworksFromAccountIds,
     selectProject,
     selectDate,
     selectPost,

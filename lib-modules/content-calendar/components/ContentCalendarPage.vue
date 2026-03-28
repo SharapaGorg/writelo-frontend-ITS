@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import { generateUUID } from '~/scripts/features/utils'
 import CalendarHeader from './CalendarHeader.vue'
 import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
 import AccountsSidebar from './AccountsSidebar.vue'
 import { useContentCalendar } from '../composables/useContentCalendar'
-import type { NewsItem, TrendItem } from '../types'
+import type { NewsItem, TrendItem, ContentTag } from '../types'
 
 const props = withDefaults(defineProps<{
   showcaseMode?: boolean
@@ -28,7 +27,6 @@ const {
   selectedPost,
   getPostsForDate,
   hasInfoEvent,
-  getNetworksFromAccountIds,
   selectProject,
   selectDate,
   selectPost,
@@ -37,10 +35,8 @@ const {
   toggleTag,
   nextMonth,
   prevMonth,
-  updatePost,
   createPost,
   deletePost,
-  createTag,
   markNewsAsUsed,
   usedNews,
   markTrendAsUsed,
@@ -48,27 +44,10 @@ const {
   projects
 } = useContentCalendar()
 
-function handlePostUpdate(updates: any) {
-  if (selectedPostId.value) {
-    updatePost(selectedPostId.value, updates)
-  }
-}
-
 function handlePostDelete() {
   if (selectedPostId.value) {
     deletePost(selectedPostId.value)
     selectPost(null)
-  }
-}
-
-function handleCreateChat() {
-  if (selectedPostId.value) {
-    // Generate a conversation ID and link it to the post
-    const conversationId = generateUUID()
-    updatePost(selectedPostId.value, { conversationId })
-
-    // Open chat in new tab
-    window.open(`/app/conversations/${conversationId}`, '_blank')
   }
 }
 
@@ -83,8 +62,8 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
     content += `Источник: ${news.source}\n${news.url}`
   }
 
-  // Get the first two account IDs from the current project as defaults
-  const defaultAccountIds = currentProject.value.accounts.slice(0, 2).map(a => a.id)
+  // Get the first account ID from the current project as default
+  const defaultAccountId = currentProject.value.accounts[0]?.id || ''
 
   const newPost = createPost({
     title: news.title,
@@ -92,11 +71,10 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
     content: content,
     type: 'post',
     status: 'idea',
-    accountIds: defaultAccountIds,
+    accountId: defaultAccountId,
     tags: [],
     date: date,
-    sourceNewsId: news.id,
-    previews: {}
+    sourceNewsId: news.id
   })
 
   if (newPost) {
@@ -107,8 +85,8 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
 }
 
 function handleDropTrend(date: string, trend: TrendItem) {
-  // Get the first two account IDs from the current project as defaults
-  const defaultAccountIds = currentProject.value.accounts.slice(0, 2).map(a => a.id)
+  // Get the first account ID from the current project as default
+  const defaultAccountId = currentProject.value.accounts[0]?.id || ''
 
   // Create a new post from the trend
   const newPost = createPost({
@@ -116,11 +94,10 @@ function handleDropTrend(date: string, trend: TrendItem) {
     description: trend.url,
     type: 'post',
     status: 'idea',
-    accountIds: defaultAccountIds,
+    accountId: defaultAccountId,
     tags: [],
     date: date,
-    sourceTrendId: trend.id,
-    previews: {}
+    sourceTrendId: trend.id
   })
 
   if (newPost) {
@@ -131,17 +108,16 @@ function handleDropTrend(date: string, trend: TrendItem) {
 }
 
 function handleCreatePost(date: string) {
-  // Get the first two account IDs from the current project as defaults
-  const defaultAccountIds = currentProject.value.accounts.slice(0, 2).map(a => a.id)
+  // Get the first account ID from the current project as default
+  const defaultAccountId = currentProject.value.accounts[0]?.id || ''
 
   const newPost = createPost({
     title: 'Новый пост',
     type: 'post',
     status: 'idea',
-    accountIds: defaultAccountIds,
+    accountId: defaultAccountId,
     tags: [],
-    date: date,
-    previews: {}
+    date: date
   })
 
   if (newPost) {
@@ -225,7 +201,7 @@ const filteredTags = computed(() => {
 const selectedTagObjects = computed(() =>
   activeTags.value
     .map(id => currentProject.value.tags.find(t => t.id === id))
-    .filter(Boolean)
+    .filter((tag): tag is ContentTag => !!tag)
 )
 
 function handleTagSelect(tagId: string) {
@@ -461,14 +437,11 @@ onUnmounted(() => {
           :used-news="usedNews"
           :trends="currentProject.trends"
           :used-trends="usedTrends"
-          :create-tag="createTag"
           @select-post="selectPost"
           @close-date="selectDate(null)"
           @close-post="selectPost(null)"
           @create-post="handleCreatePost(selectedDate!)"
-          @update-post="handlePostUpdate"
           @delete-post="handlePostDelete"
-          @create-chat="handleCreateChat"
         />
       </div>
     </div>
