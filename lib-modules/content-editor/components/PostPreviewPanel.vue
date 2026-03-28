@@ -90,6 +90,11 @@ const formattedDate = computed(() => {
   })
 })
 
+// Handle image add (receives { url, file } from ImageDropZone)
+const handleAddImage = (event: { url: string; file: File }) => {
+  addImage(event.url)
+}
+
 // Handle image removal
 const handleRemoveImage = (index: number) => {
   removeImage(index)
@@ -143,7 +148,7 @@ const handleMarkReady = async () => {
             :images="images"
             :max-images="10"
             :is-active="isActivePanel"
-            @add-image="addImage"
+            @add-image="handleAddImage"
             @remove-image="removeImage"
             @generate="goToImagesPanel"
           />

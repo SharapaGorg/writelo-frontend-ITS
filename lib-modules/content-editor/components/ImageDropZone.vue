@@ -1,3 +1,10 @@
+<script lang="ts">
+export interface ImageAddEvent {
+  url: string
+  file: File
+}
+</script>
+
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { X, Upload, Sparkles } from 'lucide-vue-next'
@@ -16,7 +23,7 @@ const props = withDefaults(defineProps<{
 })
 
 const emit = defineEmits<{
-  addImage: [imageUrl: string]
+  addImage: [event: ImageAddEvent]
   removeImage: [index: number]
   generate: []
 }>()
@@ -71,7 +78,7 @@ const processFile = (file: File) => {
   reader.onload = (e) => {
     const result = e.target?.result as string
     if (result) {
-      emit('addImage', result)
+      emit('addImage', { url: result, file })
     }
   }
   reader.readAsDataURL(file)
