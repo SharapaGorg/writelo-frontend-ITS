@@ -8,26 +8,36 @@ import { BottomBar, AttachedFileArea } from '~/lib-modules/conversations'
 import { PromptImproverWrapper } from '~/components/molecules/PromptImproverWrapper'
 import { useI18n } from 'vue-i18n'
 import { isMobile } from '~/scripts/features/utils'
+import { ApiController } from '~/scripts/shared/api/controller'
+import { eventBus } from '~/composables/eventBus'
 
 const { t } = useI18n()
+const apiController = new ApiController()
 
 const {
   chatMessages,
   isChatProcessing,
+  conversationId,
   addChatMessage,
   updateChatMessage,
+  appendToChatMessage,
+  setChatMessageError,
+  updateChatMessageId,
   setChatProcessing,
+  setConversationId,
+  getLastMessage,
   appendToDescription
 } = useContentEditor()
 
 const messagesContainer = ref<HTMLElement | null>(null)
 const textarea = ref<InstanceType<typeof Textarea> | null>(null)
 const promptImprover = ref<InstanceType<typeof PromptImproverWrapper> | null>(null)
+const isStoppingGeneration = ref(false)
 
 // Input state
 const ROWS_LIMIT = 7
 const newMessage = ref('')
-const { hasAttachedFiles } = useAttachMedia()
+const { hasAttachedFiles, detachAll } = useAttachMedia()
 
 const rows = computed(() => {
   const lineCount = (newMessage.value.match(/\n/g) || []).length + 1
@@ -53,24 +63,136 @@ const sendMessage = async () => {
   newMessage.value = ''
 
   // Add user message
-  addChatMessage('user', text)
+  const requestUuid = addChatMessage('user', text)
 
   // Add placeholder for assistant response
-  const assistantId = addChatMessage('assistant', '')
+  const responseUuid = addChatMessage('assistant', '')
   setChatProcessing(true)
 
   // Scroll to bottom
   await nextTick()
   scrollToBottom()
 
-  // TODO: Replace with actual API call
-  // Simulate AI response for now
-  setTimeout(() => {
-    const mockResponse = `This is a simulated AI response to: "${text}". In the actual implementation, this will be replaced with real AI-generated content for your social media post.`
-    updateChatMessage(assistantId, mockResponse)
+  // Create conversation if not exists
+  let convId = conversationId.value
+  if (!convId) {
+    try {
+      const newConversation = await apiController.createConversation()
+      convId = newConversation.privateId
+      setConversationId(convId)
+    } catch (error) {
+      console.error('Failed to create conversation:', error)
+      setChatMessageError(responseUuid, true)
+      updateChatMessage(responseUuid, 'Failed to create conversation. Please try again.')
+      setChatProcessing(false)
+      return
+    }
+  }
+
+  // Send message via API
+  let streamResponse
+  try {
+    streamResponse = await apiController.sendMessage(convId, text, requestUuid, responseUuid)
+    detachAll()
+  } catch (error: any) {
+    console.error('[EditorChat] Error sending message:', error)
+    const errorDetail = error?.data?.detail || 'Failed to process your request. Please try again.'
+    updateChatMessage(responseUuid, errorDetail)
+    setChatMessageError(responseUuid, true)
     setChatProcessing(false)
-    scrollToBottom()
-  }, 1500)
+    return
+  }
+
+  if (!streamResponse) {
+    updateChatMessage(responseUuid, 'Error: Failed to process your request. Please try again.')
+    setChatMessageError(responseUuid, true)
+    setChatProcessing(false)
+    return
+  }
+
+  // Process SSE stream
+  const processStreamData = (parsed: any) => {
+    const actions: Record<string, () => void> = {
+      text_chunk: () => {
+        appendToChatMessage(responseUuid, parsed.dt)
+        scrollToBottom()
+      },
+      request_message_id: () => {
+        updateChatMessageId(requestUuid, parsed.messageId)
+      },
+      response_message_id: () => {
+        updateChatMessageId(responseUuid, parsed.messageId)
+      },
+      response_end: () => {
+        setChatProcessing(false)
+        if (!parsed.success && !isStoppingGeneration.value) {
+          appendToChatMessage(responseUuid, parsed.message || '\n**Server is busy**')
+          setChatMessageError(responseUuid, true)
+        }
+        isStoppingGeneration.value = false
+        const lastMsg = getLastMessage()
+        if (lastMsg) lastMsg.processing = false
+      },
+      // Legacy actions for backward compatibility
+      process_response: () => {
+        appendToChatMessage(responseUuid, parsed.dt)
+        scrollToBottom()
+      },
+      finish_response: () => {
+        setChatProcessing(false)
+        if (!parsed.success && !isStoppingGeneration.value) {
+          appendToChatMessage(responseUuid, parsed.error || '\n**Server is busy**')
+          setChatMessageError(responseUuid, true)
+        }
+        isStoppingGeneration.value = false
+        const lastMsg = getLastMessage()
+        if (lastMsg) lastMsg.processing = false
+      }
+    }
+
+    actions[parsed.action]?.()
+  }
+
+  const reader = streamResponse.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+
+    buffer += decoder.decode(value, { stream: true })
+
+    while (true) {
+      const lineEnd = buffer.indexOf('\n')
+      if (lineEnd === -1) break
+
+      const line = buffer.slice(0, lineEnd).trim()
+      buffer = buffer.slice(lineEnd + 1)
+
+      if (line.startsWith('data: ')) {
+        try {
+          processStreamData(JSON.parse(line.slice(6)))
+        } catch (e) {
+          // Ignore invalid JSON
+        }
+      }
+    }
+  }
+}
+
+const stopGeneration = async () => {
+  isStoppingGeneration.value = true
+  setChatProcessing(false)
+
+  const lastMsg = getLastMessage()
+  if (lastMsg) {
+    lastMsg.processing = false
+  }
+
+  if (conversationId.value) {
+    await apiController.stopGeneration(conversationId.value)
+  }
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -112,6 +234,15 @@ const scrollToBottom = () => {
 const copyToPost = (text: string) => {
   appendToDescription(text)
 }
+
+// Event bus listeners
+onMounted(() => {
+  eventBus.on('stopGeneration', stopGeneration)
+})
+
+onUnmounted(() => {
+  eventBus.off('stopGeneration', stopGeneration)
+})
 </script>
 
 <template>

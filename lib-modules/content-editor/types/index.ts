@@ -27,9 +27,10 @@ export interface ReelFrame {
 }
 
 export interface EditorChatMessage {
-  id: string
+  id: string | number
   role: 'user' | 'assistant'
   text: string
   createdAt: string
   processing?: boolean
+  error?: boolean
 }

@@ -12,7 +12,8 @@ export const useContentEditor = () => {
     hasUnsavedChanges,
     chatMessages,
     isChatProcessing,
-    activePanel
+    activePanel,
+    conversationId
   } = storeToRefs(store)
 
   /**
@@ -93,6 +94,7 @@ export const useContentEditor = () => {
     chatMessages,
     isChatProcessing,
     activePanel,
+    conversationId,
 
     // Store actions
     setEditorMode: store.setEditorMode,
@@ -106,7 +108,12 @@ export const useContentEditor = () => {
     clearDraft: store.clearDraft,
     addChatMessage: store.addChatMessage,
     updateChatMessage: store.updateChatMessage,
+    appendToChatMessage: store.appendToChatMessage,
+    setChatMessageError: store.setChatMessageError,
+    updateChatMessageId: store.updateChatMessageId,
     setChatProcessing: store.setChatProcessing,
+    setConversationId: store.setConversationId,
+    getLastMessage: store.getLastMessage,
     setActivePanel: store.setActivePanel,
 
     // Composable actions

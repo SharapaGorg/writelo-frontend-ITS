@@ -14,6 +14,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
   const chatMessages = ref<EditorChatMessage[]>([])
   const isChatProcessing = ref(false)
   const activePanel = ref<ActivePanel>('right')
+  const conversationId = ref<string | null>(null)
 
   // Getters
   const isReel = computed(() => currentDraft.value?.type === 'reel')
@@ -112,7 +113,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     return id
   }
 
-  const updateChatMessage = (id: string, text: string) => {
+  const updateChatMessage = (id: string | number, text: string) => {
     const index = chatMessages.value.findIndex(m => m.id === id)
     if (index !== -1) {
       chatMessages.value[index] = {
@@ -123,8 +124,38 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     }
   }
 
+  const appendToChatMessage = (id: string | number, text: string) => {
+    const index = chatMessages.value.findIndex(m => m.id === id)
+    if (index !== -1) {
+      chatMessages.value[index].text += text
+    }
+  }
+
+  const setChatMessageError = (id: string | number, error: boolean) => {
+    const index = chatMessages.value.findIndex(m => m.id === id)
+    if (index !== -1) {
+      chatMessages.value[index].error = error
+      chatMessages.value[index].processing = false
+    }
+  }
+
+  const updateChatMessageId = (oldId: string | number, newId: string | number) => {
+    const index = chatMessages.value.findIndex(m => m.id === oldId)
+    if (index !== -1) {
+      chatMessages.value[index].id = newId
+    }
+  }
+
   const setChatProcessing = (value: boolean) => {
     isChatProcessing.value = value
+  }
+
+  const setConversationId = (id: string | null) => {
+    conversationId.value = id
+  }
+
+  const getLastMessage = () => {
+    return chatMessages.value[chatMessages.value.length - 1]
   }
 
   const setActivePanel = (panel: ActivePanel) => {
@@ -139,6 +170,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     chatMessages: computed(() => chatMessages.value),
     isChatProcessing: computed(() => isChatProcessing.value),
     activePanel: computed(() => activePanel.value),
+    conversationId: computed(() => conversationId.value),
 
     // Getters
     isReel,
@@ -158,7 +190,12 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     markAsSaved,
     addChatMessage,
     updateChatMessage,
+    appendToChatMessage,
+    setChatMessageError,
+    updateChatMessageId,
     setChatProcessing,
+    setConversationId,
+    getLastMessage,
     setActivePanel
   }
 })
