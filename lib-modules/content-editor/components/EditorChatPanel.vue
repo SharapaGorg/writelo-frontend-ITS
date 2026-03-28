@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { Send, Loader2, Copy } from 'lucide-vue-next'
+import { Loader2, Copy } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
+import { Textarea } from '~/components/ui/textarea'
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
+import { BottomBar, AttachedFileArea } from '~/lib-modules/conversations'
+import { PromptImproverWrapper } from '~/components/molecules/PromptImproverWrapper'
+import { useI18n } from 'vue-i18n'
+import { isMobile } from '~/scripts/features/utils'
+
+const { t } = useI18n()
 
 const {
   chatMessages,
@@ -13,14 +20,37 @@ const {
   appendToDescription
 } = useContentEditor()
 
-const inputText = ref('')
 const messagesContainer = ref<HTMLElement | null>(null)
+const textarea = ref<InstanceType<typeof Textarea> | null>(null)
+const promptImprover = ref<InstanceType<typeof PromptImproverWrapper> | null>(null)
+
+// Input state
+const ROWS_LIMIT = 7
+const newMessage = ref('')
+const { hasAttachedFiles } = useAttachMedia()
+
+const rows = computed(() => {
+  const lineCount = (newMessage.value.match(/\n/g) || []).length + 1
+  return Math.min(lineCount, ROWS_LIMIT)
+})
+
+// Text statistics helpers
+const countWords = (text: string): number => {
+  if (!text.trim()) return 0
+  return text.trim().split(/\s+/).filter(word => word.length > 0).length
+}
+
+const countSentences = (text: string): number => {
+  if (!text.trim()) return 0
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0)
+  return sentences.length
+}
 
 const sendMessage = async () => {
-  const text = inputText.value.trim()
+  const text = newMessage.value.trim()
   if (!text || isChatProcessing.value) return
 
-  inputText.value = ''
+  newMessage.value = ''
 
   // Add user message
   addChatMessage('user', text)
@@ -43,16 +73,39 @@ const sendMessage = async () => {
   }, 1500)
 }
 
-const scrollToBottom = () => {
-  if (messagesContainer.value) {
-    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    if (isMobile()) {
+      if (event.shiftKey || event.ctrlKey) {
+        event.preventDefault()
+        sendMessage()
+      }
+    } else {
+      if (!event.shiftKey) {
+        event.preventDefault()
+        sendMessage()
+      }
+    }
   }
 }
 
-const handleKeydown = (event: KeyboardEvent) => {
-  if (event.key === 'Enter' && !event.shiftKey) {
-    event.preventDefault()
-    sendMessage()
+const onSearchButtonClicked = () => {
+  setTimeout(() => {
+    textarea.value?.textarea?.focus()
+  })
+}
+
+const onTemplateSelect = (text: string) => {
+  newMessage.value = text
+  nextTick(() => {
+    textarea.value?.textarea?.focus()
+    promptImprover.value?.markAsProcessed()
+  })
+}
+
+const scrollToBottom = () => {
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight
   }
 }
 
@@ -125,25 +178,51 @@ const copyToPost = (text: string) => {
     </div>
 
     <!-- Input area -->
-    <div class="border-t border-zinc-200 p-4 dark:border-zinc-800">
-      <div class="flex items-end gap-2">
-        <textarea
-          v-model="inputText"
-          @keydown="handleKeydown"
-          :disabled="isChatProcessing"
-          placeholder="Ask AI for help with your post..."
-          rows="1"
-          class="flex-1 resize-none rounded-lg border border-zinc-200 bg-transparent px-3 py-2 text-sm placeholder:text-zinc-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:placeholder:text-zinc-400"
+    <div class="border-t border-zinc-200 dark:border-zinc-800">
+      <Transition name="lazy-loading">
+        <AttachedFileArea
+          v-if="hasAttachedFiles"
+          :height="Math.max(rows, 3) * 20 + 90"
         />
-        <Button
-          @click="sendMessage"
-          :disabled="!inputText.trim() || isChatProcessing"
-          size="icon"
-          class="h-10 w-10 shrink-0"
-        >
-          <Loader2 v-if="isChatProcessing" class="h-4 w-4 animate-spin" />
-          <Send v-else class="h-4 w-4" />
-        </Button>
+      </Transition>
+
+      <div class="p-4">
+        <div class="flex flex-col gap-x-2">
+          <PromptImproverWrapper
+            ref="promptImprover"
+            v-model="newMessage"
+            :disabled="isChatProcessing"
+            class="w-full"
+          >
+            <Textarea
+              v-model="newMessage"
+              class="resize-none border-none p-0"
+              :placeholder="t('placeholder')"
+              @keydown="handleKeydown"
+              :rows="rows"
+              :disabled="isChatProcessing"
+              ref="textarea"
+            />
+          </PromptImproverWrapper>
+
+          <!-- Text stats counter -->
+          <div
+            v-if="newMessage.length > 0"
+            class="text-xs text-muted-foreground text-right mt-1 flex gap-3 justify-end"
+          >
+            <span>{{ newMessage.length }} {{ t('charCounter.chars') }}</span>
+            <span>{{ countWords(newMessage) }} {{ t('charCounter.words') }}</span>
+            <span>{{ countSentences(newMessage) }} {{ t('charCounter.sentences') }}</span>
+          </div>
+        </div>
+
+        <BottomBar
+          :generation-in-process="isChatProcessing"
+          :message="newMessage"
+          @send="sendMessage"
+          @searchButtonClicked="onSearchButtonClicked"
+          @templateSelect="onTemplateSelect"
+        />
       </div>
     </div>
   </div>
