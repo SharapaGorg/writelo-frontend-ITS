@@ -1,13 +1,14 @@
-import { ref, computed, watch, reactive } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import type { SocialNetwork, CalendarPost, InfoEvent, PostStatus, ContentTag, SocialAccount } from '../types'
-import { demoProjects as initialDemoProjects } from '../data/demoData'
+import { useContentProjectStore } from '../stores/contentProjectStore'
 
 export function useContentCalendar() {
-  // Make projects reactive
-  const projects = reactive([...initialDemoProjects])
+  // Use shared project store
+  const projectStore = useContentProjectStore()
+  const { projects, selectedProjectId, currentProject } = storeToRefs(projectStore)
 
   // State
-  const selectedProjectId = ref<string>('coffee-shop')
   const selectedDate = ref<string | null>(null)
   const selectedPostId = ref<string | null>(null)
   const activeAccountIds = ref<string[]>([])
@@ -21,18 +22,13 @@ export function useContentCalendar() {
   // Track which trends have been used (trendId -> date)
   const usedTrends = ref<Record<string, string>>({})
 
-  // Current project
-  const currentProject = computed(() =>
-    projects.find(p => p.id === selectedProjectId.value) ?? projects[0]
-  )
-
   // Reset tags, usedNews, and initialize activeAccountIds when project changes
   watch(selectedProjectId, () => {
     activeTags.value = []
     usedNews.value = {}
     usedTrends.value = {}
     // Initialize with all accounts from the new project
-    const project = projects.find(p => p.id === selectedProjectId.value)
+    const project = projects.value.find(p => p.id === selectedProjectId.value)
     if (project) {
       activeAccountIds.value = project.accounts.map(a => a.id)
     }
@@ -85,7 +81,7 @@ export function useContentCalendar() {
 
   // Actions
   function selectProject(projectId: string) {
-    selectedProjectId.value = projectId
+    projectStore.selectProject(projectId)
     selectedDate.value = null
     selectedPostId.value = null
   }
@@ -137,7 +133,7 @@ export function useContentCalendar() {
   }
 
   function updatePost(postId: string, updates: Partial<CalendarPost>) {
-    const project = projects.find(p => p.id === selectedProjectId.value)
+    const project = projects.value.find(p => p.id === selectedProjectId.value)
     if (!project) return
 
     const postIndex = project.posts.findIndex(p => p.id === postId)
@@ -147,7 +143,7 @@ export function useContentCalendar() {
   }
 
   function createPost(post: Omit<CalendarPost, 'id'>): CalendarPost | null {
-    const project = projects.find(p => p.id === selectedProjectId.value)
+    const project = projects.value.find(p => p.id === selectedProjectId.value)
     if (!project) return null
 
     const newPost: CalendarPost = {
@@ -159,7 +155,7 @@ export function useContentCalendar() {
   }
 
   function deletePost(postId: string): boolean {
-    const project = projects.find(p => p.id === selectedProjectId.value)
+    const project = projects.value.find(p => p.id === selectedProjectId.value)
     if (!project) return false
 
     const postIndex = project.posts.findIndex(p => p.id === postId)
@@ -204,7 +200,7 @@ export function useContentCalendar() {
   ]
 
   function createTag(name: string): string {
-    const project = projects.find(p => p.id === selectedProjectId.value)
+    const project = projects.value.find(p => p.id === selectedProjectId.value)
     if (!project) return ''
 
     // Check if tag already exists
