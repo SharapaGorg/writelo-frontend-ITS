@@ -2,13 +2,19 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { SocialAccount, SocialNetwork } from '../types'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   accounts: SocialAccount[]
-  activeAccountIds: string[]
-}>()
+  activeAccountIds?: string[]
+  selectedAccountId?: string
+  singleSelect?: boolean
+}>(), {
+  activeAccountIds: () => [],
+  singleSelect: false
+})
 
 const emit = defineEmits<{
   toggle: [accountId: string]
+  select: [accountId: string]
 }>()
 
 const STORAGE_KEY = 'accounts-sidebar-width'
@@ -86,6 +92,9 @@ const networkConfig: Record<SocialNetwork, { color: string; bgActive: string }> 
 }
 
 function isActive(accountId: string): boolean {
+  if (props.singleSelect) {
+    return props.selectedAccountId === accountId
+  }
   return props.activeAccountIds.includes(accountId)
 }
 </script>
@@ -112,7 +121,7 @@ function isActive(accountId: string): boolean {
             : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600'
         ]"
         :title="account.username"
-        @click="emit('toggle', account.id)"
+        @click="props.singleSelect ? emit('select', account.id) : emit('toggle', account.id)"
       >
         <!-- VK icon -->
         <svg v-if="account.network === 'vk'" class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
