@@ -163,6 +163,17 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     return chatMessages.value[chatMessages.value.length - 1]
   }
 
+  // Load messages from API response (converts Role enum to string)
+  const loadChatMessages = (messages: Array<{ id: number | string, role: number, text: string, createdAt?: string }>) => {
+    chatMessages.value = messages.map(msg => ({
+      id: msg.id,
+      role: msg.role === 0 ? 'assistant' : 'user' as 'user' | 'assistant',
+      text: msg.text,
+      createdAt: msg.createdAt || new Date().toISOString(),
+      processing: false
+    }))
+  }
+
   const setActivePanel = (panel: ActivePanel) => {
     activePanel.value = panel
   }
@@ -201,6 +212,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     setChatProcessing,
     setConversationId,
     getLastMessage,
+    loadChatMessages,
     setActivePanel
   }
 })

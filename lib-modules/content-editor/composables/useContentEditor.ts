@@ -114,6 +114,7 @@ export const useContentEditor = () => {
     setChatProcessing: store.setChatProcessing,
     setConversationId: store.setConversationId,
     getLastMessage: store.getLastMessage,
+    loadChatMessages: store.loadChatMessages,
     setActivePanel: store.setActivePanel,
 
     // Composable actions

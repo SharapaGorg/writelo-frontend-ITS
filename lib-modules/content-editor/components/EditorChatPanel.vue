@@ -4,11 +4,14 @@ import { useContentEditor } from '../composables/useContentEditor'
 import { BottomBar, AttachedFileArea, Message, Role } from '~/lib-modules/conversations'
 import { PromptImproverWrapper } from '~/components/molecules/PromptImproverWrapper'
 import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
 import { isMobile } from '~/scripts/features/utils'
 import { ApiController } from '~/scripts/shared/api/controller'
 import { eventBus } from '~/composables/eventBus'
 
 const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
 const apiController = new ApiController()
 
 const {
@@ -76,6 +79,8 @@ const sendMessage = async () => {
       const newConversation = await apiController.createConversation()
       convId = newConversation.privateId
       setConversationId(convId)
+      // Update URL with chat ID
+      router.replace({ query: { ...route.query, chat: convId } })
     } catch (error) {
       console.error('Failed to create conversation:', error)
       setChatMessageError(responseUuid, true)
