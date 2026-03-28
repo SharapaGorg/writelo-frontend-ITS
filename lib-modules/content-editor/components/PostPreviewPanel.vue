@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
 import type { ContentType, ContentStatus } from '../types'
-import ReelScriptPanel from './ReelScriptPanel.vue'
 import ImageDropZone from './ImageDropZone.vue'
 
 const {
@@ -123,41 +122,34 @@ const handleSave = async () => {
 
     <!-- Scrollable content area -->
     <div class="flex-1 overflow-y-auto">
-      <!-- Reel content: show ReelScriptPanel -->
-      <template v-if="isReel">
-        <ReelScriptPanel />
-      </template>
+      <div class="space-y-6 p-4">
+        <!-- Media Section: 1 video for reel, up to 10 images for post/story -->
+        <ImageDropZone
+          :images="images"
+          :max-images="isReel ? 1 : 10"
+          :is-active="isActivePanel"
+          :accept-video="isReel"
+          @add-image="handleAddImage"
+          @remove-image="removeImage"
+          @generate="goToImagesPanel"
+        />
 
-      <!-- Non-reel content: images, description, scheduled date -->
-      <template v-else>
-        <div class="space-y-6 p-4">
-          <!-- Images Section -->
-          <ImageDropZone
-            :images="images"
-            :max-images="10"
-            :is-active="isActivePanel"
-            @add-image="handleAddImage"
-            @remove-image="removeImage"
-            @generate="goToImagesPanel"
+        <!-- Description (for all types) -->
+        <section class="space-y-2">
+          <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            {{ isReel ? 'Описание' : 'Description' }}
+          </label>
+          <Textarea
+            :model-value="description"
+            @update:model-value="updateDescription"
+            :placeholder="isReel ? 'Описание для рилс...' : 'Write a captivating description for your post...'"
+            class="min-h-[120px] resize-none"
           />
-
-          <!-- Description -->
-          <section class="space-y-2">
-            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Description
-            </label>
-            <Textarea
-              :model-value="description"
-              @update:model-value="updateDescription"
-              placeholder="Write a captivating description for your post..."
-              class="min-h-[120px] resize-none"
-            />
-            <p class="text-xs text-zinc-500 dark:text-zinc-400">
-              {{ description.length }} / 2200 characters
-            </p>
-          </section>
-        </div>
-      </template>
+          <p class="text-xs text-zinc-500 dark:text-zinc-400">
+            {{ description.length }} / 2200 characters
+          </p>
+        </section>
+      </div>
     </div>
 
     <!-- Footer with status/date and save button -->

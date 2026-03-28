@@ -16,10 +16,12 @@ const props = withDefaults(defineProps<{
   maxImages?: number
   isActive?: boolean
   showGenerateButton?: boolean
+  acceptVideo?: boolean
 }>(), {
   maxImages: 10,
   isActive: false,
-  showGenerateButton: true
+  showGenerateButton: true,
+  acceptVideo: false
 })
 
 const emit = defineEmits<{
@@ -70,9 +72,23 @@ const handleDragLeave = (event: DragEvent) => {
   }
 }
 
+const isValidFileType = (file: File): boolean => {
+  if (props.acceptVideo) {
+    return file.type.startsWith('video/')
+  }
+  return file.type.startsWith('image/')
+}
+
 const processFile = (file: File) => {
-  if (!file.type.startsWith('image/')) return
+  if (!isValidFileType(file)) return
   if (!canAddMore.value) return
+
+  // For videos, use object URL instead of base64 (videos can be large)
+  if (file.type.startsWith('video/')) {
+    const url = URL.createObjectURL(file)
+    emit('addImage', { url, file })
+    return
+  }
 
   const reader = new FileReader()
   reader.onload = (e) => {
@@ -93,7 +109,11 @@ const handlePaste = (event: ClipboardEvent) => {
   if (!items) return
 
   for (const item of items) {
-    if (item.type.startsWith('image/')) {
+    const isValidType = props.acceptVideo
+      ? item.type.startsWith('video/')
+      : item.type.startsWith('image/')
+
+    if (isValidType) {
       const file = item.getAsFile()
       if (file) {
         processFile(file)
@@ -122,9 +142,10 @@ watch(() => props.isActive, () => {
     <!-- Header with counter -->
     <div class="flex items-center justify-between">
       <h4 class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-        Images
+        {{ acceptVideo ? 'Видео' : 'Images' }}
       </h4>
       <span
+        v-if="!acceptVideo"
         :class="cn(
           'text-xs font-medium',
           images.length >= maxImages
@@ -157,7 +178,7 @@ watch(() => props.isActive, () => {
       >
         <div class="flex flex-col items-center">
           <Upload class="h-10 w-10 text-blue-500" />
-          <p class="mt-2 text-sm font-medium text-blue-600">Drop images here</p>
+          <p class="mt-2 text-sm font-medium text-blue-600">{{ acceptVideo ? 'Перетащите видео сюда' : 'Drop images here' }}</p>
         </div>
       </div>
 
@@ -169,15 +190,25 @@ watch(() => props.isActive, () => {
         <p class="text-sm font-medium text-amber-600">Maximum images reached</p>
       </div>
 
-      <!-- Images Grid -->
-      <div v-if="images.length > 0" class="grid grid-cols-3 gap-2">
+      <!-- Images/Video Grid -->
+      <div v-if="images.length > 0" :class="acceptVideo ? '' : 'grid grid-cols-3 gap-2'">
         <div
-          v-for="(image, index) in images"
+          v-for="(media, index) in images"
           :key="index"
-          class="group relative aspect-square overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800"
+          :class="cn(
+            'group relative overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800',
+            acceptVideo ? 'aspect-video w-full' : 'aspect-square'
+          )"
         >
+          <video
+            v-if="acceptVideo"
+            :src="media"
+            class="h-full w-full object-cover"
+            controls
+          />
           <img
-            :src="image"
+            v-else
+            :src="media"
             :alt="`Image ${index + 1}`"
             class="h-full w-full object-cover"
           />
@@ -199,13 +230,18 @@ watch(() => props.isActive, () => {
       >
         <Upload class="h-8 w-8 text-zinc-400 mb-2" />
         <p class="text-sm text-zinc-500 dark:text-zinc-400 text-center">
-          Drop images, paste from clipboard,<br>or click to upload
+          <template v-if="acceptVideo">
+            Перетащите видео или нажмите для загрузки
+          </template>
+          <template v-else>
+            Drop images, paste from clipboard,<br>or click to upload
+          </template>
         </p>
       </div>
     </div>
 
-    <!-- Action buttons -->
-    <div v-if="showGenerateButton" class="flex items-center gap-2">
+    <!-- Action buttons (not for video mode) -->
+    <div v-if="showGenerateButton && !acceptVideo" class="flex items-center gap-2">
       <Button
         variant="secondary"
         size="sm"
@@ -221,8 +257,8 @@ watch(() => props.isActive, () => {
     <input
       ref="fileInputRef"
       type="file"
-      accept="image/*"
-      multiple
+      :accept="acceptVideo ? 'video/*' : 'image/*'"
+      :multiple="!acceptVideo"
       class="hidden"
       @change="handleFileChange"
     />

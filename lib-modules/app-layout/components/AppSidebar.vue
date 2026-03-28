@@ -7,7 +7,8 @@ import {
   TrendingUp,
   Settings,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Film
 } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
@@ -21,6 +22,7 @@ const { isCollapsed, sidebarItems, bottomItems, toggleSidebar } = useAppLayout()
 const iconComponents: Record<string, typeof Calendar> = {
   'calendar': Calendar,
   'pen-square': PenSquare,
+  'film': Film,
   'trending-up': TrendingUp,
   'settings': Settings,
 }
