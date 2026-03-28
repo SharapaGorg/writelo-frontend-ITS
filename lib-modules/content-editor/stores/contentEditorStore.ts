@@ -3,6 +3,8 @@ import { ref, computed } from 'vue'
 import type { ContentDraft, ContentType, EditorMode, ReelFrame, EditorChatMessage } from '../types'
 import { generateUUID } from '~/scripts/features/utils'
 
+export type ActivePanel = 'left' | 'right'
+
 export const useContentEditorStore = defineStore('contentEditor', () => {
   // State
   const currentDraft = ref<ContentDraft | null>(null)
@@ -11,6 +13,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
   const originalDraft = ref<ContentDraft | null>(null)
   const chatMessages = ref<EditorChatMessage[]>([])
   const isChatProcessing = ref(false)
+  const activePanel = ref<ActivePanel>('right')
 
   // Getters
   const isReel = computed(() => currentDraft.value?.type === 'reel')
@@ -124,6 +127,10 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     isChatProcessing.value = value
   }
 
+  const setActivePanel = (panel: ActivePanel) => {
+    activePanel.value = panel
+  }
+
   return {
     // State
     currentDraft: computed(() => currentDraft.value),
@@ -131,6 +138,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     isSaving: computed(() => isSaving.value),
     chatMessages: computed(() => chatMessages.value),
     isChatProcessing: computed(() => isChatProcessing.value),
+    activePanel: computed(() => activePanel.value),
 
     // Getters
     isReel,
@@ -150,6 +158,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     markAsSaved,
     addChatMessage,
     updateChatMessage,
-    setChatProcessing
+    setChatProcessing,
+    setActivePanel
   }
 })

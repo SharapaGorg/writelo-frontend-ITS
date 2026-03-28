@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { X, Hash, CalendarIcon, Check, Save, Loader2 } from 'lucide-vue-next'
+import { Hash, CalendarIcon, Check, Save, Loader2 } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
 import { Input } from '~/components/ui/input'
@@ -8,15 +8,27 @@ import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
 import type { ContentType } from '../types'
 import ReelScriptPanel from './ReelScriptPanel.vue'
+import ImageDropZone from './ImageDropZone.vue'
 
 const {
   currentDraft,
   updateDraft,
+  addImage,
   removeImage,
   saveDraft,
   isSaving,
-  isReel
+  isReel,
+  activePanel,
+  setActivePanel,
+  goToImagesPanel
 } = useContentEditor()
+
+// Set this panel as active when interacting
+const handlePanelFocus = () => {
+  setActivePanel('right')
+}
+
+const isActivePanel = computed(() => activePanel.value === 'right')
 
 // Content type options
 const contentTypes: { value: ContentType; label: string }[] = [
@@ -96,7 +108,7 @@ const handleMarkReady = async () => {
 </script>
 
 <template>
-  <div v-if="currentDraft" class="flex h-full flex-col">
+  <div v-if="currentDraft" class="flex h-full flex-col" @click="handlePanelFocus" @focusin="handlePanelFocus">
     <!-- Content Type Selector -->
     <div class="border-b border-zinc-200 p-4 dark:border-zinc-800">
       <div class="flex items-center gap-1">
@@ -126,44 +138,15 @@ const handleMarkReady = async () => {
       <!-- Non-reel content: images, description, hashtags -->
       <template v-else>
         <div class="space-y-6 p-4">
-          <!-- Images Grid -->
-          <section v-if="images.length > 0">
-            <h4 class="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Images
-            </h4>
-            <div class="grid grid-cols-3 gap-2">
-              <div
-                v-for="(image, index) in images"
-                :key="index"
-                class="group relative aspect-square overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800"
-              >
-                <img
-                  :src="image"
-                  :alt="`Image ${index + 1}`"
-                  class="h-full w-full object-cover"
-                />
-                <button
-                  @click="handleRemoveImage(index)"
-                  class="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity hover:bg-black/80 group-hover:opacity-100"
-                  type="button"
-                >
-                  <X class="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          </section>
-
-          <!-- Empty state for images -->
-          <section v-else>
-            <div class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-zinc-200 py-8 dark:border-zinc-700">
-              <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                No images added yet
-              </p>
-              <p class="mt-1 text-xs text-zinc-400 dark:text-zinc-500">
-                Generate images in the left panel
-              </p>
-            </div>
-          </section>
+          <!-- Images Section -->
+          <ImageDropZone
+            :images="images"
+            :max-images="10"
+            :is-active="isActivePanel"
+            @add-image="addImage"
+            @remove-image="removeImage"
+            @generate="goToImagesPanel"
+          />
 
           <!-- Description -->
           <section class="space-y-2">

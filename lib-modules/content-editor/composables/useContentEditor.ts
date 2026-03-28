@@ -11,7 +11,8 @@ export const useContentEditor = () => {
     isReel,
     hasUnsavedChanges,
     chatMessages,
-    isChatProcessing
+    isChatProcessing,
+    activePanel
   } = storeToRefs(store)
 
   /**
@@ -74,6 +75,14 @@ export const useContentEditor = () => {
     store.updateDraft({ description: newDescription })
   }
 
+  /**
+   * Switch to images panel for generation
+   */
+  const goToImagesPanel = () => {
+    store.setEditorMode('images')
+    store.setActivePanel('left')
+  }
+
   return {
     // State from store
     currentDraft,
@@ -83,6 +92,7 @@ export const useContentEditor = () => {
     hasUnsavedChanges,
     chatMessages,
     isChatProcessing,
+    activePanel,
 
     // Store actions
     setEditorMode: store.setEditorMode,
@@ -97,6 +107,7 @@ export const useContentEditor = () => {
     addChatMessage: store.addChatMessage,
     updateChatMessage: store.updateChatMessage,
     setChatProcessing: store.setChatProcessing,
+    setActivePanel: store.setActivePanel,
 
     // Composable actions
     startNewContent,
@@ -105,6 +116,7 @@ export const useContentEditor = () => {
     goBackToCalendar,
     createNewDraft,
     copyToDescription,
-    appendToDescription
+    appendToDescription,
+    goToImagesPanel
   }
 }

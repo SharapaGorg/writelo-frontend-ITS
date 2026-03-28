@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Sparkles, Copy, Download, ArrowRight, Loader2 } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
@@ -13,7 +13,40 @@ import {
 import ImageStack from './ImageStack.vue'
 import { useContentEditor } from '../composables/useContentEditor'
 
-const { addImage } = useContentEditor()
+const { addImage, activePanel, setActivePanel } = useContentEditor()
+
+const isActivePanel = computed(() => activePanel.value === 'left')
+
+// Handle panel focus
+const handlePanelFocus = () => {
+  setActivePanel('left')
+}
+
+// Paste from clipboard for reference images
+const handlePaste = (event: ClipboardEvent) => {
+  if (!isActivePanel.value) return
+  if (referenceImages.value.length >= 14) return
+
+  const items = event.clipboardData?.items
+  if (!items) return
+
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile()
+      if (file) {
+        handleAddImage(file)
+      }
+    }
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('paste', handlePaste)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('paste', handlePaste)
+})
 
 // Local state
 const referenceImages = ref<string[]>([])
@@ -116,7 +149,7 @@ const addToPost = () => {
 </script>
 
 <template>
-  <div class="flex h-full flex-col overflow-y-auto">
+  <div class="flex h-full flex-col overflow-y-auto" @click="handlePanelFocus" @focusin="handlePanelFocus">
     <div class="flex-1 space-y-6 p-4">
       <!-- References Section -->
       <section>

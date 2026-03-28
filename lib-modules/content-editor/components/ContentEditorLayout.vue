@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import interact from 'interactjs'
 import { ArrowLeft, MessageSquare, Image } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
 
-const { currentDraft, editorMode, setEditorMode, goBackToCalendar } = useContentEditor()
+const { currentDraft, editorMode, setEditorMode, goBackToCalendar, activePanel, setActivePanel } = useContentEditor()
+
+const isLeftActive = computed(() => activePanel.value === 'left')
+const isRightActive = computed(() => activePanel.value === 'right')
 
 // Resizable panel state
 const leftPanelWidth = ref(50) // percentage
@@ -83,9 +86,25 @@ const contentTypeLabel = computed(() => {
     <div ref="containerRef" class="flex flex-1 overflow-hidden">
       <!-- Left panel -->
       <div
-        class="flex flex-col border-r border-zinc-200 dark:border-zinc-800"
+        :class="cn(
+          'relative flex flex-col border-r border-zinc-200 dark:border-zinc-800'
+        )"
         :style="{ width: `${leftPanelWidth}%` }"
+        @click="setActivePanel('left')"
+        @focusin="setActivePanel('left')"
       >
+        <!-- Active panel border overlay -->
+        <div
+          v-if="isLeftActive"
+          class="absolute inset-0 border border-blue-400/50 dark:border-blue-500/40 rounded-sm pointer-events-none z-10"
+        />
+        <!-- Active panel indicator -->
+        <div
+          v-if="isLeftActive"
+          class="absolute top-2 right-2 z-20 px-2 py-0.5 text-[10px] font-medium bg-blue-400/80 text-white rounded-full pointer-events-none"
+        >
+          Ctrl+V
+        </div>
         <!-- Mode switcher tabs -->
         <div class="flex border-b border-zinc-200 px-2 py-2 dark:border-zinc-800 select-none">
           <button
@@ -131,8 +150,22 @@ const contentTypeLabel = computed(() => {
 
       <!-- Right panel -->
       <div
-        class="flex flex-1 flex-col overflow-hidden"
+        class="relative flex flex-1 flex-col overflow-hidden"
+        @click="setActivePanel('right')"
+        @focusin="setActivePanel('right')"
       >
+        <!-- Active panel border overlay -->
+        <div
+          v-if="isRightActive"
+          class="absolute inset-0 border border-blue-400/50 dark:border-blue-500/40 rounded-sm pointer-events-none z-10"
+        />
+        <!-- Active panel indicator -->
+        <div
+          v-if="isRightActive"
+          class="absolute top-2 right-2 z-20 px-2 py-0.5 text-[10px] font-medium bg-blue-400/80 text-white rounded-full pointer-events-none"
+        >
+          Ctrl+V
+        </div>
         <slot name="right-panel" />
       </div>
     </div>
