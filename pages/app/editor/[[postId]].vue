@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import {
   ContentEditorLayout,
   EditorChatPanel,
@@ -8,6 +9,7 @@ import {
   PostPreviewPanel,
   useContentEditor
 } from '~/lib-modules/content-editor'
+import { useContentProjectStore } from '~/lib-modules/content-calendar'
 import { ApiController } from '~/scripts/shared/api/controller'
 
 definePageMeta({
@@ -26,6 +28,9 @@ const {
   loadChatMessages
 } = useContentEditor()
 
+const projectStore = useContentProjectStore()
+const { currentProjectAccounts } = storeToRefs(projectStore)
+
 onMounted(async () => {
   const postId = route.params.postId as string | undefined
   const chatId = route.query.chat as string | undefined
@@ -34,7 +39,8 @@ onMounted(async () => {
     // TODO: Load existing post via API
     console.log('Loading post:', postId)
   } else if (!currentDraft.value) {
-    createNewDraft('post', 'default-account')
+    const defaultAccountId = currentProjectAccounts.value[0]?.id || ''
+    createNewDraft('post', defaultAccountId)
   }
 
   // Load existing chat if chat ID in URL
