@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Loader2, Copy } from 'lucide-vue-next'
+import { Copy } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
-import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
-import { BottomBar, AttachedFileArea } from '~/lib-modules/conversations'
+import { BottomBar, AttachedFileArea, Message, Role } from '~/lib-modules/conversations'
 import { PromptImproverWrapper } from '~/components/molecules/PromptImproverWrapper'
 import { useI18n } from 'vue-i18n'
 import { isMobile } from '~/scripts/features/utils'
@@ -44,7 +43,7 @@ const rows = computed(() => {
   return Math.min(lineCount, ROWS_LIMIT)
 })
 
-// Text statistics helpers
+// Text statistics for input field
 const countWords = (text: string): number => {
   if (!text.trim()) return 0
   return text.trim().split(/\s+/).filter(word => word.length > 0).length
@@ -235,6 +234,11 @@ const copyToPost = (text: string) => {
   appendToDescription(text)
 }
 
+// Convert string role to Role enum
+const getRoleEnum = (role: 'user' | 'assistant'): Role => {
+  return role === 'user' ? Role.user : Role.assistant
+}
+
 // Event bus listeners
 onMounted(() => {
   eventBus.on('stopGeneration', stopGeneration)
@@ -265,45 +269,33 @@ onUnmounted(() => {
 
       <!-- Messages -->
       <div
-        v-for="message in chatMessages"
+        v-for="(message, index) in chatMessages"
         :key="message.id"
-        :class="cn(
-          'flex',
-          message.role === 'user' ? 'justify-end' : 'justify-start'
-        )"
       >
+        <Message
+          :id="message.id"
+          :text="message.text"
+          :role="getRoleEnum(message.role)"
+          :created_at="message.createdAt"
+          :processing="message.processing"
+          :error="message.error"
+          :is-last="index === chatMessages.length - 1"
+        />
+
+        <!-- Quick action: Add to description -->
         <div
-          :class="cn(
-            'max-w-[85%] rounded-lg px-3 py-2',
-            message.role === 'user'
-              ? 'bg-blue-600 text-white'
-              : 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100'
-          )"
+          v-if="message.role === 'assistant' && !message.processing && message.text"
+          class="mt-2 ml-1"
         >
-          <!-- Processing indicator -->
-          <div v-if="message.processing" class="flex items-center gap-2">
-            <Loader2 class="h-4 w-4 animate-spin" />
-            <span class="text-sm">Thinking...</span>
-          </div>
-
-          <!-- Message text -->
-          <p v-else class="text-sm whitespace-pre-wrap">{{ message.text }}</p>
-
-          <!-- Quick actions for assistant messages -->
-          <div
-            v-if="message.role === 'assistant' && !message.processing && message.text"
-            class="mt-2 flex items-center gap-2 border-t border-zinc-200 pt-2 dark:border-zinc-700"
+          <Button
+            variant="ghost"
+            size="sm"
+            class="h-7 px-2 text-xs"
+            @click="copyToPost(message.text)"
           >
-            <Button
-              variant="ghost"
-              size="sm"
-              class="h-7 px-2 text-xs"
-              @click="copyToPost(message.text)"
-            >
-              <Copy class="mr-1 h-3 w-3" />
-              Add to description
-            </Button>
-          </div>
+            <Copy class="mr-1 h-3 w-3" />
+            {{ t('editor.addToDescription') }}
+          </Button>
         </div>
       </div>
     </div>

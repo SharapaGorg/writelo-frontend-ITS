@@ -127,22 +127,27 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
   const appendToChatMessage = (id: string | number, text: string) => {
     const index = chatMessages.value.findIndex(m => m.id === id)
     if (index !== -1) {
-      chatMessages.value[index].text += text
+      const messages = [...chatMessages.value]
+      messages[index] = { ...messages[index], text: messages[index].text + text }
+      chatMessages.value = messages
     }
   }
 
   const setChatMessageError = (id: string | number, error: boolean) => {
     const index = chatMessages.value.findIndex(m => m.id === id)
     if (index !== -1) {
-      chatMessages.value[index].error = error
-      chatMessages.value[index].processing = false
+      const messages = [...chatMessages.value]
+      messages[index] = { ...messages[index], error, processing: false }
+      chatMessages.value = messages
     }
   }
 
   const updateChatMessageId = (oldId: string | number, newId: string | number) => {
     const index = chatMessages.value.findIndex(m => m.id === oldId)
     if (index !== -1) {
-      chatMessages.value[index].id = newId
+      const messages = [...chatMessages.value]
+      messages[index] = { ...messages[index], id: newId }
+      chatMessages.value = messages
     }
   }
 
