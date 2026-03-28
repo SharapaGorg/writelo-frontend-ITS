@@ -6,7 +6,7 @@ import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
 
-const { currentDraft, editorMode, setEditorMode, goBackToCalendar, activePanel, setActivePanel } = useContentEditor()
+const { currentDraft, editorMode, setEditorMode, goBackToCalendar, activePanel, setActivePanel, isEditMode } = useContentEditor()
 
 const isLeftActive = computed(() => activePanel.value === 'left')
 const isRightActive = computed(() => activePanel.value === 'right')
@@ -53,14 +53,16 @@ onUnmounted(() => {
   }
 })
 
-const contentTypeLabel = computed(() => {
-  if (!currentDraft.value) return 'New Content'
-  switch (currentDraft.value.type) {
-    case 'post': return 'New Post'
-    case 'story': return 'New Story'
-    case 'reel': return 'New Reel'
-    default: return 'New Content'
+const headerTitle = computed(() => {
+  if (!currentDraft.value) return 'Новый пост'
+
+  // If editing existing post, show its title
+  if (isEditMode.value && currentDraft.value.title) {
+    return currentDraft.value.title
   }
+
+  // For new posts, show "Новый пост"
+  return 'Новый пост'
 })
 </script>
 
@@ -69,6 +71,7 @@ const contentTypeLabel = computed(() => {
     <!-- Header -->
     <header class="flex items-center gap-4 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800 select-none">
       <Button
+        v-if="isEditMode"
         variant="ghost"
         size="icon"
         @click="goBackToCalendar"
@@ -77,7 +80,7 @@ const contentTypeLabel = computed(() => {
         <ArrowLeft class="h-4 w-4" />
       </Button>
       <h1 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-        {{ contentTypeLabel }}
+        {{ headerTitle }}
       </h1>
     </header>
 

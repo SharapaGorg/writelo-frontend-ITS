@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { Clock, Hash } from 'lucide-vue-next'
-import { Button } from '~/components/ui/button'
-import { Textarea } from '~/components/ui/textarea'
-import { Input } from '~/components/ui/input'
+import {ref, computed, watch} from 'vue'
+import {Clock, Hash} from 'lucide-vue-next'
+import {Button} from '~/components/ui/button'
+import {Textarea} from '~/components/ui/textarea'
+import {Input} from '~/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -11,19 +11,19 @@ import {
   SelectTrigger,
   SelectValue
 } from '~/components/ui/select'
-import { cn } from '~/lib-modules/utils'
-import { useContentEditor } from '../composables/useContentEditor'
-import type { ReelFrame } from '../types'
+import {cn} from '~/lib-modules/utils'
+import {useContentEditor} from '../composables/useContentEditor'
+import type {ReelFrame} from '../types'
 import ReelTimeline from './ReelTimeline.vue'
 import FrameEditor from './FrameEditor.vue'
 
 // Duration options in seconds
 const DURATION_OPTIONS = [
-  { value: 15, label: '15 seconds' },
-  { value: 30, label: '30 seconds' },
-  { value: 45, label: '45 seconds' },
-  { value: 60, label: '60 seconds (1 min)' },
-  { value: 90, label: '90 seconds (1.5 min)' }
+  {value: 15, label: '15 seconds'},
+  {value: 30, label: '30 seconds'},
+  {value: 45, label: '45 seconds'},
+  {value: 60, label: '60 seconds (1 min)'},
+  {value: 90, label: '90 seconds (1.5 min)'}
 ]
 
 const {
@@ -38,7 +38,7 @@ const {
 const currentSecond = ref(0)
 
 // Computed values from draft
-const script = computed(() => currentDraft.value?.script ?? { duration: 30, frames: [] })
+const script = computed(() => currentDraft.value?.script ?? {duration: 30, frames: []})
 const description = computed(() => currentDraft.value?.description ?? '')
 const hashtags = computed(() => currentDraft.value?.hashtags ?? [])
 
@@ -68,7 +68,7 @@ const handleSeek = (second: number) => {
 // Handle frame updates
 const handleFrameUpdate = (data: Partial<ReelFrame>) => {
   const existingFrameIndex = script.value.frames.findIndex(
-    f => f.second === currentSecond.value
+      f => f.second === currentSecond.value
   )
 
   if (existingFrameIndex >= 0) {
@@ -100,7 +100,7 @@ const handleUploadVisual = () => {
 
 // Handle description update
 const updateDescription = (value: string | number) => {
-  updateDraft({ description: String(value) })
+  updateDraft({description: String(value)})
 }
 
 // Handle hashtags input (comma-separated)
@@ -108,11 +108,11 @@ const hashtagsInput = computed({
   get: () => hashtags.value.join(', '),
   set: (value: string) => {
     const tags = value
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag.length > 0)
-      .map(tag => tag.startsWith('#') ? tag : `#${tag}`)
-    updateDraft({ hashtags: tags })
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0)
+        .map(tag => tag.startsWith('#') ? tag : `#${tag}`)
+    updateDraft({hashtags: tags})
   }
 })
 
@@ -133,16 +133,16 @@ watch(() => script.value.duration, (newDuration) => {
           Reel Script Editor
         </h3>
         <div class="flex items-center gap-2">
-          <Clock class="h-4 w-4 text-zinc-500" />
+          <Clock class="h-4 w-4 text-zinc-500"/>
           <Select v-model="durationStr">
             <SelectTrigger class="w-[160px] h-9">
-              <SelectValue placeholder="Select duration" />
+              <SelectValue placeholder="Select duration"/>
             </SelectTrigger>
             <SelectContent>
               <SelectItem
-                v-for="option in DURATION_OPTIONS"
-                :key="option.value"
-                :value="String(option.value)"
+                  v-for="option in DURATION_OPTIONS"
+                  :key="option.value"
+                  :value="String(option.value)"
               >
                 {{ option.label }}
               </SelectItem>
@@ -162,9 +162,9 @@ watch(() => script.value.duration, (newDuration) => {
           </h4>
           <div class="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-900">
             <ReelTimeline
-              :script="script"
-              :current-second="currentSecond"
-              @seek="handleSeek"
+                :script="script"
+                :current-second="currentSecond"
+                @seek="handleSeek"
             />
           </div>
         </div>
@@ -176,11 +176,11 @@ watch(() => script.value.duration, (newDuration) => {
           </h4>
           <div class="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
             <FrameEditor
-              :second="currentSecond"
-              :frame="currentFrame"
-              @update="handleFrameUpdate"
-              @generate-visual="handleGenerateVisual"
-              @upload-visual="handleUploadVisual"
+                :second="currentSecond"
+                :frame="currentFrame"
+                @update="handleFrameUpdate"
+                @generate-visual="handleGenerateVisual"
+                @upload-visual="handleUploadVisual"
             />
           </div>
         </div>
@@ -194,34 +194,11 @@ watch(() => script.value.duration, (newDuration) => {
             </span>
           </label>
           <Textarea
-            :model-value="description"
-            @update:model-value="updateDescription"
-            placeholder="Write a captivating description for your reel..."
-            class="min-h-[100px] resize-none"
+              :model-value="description"
+              @update:model-value="updateDescription"
+              placeholder="Write a captivating description for your reel..."
+              class="min-h-[100px] resize-none"
           />
-        </div>
-
-        <!-- Hashtags section -->
-        <div class="space-y-2">
-          <label class="flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            <Hash class="h-4 w-4" />
-            Hashtags
-          </label>
-          <Input
-            v-model="hashtagsInput"
-            placeholder="Enter hashtags separated by commas (e.g., travel, adventure, explore)"
-            class="h-10"
-          />
-          <!-- Hashtag preview -->
-          <div v-if="hashtags.length > 0" class="flex flex-wrap gap-1.5">
-            <span
-              v-for="tag in hashtags"
-              :key="tag"
-              class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-            >
-              {{ tag }}
-            </span>
-          </div>
         </div>
       </div>
     </div>

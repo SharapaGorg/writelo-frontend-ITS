@@ -1,6 +1,8 @@
 export type ContentType = 'post' | 'story' | 'reel'
 export type EditorMode = 'chat' | 'images'
 
+export type ContentStatus = 'idea' | 'draft' | 'ready' | 'published'
+
 export interface ContentDraft {
   id: string
   type: ContentType
@@ -10,7 +12,7 @@ export interface ContentDraft {
   hashtags: string[]
   images: string[]
   scheduledDate: string | null
-  status: 'draft' | 'ready'
+  status: ContentStatus
   script?: ReelScript
 }
 

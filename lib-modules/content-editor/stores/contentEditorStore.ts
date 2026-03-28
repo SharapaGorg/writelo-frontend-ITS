@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { ContentDraft, ContentType, EditorMode, ReelFrame, EditorChatMessage } from '../types'
+import type { ContentDraft, ContentType, ContentStatus, EditorMode, ReelFrame, EditorChatMessage } from '../types'
 import { generateUUID } from '~/scripts/features/utils'
 
 export type ActivePanel = 'left' | 'right'
@@ -15,9 +15,11 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
   const isChatProcessing = ref(false)
   const activePanel = ref<ActivePanel>('right')
   const conversationId = ref<string | null>(null)
+  const postId = ref<string | null>(null)
 
   // Getters
   const isReel = computed(() => currentDraft.value?.type === 'reel')
+  const isEditMode = computed(() => postId.value !== null)
 
   const hasUnsavedChanges = computed(() => {
     if (!currentDraft.value || !originalDraft.value) return false
@@ -26,6 +28,15 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
 
   // Actions
   const createNewDraft = (type: ContentType, accountId: string): ContentDraft => {
+    // Default to today's date/time in local timezone (datetime-local format)
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const hours = String(now.getHours()).padStart(2, '0')
+    const minutes = String(now.getMinutes()).padStart(2, '0')
+    const defaultDate = `${year}-${month}-${day}T${hours}:${minutes}`
+
     const draft: ContentDraft = {
       id: generateUUID(),
       type,
@@ -34,8 +45,8 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
       description: '',
       hashtags: [],
       images: [],
-      scheduledDate: null,
-      status: 'draft',
+      scheduledDate: defaultDate,
+      status: 'idea',
       script: type === 'reel' ? { duration: 0, frames: [] } : undefined
     }
 
@@ -159,6 +170,35 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     conversationId.value = id
   }
 
+  const setPostId = (id: string | null) => {
+    postId.value = id
+  }
+
+  // Stub for loading post data when API is ready
+  const loadDraft = (post: {
+    id: string
+    type: 'post' | 'story' | 'reel'
+    title: string
+    description?: string
+    images?: string[]
+    scheduledDate?: string | null
+    status?: ContentStatus
+  }) => {
+    currentDraft.value = {
+      id: post.id,
+      type: post.type,
+      accountId: 'default-account', // TODO: get from post when API ready
+      title: post.title,
+      description: post.description || '',
+      hashtags: [],
+      images: post.images || [],
+      scheduledDate: post.scheduledDate || null,
+      status: post.status || 'idea',
+      script: post.type === 'reel' ? { duration: 0, frames: [] } : undefined
+    }
+    originalDraft.value = JSON.parse(JSON.stringify(currentDraft.value))
+  }
+
   const getLastMessage = () => {
     return chatMessages.value[chatMessages.value.length - 1]
   }
@@ -187,9 +227,11 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     isChatProcessing: computed(() => isChatProcessing.value),
     activePanel: computed(() => activePanel.value),
     conversationId: computed(() => conversationId.value),
+    postId: computed(() => postId.value),
 
     // Getters
     isReel,
+    isEditMode,
     hasUnsavedChanges,
 
     // Actions
@@ -211,6 +253,8 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     updateChatMessageId,
     setChatProcessing,
     setConversationId,
+    setPostId,
+    loadDraft,
     getLastMessage,
     loadChatMessages,
     setActivePanel

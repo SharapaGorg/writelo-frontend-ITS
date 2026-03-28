@@ -205,19 +205,8 @@ watch(() => props.isActive, () => {
     </div>
 
     <!-- Action buttons -->
-    <div class="flex items-center gap-2">
+    <div v-if="showGenerateButton" class="flex items-center gap-2">
       <Button
-        variant="outline"
-        size="sm"
-        @click="handleFileSelect"
-        :disabled="!canAddMore"
-        class="gap-1.5"
-      >
-        <Upload class="h-4 w-4" />
-        Upload
-      </Button>
-      <Button
-        v-if="showGenerateButton"
         variant="secondary"
         size="sm"
         @click="emit('generate')"

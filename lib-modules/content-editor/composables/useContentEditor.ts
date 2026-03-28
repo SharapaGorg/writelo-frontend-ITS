@@ -9,11 +9,13 @@ export const useContentEditor = () => {
     editorMode,
     isSaving,
     isReel,
+    isEditMode,
     hasUnsavedChanges,
     chatMessages,
     isChatProcessing,
     activePanel,
-    conversationId
+    conversationId,
+    postId
   } = storeToRefs(store)
 
   /**
@@ -90,11 +92,13 @@ export const useContentEditor = () => {
     editorMode,
     isSaving,
     isReel,
+    isEditMode,
     hasUnsavedChanges,
     chatMessages,
     isChatProcessing,
     activePanel,
     conversationId,
+    postId,
 
     // Store actions
     setEditorMode: store.setEditorMode,
@@ -113,6 +117,8 @@ export const useContentEditor = () => {
     updateChatMessageId: store.updateChatMessageId,
     setChatProcessing: store.setChatProcessing,
     setConversationId: store.setConversationId,
+    setPostId: store.setPostId,
+    loadDraft: store.loadDraft,
     getLastMessage: store.getLastMessage,
     loadChatMessages: store.loadChatMessages,
     setActivePanel: store.setActivePanel,

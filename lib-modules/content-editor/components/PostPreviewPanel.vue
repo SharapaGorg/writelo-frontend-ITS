@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { CalendarIcon, Check, Save, Loader2 } from 'lucide-vue-next'
+import { Save, Loader2 } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
 import { Input } from '~/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
-import type { ContentType } from '../types'
+import type { ContentType, ContentStatus } from '../types'
 import ReelScriptPanel from './ReelScriptPanel.vue'
 import ImageDropZone from './ImageDropZone.vue'
 
@@ -42,7 +43,32 @@ const selectedType = computed(() => currentDraft.value?.type ?? 'post')
 const images = computed(() => currentDraft.value?.images ?? [])
 const description = computed(() => currentDraft.value?.description ?? '')
 const scheduledDate = computed(() => currentDraft.value?.scheduledDate ?? null)
-const status = computed(() => currentDraft.value?.status ?? 'draft')
+const status = computed(() => currentDraft.value?.status ?? 'idea')
+
+// Status options with colors (published is not selectable - it's set through calendar publish flow)
+const statusOptions: { value: ContentStatus; label: string; color: string }[] = [
+  { value: 'idea', label: 'Идея', color: 'text-zinc-400' },
+  { value: 'draft', label: 'Черновик', color: 'text-yellow-500' },
+  { value: 'ready', label: 'Готово', color: 'text-green-500' }
+]
+
+// Get current status option for display
+const currentStatusOption = computed(() => {
+  if (isPublished.value) {
+    return { value: 'published' as ContentStatus, label: 'Опубликовано', color: 'text-blue-500' }
+  }
+  return statusOptions.find(o => o.value === status.value) || statusOptions[0]
+})
+
+// Check if post is published (status cannot be changed)
+const isPublished = computed(() => status.value === 'published')
+
+// Handle status change
+const updateStatus = (value: ContentStatus) => {
+  if (!isPublished.value) {
+    updateDraft({ status: value })
+  }
+}
 
 // Handle content type change
 const setContentType = (type: ContentType) => {
@@ -63,35 +89,13 @@ const updateScheduledDate = (event: Event) => {
   updateDraft({ scheduledDate: target.value || null })
 }
 
-// Format date for display
-const formattedDate = computed(() => {
-  if (!scheduledDate.value) return ''
-  const date = new Date(scheduledDate.value)
-  return date.toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
-})
-
 // Handle image add (receives { url, file } from ImageDropZone)
 const handleAddImage = (event: { url: string; file: File }) => {
   addImage(event.url)
 }
 
-// Handle image removal
-const handleRemoveImage = (index: number) => {
-  removeImage(index)
-}
-
-// Save as draft
-const handleSaveDraft = async () => {
-  await saveDraft()
-}
-
-// Mark as ready
-const handleMarkReady = async () => {
-  updateDraft({ status: 'ready' })
+// Save the post
+const handleSave = async () => {
   await saveDraft()
 }
 </script>
@@ -152,54 +156,91 @@ const handleMarkReady = async () => {
               {{ description.length }} / 2200 characters
             </p>
           </section>
-
-          <!-- Scheduled Date -->
-          <section class="space-y-2">
-            <label class="flex items-center gap-1.5 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              <CalendarIcon class="h-4 w-4" />
-              Scheduled Date
-            </label>
-            <div class="relative">
-              <Input
-                type="datetime-local"
-                :value="scheduledDate ?? ''"
-                @change="updateScheduledDate"
-                class="h-10"
-              />
-            </div>
-            <p v-if="formattedDate" class="text-xs text-zinc-500 dark:text-zinc-400">
-              Will be published: {{ formattedDate }}
-            </p>
-          </section>
         </div>
       </template>
     </div>
 
-    <!-- Footer with action buttons -->
-    <div class="border-t border-zinc-200 p-4 dark:border-zinc-800">
-      <div class="flex items-center gap-2">
-        <Button
-          variant="outline"
-          @click="handleSaveDraft"
-          :disabled="isSaving"
-          class="flex-1 gap-2"
-        >
-          <Loader2 v-if="isSaving" class="h-4 w-4 animate-spin" />
-          <Save v-else class="h-4 w-4" />
-          Save Draft
-        </Button>
-        <Button
-          @click="handleMarkReady"
-          :disabled="isSaving"
-          :class="cn(
-            'flex-1 gap-2',
-            status === 'ready' && 'bg-green-600 hover:bg-green-700'
-          )"
-        >
-          <Check class="h-4 w-4" />
-          {{ status === 'ready' ? 'Ready' : 'Mark Ready' }}
-        </Button>
+    <!-- Footer with status/date and save button -->
+    <div class="border-t border-zinc-200 p-4 dark:border-zinc-800 space-y-4">
+      <!-- Status and Date row -->
+      <div class="flex items-center gap-3">
+        <!-- Status selector -->
+        <div class="flex-1">
+          <Select
+            :model-value="status"
+            :disabled="isPublished"
+            @update:model-value="(v) => updateStatus(v as ContentStatus)"
+          >
+            <SelectTrigger class="h-9">
+              <div class="flex items-center gap-2">
+                <!-- Current status icon -->
+                <svg v-if="currentStatusOption.value === 'idea'" :class="['w-4 h-4', currentStatusOption.color]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+                </svg>
+                <svg v-else-if="currentStatusOption.value === 'draft'" :class="['w-4 h-4', currentStatusOption.color]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 3a9 9 0 0 0 0 18V3z" fill="currentColor"/>
+                  <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg v-else-if="currentStatusOption.value === 'ready'" :class="['w-4 h-4', currentStatusOption.color]" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M8 12l2.5 2.5L16 9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg v-else-if="currentStatusOption.value === 'published'" :class="['w-4 h-4', currentStatusOption.color]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+                  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                </svg>
+                <span>{{ currentStatusOption.label }}</span>
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="option in statusOptions"
+                :key="option.value"
+                :value="option.value"
+              >
+                <div class="flex items-center gap-2">
+                  <svg v-if="option.value === 'idea'" :class="['w-4 h-4', option.color]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+                  </svg>
+                  <svg v-else-if="option.value === 'draft'" :class="['w-4 h-4', option.color]" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 3a9 9 0 0 0 0 18V3z" fill="currentColor"/>
+                    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  <svg v-else-if="option.value === 'ready'" :class="['w-4 h-4', option.color]" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M8 12l2.5 2.5L16 9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span>{{ option.label }}</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- Date picker -->
+        <div class="flex-1">
+          <div class="relative">
+            <Input
+              type="datetime-local"
+              :value="scheduledDate ?? ''"
+              :disabled="isPublished"
+              @change="updateScheduledDate"
+              class="h-9"
+            />
+          </div>
+        </div>
       </div>
+
+      <!-- Save button -->
+      <Button
+        @click="handleSave"
+        :disabled="isSaving || isPublished"
+        class="w-full gap-2"
+      >
+        <Loader2 v-if="isSaving" class="h-4 w-4 animate-spin" />
+        <Save v-else class="h-4 w-4" />
+        Сохранить
+      </Button>
     </div>
   </div>
 </template>

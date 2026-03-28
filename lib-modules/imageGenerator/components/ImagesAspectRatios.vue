@@ -59,7 +59,7 @@ const handleRatioClick = (ratio: string) => {
 <style scoped>
 
 .aspect-ratios-grid {
-  @apply grid gap-x-3 gap-y-2;
+  @apply grid gap-x-4 gap-y-3;
   grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
 }
 
