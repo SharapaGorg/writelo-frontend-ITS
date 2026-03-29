@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { Save, Loader2 } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
 import type { ContentType, ContentStatus } from '../types'
+import type { SocialNetwork } from '~/lib-modules/content-calendar'
 import ImageDropZone from './ImageDropZone.vue'
 
 const {
@@ -20,8 +21,62 @@ const {
   isReel,
   activePanel,
   setActivePanel,
-  goToImagesPanel
+  goToImagesPanel,
+  selectedAccountId,
+  currentProjectAccounts
 } = useContentEditor()
+
+// Get current account's network
+const currentNetwork = computed<SocialNetwork | null>(() => {
+  if (!selectedAccountId.value) return null
+  const account = currentProjectAccounts.value.find(a => a.id === selectedAccountId.value)
+  return account?.network ?? null
+})
+
+// Define which content types are available per network
+const networkCapabilities: Record<SocialNetwork, ContentType[]> = {
+  vk: ['post', 'story', 'reel'],
+  instagram: ['post', 'story', 'reel'],
+  telegram: ['post'],
+  youtube: ['reel'] // YouTube only supports video content (shorts/videos)
+}
+
+// Network display names for tooltips
+const networkNames: Record<SocialNetwork, string> = {
+  vk: 'ВКонтакте',
+  instagram: 'Instagram',
+  telegram: 'Telegram',
+  youtube: 'YouTube'
+}
+
+// Check if content type is available for current network
+function isContentTypeAvailable(type: ContentType): boolean {
+  if (!currentNetwork.value) return true // No account selected = all available
+  return networkCapabilities[currentNetwork.value].includes(type)
+}
+
+// Get tooltip for disabled content type
+function getDisabledTooltip(type: ContentType): string | undefined {
+  if (isContentTypeAvailable(type)) return undefined
+  if (!currentNetwork.value) return undefined
+  return `Недоступно в ${networkNames[currentNetwork.value]}`
+}
+
+// Auto-switch to available content type when network changes
+watch(currentNetwork, (network) => {
+  if (!network || !currentDraft.value) return
+  const currentType = currentDraft.value.type
+  if (!networkCapabilities[network].includes(currentType)) {
+    // Switch to first available type
+    const firstAvailable = networkCapabilities[network][0]
+    if (firstAvailable) {
+      updateDraft({
+        type: firstAvailable,
+        script: firstAvailable === 'reel' ? { duration: 0, frames: [] } : undefined
+      })
+    }
+  }
+})
 
 // Set this panel as active when interacting
 const handlePanelFocus = () => {
@@ -107,12 +162,16 @@ const handleSave = async () => {
         <button
           v-for="type in contentTypes"
           :key="type.value"
-          @click="setContentType(type.value)"
+          :disabled="!isContentTypeAvailable(type.value)"
+          :title="getDisabledTooltip(type.value)"
+          @click="isContentTypeAvailable(type.value) && setContentType(type.value)"
           :class="cn(
             'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-            selectedType === type.value
-              ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-              : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+            !isContentTypeAvailable(type.value)
+              ? 'cursor-not-allowed opacity-40 text-zinc-400 dark:text-zinc-600'
+              : selectedType === type.value
+                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
+                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
           )"
         >
           {{ type.label }}
