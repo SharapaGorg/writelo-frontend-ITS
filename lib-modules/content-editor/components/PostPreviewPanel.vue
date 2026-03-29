@@ -1,11 +1,22 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
-import { Save, Loader2 } from 'lucide-vue-next'
+import { computed, watch, ref } from 'vue'
+import { Save, Loader2, Send } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
 import { Input } from '~/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '~/components/ui/alert-dialog'
 import { cn } from '~/lib-modules/utils'
+import CelebrationEffect from './CelebrationEffect.vue'
 import { useContentEditor } from '../composables/useContentEditor'
 import type { ContentType, ContentStatus } from '../types'
 import type { SocialNetwork } from '~/lib-modules/content-calendar'
@@ -152,6 +163,25 @@ const handleAddImage = (event: { url: string; file: File }) => {
 const handleSave = async () => {
   await saveDraft()
 }
+
+// Publish functionality
+const showPublishDialog = ref(false)
+const showCelebration = ref(false)
+const isPublishing = ref(false)
+
+const canPublish = computed(() => status.value === 'ready')
+
+const handlePublish = async () => {
+  isPublishing.value = true
+
+  // TODO: Call actual publish API here
+  await new Promise(resolve => setTimeout(resolve, 500)) // Simulate API call
+
+  updateDraft({ status: 'published' })
+  isPublishing.value = false
+  showPublishDialog.value = false
+  showCelebration.value = true
+}
 </script>
 
 <template>
@@ -287,11 +317,48 @@ const handleSave = async () => {
         @click="handleSave"
         :disabled="isSaving || isPublished"
         class="w-full gap-2"
+        variant="outline"
       >
         <Loader2 v-if="isSaving" class="h-4 w-4 animate-spin" />
         <Save v-else class="h-4 w-4" />
         Сохранить
       </Button>
+
+      <!-- Publish button (only when status is 'ready') -->
+      <Button
+        v-if="canPublish"
+        @click="showPublishDialog = true"
+        class="w-full gap-2 bg-green-600 hover:bg-green-700"
+      >
+        <Send class="h-4 w-4" />
+        Опубликовать
+      </Button>
     </div>
+
+    <!-- Publish confirmation dialog -->
+    <AlertDialog :open="showPublishDialog" @update:open="showPublishDialog = $event">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Опубликовать пост?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Пост будет опубликован в выбранной социальной сети. Это действие нельзя отменить.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel :disabled="isPublishing">Отмена</AlertDialogCancel>
+          <AlertDialogAction
+            @click="handlePublish"
+            :disabled="isPublishing"
+            class="bg-green-600 hover:bg-green-700"
+          >
+            <Loader2 v-if="isPublishing" class="h-4 w-4 animate-spin mr-2" />
+            Опубликовать
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <!-- Celebration effect -->
+    <CelebrationEffect v-if="showCelebration" @complete="showCelebration = false" />
   </div>
 </template>

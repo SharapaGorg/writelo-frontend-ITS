@@ -1,11 +1,23 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Loader2, Send } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '~/components/ui/alert-dialog'
 import InstagramPreview from './previews/InstagramPreview.vue'
 import VkPreview from './previews/VkPreview.vue'
 import YouTubePreview from './previews/YouTubePreview.vue'
 import TelegramPreview from './previews/TelegramPreview.vue'
+import CelebrationEffect from '~/lib-modules/content-editor/components/CelebrationEffect.vue'
 import type { CalendarPost, SocialNetwork, PostStatus, ContentTag, SocialAccount } from '../types'
 
 const props = defineProps<{
@@ -17,6 +29,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: []
   delete: []
+  publish: []
 }>()
 
 const router = useRouter()
@@ -83,6 +96,25 @@ function navigateToEditor() {
 
 function confirmDelete() {
   emit('delete')
+}
+
+// Publish functionality
+const showPublishDialog = ref(false)
+const showCelebration = ref(false)
+const isPublishing = ref(false)
+
+const canPublish = computed(() => props.post.status === 'ready')
+
+async function handlePublish() {
+  isPublishing.value = true
+
+  // TODO: Call actual publish API here
+  await new Promise(resolve => setTimeout(resolve, 500)) // Simulate API call
+
+  emit('publish')
+  isPublishing.value = false
+  showPublishDialog.value = false
+  showCelebration.value = true
 }
 </script>
 
@@ -217,7 +249,7 @@ function confirmDelete() {
       </div>
     </div>
 
-    <!-- Footer with status -->
+    <!-- Footer with status and publish button -->
     <div class="px-4 py-3 border-t border-zinc-800 flex items-center gap-2">
       <svg v-if="post.status === 'idea'" class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
@@ -234,10 +266,47 @@ function confirmDelete() {
         <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
         <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
       </svg>
-      <span :class="['text-sm', statusInfo[post.status].class]">
+      <span :class="['text-sm flex-1', statusInfo[post.status].class]">
         {{ statusInfo[post.status].label }}
       </span>
+
+      <!-- Publish button when ready -->
+      <Button
+        v-if="canPublish"
+        size="sm"
+        @click="showPublishDialog = true"
+        class="gap-1.5 bg-green-600 hover:bg-green-700"
+      >
+        <Send class="h-3.5 w-3.5" />
+        Опубликовать
+      </Button>
     </div>
+
+    <!-- Publish confirmation dialog -->
+    <AlertDialog :open="showPublishDialog" @update:open="showPublishDialog = $event">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Опубликовать пост?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Пост будет опубликован в выбранной социальной сети. Это действие нельзя отменить.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel :disabled="isPublishing">Отмена</AlertDialogCancel>
+          <AlertDialogAction
+            @click="handlePublish"
+            :disabled="isPublishing"
+            class="bg-green-600 hover:bg-green-700"
+          >
+            <Loader2 v-if="isPublishing" class="h-4 w-4 animate-spin mr-2" />
+            Опубликовать
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <!-- Celebration effect -->
+    <CelebrationEffect v-if="showCelebration" @complete="showCelebration = false" />
   </aside>
 </template>
 

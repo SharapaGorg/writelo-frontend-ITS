@@ -37,6 +37,7 @@ const {
   prevMonth,
   createPost,
   deletePost,
+  updatePost,
   markNewsAsUsed,
   usedNews,
   markTrendAsUsed,
@@ -48,6 +49,12 @@ function handlePostDelete() {
   if (selectedPostId.value) {
     deletePost(selectedPostId.value)
     selectPost(null)
+  }
+}
+
+function handlePostPublish() {
+  if (selectedPostId.value) {
+    updatePost(selectedPostId.value, { status: 'published' })
   }
 }
 
@@ -442,6 +449,7 @@ onUnmounted(() => {
           @close-post="selectPost(null)"
           @create-post="handleCreatePost(selectedDate!)"
           @delete-post="handlePostDelete"
+          @publish-post="handlePostPublish"
         />
       </div>
     </div>

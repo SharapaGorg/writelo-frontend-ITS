@@ -25,6 +25,7 @@ const emit = defineEmits<{
   closePost: []
   createPost: []
   deletePost: []
+  publishPost: []
 }>()
 
 const activeTab = ref<'context' | 'news'>('news')
@@ -100,6 +101,7 @@ const funDay = computed(() =>
         class="h-full"
         @close="emit('closePost')"
         @delete="emit('deletePost')"
+        @publish="emit('publishPost')"
       />
 
       <!-- Day Detail -->
