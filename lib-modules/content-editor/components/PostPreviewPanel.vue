@@ -37,7 +37,7 @@ const currentNetwork = computed<SocialNetwork | null>(() => {
 const networkCapabilities: Record<SocialNetwork, ContentType[]> = {
   vk: ['post', 'story', 'reel'],
   instagram: ['post', 'story', 'reel'],
-  telegram: ['post'],
+  telegram: ['post', 'story'],
   youtube: ['reel'] // YouTube only supports video content (shorts/videos)
 }
 
