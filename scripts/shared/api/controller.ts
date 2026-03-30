@@ -51,7 +51,7 @@ export class ApiController {
         } catch {
             // Fallback if called outside Nuxt context
             const appBaseUrl = process.env.NUXT_PUBLIC_APP_BASE_URL ||
-                (process.env.NODE_ENV === 'production'
+                ((process.env.APP_ENV || process.env.NODE_ENV) === 'production'
                     ? 'https://writelo.io'
                     : 'https://staging.writelo.io');
             return `${appBaseUrl}/api/`;

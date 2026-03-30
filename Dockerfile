@@ -16,8 +16,8 @@ COPY . .
 
 # Install dependencies and build the application
 RUN yarn install
-ARG NODE_ENV=production
-ENV NODE_ENV=$NODE_ENV
+ARG APP_ENV=production
+ENV APP_ENV=$APP_ENV
 RUN yarn build
 
 # Production stage
@@ -25,8 +25,8 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-ARG NODE_ENV=production
-ENV NODE_ENV=$NODE_ENV
+ARG APP_ENV=production
+ENV APP_ENV=$APP_ENV
 
 # Create a non-root user
 RUN addgroup -g 1001 -S nodejs && adduser -S nuxtjs -u 1001
