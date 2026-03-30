@@ -60,7 +60,7 @@ export default defineNuxtConfig({
             appBaseUrl: process.env.NUXT_PUBLIC_APP_BASE_URL ||
                 (process.env.NODE_ENV === 'production'
                     ? 'https://writelo.io'
-                    : 'https://nv2.radolyn.com'),
+                    : 'https://staging.writelo.com'),
             telegramBotUsername: process.env.NUXT_PUBLIC_TELEGRAM_BOT_USERNAME ||
                 (process.env.NODE_ENV === 'production'
                     ? 'writelo_bot'
