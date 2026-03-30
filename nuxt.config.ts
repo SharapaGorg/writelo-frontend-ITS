@@ -15,8 +15,9 @@ export default defineNuxtConfig({
         '/': {ssr: true, prerender: true},
         '/en': {ssr: true, prerender: true},
         '/ru': {ssr: true, prerender: true},
-        '/auth': {ssr: true, prerender: true},
-        '/auth/**': {ssr: true, prerender: true},
+        // Auth must stay dynamic so public runtime config follows the deployed env.
+        '/auth': {ssr: true},
+        '/auth/**': {ssr: true},
         '/landing': {ssr: true, prerender: true},
         '/start': {ssr: true, prerender: true},
         // SPA для приложения и остального
@@ -60,11 +61,11 @@ export default defineNuxtConfig({
             appBaseUrl: process.env.NUXT_PUBLIC_APP_BASE_URL ||
                 (process.env.NODE_ENV === 'production'
                     ? 'https://writelo.io'
-                    : 'https://staging.writelo.com'),
+                    : 'https://staging.writelo.io'),
             telegramBotUsername: process.env.NUXT_PUBLIC_TELEGRAM_BOT_USERNAME ||
                 (process.env.NODE_ENV === 'production'
                     ? 'writelo_bot'
-                    : 'test_neovision_bot'),
+                    : 'writelo_staging_bot'),
         },
     },
 

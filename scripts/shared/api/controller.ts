@@ -50,9 +50,11 @@ export class ApiController {
             return `${config.public.appBaseUrl}/api/`;
         } catch {
             // Fallback if called outside Nuxt context
-            return process.env.NODE_ENV === 'production'
-                ? 'https://writelo.io/api/'
-                : 'https://nv2.radolyn.com/api/';
+            const appBaseUrl = process.env.NUXT_PUBLIC_APP_BASE_URL ||
+                (process.env.NODE_ENV === 'production'
+                    ? 'https://writelo.io'
+                    : 'https://staging.writelo.io');
+            return `${appBaseUrl}/api/`;
         }
     }
 
