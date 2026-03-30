@@ -15,6 +15,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: ${{ github.event.inputs.environment }}
     steps:
       - uses: actions/checkout@v4
 
@@ -29,6 +31,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          build-args: |
+            NODE_ENV=${{ env.NODE_ENV }}
           push: true
           tags: ${{ secrets.IMAGE_NAME }}:${{ github.event.inputs.environment == 'staging' && secrets.IMAGE_TAG_STAGING || secrets.IMAGE_TAG }}
 
