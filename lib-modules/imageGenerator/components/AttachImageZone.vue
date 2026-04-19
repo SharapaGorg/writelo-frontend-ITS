@@ -28,7 +28,7 @@ const imagePreviewUrl = computed(() => {
   if (attachedImage.value) {
     return URL.createObjectURL(attachedImage.value);
   }
-  return null;
+  return undefined;
 });
 
 // Format file size for display

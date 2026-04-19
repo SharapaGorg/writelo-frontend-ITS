@@ -100,7 +100,7 @@ const route = useRoute()
 const $api = new ApiController();
 
 const language = ref(""); // current language
-const languages = ref({});
+const languages = ref<Record<string, string>>({});
 
 const beenChanged = ref(false);
 const isDrawerOpened = computed({
@@ -152,7 +152,7 @@ const saveChanges = async () => {
 
   // In demo mode, just update locale locally without API call
   if (isGuestDemo.value) {
-    locale.value = language.value;
+    locale.value = language.value as typeof locale.value;
     localStorage.setItem('preferred-locale', language.value);
     beenChanged.value = false;
     return;
@@ -162,7 +162,7 @@ const saveChanges = async () => {
   const prevLanguage = language.value;
   const prevLocale = locale.value;
 
-  locale.value = language.value;
+  locale.value = language.value as typeof locale.value;
   beenChanged.value = false;
 
   try {

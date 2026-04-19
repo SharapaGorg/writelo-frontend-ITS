@@ -63,7 +63,7 @@ onUnmounted(() => {
       >
         <img
             v-if="image.accessHash"
-            :src="getImageUrl(image)"
+            :src="getImageUrl(image) ?? undefined"
             :alt="image.prompt"
             loading="lazy"
             class="image-history__image"
@@ -100,7 +100,7 @@ onUnmounted(() => {
           </button>
           <div class="fullscreen-content" @click.stop>
             <img
-                :src="getImageUrl(fullscreenImage)"
+                :src="getImageUrl(fullscreenImage) ?? undefined"
                 :alt="fullscreenImage.prompt"
                 class="fullscreen-image"
             />

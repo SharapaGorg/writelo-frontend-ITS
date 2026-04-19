@@ -3,8 +3,8 @@
 import {reactive, toRefs} from 'vue'
 import {
     FeatureType,
+    Language,
     type ConfigType,
-    type Language,
     type SubscriptionType
 } from '~/scripts/shared/types/common'
 import {ApiController} from '~/scripts/shared/api/controller'
@@ -72,11 +72,11 @@ const DEMO_USER = {
 const state = reactive({
     loaded: false,
     config: null as ConfigType | null,
-    language: 'ru' as Language,
+    language: Language.ru as Language,
     subscription: null as SubscriptionType | null,
-    toolsEnabled: {} as Record<FeatureType, boolean>,
-    role: null as Number | null,
-    subscriptionStart: null as String | null,
+    toolsEnabled: {} as Partial<Record<FeatureType, boolean>>,
+    role: null as number | null,
+    subscriptionStart: null as string | null,
     user: null as any | null
 })
 
@@ -104,7 +104,7 @@ async function init(locale?: any) {
             state.language = localPreferredLocale as Language
             i18nLocale.value = localPreferredLocale
         } else {
-            state.language = 'ru'
+            state.language = Language.ru
             i18nLocale.value = 'ru'
         }
 
@@ -133,7 +133,7 @@ async function init(locale?: any) {
         i18nLocale.value = localPreferredLocale
     } else {
         // No local preference, use server value
-        state.language = profile.language
+        state.language = profile.language as Language
         i18nLocale.value = state.language
     }
 
@@ -141,12 +141,12 @@ async function init(locale?: any) {
 }
 
 function disableAllTools(): void {
-    state.toolsEnabled = {};
+    state.toolsEnabled = {}
 }
 
 function isPaidUser(): boolean {
-    const sub = this.getSubscription();
-    return sub && sub?.price > 0;
+    const sub = getSubscription()
+    return !!sub && sub.price > 0
 }
 
 function getSubscription(): SubscriptionType | null {
@@ -203,7 +203,7 @@ function isBeenChanged(lang: string): boolean {
 }
 
 function hasFeature(feature: FeatureType): boolean {
-    return (state.subscription && (state.subscription as SubscriptionType).features.includes(feature))
+    return !!(state.subscription && (state.subscription as SubscriptionType).features.includes(feature))
 }
 
 function setToolState(tool: FeatureType, toolState: boolean) {

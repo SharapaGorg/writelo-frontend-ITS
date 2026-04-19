@@ -44,7 +44,7 @@
 import {Drawer, DrawerContent, DrawerTitle, DrawerTrigger} from "~/components/ui/drawer";
 import Role from "~/components/molecules/Role.vue";
 import {ApiController} from "~/scripts/shared/api/controller";
-import {type ChatRole, FeatureType} from "~/scripts/shared/types/common";
+import {type RolePromptDto, FeatureType} from "~/scripts/shared/types/common";
 const $api = new ApiController();
 const $settings = useSettings();
 
@@ -65,16 +65,16 @@ const selectedRole = computed({
 
 const areRolesAvailable = computed(() => $settings.hasFeature(FeatureType.roles));
 
-const chatRoles = computed<ChatRole[]>(() => useSettings().getConfig()?.roles ?? []
+const chatRoles = computed<RolePromptDto[]>(() => useSettings().getConfig()?.roles ?? []
 )
-const visibleRoles = ref<ChatRole[]>([...chatRoles.value]); // ✅ будет менять только при открытии дровера
+const visibleRoles = ref<RolePromptDto[]>([...chatRoles.value]); // ✅ будет менять только при открытии дровера
 
 
 const rolesOff = computed(() => {
   return !selectedRole.value || chatRoles.value.find(item => item.id === selectedRole.value)?.icon === 'default';
 });
 
-const isRoleLocked = (role: ChatRole) => {
+const isRoleLocked = (role: RolePromptDto) => {
   // If roles feature is not available, only default role is unlocked
   if (!areRolesAvailable.value) {
     return role.icon !== 'default';
@@ -92,7 +92,7 @@ watch(isDrawerOpened, value => {
   const unlocked = chatRoles.value.filter(r => !isRoleLocked(r) && r !== selected && r !== defaultRole);
   const locked = chatRoles.value.filter(r => isRoleLocked(r) && r !== selected && r !== defaultRole);
 
-  let result: ChatRole[] = [];
+  let result: RolePromptDto[] = [];
   if (selected) result.push(selected);
   if (defaultRole && defaultRole !== selected) result.push(defaultRole);
 

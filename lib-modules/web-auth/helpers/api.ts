@@ -128,7 +128,7 @@ export class AuthApiController extends ApiController {
     /**
      * Cancel pending email change
      */
-    cancelEmailChange(): Promise<void> {
+    override cancelEmailChange(): Promise<void> {
         return this.request(ApiAliases.meEmailPending, RequestMethod.DELETE)
     }
 }

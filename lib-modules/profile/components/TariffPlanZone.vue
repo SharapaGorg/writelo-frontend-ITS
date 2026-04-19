@@ -42,7 +42,7 @@ const subscriptionFeaturesText = computed(() => {
 
 const FEATURES_CHIPS = computed(() => ({
   [FeatureType.search]: t('tariffPlan.features.search'),
-  [FeatureType.projects]: t('tariffPlan.features.clients'),
+  [FeatureType.workspaces]: t('tariffPlan.features.clients'),
   [FeatureType.templates]: t('tariffPlan.features.templates'),
   [FeatureType.imageGeneration]: t('tariffPlan.features.imageGeneration')
 }))
@@ -82,14 +82,14 @@ const FEATURES_CHIPS = computed(() => ({
 
           <div class="feature-chips__container">
             <template
-                v-for="chip in Object.keys(FEATURES_CHIPS) as FeatureType[]"
+                v-for="(label, chip) in FEATURES_CHIPS"
                 :key="chip"
             >
               <div
-                  :class="{ 'feature-chips__disabled-item': !$settings.hasFeature(chip) }"
+                  :class="{ 'feature-chips__disabled-item': !$settings.hasFeature(chip as FeatureType) }"
                   class="feature-chips__item"
               >
-                {{ FEATURES_CHIPS[chip] }}
+                {{ label }}
               </div>
             </template>
           </div>

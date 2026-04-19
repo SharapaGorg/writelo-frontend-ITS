@@ -3,7 +3,7 @@
  * Re-exports workspace-related types from shared types
  */
 
-export type {
+import type {
   WorkspaceDto,
   WorkspaceRole,
   WorkspaceInviteRole,
@@ -11,6 +11,15 @@ export type {
   UpdateWorkspaceRequest,
   PagedResponse,
 } from '~/scripts/shared/types/workspace'
+
+export type {
+  WorkspaceDto,
+  WorkspaceRole,
+  WorkspaceInviteRole,
+  CreateWorkspaceRequest,
+  UpdateWorkspaceRequest,
+  PagedResponse,
+}
 
 // Module-specific types
 export interface WorkspacesState {
@@ -27,6 +36,3 @@ export interface WorkspacesApiControllerInterface {
   updateWorkspace(id: string, data: UpdateWorkspaceRequest): Promise<WorkspaceDto>
   deleteWorkspace(id: string): Promise<void>
 }
-
-// Import types for local use
-import type { WorkspaceDto, PagedResponse } from '~/scripts/shared/types/workspace'

@@ -44,7 +44,7 @@
 
     <div v-if="dialog && showDialog" class="chibi-role__dialog">
       <div
-          v-for="row in dialog"
+          v-for="row in dialogRows"
           :key="row"
           class="chibi-role__dialog-row"
       >
@@ -64,13 +64,18 @@ const props = defineProps<{
   name: string,
   description: string,
   selected?: boolean,
-  dialog?: string[],
+  dialog?: string | string[],
   locked?: boolean
 }>()
 
 const emit = defineEmits<{
   (e: "select"): void
 }>();
+
+const dialogRows = computed(() => {
+  if (!props.dialog) return []
+  return Array.isArray(props.dialog) ? props.dialog : props.dialog.split('\n').filter(Boolean)
+})
 
 const {t} = useI18n();
 const showDialog = ref(false);
