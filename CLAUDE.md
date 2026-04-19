@@ -12,8 +12,9 @@ This file provides guidance to Claude Code when working with the frontend codeba
 ### API
 - ALWAYS use `ApiController` from `scripts/shared/api/controller.ts`
 - NEVER write raw fetch/axios calls
-- For domain-specific APIs, extend ApiController (see ProjectsApiController, AuthApiController)
+- For domain-specific APIs, extend ApiController (see WorkspacesApiController, AuthApiController)
 - Use `ApiAliases` enum for endpoints
+- Most API calls are workspace-scoped — use `useWorkspaceContext()` to get the current workspace ID
 
 ### Utilities
 - BEFORE writing any utility, check "Utilities Reference" section below
@@ -34,7 +35,7 @@ This file provides guidance to Claude Code when working with the frontend codeba
 
 ```typescript
 // From global code into module
-import { useProjects } from '~/lib-modules/projects'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { ApiController } from '~/scripts/shared/api/controller'
 import { Button } from '~/components/ui/button'
 import { useUserController } from '~/composables/useUserController'
@@ -50,16 +51,16 @@ import { toastImageCopySuccess } from '../helpers/toaster'
 import { something } from 'lib-modules/module'      // missing ~/
 import { something } from '@lib-modules/module'     // no such alias
 import { something } from 'app-modules/module'      // doesn't exist
-import { something } from '~/lib-modules/projects/stores/projectsStore' // don't reach into internals
+import { something } from '~/lib-modules/workspaces/stores/workspacesStore' // don't reach into internals
 ```
 
 ### Import from modules — only via index.ts
 ```typescript
 // Correct — via public API
-import { useProjects, ProjectTabs, type Project } from '~/lib-modules/projects'
+import { useWorkspaceContext, useWorkspaces } from '~/lib-modules/workspaces'
 
 // Wrong — direct import of internals
-import { useProjectsStore } from '~/lib-modules/projects/stores/projectsStore'
+import { useWorkspacesStore } from '~/lib-modules/workspaces/stores/workspacesStore'
 ```
 
 ## Code Organization
@@ -154,9 +155,15 @@ ALWAYS use ApiController, NEVER raw fetch/axios:
 
 ```typescript
 import { ApiController } from '~/scripts/shared/api/controller'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 const api = new ApiController()
 const user = await api.getMe()
+
+// Most API calls require workspace ID
+const { requireWorkspaceId } = useWorkspaceContext()
+const workspaceId = requireWorkspaceId()
+const conversations = await api.getWorkspaceConversations(workspaceId, 0, 20)
 ```
 
 ### Main methods (ApiController)
@@ -164,29 +171,39 @@ const user = await api.getMe()
 | Method | Purpose |
 |--------|---------|
 | `getMe()` | Get current user |
-| `getConfig()` | Get app config (models, subscriptions, roles) |
-| `getConversations(offset, count)` | List conversations |
-| `getConversation(id)` | Get conversation with messages |
-| `createConversation(projectId?)` | Create new conversation |
-| `deleteConversation(id)` | Delete conversation |
-| `sendMessage(convId, text, reqUuid, resUuid)` | Send message (streaming) |
-| `editMessage(convId, msgId, text, resId)` | Edit message (streaming) |
-| `rerollMessage(convId, resUuid)` | Regenerate response |
-| `stopGeneration(convId)` | Stop AI generation |
-| `uploadFile(file)` | Upload attachment |
-| `shareConversation(id)` | Share conversation |
-| `unshareConversation(id)` | Remove share |
-| `generateImage(prompt, ratio)` | Generate image |
-| `editImage(prompt, sourceImage, ratio)` | Edit image |
-| `getImageHistory(offset, limit)` | Image history |
-| `saveSettings(lang, style, model)` | Save preferences |
+| `getConfig()` | Get app config (subscriptions, roles, workspacePresets) |
+| `getWorkspaceConversations(workspaceId, offset, limit)` | List conversations |
+| `getWorkspaceConversation(workspaceId, id)` | Get conversation with messages |
+| `createWorkspaceConversation(workspaceId, title?)` | Create new conversation |
+| `deleteWorkspaceConversation(workspaceId, id)` | Delete conversation |
+| `sendWorkspaceMessage(workspaceId, convId, text, files?)` | Send message (streaming) |
+| `generateWorkspaceImage(workspaceId, request)` | Generate image |
+| `editWorkspaceImage(workspaceId, request)` | Edit image |
+| `getWorkspaceImageHistory(workspaceId, offset, limit)` | Image history |
+| `initUpload(workspaceId, request)` | Initialize file upload |
+| `finalizeUpload(workspaceId, request)` | Finalize file upload |
+| `saveSettings(language)` | Save language preference |
 | `createPayment(subscriptionId, provider)` | Create payment |
+
+### File Upload (Two-Step Process)
+```typescript
+import { uploadFile } from '~/lib-modules/shared'
+
+// Simple upload
+const result = await uploadFile(file)
+// result: { storageObjectId, type, ... }
+
+// Upload with progress
+const result = await uploadFile(file, (progress) => {
+  console.log(`${progress.phase}: ${progress.percent}%`)
+})
+```
 
 ### Extended controllers
 
-**ProjectsApiController** (`lib-modules/projects/helpers/api.ts`):
-- `getProjects()`, `createProject(title)`, `deleteProject(id)`
-- `editProject(id, title, instructions)`, `getProjectConversations(id, offset, limit)`
+**WorkspacesApiController** (`lib-modules/workspaces/helpers/api.ts`):
+- `getWorkspaces()`, `createWorkspace(data)`, `deleteWorkspace(id)`
+- `updateWorkspace(id, data)`, `getWorkspace(id)`
 
 **AuthApiController** (`lib-modules/web-auth/helpers/api.ts`):
 - `signupEmail()`, `signinEmail()`, `signinGoogle()`, `signinTelegram()`
@@ -197,14 +214,17 @@ const user = await api.getMe()
 ```typescript
 // lib-modules/my-feature/helpers/api.ts
 import { ApiController, RequestMethod } from '~/scripts/shared/api/controller'
+import { buildUrl, ApiAliases } from '~/scripts/shared/types'
 
 export class MyFeatureApiController extends ApiController {
-  getItems() {
-    return this.request('my-feature/items')
+  getItems(workspaceId: string) {
+    const url = buildUrl(ApiAliases.workspaceItems, { workspaceId })
+    return this.request(url)
   }
 
-  createItem(data: CreateItemInput) {
-    return this.request('my-feature/items', RequestMethod.POST, data)
+  createItem(workspaceId: string, data: CreateItemInput) {
+    const url = buildUrl(ApiAliases.workspaceItems, { workspaceId })
+    return this.request(url, RequestMethod.POST, data)
   }
 }
 ```
@@ -242,8 +262,34 @@ await generate()
 // outputFile.value contains the generated image
 ```
 
-### projects
-**Purpose:** Organize conversations into projects
+### workspaces
+**Purpose:** Workspace context and management (replaces projects)
+
+**Exports:**
+- Composable: `useWorkspaceContext()` → `currentWorkspaceId`, `requireWorkspaceId()`, `initialize()`, `clear()`
+- Composable: `useWorkspaces()` → `createWorkspace()`, `updateWorkspace()`, `deleteWorkspace()`
+- Store: `useWorkspacesStore()` → workspaces, currentWorkspace
+- Types: `WorkspaceDto`, `CreateWorkspaceRequest`, `UpdateWorkspaceRequest`
+
+**Example:**
+```typescript
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
+
+const { requireWorkspaceId } = useWorkspaceContext()
+const workspaceId = requireWorkspaceId()
+// Use workspaceId for workspace-scoped API calls
+```
+
+### shared
+**Purpose:** Common utilities and services
+
+**Exports:**
+- Service: `uploadFile(file, onProgress?)` → Upload files with progress tracking
+- Service: `uploadFiles(files, onProgress?)` → Upload multiple files
+- Service: `getDownloadUrl(objectId)` → Get signed download URL
+
+### projects (DEPRECATED)
+**Purpose:** Organize conversations into projects — being replaced by workspaces
 
 **Exports:**
 - Components: `ProjectTabs`, `ProjectCreateWindow`
@@ -279,7 +325,8 @@ await generate()
 | Composable | Purpose | Key API |
 |------------|---------|---------|
 | `useUserController()` | Auth, user data | `user`, `isLoggedIn`, `getToken()`, `logout()` |
-| `useSettings()` | App settings | `settings`, `updateSettings()` |
+| `useWorkspaceContext()` | Current workspace | `currentWorkspaceId`, `requireWorkspaceId()`, `initialize()` |
+| `useSettings()` | App settings | `config`, `getLanguage()`, `saveLanguage()` |
 | `useEnv()` | Current environment | `currentDialog`, `attachedFiles` |
 | `eventBus` | Cross-component events | `emit()`, `on()`, `off()` |
 

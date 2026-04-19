@@ -1,15 +1,18 @@
-import {useImageGeneratorStore} from '../stores'
-import {ApiController} from "~/scripts/shared/api/controller";
-import {useImageHistory} from './useImageHistory';
+import { useImageGeneratorStore } from '../stores'
+import { ApiController } from '~/scripts/shared/api/controller'
+import { useImageHistory } from './useImageHistory'
 import {
-    toastImageCopySuccess, 
-    toastImageCopyError, 
-    toastImageDownloadSuccess, 
-    toastImageDownloadError, 
-    toastImageConvertError, 
+    toastImageCopySuccess,
+    toastImageCopyError,
+    toastImageDownloadSuccess,
+    toastImageDownloadError,
+    toastImageConvertError,
     toastImageLoadError
-} from '../helpers/toaster';
-import type {Composer} from "vue-i18n";
+} from '../helpers/toaster'
+import type { Composer } from 'vue-i18n'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import { uploadFile } from '~/lib-modules/shared'
+import type { GeneratedImageDto } from '~/scripts/shared/types/workspace'
 
 // Accepted image types
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
@@ -113,41 +116,102 @@ export const useImageGenerator = () => {
         $store.setIsGenerating(true);
 
         try {
-            let response: { imageId: string; accessHash: string };
+            // Get workspace ID
+            const workspaceContext = useWorkspaceContext()
+            const workspaceId = workspaceContext.requireWorkspaceId()
+
+            let response: GeneratedImageDto
 
             if ($store.attachedImage) {
                 // img2img - user has attached an image
-                const base64Image = await fileToBase64($store.attachedImage);
-                response = await $api.editImage($store.prompt, base64Image, $store.ratio);
+                // First, upload the image to get storage object ID
+                const uploadResult = await uploadFile($store.attachedImage)
+
+                response = await $api.editWorkspaceImage(workspaceId, {
+                    prompt: $store.prompt,
+                    sourceImageObjectId: uploadResult.storageObjectId,
+                    aspectRatio: $store.ratio,
+                })
             } else {
                 // txt2img - only prompt
-                response = await $api.generateImage($store.prompt, $store.ratio);
+                response = await $api.generateWorkspaceImage(workspaceId, {
+                    prompt: $store.prompt,
+                    aspectRatio: $store.ratio,
+                })
             }
 
-            if (response?.imageId && response?.accessHash) {
-                // Fetch the actual image
-                const blob = await $api.getGeneratedImage(response.imageId, response.accessHash);
-                const file = new File([blob], `generated-${response.imageId}.png`, {type: blob.type});
-                $store.setOutputFile(file);
+            // Check if generation completed successfully
+            if (response?.status === 'done' && response?.result?.url) {
+                // Fetch the actual image from signed URL
+                const imageResponse = await fetch(response.result.url)
+                const blob = await imageResponse.blob()
+                const file = new File([blob], `generated-${response.id}.png`, { type: blob.type })
+                $store.setOutputFile(file)
 
                 // Add to history
-                const {addToHistory} = useImageHistory();
+                const { addToHistory } = useImageHistory()
                 addToHistory({
-                    id: response.imageId,
-                    prompt: $store.prompt,
-                    accessHash: response.accessHash,
-                    aspectRatio: $store.ratio,
-                    model: '',
-                    success: true,
-                    createdAt: new Date().toISOString()
-                });
+                    id: response.id,
+                    prompt: response.prompt,
+                    aspectRatio: response.aspectRatio,
+                    success: response.success,
+                    status: response.status,
+                    resultObjectId: response.resultObjectId,
+                    result: response.result,
+                    createdAt: response.createdAt,
+                })
+            } else if (response?.status === 'pending') {
+                // Generation is still in progress - poll for result
+                await pollForResult(workspaceId, response.id)
+            } else if (response?.status === 'failed') {
+                console.error('Image generation failed:', response.errorMessage)
             }
         } catch (e: any) {
             // Error toast already handled in ApiController
-            console.error('Image generation error:', e);
+            console.error('Image generation error:', e)
         } finally {
-            $store.setIsGenerating(false);
+            $store.setIsGenerating(false)
         }
+    }
+
+    /**
+     * Poll for image generation result
+     */
+    const pollForResult = async (workspaceId: string, imageId: string, maxAttempts = 30) => {
+        for (let i = 0; i < maxAttempts; i++) {
+            await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds
+
+            try {
+                const result = await $api.getWorkspaceImage(workspaceId, imageId)
+
+                if (result.status === 'done' && result.result?.url) {
+                    const imageResponse = await fetch(result.result.url)
+                    const blob = await imageResponse.blob()
+                    const file = new File([blob], `generated-${result.id}.png`, { type: blob.type })
+                    $store.setOutputFile(file)
+
+                    const { addToHistory } = useImageHistory()
+                    addToHistory({
+                        id: result.id,
+                        prompt: result.prompt,
+                        aspectRatio: result.aspectRatio,
+                        success: result.success,
+                        status: result.status,
+                        resultObjectId: result.resultObjectId,
+                        result: result.result,
+                        createdAt: result.createdAt,
+                    })
+                    return
+                } else if (result.status === 'failed') {
+                    console.error('Image generation failed:', result.errorMessage)
+                    return
+                }
+                // Still pending, continue polling
+            } catch (e) {
+                console.error('Error polling for result:', e)
+            }
+        }
+        console.error('Image generation timed out')
     }
 
     const downloadImage = async (format: 'jpeg' | 'png' = 'jpeg', t_?: Composer['t']) => {

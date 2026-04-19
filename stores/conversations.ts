@@ -1,13 +1,26 @@
-import {defineStore} from 'pinia'
-import {ref, computed} from 'vue'
-import {ApiController} from '~/scripts/shared/api/controller'
-import {getChatsGroupsFormationArray} from '~/scripts/features/conversations/formatting'
-import type {ShortConversationType} from '~/lib-modules/conversations'
-import {eventBus} from '~/composables/eventBus'
-import type {DialogTitleUpdated} from '~/composables/eventBus/types'
-import {useDemoMode, demoConversations} from '~/lib-modules/demo-mode'
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { ApiController } from '~/scripts/shared/api/controller'
+import { getChatsGroupsFormationArray } from '~/scripts/features/conversations/formatting'
+import type { ShortConversationType } from '~/lib-modules/conversations'
+import type { ConversationListItemDto } from '~/scripts/shared/types/workspace'
+import { eventBus } from '~/composables/eventBus'
+import type { DialogTitleUpdated } from '~/composables/eventBus/types'
+import { useDemoMode, demoConversations } from '~/lib-modules/demo-mode'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 const apiController = new ApiController()
+
+// Adapter to convert new API format to old format for backwards compatibility
+function adaptConversation(dto: ConversationListItemDto): ShortConversationType {
+    return {
+        privateId: dto.id,
+        title: dto.title,
+        createdAt: dto.createdAt,
+        modifiedAt: dto.modifiedAt,
+        shareId: null, // Sharing removed in new API
+    }
+}
 
 export const useConversationsStore = defineStore('conversations', () => {
     const loading = ref(true)
@@ -37,12 +50,37 @@ export const useConversationsStore = defineStore('conversations', () => {
             return
         }
 
-        // Normal flow - fetch from API
+        // Get current workspace ID
+        const workspaceContext = useWorkspaceContext()
+        if (!workspaceContext.isReady.value) {
+            console.warn('[conversationsStore] Workspace context not ready, skipping init')
+            loading.value = false
+            return
+        }
+
+        const workspaceId = workspaceContext.currentWorkspaceId.value!
+
+        // Fetch conversations from workspace-scoped API
         const limit = 20
         for (let page = 0; page < 10; page++) {
-            const pack = await apiController.getConversations(page * limit, limit)
-            if (!pack || pack.length === 0) break
-            conversations.value.push(...pack)
+            try {
+                const response = await apiController.getWorkspaceConversations(
+                    workspaceId,
+                    page * limit,
+                    limit
+                )
+                if (!response || !response.items || response.items.length === 0) break
+
+                // Adapt to old format for backwards compatibility
+                const adapted = response.items.map(adaptConversation)
+                conversations.value.push(...adapted)
+
+                // Stop if no more pages
+                if (!response.hasMore) break
+            } catch (error) {
+                console.error('[conversationsStore] Error fetching conversations:', error)
+                break
+            }
         }
 
         loading.value = false
@@ -50,33 +88,35 @@ export const useConversationsStore = defineStore('conversations', () => {
 
     function updateDialogTitle(data: DialogTitleUpdated) {
         console.log('[conversationsStore] updateDialogTitle called', data)
-        console.log('[conversationsStore] conversations count:', conversations.value.length)
-        console.log('[conversationsStore] looking for privateId:', data.conversation_id)
-        const conv = conversations.value.find(c => c.privateId === data.conversation_id)
-        console.log('[conversationsStore] found conversation:', conv)
+        // Support both old (privateId) and new (id) formats
+        const conv = conversations.value.find(
+            c => c.privateId === data.conversation_id
+        )
         if (conv) {
             conv.title = data.title
             console.log('[conversationsStore] title updated to:', data.title)
         }
     }
 
-    async function removeConversation(privateId: string, t: (key: string) => string) {
-        removedConversations.value.add(privateId)
-        await apiController.deleteConversation(privateId)
+    async function removeConversation(conversationId: string, t: (key: string) => string) {
+        removedConversations.value.add(conversationId)
+
+        // Get workspace ID
+        const workspaceContext = useWorkspaceContext()
+        const workspaceId = workspaceContext.requireWorkspaceId()
+
+        await apiController.deleteWorkspaceConversation(workspaceId, conversationId)
     }
 
-    async function shareConversation(privateId: string) {
-        const result = await apiController.shareConversation(privateId)
-        const conv = conversations.value.find(c => c.privateId === privateId)
-        if (conv) conv.shareId = result.shareId
-        return result
+    // Note: Sharing removed in new API - these methods kept for interface compatibility
+    async function shareConversation(conversationId: string) {
+        console.warn('[conversationsStore] shareConversation: Sharing is not available in new API')
+        return null
     }
 
-    async function unshareConversation(privateId: string) {
-        const result = await apiController.unshareConversation(privateId)
-        const conv = conversations.value.find(c => c.privateId === privateId)
-        if (conv) conv.shareId = null
-        return result
+    async function unshareConversation(conversationId: string) {
+        console.warn('[conversationsStore] unshareConversation: Sharing is not available in new API')
+        return null
     }
 
     function isConversationRemoved(id: string) {
@@ -86,6 +126,13 @@ export const useConversationsStore = defineStore('conversations', () => {
     function addConversation(conversation: ShortConversationType) {
         // Add to the beginning of the list
         conversations.value.unshift(conversation)
+    }
+
+    /**
+     * Add conversation from new API format
+     */
+    function addConversationDto(dto: ConversationListItemDto) {
+        conversations.value.unshift(adaptConversation(dto))
     }
 
     function subscribeToEvents() {
@@ -98,17 +145,28 @@ export const useConversationsStore = defineStore('conversations', () => {
         eventBus.off('dialogTitleUpdated', updateDialogTitle)
     }
 
+    /**
+     * Clear store (on workspace change or logout)
+     */
+    function clear() {
+        conversations.value = []
+        removedConversations.value.clear()
+        loading.value = true
+    }
+
     return {
         loading,
         conversations,
         groups,
         init,
         addConversation,
+        addConversationDto,
         subscribeToEvents,
         unsubscribeFromEvents,
         removeConversation,
         isConversationRemoved,
         shareConversation,
-        unshareConversation
+        unshareConversation,
+        clear,
     }
 })

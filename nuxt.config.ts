@@ -59,12 +59,12 @@ export default defineNuxtConfig({
         public: {
             appBaseUrl: process.env.NUXT_PUBLIC_APP_BASE_URL ||
                 (process.env.NODE_ENV === 'production'
-                    ? 'https://writelo.io'
-                    : 'https://nv2.radolyn.com'),
+                    ? 'https://api.writelo.io'
+                    : 'https://staging.writelo.io'),
             telegramBotUsername: process.env.NUXT_PUBLIC_TELEGRAM_BOT_USERNAME ||
                 (process.env.NODE_ENV === 'production'
                     ? 'writelo_bot'
-                    : 'test_neovision_bot'),
+                    : 'writelo_staging_bot'),
         },
     },
 

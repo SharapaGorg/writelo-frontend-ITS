@@ -5,8 +5,6 @@ import {
     FeatureType,
     type ConfigType,
     type Language,
-    type ModelType,
-    type ResponseStyleType,
     type SubscriptionType
 } from '~/scripts/shared/types/common'
 import {ApiController} from '~/scripts/shared/api/controller'
@@ -17,17 +15,19 @@ const apiController = new ApiController();
 
 // Static demo config for guest demo mode
 const DEMO_CONFIG: ConfigType = {
-    models: [
-        {name: 'gpt-4o', title: 'GPT-4o'},
-        {name: 'claude-3-5-sonnet', title: 'Claude 3.5 Sonnet'}
-    ] as ModelType[],
-    responseStyles: [
-        {id: 1, title: 'Стандартный', description: ''}
-    ] as ResponseStyleType[],
     languages: {ru: 'Русский', en: 'English'},
     roles: [],
-    projectsConfig: {
-        maxCustomInstructionsLength: 2000
+    workspacePresets: {
+        industries: [],
+        toneOfVoice: []
+    },
+    filesConfig: {
+        extensions: {
+            'Images': ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+            'Documents': ['pdf', 'doc', 'docx', 'txt']
+        },
+        maxFilesPerRequest: 5,
+        maxFileSizeBytes: 10 * 1024 * 1024
     },
     imagesConfig: {
         aspectRatios: ['1:1', '16:9', '9:16', '4:3', '3:4']
@@ -48,7 +48,7 @@ const DEMO_CONFIG: ConfigType = {
             title: 'Pro',
             duration: 'P30D',
             description: '',
-            features: [FeatureType.search, FeatureType.projects, FeatureType.templates, FeatureType.imageGeneration],
+            features: [FeatureType.search, FeatureType.workspaces, FeatureType.templates, FeatureType.imageGeneration],
             featuresText: []
         }
     ] as SubscriptionType[]
@@ -59,8 +59,6 @@ const DEMO_USER = {
     name: 'Демо Пользователь',
     email: 'demo@writelo.app',
     language: 'ru',
-    currentModel: 'gpt-4o',
-    currentStyle: 1,
     currentRole: null,
     subscriptionId: 1,
     subscribedAt: null,
@@ -74,9 +72,7 @@ const DEMO_USER = {
 const state = reactive({
     loaded: false,
     config: null as ConfigType | null,
-    responseStyle: null as ResponseStyleType | null,
     language: 'ru' as Language,
-    llm: null as ModelType | null,
     subscription: null as SubscriptionType | null,
     toolsEnabled: {} as Record<FeatureType, boolean>,
     role: null as Number | null,
@@ -94,9 +90,7 @@ async function init(locale?: any) {
     if (isGuestDemo) {
         // Use static demo config and user
         state.config = DEMO_CONFIG
-        state.llm = DEMO_CONFIG.models[0]
         state.subscription = DEMO_CONFIG.subscriptions[0]
-        state.responseStyle = DEMO_CONFIG.responseStyles[0]
         state.user = DEMO_USER
         state.role = DEMO_USER.currentRole
         state.subscriptionStart = DEMO_USER.subscribedAt
@@ -124,18 +118,9 @@ async function init(locale?: any) {
 
     const profile = await apiController.getMe()
     state.user = profile
-    state.llm = config.models.find(item => item.name === profile.currentModel) || null
     state.subscription = config.subscriptions.find(item => item.id === profile.subscriptionId) || null
-    state.role = profile.currentRole;
-    state.subscriptionStart = profile.subscribedAt;
-
-    // const settings = await apiController.getSettings()
-    // if (!settings) return
-
-    const styleId = profile.currentStyle
-    if (styleId) {
-        state.responseStyle = config.responseStyles.find(item => item.id === styleId) || null
-    }
+    state.role = profile.currentRole
+    state.subscriptionStart = profile.subscribedAt
 
     // Only set language from server if user hasn't manually changed it locally
     const localPreferredLocale = typeof window !== 'undefined'
@@ -168,16 +153,8 @@ function getSubscription(): SubscriptionType | null {
     return state.subscription;
 }
 
-function getResponseStyle(): ResponseStyleType | null {
-    return state.responseStyle
-}
-
 function getLanguage(): Language {
     return state.language
-}
-
-function getLlm(): ModelType | null {
-    return state.llm
 }
 
 function getConfig(): ConfigType | null {
@@ -203,11 +180,10 @@ async function refreshUserData(): Promise<void> {
     state.user = profile
 
     if (state.config) {
-        state.llm = state.config.models.find(item => item.name === profile.currentModel) || null
         state.subscription = state.config.subscriptions.find(item => item.id === profile.subscriptionId) || null
     }
-    state.role = profile.currentRole;
-    state.subscriptionStart = profile.subscribedAt;
+    state.role = profile.currentRole
+    state.subscriptionStart = profile.subscribedAt
 }
 
 function setCurrentRole(value: number | null): void {
@@ -222,10 +198,8 @@ function isToolEnabled(tool: FeatureType): boolean {
     return !!state.toolsEnabled[tool];
 }
 
-function isBeenChanged(lang: string, respStyleId: number, llmName: string): boolean {
-    return lang !== state.language ||
-        respStyleId !== state.responseStyle?.id ||
-        state.llm?.name !== llmName
+function isBeenChanged(lang: string): boolean {
+    return lang !== state.language
 }
 
 function hasFeature(feature: FeatureType): boolean {
@@ -236,30 +210,25 @@ function setToolState(tool: FeatureType, toolState: boolean) {
     state.toolsEnabled[tool] = toolState
 }
 
-async function saveChanges(language_: string, responseStyle_: ResponseStyleType, llm_: ModelType) {
-    const sameLang = language_ === state.language
-    const sameStyle = responseStyle_ === state.responseStyle
-    const sameLlm = llm_ === state.llm
+async function saveLanguage(language_: string) {
+    if (language_ === state.language) return
 
-    if (sameLang && sameStyle && sameLlm) return
-
-    // Save previous values for rollback
+    // Save previous value for rollback
     const prevLanguage = state.language
-    const prevResponseStyle = state.responseStyle
-    const prevLlm = state.llm
 
     // Optimistically update state
-    state.language = language_
-    state.responseStyle = responseStyle_
-    state.llm = llm_
+    state.language = language_ as Language
+
+    // Also save to localStorage for persistence across sessions
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('preferred-locale', language_)
+    }
 
     try {
-        await apiController.saveSettings(language_, responseStyle_ ? responseStyle_.id : null, llm_.name);
+        await apiController.saveSettings(language_)
     } catch (error) {
-        // Rollback to previous values on error
+        // Rollback to previous value on error
         state.language = prevLanguage
-        state.responseStyle = prevResponseStyle
-        state.llm = prevLlm
         throw error
     }
 }
@@ -271,15 +240,13 @@ const settings = {
     // Methods:
     init,
     getSubscription,
-    getResponseStyle,
     getLanguage,
-    getLlm,
     getConfig,
     isToolEnabled,
     isBeenChanged,
     hasFeature,
     setToolState,
-    saveChanges,
+    saveLanguage,
     disableAllTools,
     isPaidUser,
     getCurrentRole,

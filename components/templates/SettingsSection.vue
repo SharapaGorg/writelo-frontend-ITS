@@ -82,13 +82,9 @@ import {
 
 import {Settings} from "lucide-vue-next";
 import MultiChoiceContainer from "~/components/molecules/MultiChoiceContainer.vue";
-import {FeatureType, type ModelType, type ResponseStyleType} from "~/scripts/shared/types/common";
 import Spinner from "~/components/atoms/Spinner.vue";
 import SettingsSwtichers from "~/components/organisms/SettingsSwtichers.vue";
-import RequestCounter from "~/components/atoms/RequestCounter.vue";
-import {toastFeatureUnavailable} from "~/scripts/features/utils/toater";
 import {useI18n} from 'vue-i18n'
-import type {Ref} from "vue";
 import {ApiController} from "~/scripts/shared/api/controller";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "~/components/ui/select";
 import type {UserLimits} from "~/scripts/shared/types/user";
@@ -103,16 +99,10 @@ const route = useRoute()
 
 const $api = new ApiController();
 
-const llm = ref(""); // name of LL model
-const language = ref(""); // title of language
-const responseStyle: Ref<number | string> = ref(""); // id of response style
-
-const models: Ref<ModelType[]> = ref<ModelType[]>([]);
-const responseStyles: Ref<ResponseStyleType[]> = ref([]);
+const language = ref(""); // current language
 const languages = ref({});
 
 const beenChanged = ref(false);
-// const isDrawerOpened = ref<boolean>(false);
 const isDrawerOpened = computed({
   get() {
     return useEnv().settingsMenuOpened.value;
@@ -125,26 +115,14 @@ const isDrawerOpened = computed({
 let $settings = useSettings();
 const userLimit = ref<UserLimits | null>(null);
 
-const clickResponseStyles = () => {
-  if (!useSettings().hasFeature(FeatureType.responseStyle)) {
-    toastFeatureUnavailable(t);
-  }
-}
-
 const initSettings = async () => {
   let config = $settings.getConfig();
   if (!config) return;
 
-  models.value = config.models;
-
-  responseStyles.value = config.responseStyles
-
   languages.value = config.languages
 
   // Fetching data from user settings controller
-  llm.value = $settings.getLlm()?.title;
   language.value = $settings.getLanguage();
-  responseStyle.value = $settings.getResponseStyle()?.id || null;
 
   await nextTick(() => {
     beenChanged.value = false;
@@ -163,12 +141,8 @@ watch($settings.loaded, async value => {
   await initSettings();
 })
 
-watch([llm, language, responseStyle], ([llmName, lang, style_id,]) => {
-  beenChanged.value = $settings.isBeenChanged(lang, style_id, llmName);
-})
-
-const llmNames = computed(() => {
-  return models.value.map(item => item.title);
+watch(language, (lang) => {
+  beenChanged.value = $settings.isBeenChanged(lang);
 })
 
 const saveChanges = async () => {
@@ -184,28 +158,18 @@ const saveChanges = async () => {
     return;
   }
 
-  // Save previous values for rollback
-  const prevLlm = llm.value;
+  // Save previous value for rollback
   const prevLanguage = language.value;
-  const prevResponseStyle = responseStyle.value;
   const prevLocale = locale.value;
 
   locale.value = language.value;
   beenChanged.value = false;
 
-  const newStyle: ResponseStyleType = responseStyles.value.find(item => item.id === responseStyle.value);
-  const newLlm = models.value.find(item => item.title === llm.value);
-  const newLang = language.value;
-
   try {
-    await $settings.saveChanges(newLang, newStyle, newLlm);
-    // Save to localStorage on success (same as LanguageSelector)
-    localStorage.setItem('preferred-locale', newLang);
+    await $settings.saveLanguage(language.value);
   } catch (error) {
-    // Rollback to previous values on error
-    llm.value = prevLlm;
+    // Rollback to previous value on error
     language.value = prevLanguage;
-    responseStyle.value = prevResponseStyle;
     locale.value = prevLocale;
     beenChanged.value = true;
   }
@@ -216,10 +180,8 @@ watch(isDrawerOpened, async (value) => {
     return;
   }
 
-  // Sync local values with store on drawer open
-  llm.value = $settings.getLlm()?.title;
+  // Sync local value with store on drawer open
   language.value = $settings.getLanguage();
-  responseStyle.value = $settings.getResponseStyle()?.id || null;
 
   await nextTick(() => {
     beenChanged.value = false;

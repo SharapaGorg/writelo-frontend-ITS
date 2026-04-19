@@ -1,3 +1,6 @@
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import type { UserDto } from '~/scripts/shared/types/workspace'
+
 let entity: null | UserController = null;
 
 export function useUserController() {
@@ -12,7 +15,8 @@ export function useUserController() {
 class UserController {
     private telegram_id: number | null = 778327202;
     private authToken: Ref<string>;
-    private authTokenName = 'neovision-ai-bot-auth-token';
+    private authTokenName = 'writelo-auth-token';
+    private legacyTokenName = 'neovision-ai-bot-auth-token';
 
     private readyListeners: Array<() => void> = [];
     private inited = false;
@@ -21,16 +25,20 @@ class UserController {
 
     constructor() {
         const isProduction = process.env.NODE_ENV === 'production';
+
+        // Clear legacy cookie (force re-login for migration)
+        const legacyCookie = useCookie(this.legacyTokenName);
+        if (legacyCookie.value) {
+            console.log('[UserController] Clearing legacy auth token');
+            legacyCookie.value = null;
+        }
+
         this.authToken = useCookie(this.authTokenName, {
             secure: isProduction,
             httpOnly: false,  // Must be false - we set token from frontend JS
             sameSite: 'lax',
             maxAge: 60 * 60 * 24 * 30  // 30 days
         });
-
-        if (!isProduction) {
-            // this.authToken.value = ""; // блять что это за хуета?
-        }
 
         this.readyPromise = new Promise(resolve => {
             this.readyResolve = resolve;
@@ -48,10 +56,6 @@ class UserController {
                 await this.initUserFromTelegram();
             } else {
                 await new Promise(resolve => setTimeout(resolve, 1));
-                // this.authToken.value = this.telegram_id as any;
-                // this.authToken.value = '__DEV__778327202__RADOLYN__';
-                // this.authToken.value = '__DEV__139303278__RADOLYN__'
-                // this.authToken.value = '__DEV__6118371448__RADOLYN__';
             }
         } catch (e) {
             console.error('[UserController] init error:', e);
@@ -101,14 +105,24 @@ class UserController {
 
             if (user && user.id) {
                 this.telegram_id = user.id;
-                // this.setAuthToken(String(user.id));
             }
         }
     }
 
-    setAuthToken(token: string) {
-        console.warn('SET AUTH TOKEN');
+    /**
+     * Set auth token and optionally initialize workspace context
+     * @param token JWT or Telegram initData
+     * @param user Optional user data from auth response
+     */
+    setAuthToken(token: string, user?: UserDto) {
+        console.log('[UserController] Setting auth token');
         this.authToken.value = token;
+
+        // Initialize workspace context if user has primaryWorkspaceId
+        if (user?.primaryWorkspaceId) {
+            const workspaceContext = useWorkspaceContext();
+            workspaceContext.initialize(user.primaryWorkspaceId);
+        }
     }
 
     getToken() {
@@ -117,9 +131,19 @@ class UserController {
 
     clearToken() {
         this.authToken.value = '';
+        // Clear workspace context on logout
+        const workspaceContext = useWorkspaceContext();
+        workspaceContext.clear();
     }
 
     getTelegramId() {
         return this.telegram_id;
+    }
+
+    /**
+     * Check if user is authenticated
+     */
+    isAuthenticated(): boolean {
+        return !!this.authToken.value;
     }
 }

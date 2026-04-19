@@ -1,21 +1,39 @@
-import type {UserType} from "~/scripts/shared/types/user";
-import {ApiAliases, RequestMethod} from "~/scripts/shared/types";
-import type {ConfigType} from "~/scripts/shared/types/common";
-import type {CurrentPopupType} from "~/scripts/shared/types/communication";
+import type { UserType } from '~/scripts/shared/types/user'
+import { ApiAliases, RequestMethod, buildUrl } from '~/scripts/shared/types'
+import type { ConfigType } from '~/scripts/shared/types/common'
+import type { CurrentPopupType } from '~/scripts/shared/types/communication'
 import type {
     ConversationType,
     CreateConversationResponse,
     FileTypesResponse,
     ShortConversationType,
     UploadFileResponse
-} from "~/lib-modules/conversations";
-import type {SendMessageBody} from "~/scripts/shared/types/private";
-import type {CreatePaymentType, PaymentProvider} from "~/scripts/shared/types/payment";
-import {toastError, toastForbidden, toastRateLimit, toastGenericError} from "~/scripts/features/utils/toater";
-import {process} from "std-env";
-import {useAttachMedia} from "~/composables/useAttachMedia";
-import type {UserGift} from "~/lib-modules/profile/types";
-import {unref} from "vue";
+} from '~/lib-modules/conversations'
+import type { SendMessageBody } from '~/scripts/shared/types/private'
+import type { CreatePaymentType, PaymentProvider } from '~/scripts/shared/types/payment'
+import { toastError, toastForbidden, toastRateLimit, toastGenericError } from '~/scripts/features/utils/toater'
+import { process } from 'std-env'
+import { useAttachMedia } from '~/composables/useAttachMedia'
+import type { UserGift } from '~/lib-modules/profile/types'
+import { unref } from 'vue'
+
+// New workspace-scoped types
+import type {
+    PagedResponse,
+    ConversationListItemDto,
+    ConversationDetailDto,
+    GeneratedImageDto,
+    InitUploadRequest,
+    InitUploadResponse,
+    FinalizeUploadRequest,
+    FinalizeUploadResponse,
+    GenerateImageRequest,
+    EditImageRequest,
+    DownloadUrlResponse,
+    NewConfigDto,
+    UserDto,
+} from '~/scripts/shared/types/workspace'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 type ResponseError = {
     name: string,
@@ -52,7 +70,7 @@ export class ApiController {
             // Fallback if called outside Nuxt context
             return process.env.NODE_ENV === 'production'
                 ? 'https://writelo.io/api/'
-                : 'https://nv2.radolyn.com/api/';
+                : 'https://staging.writelo.io/api/';
         }
     }
 
@@ -438,20 +456,22 @@ export class ApiController {
 
 
     /**
-     * Saving base settings
-     *
-     * @param language language of an interface
-     * @param responseStyle current response style
-     * @param model llm
-     *
-     * Other settings, like current model or enabled tools are fetched from the last request to LLM
-     * (other settings are memorized from the previous requests)
+     * Update user settings (language)
+     * @param language Interface language (en or ru)
      */
-    async saveSettings(language: string, responseStyle: number | null, model: string | null): Promise<void> {
+    async saveSettings(language: string): Promise<void> {
         return this.request(ApiAliases.me, RequestMethod.PATCH, {
             language: language,
-            currentStyle: responseStyle,
-            currentModel: model
+        });
+    }
+
+    /**
+     * Update user role
+     * @param roleId Role prompt ID (null to clear)
+     */
+    async updateUserRole(roleId: number | null): Promise<void> {
+        return this.request(ApiAliases.me, RequestMethod.PATCH, {
+            currentRole: roleId,
         });
     }
 
@@ -569,5 +589,228 @@ export class ApiController {
      */
     async cancelEmailChange(): Promise<void> {
         return this.request('me/email/pending', RequestMethod.DELETE)
+    }
+
+    // ====== NEW WORKSPACE-SCOPED METHODS ======
+
+    /**
+     * Get current user profile (new API format)
+     */
+    async getMeNew(): Promise<UserDto> {
+        return this.request(ApiAliases.me)
+    }
+
+    /**
+     * Get app config (new API format)
+     */
+    async getConfigNew(): Promise<NewConfigDto> {
+        return this.request(ApiAliases.config)
+    }
+
+    // === Workspace-scoped Conversations ===
+
+    /**
+     * Get conversations for a workspace
+     */
+    async getWorkspaceConversations(
+        workspaceId: string,
+        offset: number = 0,
+        limit: number = 20
+    ): Promise<PagedResponse<ConversationListItemDto>> {
+        const url = buildUrl(ApiAliases.workspaceConversations, { workspaceId })
+        return this.request(url, RequestMethod.GET, { offset, limit })
+    }
+
+    /**
+     * Get a single conversation with messages
+     */
+    async getWorkspaceConversation(
+        workspaceId: string,
+        conversationId: string
+    ): Promise<ConversationDetailDto> {
+        const url = buildUrl(ApiAliases.workspaceConversation, { workspaceId, conversationId })
+        return this.request(url)
+    }
+
+    /**
+     * Create a new conversation in workspace
+     */
+    async createWorkspaceConversation(
+        workspaceId: string,
+        title?: string | null
+    ): Promise<ConversationDetailDto> {
+        const url = buildUrl(ApiAliases.workspaceConversations, { workspaceId })
+        return this.request(url, RequestMethod.POST, { title: title || null })
+    }
+
+    /**
+     * Delete a conversation
+     */
+    async deleteWorkspaceConversation(
+        workspaceId: string,
+        conversationId: string
+    ): Promise<void> {
+        const url = buildUrl(ApiAliases.workspaceConversation, { workspaceId, conversationId })
+        return this.request(url, RequestMethod.DELETE)
+    }
+
+    /**
+     * Send message in a workspace conversation (streaming)
+     */
+    async sendWorkspaceMessage(
+        workspaceId: string,
+        conversationId: string,
+        messageText: string,
+        files?: string[]
+    ): Promise<ReadableStream<Uint8Array>> {
+        const url = buildUrl(ApiAliases.workspaceConversationMessages, { workspaceId, conversationId })
+        const body = {
+            message: messageText,
+            files: files?.length ? files : undefined
+        }
+        return this.request(url, RequestMethod.POST, body, true)
+    }
+
+    /**
+     * Edit message in a workspace conversation (streaming)
+     */
+    async editWorkspaceMessage(
+        workspaceId: string,
+        conversationId: string,
+        messageId: number,
+        newText: string
+    ): Promise<ReadableStream<Uint8Array>> {
+        const url = buildUrl(ApiAliases.workspaceConversationMessage, {
+            workspaceId,
+            conversationId,
+            messageId: String(messageId)
+        })
+        return this.request(url, RequestMethod.PATCH, { message: newText }, true)
+    }
+
+    /**
+     * Reroll last message (streaming)
+     */
+    async rerollWorkspaceMessage(
+        workspaceId: string,
+        conversationId: string
+    ): Promise<ReadableStream<Uint8Array>> {
+        const url = buildUrl(ApiAliases.workspaceConversationReroll, { workspaceId, conversationId })
+        return this.request(url, RequestMethod.POST, {}, true)
+    }
+
+    /**
+     * Stop generation in workspace conversation
+     */
+    async stopWorkspaceGeneration(
+        workspaceId: string,
+        conversationId: string
+    ): Promise<void> {
+        const url = buildUrl(ApiAliases.workspaceConversationStop, { workspaceId, conversationId })
+        return this.request(url, RequestMethod.POST)
+    }
+
+    // === Workspace-scoped File Upload ===
+
+    /**
+     * Initialize file upload (step 1)
+     */
+    async initUpload(
+        workspaceId: string,
+        request: InitUploadRequest
+    ): Promise<InitUploadResponse> {
+        const url = buildUrl(ApiAliases.workspaceUploadsInit, { workspaceId })
+        return this.request(url, RequestMethod.POST, request)
+    }
+
+    /**
+     * Finalize file upload (step 3, after S3 upload)
+     */
+    async finalizeUpload(
+        workspaceId: string,
+        request: FinalizeUploadRequest
+    ): Promise<FinalizeUploadResponse> {
+        const url = buildUrl(ApiAliases.workspaceUploadsFinalize, { workspaceId })
+        return this.request(url, RequestMethod.POST, request)
+    }
+
+    /**
+     * Get download URL for a storage object
+     */
+    async getStorageDownloadUrl(
+        workspaceId: string,
+        objectId: string
+    ): Promise<DownloadUrlResponse> {
+        const url = buildUrl(ApiAliases.workspaceStorageDownload, { workspaceId, objectId })
+        return this.request(url, RequestMethod.POST)
+    }
+
+    // === Workspace-scoped Images ===
+
+    /**
+     * Generate image in workspace
+     */
+    async generateWorkspaceImage(
+        workspaceId: string,
+        request: GenerateImageRequest
+    ): Promise<GeneratedImageDto> {
+        const url = buildUrl(ApiAliases.workspaceImagesGenerate, { workspaceId })
+        return this.request(url, RequestMethod.POST, request)
+    }
+
+    /**
+     * Edit image in workspace
+     */
+    async editWorkspaceImage(
+        workspaceId: string,
+        request: EditImageRequest
+    ): Promise<GeneratedImageDto> {
+        const url = buildUrl(ApiAliases.workspaceImagesEdit, { workspaceId })
+        return this.request(url, RequestMethod.POST, request)
+    }
+
+    /**
+     * Get image history for workspace
+     */
+    async getWorkspaceImageHistory(
+        workspaceId: string,
+        offset: number = 0,
+        limit: number = 20
+    ): Promise<PagedResponse<GeneratedImageDto>> {
+        const url = buildUrl(ApiAliases.workspaceImages, { workspaceId })
+        return this.request(url, RequestMethod.GET, { offset, limit })
+    }
+
+    /**
+     * Get single image by ID
+     */
+    async getWorkspaceImage(
+        workspaceId: string,
+        imageId: string
+    ): Promise<GeneratedImageDto> {
+        const url = buildUrl(ApiAliases.workspaceImage, { workspaceId, imageId })
+        return this.request(url)
+    }
+
+    /**
+     * Get download URL for generated image
+     */
+    async getWorkspaceImageDownloadUrl(
+        workspaceId: string,
+        imageId: string
+    ): Promise<DownloadUrlResponse> {
+        const url = buildUrl(ApiAliases.workspaceImageDownload, { workspaceId, imageId })
+        return this.request(url, RequestMethod.POST)
+    }
+
+    // === Helper to get current workspace ID ===
+
+    /**
+     * Get current workspace ID from context
+     * Throws if no workspace is selected
+     */
+    protected getCurrentWorkspaceId(): string {
+        const context = useWorkspaceContext()
+        return context.requireWorkspaceId()
     }
 }
