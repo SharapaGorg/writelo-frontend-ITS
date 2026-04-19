@@ -24,7 +24,7 @@ class UserController {
     private readyResolve!: () => void;
 
     constructor() {
-        const isProduction = process.env.NODE_ENV === 'production';
+        const isProduction = (process.env.APP_ENV || process.env.NODE_ENV) === 'production';
 
         // Clear legacy cookie (force re-login for migration)
         const legacyCookie = useCookie(this.legacyTokenName);
@@ -32,7 +32,6 @@ class UserController {
             console.log('[UserController] Clearing legacy auth token');
             legacyCookie.value = null;
         }
-
         this.authToken = useCookie(this.authTokenName, {
             secure: isProduction,
             httpOnly: false,  // Must be false - we set token from frontend JS
@@ -51,7 +50,7 @@ class UserController {
             return;
         }
         try {
-            if (process.env.NODE_ENV === 'production') {
+            if ((process.env.APP_ENV || process.env.NODE_ENV) === 'production') {
                 await this.initTelegramSettings();
                 await this.initUserFromTelegram();
             } else {
