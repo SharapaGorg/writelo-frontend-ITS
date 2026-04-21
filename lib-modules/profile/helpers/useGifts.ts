@@ -22,9 +22,13 @@ const DEMO_GIFTS: UserGift[] = [
     }
 ];
 
+const PAGE_SIZE = 50;
+
 export const useGifts = () => {
     const fetchGifts = async () => {
-        // In demo mode, use static gifts
+        giftsFetched.value = false;
+        gifts.value = [];
+
         const userController = useUserController();
         if (!userController.getToken()) {
             gifts.value = [...DEMO_GIFTS];
@@ -32,19 +36,21 @@ export const useGifts = () => {
             return;
         }
 
-        let init = 0;
-        const step = 3;
-
-        while (true) {
-            let response = await $api.getUserGifts(init, step);
-
-            gifts.value = [...gifts.value, ...response]
-            init += step;
-
-            if (!response.length) {
-                giftsFetched.value = true;
-                break;
+        try {
+            let offset = 0;
+            while (true) {
+                const response = await $api.getUserGifts(offset, PAGE_SIZE);
+                const page = Array.isArray(response) ? response : [];
+                if (page.length) {
+                    gifts.value = [...gifts.value, ...page];
+                    offset += page.length;
+                }
+                if (page.length < PAGE_SIZE) break;
             }
+        } catch (e) {
+            console.warn('[useGifts] failed to fetch gifts', e);
+        } finally {
+            giftsFetched.value = true;
         }
     }
 

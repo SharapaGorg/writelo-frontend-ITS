@@ -3,7 +3,6 @@
 import ProfilePageBlock from "./ProfilePageBlock.vue";
 import SubscriptionGift from "./SubscriptionGift.vue";
 import {useGifts} from "~/lib-modules/profile/helpers/useGifts";
-import Spinner from "~/components/atoms/Spinner.vue";
 import {Input} from "~/components/ui/input";
 import {Gift, LoaderCircle} from "lucide-vue-next";
 import {ApiController} from "~/scripts/shared/api/controller";
@@ -97,7 +96,13 @@ onBeforeMount(async () => {
       </div>
 
       <div class="gifts-section__container" v-if="gifts.length || !giftsFetched">
-        <Spinner v-if="!giftsFetched"/>
+        <template v-if="!giftsFetched">
+          <div
+              v-for="n in 2"
+              :key="`gift-skeleton-${n}`"
+              class="gifts-section__skeleton"
+          />
+        </template>
         <SubscriptionGift
             v-for="gift in gifts"
             :key="gift.hash"
@@ -124,6 +129,16 @@ onBeforeMount(async () => {
 
 .gifts-section__error {
   @apply text-sm text-red-500;
+}
+
+.gifts-section__skeleton {
+  @apply w-full h-[52px] rounded-lg border-2 border-input bg-muted/40;
+  animation: gifts-skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes gifts-skeleton-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
 }
 
 .gifts-section__container {

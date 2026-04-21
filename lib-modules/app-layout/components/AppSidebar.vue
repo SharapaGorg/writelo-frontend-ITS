@@ -74,7 +74,14 @@ function navigate(item: SidebarItem) {
         isCollapsed ? 'justify-center' : 'justify-between'
       )"
     >
-      <span v-if="!isCollapsed" class="text-lg font-semibold">Writelo</span>
+      <div v-if="!isCollapsed" class="flex items-baseline gap-1.5">
+        <span class="text-lg font-semibold">Writelo</span>
+        <span
+          class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded bg-primary/10 text-primary leading-none"
+        >
+          beta
+        </span>
+      </div>
       <Button
         variant="ghost"
         size="icon"
