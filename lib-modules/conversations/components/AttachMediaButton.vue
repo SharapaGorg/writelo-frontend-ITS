@@ -19,22 +19,17 @@
 
 <script setup lang="ts">
 import {Paperclip} from "lucide-vue-next";
-import {ref} from 'vue';
-import {ApiController} from "~/scripts/shared/api/controller";
+import {computed, ref} from 'vue';
+import {useSettings} from "~/composables/settings";
 
-const apiController = new ApiController();
+const {config} = useSettings();
 const fileInput = ref<HTMLInputElement | null>(null);
 
-const fileTypes = ref([]);
-
-onMounted(async () => {
-  const response = await apiController.getFileTypes();
-  if (!response?.extensions) return;
-
-  for (let key in response.extensions) {
-    fileTypes.value = [...fileTypes.value, ...response.extensions[key]];
-  }
-})
+const fileTypes = computed(() => {
+  const extensions = config.value?.filesConfig?.extensions;
+  if (!extensions) return [];
+  return Object.values(extensions).flat();
+});
 
 const triggerFileInput = () => {
   fileInput.value?.click();
