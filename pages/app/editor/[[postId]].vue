@@ -11,6 +11,7 @@ import {
 } from '~/lib-modules/content-editor'
 import { useContentProjectStore } from '~/lib-modules/content-calendar'
 import { ApiController } from '~/scripts/shared/api/controller'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 definePageMeta({
   layout: 'app'
@@ -46,10 +47,16 @@ onMounted(async () => {
   // Load existing chat if chat ID in URL
   if (chatId && chatId !== conversationId.value) {
     try {
-      const conversation = await apiController.getConversation(chatId)
+      const {requireWorkspaceId} = useWorkspaceContext()
+      const conversation = await apiController.getWorkspaceConversation(requireWorkspaceId(), chatId)
       if (conversation?.messages?.length) {
         setConversationId(chatId)
-        loadChatMessages(conversation.messages)
+        loadChatMessages(conversation.messages.map(m => ({
+          id: m.id,
+          role: m.role === 'assistant' ? 0 : 1,
+          text: m.text ?? '',
+          createdAt: m.createdAt,
+        })))
       }
     } catch (error) {
       console.error('Failed to load chat:', error)

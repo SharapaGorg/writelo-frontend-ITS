@@ -8,16 +8,21 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  Film
+  Film,
+  LogIn
 } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
 import { useAppLayout } from '../composables/useAppLayout'
 import type { SidebarItem } from '../types'
+import { useUserController } from '~/composables/user'
 
 const router = useRouter()
 const route = useRoute()
 const { isCollapsed, sidebarItems, bottomItems, toggleSidebar } = useAppLayout()
+
+const userController = useUserController()
+const isAuthenticated = computed(() => userController.isAuthenticated())
 
 const iconComponents: Record<string, typeof Calendar> = {
   'calendar': Calendar,
@@ -83,6 +88,30 @@ function navigate(item: SidebarItem) {
         <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
       </Button>
     </nav>
+
+    <!-- Auth state banner (shown when not signed in) -->
+    <div
+      v-if="!isAuthenticated"
+      class="p-2 border-t border-border"
+    >
+      <Button
+        variant="default"
+        :class="cn(
+          'w-full gap-2 h-10 bg-primary text-primary-foreground hover:bg-primary/90',
+          isCollapsed ? 'justify-center px-2' : 'justify-start'
+        )"
+        @click="router.push('/auth')"
+      >
+        <LogIn class="h-5 w-5 shrink-0" />
+        <span v-if="!isCollapsed" class="truncate">Войти в аккаунт</span>
+      </Button>
+      <p
+        v-if="!isCollapsed"
+        class="mt-2 px-2 text-xs text-muted-foreground leading-snug"
+      >
+        Сейчас вы не авторизованы — часть функций недоступна
+      </p>
+    </div>
 
     <!-- Bottom Navigation -->
     <div class="flex flex-col gap-1 p-2 border-t border-border">

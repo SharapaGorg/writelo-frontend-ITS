@@ -13,7 +13,7 @@ const {elementRef, isVisible} = useScrollAnimation(0.2)
 function handleCTA(tier: 'free' | 'pro') {
   $trackGoal('landing_cta_click', { button: `pricing_${tier}` })
   if (userController.getToken()) {
-    router.push(Routes.newConversation)
+    router.push(Routes.app)
   } else {
     router.push('/auth')
   }

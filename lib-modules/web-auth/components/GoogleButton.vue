@@ -129,7 +129,7 @@ async function processIdToken(idToken: string) {
         await settings.init(locale)
 
         toast.success(t('google.success'), {position: getToasterPosition()})
-        await navigateTo(Routes.newConversation)
+        await navigateTo(Routes.app)
       }
     } else {
       await authApi.linkGoogle(idToken)

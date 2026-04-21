@@ -202,7 +202,7 @@ async function processAuthData(data: TelegramAuthData) {
         await settings.init(locale)
 
         toast.success(t('telegram.success'), {position: getToasterPosition()})
-        await navigateTo(Routes.newConversation)
+        await navigateTo(Routes.app)
       }
     } else {
       await authApi.linkTelegram(data)

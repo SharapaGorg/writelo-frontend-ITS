@@ -171,7 +171,7 @@ export const useOnboarding = () => {
 
     const start = async () => {
         // Navigate and wait for the route change to complete
-        await navigateTo(Routes.newConversation);
+        await navigateTo(Routes.app);
 
         const items = getLocalizedItems();
         if (items.length === 0) {

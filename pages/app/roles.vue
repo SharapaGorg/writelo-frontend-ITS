@@ -2,45 +2,22 @@
   <div class="p-10 gap-10 grid grid-cols-2 w-fit">
     <Role
         v-for="role in roles"
-        :key="role.name"
-        :image="role.image"
+        :key="role.id"
+        :image="'/roles/' + role.icon + '.png'"
         :name="role.name"
     />
+    <div v-if="!roles.length" class="text-zinc-500">
+      {{ $t('no-roles') }}
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-
+import { computed } from 'vue'
 import Role from "~/components/molecules/Role.vue";
+import { useSettings } from '~/composables/settings'
 
-type Role = {
-  image: string,
-  name: string,
-  description?: string,
-  dialog?: string // example of a dialog
-}
+const settings = useSettings()
 
-const roles: Role[] = [
-  {
-    image: "/roles/sherlok.png",
-    name: "Маэстро идей"
-  },
-  {
-    image: "/roles/sherlok.png",
-    name: "Детектив"
-  },
-  {
-    image: "/roles/smart1.png",
-    name: "Философ"
-  },
-  {
-    image: "/roles/sherlok.png",
-    name: "Хакер"
-  },
-]
-
+const roles = computed(() => settings.getConfig()?.roles ?? [])
 </script>
-
-<style scoped>
-
-</style>

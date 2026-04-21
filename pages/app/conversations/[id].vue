@@ -30,15 +30,29 @@ import {MessagesSection, SendMessageSection} from "~/lib-modules/conversations";
 import {ApiController} from "~/scripts/shared/api/controller";
 import Loader from "~/components/atoms/Loader.vue";
 import {Routes} from "~/scripts/shared/types";
+import type {MessageDto} from "~/scripts/shared/types/workspace";
 import {toastAlreadyNewChat} from "~/scripts/features/utils/toater";
 import {useI18n} from 'vue-i18n'
 import {eventBus, type EventEditMessage} from '~/composables/eventBus'
 import type {FillNewConversationType} from "~/composables/eventBus/types";
 import {FeatureType} from "~/scripts/shared/types/common";
 import FileDropZone from "~/components/atoms/FileDropZone.vue";
-import {useProjectsStore} from "~/lib-modules/projects";
+import {useWorkspaceContext} from "~/lib-modules/workspaces";
 import {useConversationsStore} from "~/stores/conversations";
 import { useDemoMode, useDemoGuard, DemoIndicator, isDemoConversation, getDemoConversation } from '~/lib-modules/demo-mode'
+
+function adaptMessage(dto: MessageDto): MessageType {
+  return {
+    id: dto.id,
+    role: dto.role === 'user' ? Role.user : Role.assistant,
+    text: dto.text ?? '',
+    file: undefined as any,
+    files: [],
+    createdAt: dto.createdAt,
+    processing: false,
+    error: false,
+  }
+}
 
 const {t} = useI18n();
 const conversationsStore = useConversationsStore();
@@ -98,19 +112,13 @@ const myNewMessage = async (
   }
 
   if (conversation_id.value === 'new') {
-    const projectsStore = useProjectsStore();
-    const newConversation = await apiController.createConversation(projectsStore.selectedProjectId);
+    const {requireWorkspaceId} = useWorkspaceContext();
+    const workspaceId = requireWorkspaceId();
+    const newConversation = await apiController.createWorkspaceConversation(workspaceId);
 
-    // Add to conversations list
-    conversationsStore.addConversation({
-      privateId: newConversation.privateId,
-      title: newConversation.title,
-      shareId: newConversation.shareId,
-      createdAt: newConversation.createdAt,
-      modifiedAt: newConversation.modifiedAt
-    });
+    conversationsStore.addConversationDto(newConversation);
 
-    await navigateTo(Routes.conversations + newConversation.privateId);
+    await navigateTo(Routes.conversations + newConversation.id);
 
     eventBus.emit("fillNewConversation", {
       message: messageText,
@@ -150,14 +158,17 @@ const myNewMessage = async (
         }
       }
 
+      const {requireWorkspaceId} = useWorkspaceContext();
+      const workspaceId = requireWorkspaceId();
+      const convId = conversation_id.value as string;
+
       switch (action) {
         case Action.reroll:
-          return apiController.rerollMessage(conversation_id.value as string, response_uuid)
+          return apiController.rerollWorkspaceMessage(workspaceId, convId)
         case Action.newMessage:
-          return apiController.sendMessage(conversation_id.value as string, messageText, request_uuid, response_uuid);
+          return apiController.sendWorkspaceMessage(workspaceId, convId, messageText);
         case Action.edit:
-          await apiController.editMessage(conversation_id.value as string, message_id, messageText);
-          return apiController.rerollMessage(conversation_id.value as string, response_uuid);
+          return apiController.editWorkspaceMessage(workspaceId, convId, message_id as number, messageText);
       }
     })();
 
@@ -334,7 +345,8 @@ const stopGeneration = async () => {
 
   // Skip API call in demo mode
   if (!isGuestDemo.value) {
-    await apiController.stopGeneration(conversation_id.value);
+    const {requireWorkspaceId} = useWorkspaceContext();
+    await apiController.stopWorkspaceGeneration(requireWorkspaceId(), conversation_id.value as string);
   }
 }
 
@@ -364,10 +376,11 @@ onBeforeMount(async () => {
     }
   }
 
-  let response = await apiController.getConversation(conversationId);
+  const {requireWorkspaceId} = useWorkspaceContext();
+  const response = await apiController.getWorkspaceConversation(requireWorkspaceId(), conversationId);
 
   if (response?.messages?.length) {
-    messages.value = response.messages;
+    messages.value = response.messages.map(adaptMessage);
   }
 
   await nextTick(() => {

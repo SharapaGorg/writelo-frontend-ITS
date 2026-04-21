@@ -33,7 +33,9 @@ import type {
     NewConfigDto,
     UserDto,
 } from '~/scripts/shared/types/workspace'
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
+// Direct import (not via barrel) to avoid circular dependency:
+// workspaces/index.ts → helpers/api.ts → this file → workspaces barrel
+import { useWorkspaceContext } from '~/lib-modules/workspaces/composables/useWorkspaceContext'
 
 type ResponseError = {
     name: string,

@@ -1,25 +1,21 @@
 import { ref, computed, watch } from 'vue'
 import { storeToRefs } from 'pinia'
-import type { SocialNetwork, CalendarPost, InfoEvent, PostStatus, ContentTag, SocialAccount } from '../types'
+import type { CalendarPost, InfoEvent, PostStatus, ContentTag, SocialAccount } from '../types'
 import { useContentProjectStore } from '../stores/contentProjectStore'
 
 export function useContentCalendar() {
-  // Use shared project store
   const projectStore = useContentProjectStore()
-  const { projects, selectedProjectId, currentProject } = storeToRefs(projectStore)
+  const { projects, selectedProjectId, currentProject, loading } = storeToRefs(projectStore)
 
   // State
   const selectedDate = ref<string | null>(null)
   const selectedPostId = ref<string | null>(null)
   const activeAccountIds = ref<string[]>([])
   const activeStatuses = ref<PostStatus[]>(['idea', 'draft', 'ready', 'published'])
-  const activeTags = ref<string[]>([]) // Empty = show all, non-empty = filter
+  const activeTags = ref<string[]>([])
   const currentMonth = ref<Date>(new Date())
 
-  // Track which news items have been used (newsId -> date)
   const usedNews = ref<Record<string, string>>({})
-
-  // Track which trends have been used (trendId -> date)
   const usedTrends = ref<Record<string, string>>({})
 
   // Reset tags, usedNews, and initialize activeAccountIds when project changes
@@ -27,59 +23,60 @@ export function useContentCalendar() {
     activeTags.value = []
     usedNews.value = {}
     usedTrends.value = {}
-    // Initialize with all accounts from the new project
-    const project = projects.value.find(p => p.id === selectedProjectId.value)
+    const project = currentProject.value
     if (project) {
       activeAccountIds.value = project.accounts.map(a => a.id)
+    } else {
+      activeAccountIds.value = []
     }
   }, { immediate: true })
 
-  // Filtered posts by active accounts, statuses, and tags
-  const filteredPosts = computed(() =>
-    currentProject.value.posts.filter(post => {
+  // Also re-init activeAccountIds when the current project's accounts list is populated (async fetch)
+  watch(() => currentProject.value?.accounts.map(a => a.id).join(','), (newIds) => {
+    if (!newIds) return
+    if (activeAccountIds.value.length === 0) {
+      activeAccountIds.value = currentProject.value?.accounts.map(a => a.id) ?? []
+    }
+  })
+
+  const filteredPosts = computed(() => {
+    const posts = currentProject.value?.posts ?? []
+    return posts.filter(post => {
       const matchesAccount = activeAccountIds.value.includes(post.accountId)
       const matchesStatus = activeStatuses.value.includes(post.status)
-      // If no tags selected, show all; otherwise filter by selected tags
       const matchesTags = activeTags.value.length === 0 ||
         post.tags.some(t => activeTags.value.includes(t))
       return matchesAccount && matchesStatus && matchesTags
     })
-  )
+  })
 
-  // Posts for selected date
   const postsForSelectedDate = computed(() => {
     if (!selectedDate.value) return []
     return filteredPosts.value.filter(p => p.date === selectedDate.value)
   })
 
-  // Info events for selected date
   const infoEventsForSelectedDate = computed(() => {
     if (!selectedDate.value) return []
-    return currentProject.value.infoEvents.filter(e => e.date === selectedDate.value)
+    return (currentProject.value?.infoEvents ?? []).filter(e => e.date === selectedDate.value)
   })
 
-  // Selected post object
   const selectedPost = computed(() => {
     if (!selectedPostId.value) return null
-    return currentProject.value.posts.find(p => p.id === selectedPostId.value) ?? null
+    return (currentProject.value?.posts ?? []).find(p => p.id === selectedPostId.value) ?? null
   })
 
-  // Get posts for a specific date (for calendar grid)
   function getPostsForDate(date: string): CalendarPost[] {
     return filteredPosts.value.filter(p => p.date === date)
   }
 
-  // Check if date has info event
   function hasInfoEvent(date: string): boolean {
-    return currentProject.value.infoEvents.some(e => e.date === date)
+    return (currentProject.value?.infoEvents ?? []).some(e => e.date === date)
   }
 
-  // Get info event for date
   function getInfoEvent(date: string): InfoEvent | undefined {
-    return currentProject.value.infoEvents.find(e => e.date === date)
+    return (currentProject.value?.infoEvents ?? []).find(e => e.date === date)
   }
 
-  // Actions
   function selectProject(projectId: string) {
     projectStore.selectProject(projectId)
     selectedDate.value = null
@@ -104,11 +101,9 @@ export function useContentCalendar() {
     }
   }
 
-  // Helper to get account by ID
   function getAccountById(accountId: string): SocialAccount | undefined {
-    return currentProject.value.accounts.find(a => a.id === accountId)
+    return (currentProject.value?.accounts ?? []).find(a => a.id === accountId)
   }
-
 
   function toggleStatus(status: PostStatus) {
     const index = activeStatuses.value.indexOf(status)
@@ -129,51 +124,19 @@ export function useContentCalendar() {
   }
 
   function getTagById(tagId: string): ContentTag | undefined {
-    return currentProject.value.tags.find(t => t.id === tagId)
+    return (currentProject.value?.tags ?? []).find(t => t.id === tagId)
   }
 
   function updatePost(postId: string, updates: Partial<CalendarPost>) {
-    const project = projects.value.find(p => p.id === selectedProjectId.value)
-    if (!project) return
-
-    const postIndex = project.posts.findIndex(p => p.id === postId)
-    if (postIndex === -1) return
-
-    Object.assign(project.posts[postIndex], updates)
+    return projectStore.updatePost(postId, updates)
   }
 
-  function createPost(post: Omit<CalendarPost, 'id'>): CalendarPost | null {
-    const project = projects.value.find(p => p.id === selectedProjectId.value)
-    if (!project) return null
-
-    const newPost: CalendarPost = {
-      ...post,
-      id: `post-${Date.now()}`
-    }
-    project.posts.push(newPost)
-    return newPost
+  function createPost(post: Omit<CalendarPost, 'id'>): Promise<CalendarPost | null> {
+    return projectStore.createPost(post)
   }
 
-  function deletePost(postId: string): boolean {
-    const project = projects.value.find(p => p.id === selectedProjectId.value)
-    if (!project) return false
-
-    const postIndex = project.posts.findIndex(p => p.id === postId)
-    if (postIndex === -1) return false
-
-    // Clear news tracking if this post was created from a news item
-    const post = project.posts[postIndex]
-    if (post.sourceNewsId && usedNews.value[post.sourceNewsId]) {
-      delete usedNews.value[post.sourceNewsId]
-    }
-
-    // Clear trend tracking if this post was created from a trend
-    if (post.sourceTrendId && usedTrends.value[post.sourceTrendId]) {
-      delete usedTrends.value[post.sourceTrendId]
-    }
-
-    project.posts.splice(postIndex, 1)
-    return true
+  function deletePost(postId: string): Promise<boolean> {
+    return projectStore.deletePost(postId)
   }
 
   function markNewsAsUsed(newsId: string, date: string) {
@@ -192,28 +155,16 @@ export function useContentCalendar() {
     return usedTrends.value[trendId] || null
   }
 
-  // Random color for new tags
   const tagColors = [
     'bg-emerald-500', 'bg-indigo-500', 'bg-orange-500', 'bg-rose-500',
     'bg-cyan-500', 'bg-violet-500', 'bg-amber-500', 'bg-pink-500',
     'bg-teal-500', 'bg-blue-500', 'bg-red-500', 'bg-green-500'
   ]
 
-  function createTag(name: string): string {
-    const project = projects.value.find(p => p.id === selectedProjectId.value)
-    if (!project) return ''
-
-    // Check if tag already exists
-    const existing = project.tags.find(t => t.name.toLowerCase() === name.toLowerCase())
-    if (existing) return existing.id
-
-    const newTag = {
-      id: `tag-${Date.now()}`,
-      name: name.trim(),
-      color: tagColors[Math.floor(Math.random() * tagColors.length)]
-    }
-    project.tags.push(newTag)
-    return newTag.id
+  async function createTag(name: string): Promise<string> {
+    const color = tagColors[Math.floor(Math.random() * tagColors.length)]
+    const tag = await projectStore.createTag(name, color)
+    return tag?.id ?? ''
   }
 
   function nextMonth() {
@@ -237,6 +188,7 @@ export function useContentCalendar() {
     activeStatuses,
     activeTags,
     currentMonth,
+    loading,
     // Computed
     currentProject,
     filteredPosts,
@@ -266,7 +218,7 @@ export function useContentCalendar() {
     markTrendAsUsed,
     getTrendUsedDate,
     // Data
-    projects: projects,
+    projects,
     usedNews,
     usedTrends
   }

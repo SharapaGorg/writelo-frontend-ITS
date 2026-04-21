@@ -159,7 +159,7 @@ const onSubmit = handleSubmit(async (values) => {
         position: getToasterPosition()
       })
 
-      await navigateTo(Routes.newConversation)
+      await navigateTo(Routes.app)
     } else {
       // Email verification required - redirect to verification page
       await navigateTo({

@@ -136,7 +136,7 @@ const onSubmit = handleSubmit(async (values) => {
         position: getToasterPosition()
       })
 
-      await navigateTo(Routes.newConversation)
+      await navigateTo(Routes.app)
     }
   } catch (error: any) {
     // ApiController already shows toast for server errors

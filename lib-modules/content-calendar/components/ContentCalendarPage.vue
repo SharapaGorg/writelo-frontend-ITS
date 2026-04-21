@@ -12,7 +12,11 @@ import {
   DialogDescription
 } from '~/components/ui/dialog'
 import { useContentCalendar } from '../composables/useContentCalendar'
+import { useContentProjectStore } from '../stores/contentProjectStore'
 import type { NewsItem, TrendItem, ContentTag, SocialAccount } from '../types'
+import { useWorkspaces } from '~/lib-modules/workspaces'
+import { useUserController } from '~/composables/user'
+import { toastError } from '~/scripts/features/utils/toater'
 
 const props = withDefaults(defineProps<{
   showcaseMode?: boolean
@@ -75,8 +79,8 @@ const pendingDrop = ref<{
 
 function handleNewsDropOnDate(date: string, news: NewsItem) {
   // If only one account, create immediately
-  if (currentProject.value.accounts.length === 1) {
-    createPostFromNews(date, news, currentProject.value.accounts[0].id)
+  if ((currentProject.value?.accounts ?? []).length === 1) {
+    createPostFromNews(date, news, (currentProject.value?.accounts ?? [])[0].id)
     return
   }
   // Show account selection dialog
@@ -86,8 +90,8 @@ function handleNewsDropOnDate(date: string, news: NewsItem) {
 
 function handleTrendDropOnDate(date: string, trend: TrendItem) {
   // If only one account, create immediately
-  if (currentProject.value.accounts.length === 1) {
-    createPostFromTrend(date, trend, currentProject.value.accounts[0].id)
+  if ((currentProject.value?.accounts ?? []).length === 1) {
+    createPostFromTrend(date, trend, (currentProject.value?.accounts ?? [])[0].id)
     return
   }
   // Show account selection dialog
@@ -113,7 +117,7 @@ function cancelAccountSelect() {
   pendingDrop.value = null
 }
 
-function createPostFromNews(date: string, news: NewsItem, accountId: string) {
+async function createPostFromNews(date: string, news: NewsItem, accountId: string) {
   // Build content from news description and URL
   let content = ''
   if (news.description) {
@@ -124,7 +128,7 @@ function createPostFromNews(date: string, news: NewsItem, accountId: string) {
     content += `Источник: ${news.source}\n${news.url}`
   }
 
-  const newPost = createPost({
+  const newPost = await createPost({
     title: news.title,
     description: news.description,
     content: content,
@@ -141,8 +145,8 @@ function createPostFromNews(date: string, news: NewsItem, accountId: string) {
   }
 }
 
-function createPostFromTrend(date: string, trend: TrendItem, accountId: string) {
-  const newPost = createPost({
+async function createPostFromTrend(date: string, trend: TrendItem, accountId: string) {
+  const newPost = await createPost({
     title: trend.hashtag || trend.name,
     description: trend.url,
     type: 'post',
@@ -160,11 +164,17 @@ function createPostFromTrend(date: string, trend: TrendItem, accountId: string) 
   }
 }
 
-function handleCreatePost(date: string) {
-  // Get the first account ID from the current project as default
-  const defaultAccountId = currentProject.value.accounts[0]?.id || ''
+async function handleCreatePost(date: string) {
+  const userController = useUserController()
+  if (!userController.isAuthenticated()) {
+    toastError('Войдите в аккаунт, чтобы создавать посты')
+    return
+  }
 
-  const newPost = createPost({
+  // Get the first account ID from the current project as default
+  const defaultAccountId = (currentProject.value?.accounts ?? [])[0]?.id || ''
+
+  const newPost = await createPost({
     title: 'Новый пост',
     type: 'post',
     status: 'idea',
@@ -176,6 +186,8 @@ function handleCreatePost(date: string) {
   if (newPost) {
     selectDate(date)
     selectPost(newPost.id)
+  } else {
+    toastError('Не удалось создать пост. Проверь workspace или повтори позже.')
   }
 }
 
@@ -245,15 +257,15 @@ function stopResize() {
 
 const filteredTags = computed(() => {
   const search = tagSearch.value.toLowerCase().trim()
-  if (!search) return currentProject.value.tags
-  return currentProject.value.tags.filter(tag =>
+  if (!search) return (currentProject.value?.tags ?? [])
+  return (currentProject.value?.tags ?? []).filter(tag =>
     tag.name.toLowerCase().includes(search)
   )
 })
 
 const selectedTagObjects = computed(() =>
   activeTags.value
-    .map(id => currentProject.value.tags.find(t => t.id === id))
+    .map(id => (currentProject.value?.tags ?? []).find(t => t.id === id))
     .filter((tag): tag is ContentTag => !!tag)
 )
 
@@ -288,9 +300,29 @@ function handleKeydown(e: KeyboardEvent) {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('keydown', handleKeydown)
   loadSidebarWidth()
+
+  const projectStore = useContentProjectStore()
+
+  if (props.showcaseMode) {
+    // Landing-page showcase: always use demo data so marketing preview looks alive.
+    projectStore.enableDemoMode()
+    return
+  }
+
+  // Real mode: disable demo (in case a prior showcase render enabled it on this same pinia instance),
+  // then load workspaces and fetch data from the backend.
+  projectStore.disableDemoMode()
+
+  const userController = useUserController()
+  if (userController.isAuthenticated()) {
+    const { initialize, workspaces } = useWorkspaces()
+    if (workspaces.value.length === 0) {
+      await initialize()
+    }
+  }
 })
 
 onUnmounted(() => {
@@ -445,7 +477,7 @@ onUnmounted(() => {
     <div class="flex-1 flex min-h-0">
       <!-- Left sidebar with accounts -->
       <AccountsSidebar
-        :accounts="currentProject.accounts"
+        :accounts="(currentProject?.accounts ?? [])"
         :active-account-ids="activeAccountIds"
         @toggle="toggleAccount"
       />
@@ -457,7 +489,7 @@ onUnmounted(() => {
             :selected-date="selectedDate"
             :get-posts-for-date="getPostsForDate"
             :has-info-event="hasInfoEvent"
-            :accounts="currentProject.accounts"
+            :accounts="(currentProject?.accounts ?? [])"
             @select-date="selectDate"
             @prev-month="prevMonth"
             @next-month="nextMonth"
@@ -484,11 +516,11 @@ onUnmounted(() => {
           :selected-post="selectedPost"
           :posts-for-date="postsForSelectedDate"
           :info-events="infoEventsForSelectedDate"
-          :project-tags="currentProject.tags"
-          :accounts="currentProject.accounts"
-          :news="currentProject.news"
+          :project-tags="(currentProject?.tags ?? [])"
+          :accounts="(currentProject?.accounts ?? [])"
+          :news="(currentProject?.news ?? [])"
           :used-news="usedNews"
-          :trends="currentProject.trends"
+          :trends="(currentProject?.trends ?? [])"
           :used-trends="usedTrends"
           @select-post="selectPost"
           @close-date="selectDate(null)"
@@ -511,7 +543,7 @@ onUnmounted(() => {
         </DialogHeader>
         <div class="grid gap-2 py-4">
           <button
-            v-for="account in currentProject.accounts"
+            v-for="account in (currentProject?.accounts ?? [])"
             :key="account.id"
             class="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-left"
             @click="selectAccountForDrop(account.id)"

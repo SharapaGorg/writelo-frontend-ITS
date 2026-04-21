@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { isMobile } from '~/scripts/features/utils'
 import { ApiController } from '~/scripts/shared/api/controller'
 import { eventBus } from '~/composables/eventBus'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -72,12 +73,15 @@ const sendMessage = async () => {
   await nextTick()
   scrollToBottom()
 
+  const {requireWorkspaceId} = useWorkspaceContext()
+  const workspaceId = requireWorkspaceId()
+
   // Create conversation if not exists
   let convId = conversationId.value
   if (!convId) {
     try {
-      const newConversation = await apiController.createConversation()
-      convId = newConversation.privateId
+      const newConversation = await apiController.createWorkspaceConversation(workspaceId)
+      convId = newConversation.id
       setConversationId(convId)
       // Update URL with chat ID
       router.replace({ query: { ...route.query, chat: convId } })
@@ -93,7 +97,7 @@ const sendMessage = async () => {
   // Send message via API
   let streamResponse
   try {
-    streamResponse = await apiController.sendMessage(convId, text, requestUuid, responseUuid)
+    streamResponse = await apiController.sendWorkspaceMessage(workspaceId, convId, text)
     detachAll()
   } catch (error: any) {
     console.error('[EditorChat] Error sending message:', error)
@@ -192,7 +196,8 @@ const stopGeneration = async () => {
   }
 
   if (conversationId.value) {
-    await apiController.stopGeneration(conversationId.value)
+    const {requireWorkspaceId} = useWorkspaceContext()
+    await apiController.stopWorkspaceGeneration(requireWorkspaceId(), conversationId.value)
   }
 }
 

@@ -87,7 +87,7 @@ onMounted(async () => {
 })
 
 const goToApp = () => {
-  navigateTo(Routes.newConversation)
+  navigateTo(Routes.app)
 }
 
 const goToAuth = () => {

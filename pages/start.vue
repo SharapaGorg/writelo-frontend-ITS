@@ -25,7 +25,7 @@ useHead({
 
 // Redirect to app on client
 if (import.meta.client) {
-  navigateTo(Routes.newConversation)
+  navigateTo(Routes.app)
 }
 </script>
 
@@ -37,7 +37,7 @@ if (import.meta.client) {
       </h1>
       <p class="text-zinc-400 mb-8">Переход в приложение...</p>
       <a
-        href="/app/conversations/new"
+        href="/app"
         class="text-purple-400 hover:text-purple-300 underline"
       >
         Нажмите, если не перенаправило автоматически

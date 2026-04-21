@@ -17,7 +17,7 @@
         @open-create="showClientCreate = true"
       />
 
-      <ProjectCreateWindow
+      <WorkspaceCreateWindow
         v-model:open="showClientCreate"
         @save="onClientCreated"
       />
@@ -58,7 +58,8 @@ import CrmPopup from "~/components/molecules/CrmPopup.vue";
 import {ImageGeneratorNavbarButton} from "~/lib-modules/imageGenerator";
 import {DialogsSection, useCurrentConversation} from "~/lib-modules/conversations";
 import ClientSelector from "~/components/molecules/ClientSelector.vue";
-import {ProjectCreateWindow, useProjectsStore} from "~/lib-modules/projects";
+import {useWorkspaces} from "~/lib-modules/workspaces";
+import WorkspaceCreateWindow from "~/lib-modules/workspaces/components/WorkspaceCreateWindow.vue";
 import {useDemoMode} from "~/lib-modules/demo-mode";
 
 const {t} = useI18n()
@@ -72,10 +73,10 @@ const handleNewChat = () => {
   useCurrentConversation().makeNewChat()
 }
 
-const onClientCreated = async (projectId: string) => {
-  const store = useProjectsStore();
-  await store.fetchProjects();
-  store.selectProject(projectId);
+const onClientCreated = async (workspaceId: string) => {
+  const {initialize, selectWorkspace} = useWorkspaces();
+  await initialize();
+  selectWorkspace(workspaceId);
 }
 
 const getPlusButton: Ref<HTMLElement | null> = ref(null);

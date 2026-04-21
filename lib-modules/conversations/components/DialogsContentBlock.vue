@@ -1,21 +1,19 @@
 <template>
   <div>
-    <ProjectTabs/>
-
     <Accordion type="single" collapsible class="px-2 py-2">
       <div
-          v-if="!groups.length && !projectsStore.loading"
+          v-if="!groups.length && !conversationsStore.loading"
           class="text-lg px-2"
       >
         {{ t('no-conversations') }}
       </div>
 
-      <DialogsSkeleton v-if="projectsStore.loading" />
+      <DialogsSkeleton v-if="conversationsStore.loading" />
 
       <template v-else>
         <AccordionItem
             v-for="section in groups"
-            :key="section.key + (projectsStore.selectedProjectId ?? 'all')"
+            :key="section.key"
             :value="section.key"
         >
           <AccordionTrigger>
@@ -42,29 +40,18 @@
 </template>
 
 <script setup lang="ts">
-import {computed} from 'vue'
 import {useConversationsStore} from '~/stores/conversations'
-import {ProjectTabs, useProjectsStore} from '~/lib-modules/projects'
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from '~/components/ui/accordion'
 import DialogsSkeleton from './DialogsSkeleton.vue'
 import type {ChatsGroupSection} from "~/lib-modules/conversations";
 import {MenuDialogButton} from "~/lib-modules/conversations";
 
+defineProps<{
+  groups: ChatsGroupSection[]
+}>()
+
 const {t} = useI18n()
 const conversationsStore = useConversationsStore()
-const projectsStore = useProjectsStore()
-
-/**
- * ✅ computed: выбор источника данных по текущему проекту
- * - если проекта нет → показываем global conversations
- * - если есть → показываем project-specific currentGroups
- */
-const groups = computed<ChatsGroupSection[]>(() => {
-  if (projectsStore.selectedProjectId === null) {
-    return conversationsStore.groups
-  }
-  return projectsStore.currentGroups
-})
 </script>
 
 <style>

@@ -6,6 +6,7 @@ import type { MessageType } from '~/lib-modules/conversations'
 import { ApiController } from '~/scripts/shared/api/controller'
 import Loader from '~/components/atoms/Loader.vue'
 import WorkspaceChatInput from './WorkspaceChatInput.vue'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 const props = defineProps<{
   chatId?: string
@@ -27,9 +28,15 @@ onMounted(async () => {
   if (props.chatId && props.chatId !== 'new') {
     loading.value = true
     try {
-      const response = await apiController.getConversation(props.chatId)
+      const {requireWorkspaceId} = useWorkspaceContext()
+      const response = await apiController.getWorkspaceConversation(requireWorkspaceId(), props.chatId)
       if (response?.messages?.length) {
-        messages.value = response.messages
+        messages.value = response.messages.map(m => ({
+          id: m.id,
+          text: m.text ?? '',
+          role: m.role,
+          created_at: m.createdAt,
+        })) as any
       }
       if (response?.title) {
         conversationTitle.value = response.title
@@ -68,20 +75,18 @@ async function handleSend(messageText: string) {
   fieldDisabled.value = true
 
   try {
+    const {requireWorkspaceId} = useWorkspaceContext()
+    const workspaceId = requireWorkspaceId()
+
     // For new chats, create conversation first
     let chatId = props.chatId
     if (!chatId || chatId === 'new') {
-      const newConv = await apiController.createConversation()
-      chatId = newConv.privateId
+      const newConv = await apiController.createWorkspaceConversation(workspaceId)
+      chatId = newConv.id
     }
 
     // Send message and handle stream
-    const stream = await apiController.sendMessage(
-      chatId,
-      messageText,
-      userMessage.id,
-      assistantMessage.id
-    )
+    const stream = await apiController.sendWorkspaceMessage(workspaceId, chatId, messageText)
 
     const reader = stream.getReader()
     const decoder = new TextDecoder()

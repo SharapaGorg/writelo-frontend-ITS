@@ -266,8 +266,9 @@ await generate()
 **Purpose:** Workspace context and management (replaces projects)
 
 **Exports:**
+- Components: `WorkspaceCreateWindow`
 - Composable: `useWorkspaceContext()` → `currentWorkspaceId`, `requireWorkspaceId()`, `initialize()`, `clear()`
-- Composable: `useWorkspaces()` → `createWorkspace()`, `updateWorkspace()`, `deleteWorkspace()`
+- Composable: `useWorkspaces()` → `createWorkspace()`, `updateWorkspace()`, `deleteWorkspace()`, `selectWorkspace()`
 - Store: `useWorkspacesStore()` → workspaces, currentWorkspace
 - Types: `WorkspaceDto`, `CreateWorkspaceRequest`, `UpdateWorkspaceRequest`
 
@@ -287,16 +288,6 @@ const workspaceId = requireWorkspaceId()
 - Service: `uploadFile(file, onProgress?)` → Upload files with progress tracking
 - Service: `uploadFiles(files, onProgress?)` → Upload multiple files
 - Service: `getDownloadUrl(objectId)` → Get signed download URL
-
-### projects (DEPRECATED)
-**Purpose:** Organize conversations into projects — being replaced by workspaces
-
-**Exports:**
-- Components: `ProjectTabs`, `ProjectCreateWindow`
-- Composable: `useProjects()` → `createProject()`, `updateProject()`, `deleteProject()`, `selectProject()`
-- Composable: `useConversationAssignment()` → assignment mode state
-- Store: `useProjectsStore()` → projects, selectedProjectId, modals
-- Types: `Project`, `CreateProjectInput`, `UpdateProjectInput`
 
 ### profile
 **Purpose:** User account, subscription, gifts
@@ -348,7 +339,8 @@ eventBus.off('dialog:titleUpdated', handler)
 
 ### Streaming Messages
 ```typescript
-const stream = await api.sendMessage(convId, text, reqUuid, resUuid)
+const {requireWorkspaceId} = useWorkspaceContext()
+const stream = await api.sendWorkspaceMessage(requireWorkspaceId(), convId, text)
 const reader = stream.getReader()
 const decoder = new TextDecoder()
 
@@ -361,6 +353,7 @@ while (true) {
   const lines = chunk.split('\n').filter(l => l.startsWith('data: '))
   for (const line of lines) {
     const data: MessageStreamData = JSON.parse(line.slice(6))
+    // Server assigns IDs via `request_message_id` / `response_message_id` events.
     // Handle: text_chunk, set_title, response_end, etc.
   }
 }

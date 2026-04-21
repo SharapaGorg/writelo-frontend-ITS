@@ -46,10 +46,7 @@ import DialogsSkeleton from './DialogsSkeleton.vue';
 import {watch, onBeforeMount, ref} from 'vue';
 import {Button} from "~/components/ui/button";
 import {useConversationsStore} from "~/stores/conversations";
-import {useProjectsStore} from "~/lib-modules/projects";
 import {DialogsContentBlock} from "~/lib-modules/conversations";
-
-const {fetchProjects} = useProjectsStore();
 
 const conversationsStore = useConversationsStore();
 const route = useRoute();
@@ -59,14 +56,6 @@ const isDrawerOpened = ref<boolean>(false);
 watch(() => route.fullPath, () => {
   isDrawerOpened.value = false;
 });
-
-watch(isDrawerOpened, value => {
-  if (!value) {
-    fetchProjects();
-  }
-}, {
-  immediate: true
-})
 
 onBeforeMount(() => {
   conversationsStore.init();

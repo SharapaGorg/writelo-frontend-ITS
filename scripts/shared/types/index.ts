@@ -9,7 +9,6 @@ export enum RequestMethod {
 }
 
 export enum ApiAliases {
-    // Profile endpoints (unchanged)
     me = 'me',
     mePassword = 'me/password',
     meGifts = 'me/gifts',
@@ -32,8 +31,8 @@ export enum ApiAliases {
     crmOpen = 'crm/open',
 
     // Auth endpoints
-    authSignup = 'auth/signup',
-    authSignin = 'auth/signin',
+    authSignup = 'auth/signup/email',
+    authSignin = 'auth/signin/email',
     authGoogle = 'auth/google',
     authTelegram = 'auth/telegram',
     authVerify = 'auth/verify',

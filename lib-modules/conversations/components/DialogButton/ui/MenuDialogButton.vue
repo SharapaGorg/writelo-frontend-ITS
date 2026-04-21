@@ -2,7 +2,7 @@
 import {computed} from 'vue'
 import {Routes} from "~/scripts/shared/types"
 import {Button} from "~/components/ui/button"
-import {Trash, Share2, MoreVertical, Link, X, FolderPlus} from "lucide-vue-next"
+import {Trash, Share2, MoreVertical, Link, X} from "lucide-vue-next"
 import RemoveConfirmationAlert from "./RemoveConfirmationAlert.vue"
 import {useConversationsStore} from "~/stores/conversations"
 import {
@@ -20,12 +20,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-import {useConversationAssignment} from "~/lib-modules/projects";
 import {useDemoGuard} from "~/lib-modules/demo-mode";
 
 const conversationStore = useConversationsStore()
 const {t} = useI18n()
-const {enterAssignmentMode} = useConversationAssignment()
 const {guardAction} = useDemoGuard()
 
 const props = defineProps<{
@@ -76,13 +74,6 @@ const handleUnshare = () => {
     } catch (error) {
       toastUnshareError(t)
     }
-  })
-}
-
-// Handle add to project action
-const handleAddToProject = () => {
-  guardAction(() => {
-    enterAssignmentMode(props.privateId, props.title)
   })
 }
 
@@ -156,14 +147,6 @@ const handleDelete = () => {
           <div class="flex items-center">
             <X class="mr-2 h-4 w-4"/>
             <span>{{ t('unshare') }}</span>
-          </div>
-        </DropdownMenuItem>
-
-        <!-- Add to Project option -->
-        <DropdownMenuItem @click="handleAddToProject" class="cursor-pointer">
-          <div class="flex items-center">
-            <FolderPlus class="mr-2 h-4 w-4"/>
-            <span>{{ t('add-to-project') }}</span>
           </div>
         </DropdownMenuItem>
 

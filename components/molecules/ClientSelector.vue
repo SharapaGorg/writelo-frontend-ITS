@@ -8,7 +8,7 @@
         :class="{ 'ring-2 ring-primary ring-offset-2 ring-offset-background': highlighted }"
       >
         <Users class="w-4 h-4 flex-shrink-0" />
-        <span class="truncate">{{ currentClientName }}</span>
+        <span class="truncate">{{ currentWorkspaceName }}</span>
         <ChevronDown class="w-3 h-3 flex-shrink-0 opacity-50" />
       </Button>
     </DropdownMenuTrigger>
@@ -17,27 +17,16 @@
       <DropdownMenuLabel>{{ $t('clientSelector.header') }}</DropdownMenuLabel>
       <DropdownMenuSeparator />
 
-      <DropdownMenuItem
-        @click="selectClient(null)"
-        class="cursor-pointer"
-        :class="{ 'bg-accent': projectsStore.selectedProjectId === null }"
-      >
-        <Inbox class="w-4 h-4 mr-2" />
-        {{ $t('all_chats') }}
-      </DropdownMenuItem>
-
-      <DropdownMenuSeparator v-if="projectsStore.projects.length > 0" />
-
       <div class="max-h-[300px] overflow-y-auto">
         <DropdownMenuItem
-          v-for="client in projectsStore.projects"
-          :key="client.id"
-          @click="selectClient(client.id)"
+          v-for="workspace in workspaces"
+          :key="workspace.id"
+          @click="selectWorkspace(workspace.id)"
           class="cursor-pointer"
-          :class="{ 'bg-accent': projectsStore.selectedProjectId === client.id }"
+          :class="{ 'bg-accent': currentWorkspaceId === workspace.id }"
         >
           <User class="w-4 h-4 mr-2 flex-shrink-0" />
-          <span class="truncate">{{ client.title }}</span>
+          <span class="truncate">{{ workspace.name }}</span>
         </DropdownMenuItem>
       </div>
 
@@ -61,37 +50,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '~/components/ui/dropdown-menu'
-import { Users, User, ChevronDown, Inbox, Plus } from 'lucide-vue-next'
-import { useProjectsStore } from '~/lib-modules/projects'
+import { Users, User, ChevronDown, Plus } from 'lucide-vue-next'
+import { useWorkspaces } from '~/lib-modules/workspaces'
 import { useCurrentConversation } from '~/lib-modules/conversations'
 
-const props = withDefaults(defineProps<{
+withDefaults(defineProps<{
   highlighted?: boolean
 }>(), {
   highlighted: false
 })
 
 const { t } = useI18n()
-const projectsStore = useProjectsStore()
+const { workspaces, currentWorkspaceId, selectWorkspace: setWorkspace } = useWorkspaces()
 const { makeNewChat } = useCurrentConversation()
 
 const emit = defineEmits<{
   openCreate: []
 }>()
 
-const currentClientName = computed(() => {
-  if (!projectsStore.selectedProjectId) {
-    return t('all_chats')
-  }
-  const client = projectsStore.projects.find(p => p.id === projectsStore.selectedProjectId)
-  return client?.title || t('all_chats')
+const currentWorkspaceName = computed(() => {
+  const current = workspaces.value.find(w => w.id === currentWorkspaceId.value)
+  return current?.name || t('clientSelector.header')
 })
 
-const selectClient = (clientId: string | null) => {
-  const wasChanged = projectsStore.selectedProjectId !== clientId
-  projectsStore.selectProject(clientId)
+const selectWorkspace = (workspaceId: string) => {
+  const wasChanged = currentWorkspaceId.value !== workspaceId
+  setWorkspace(workspaceId)
 
-  // Open new chat when switching clients
   if (wasChanged) {
     makeNewChat()
   }

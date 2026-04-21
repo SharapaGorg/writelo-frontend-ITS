@@ -15,7 +15,7 @@ const { elementRef, isVisible } = useScrollAnimation(0.1)
 function handleCTA() {
   $trackGoal('landing_cta_click', { button: 'hero_try_free' })
   // Always go to app - demo mode will activate if not logged in
-  router.push(Routes.newConversation)
+  router.push(Routes.app)
 }
 
 const showFirstLine = ref(false)
