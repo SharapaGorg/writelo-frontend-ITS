@@ -24,14 +24,15 @@ import type { WorkspaceDto } from '../types'
 
 const { t: t_ } = useI18n()
 const { guardAction } = useDemoGuard()
-const { workspaces, loading, initialize, updateWorkspace, deleteWorkspace, canEdit, isOwner } =
+const { workspaces, loading, initialize, updateWorkspace, deleteWorkspace, canEdit } =
   useWorkspaces()
 
 const createOpen = ref(false)
 const openValue = ref<string | undefined>(undefined)
 const savingId = ref<string | null>(null)
 const deletingId = ref<string | null>(null)
-const confirmDeleteId = ref<string | null>(null)
+const deleteTarget = ref<string | null>(null)
+const deleteDialogOpen = ref(false)
 
 interface DraftForm {
   name: string
@@ -116,8 +117,13 @@ async function saveDraft(w: WorkspaceDto) {
   })
 }
 
+function requestDelete(id: string) {
+  deleteTarget.value = id
+  deleteDialogOpen.value = true
+}
+
 async function confirmDelete() {
-  const id = confirmDeleteId.value
+  const id = deleteTarget.value
   if (!id) return
   guardAction(async () => {
     deletingId.value = id
@@ -130,7 +136,7 @@ async function confirmDelete() {
       }
     } finally {
       deletingId.value = null
-      confirmDeleteId.value = null
+      deleteTarget.value = null
     }
   })
 }
@@ -197,9 +203,9 @@ onMounted(async () => {
           v-for="w in workspaces"
           :key="w.id"
           :value="w.id"
-          class="rounded-lg border border-border bg-card px-4"
+          class="relative rounded-lg border border-border bg-card px-4"
         >
-          <AccordionTrigger class="hover:no-underline">
+          <AccordionTrigger class="hover:no-underline pr-20">
             <div class="flex items-center gap-3 flex-1 min-w-0">
               <span class="font-medium truncate">{{ w.name }}</span>
               <span
@@ -215,6 +221,18 @@ onMounted(async () => {
               </span>
             </div>
           </AccordionTrigger>
+
+          <button
+            v-if="canEdit(w.id)"
+            type="button"
+            class="absolute right-10 top-2.5 flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+            :disabled="deletingId === w.id"
+            :aria-label="t_('delete')"
+            @click.stop="requestDelete(w.id)"
+          >
+            <Loader2 v-if="deletingId === w.id" class="h-4 w-4 animate-spin" />
+            <Trash2 v-else class="h-4 w-4" />
+          </button>
 
           <AccordionContent>
             <div v-if="drafts[w.id]" class="space-y-4 pt-2 pb-4">
@@ -293,41 +311,25 @@ onMounted(async () => {
                 />
               </div>
 
-              <div class="flex items-center justify-between gap-2 pt-2 border-t border-border">
+              <div class="flex items-center justify-end gap-2 pt-2 border-t border-border">
                 <Button
-                  v-if="isOwner(w.id)"
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  class="text-destructive hover:text-destructive gap-2"
-                  :disabled="deletingId === w.id"
-                  @click="confirmDeleteId = w.id"
+                  :disabled="!isDirty(w) || savingId === w.id"
+                  @click="resetDraft(w)"
                 >
-                  <Loader2 v-if="deletingId === w.id" class="h-4 w-4 animate-spin" />
-                  <Trash2 v-else class="h-4 w-4" />
-                  {{ t_('delete') }}
+                  {{ t_('cancel') }}
                 </Button>
-                <span v-else />
-
-                <div class="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    :disabled="!isDirty(w) || savingId === w.id"
-                    @click="resetDraft(w)"
-                  >
-                    {{ t_('cancel') }}
-                  </Button>
-                  <Button
-                    size="sm"
-                    class="gap-2"
-                    :disabled="!canEdit(w.id) || !isDirty(w) || savingId === w.id"
-                    @click="saveDraft(w)"
-                  >
-                    <Loader2 v-if="savingId === w.id" class="h-4 w-4 animate-spin" />
-                    <Check v-else class="h-4 w-4" />
-                    {{ t_('save') }}
-                  </Button>
-                </div>
+                <Button
+                  size="sm"
+                  class="gap-2"
+                  :disabled="!canEdit(w.id) || !isDirty(w) || savingId === w.id"
+                  @click="saveDraft(w)"
+                >
+                  <Loader2 v-if="savingId === w.id" class="h-4 w-4 animate-spin" />
+                  <Check v-else class="h-4 w-4" />
+                  {{ t_('save') }}
+                </Button>
               </div>
             </div>
           </AccordionContent>
@@ -337,10 +339,7 @@ onMounted(async () => {
 
     <WorkspaceCreateWindow v-model:open="createOpen" @save="handleCreated" />
 
-    <AlertDialog
-      :open="confirmDeleteId !== null"
-      @update:open="(v: boolean) => !v && (confirmDeleteId = null)"
-    >
+    <AlertDialog v-model:open="deleteDialogOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Удалить бренд?</AlertDialogTitle>
