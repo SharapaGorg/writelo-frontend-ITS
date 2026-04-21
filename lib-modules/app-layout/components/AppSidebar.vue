@@ -10,13 +10,17 @@ import {
   ChevronRight,
   Film,
   LogIn,
-  User
+  User,
+  Briefcase,
+  Sparkles,
+  Crown
 } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
 import { useAppLayout } from '../composables/useAppLayout'
 import type { SidebarItem } from '../types'
 import { useUserController } from '~/composables/user'
+import { useSettings } from '~/composables/settings'
 
 const router = useRouter()
 const route = useRoute()
@@ -25,11 +29,20 @@ const { isCollapsed, sidebarItems, bottomItems, toggleSidebar } = useAppLayout()
 const userController = useUserController()
 const isAuthenticated = computed(() => userController.isAuthenticated())
 
+const settings = useSettings()
+const subscription = computed(() => settings.getSubscription())
+const isFreePlan = computed(() => {
+  const sub = subscription.value
+  return !sub || sub.price === 0
+})
+const planTitle = computed(() => subscription.value?.title ?? 'Бесплатный')
+
 const iconComponents: Record<string, typeof Calendar> = {
   'calendar': Calendar,
   'pen-square': PenSquare,
   'film': Film,
   'trending-up': TrendingUp,
+  'briefcase': Briefcase,
   'user': User,
   'settings': Settings,
 }
@@ -114,6 +127,36 @@ function navigate(item: SidebarItem) {
         Сейчас вы не авторизованы — часть функций недоступна
       </p>
     </div>
+
+    <!-- Subscription chip -->
+    <button
+      v-if="isAuthenticated"
+      type="button"
+      :class="cn(
+        'mx-2 mb-1 mt-1 flex items-center gap-2 rounded-md border px-3 py-2 text-left transition-colors hover:bg-accent',
+        isCollapsed && 'justify-center px-0',
+        isFreePlan
+          ? 'border-border bg-muted/50'
+          : 'border-amber-300/60 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800/60'
+      )"
+      @click="router.push('/app/profile')"
+    >
+      <component
+        :is="isFreePlan ? Sparkles : Crown"
+        :class="cn(
+          'h-4 w-4 shrink-0',
+          isFreePlan ? 'text-muted-foreground' : 'text-amber-600 dark:text-amber-400'
+        )"
+      />
+      <div v-if="!isCollapsed" class="flex-1 min-w-0">
+        <div class="text-xs font-medium truncate">
+          {{ isFreePlan ? 'Бесплатный тариф' : planTitle }}
+        </div>
+        <div v-if="isFreePlan" class="text-[11px] text-muted-foreground truncate">
+          Открыть тарифы →
+        </div>
+      </div>
+    </button>
 
     <!-- Bottom Navigation -->
     <div class="flex flex-col gap-1 p-2 border-t border-border">

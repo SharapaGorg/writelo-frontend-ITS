@@ -10,6 +10,7 @@ export function useAppLayout() {
     { id: 'editor', icon: 'pen-square', label: 'Редактор', route: '/app/editor' },
     // { id: 'reels-script', icon: 'film', label: 'Сценарий Рилс', route: '/app/reels-script' },
     { id: 'trends', icon: 'trending-up', label: 'Тренды', route: '/app/trends' },
+    { id: 'workspaces', icon: 'briefcase', label: 'Бренды', route: '/app/workspaces' },
   ]
 
   const bottomItems: SidebarItem[] = [

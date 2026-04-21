@@ -3,9 +3,11 @@
     <DialogContent class="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex flex-col gap-y-4" id="client-create-modal">
         <DialogHeader>
-          <DialogTitle>{{ t('addClient.header') }}</DialogTitle>
+          <DialogTitle>
+            {{ isEditMode ? t('addClient.edit-header') : t('addClient.header') }}
+          </DialogTitle>
           <DialogDescription>
-            {{ t('addClient.sub-header') }}
+            {{ isEditMode ? t('addClient.edit-sub-header') : t('addClient.sub-header') }}
           </DialogDescription>
         </DialogHeader>
 
@@ -120,7 +122,7 @@
           </DialogClose>
           <Button @click="handleSave" :disabled="!form.brandName.trim() || isSaving">
             <Loader2 v-if="isSaving" class="w-4 h-4 mr-2 animate-spin" />
-            {{ t('addClient.action-button') }}
+            {{ isEditMode ? t('addClient.edit-action-button') : t('addClient.action-button') }}
           </Button>
         </DialogFooter>
       </div>
@@ -129,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
@@ -146,13 +148,16 @@ import {
 import { Loader2 } from 'lucide-vue-next'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useDemoGuard } from '~/lib-modules/demo-mode'
+import { useSettings } from '~/composables/settings'
 
 const { t } = useI18n()
 const { guardAction } = useDemoGuard()
-const { createWorkspace, updateWorkspace } = useWorkspaces()
+const { createWorkspace, updateWorkspace, getWorkspaceById } = useWorkspaces()
+const { getLanguage } = useSettings()
 
 const props = defineProps<{
   open: boolean
+  workspaceId?: string | null
 }>()
 
 const emit = defineEmits<{
@@ -168,6 +173,8 @@ const isOpen = computed({
   get: () => props.open,
   set: (value) => emit('update:open', value)
 })
+
+const isEditMode = computed(() => !!props.workspaceId)
 
 interface BriefForm {
   brandName: string
@@ -230,6 +237,36 @@ const resetForm = () => {
   selectedStyleKey.value = null
 }
 
+const hydrateFromWorkspace = (workspaceId: string) => {
+  const workspace = getWorkspaceById(workspaceId)
+  if (!workspace) {
+    resetForm()
+    return
+  }
+  form.brandName = workspace.name ?? ''
+  form.niche = workspace.industry ?? ''
+  form.description = workspace.businessDescription ?? ''
+  form.targetAudience = workspace.targetAudience ?? ''
+  form.communicationStyle = workspace.toneOfVoice ?? ''
+  form.stopWords = (workspace.stopWords ?? []).join(', ')
+  form.postExamples = workspace.examplePosts ?? ''
+  selectedStyleKey.value =
+    stylePresets.value.find((p) => p.value === workspace.toneOfVoice)?.key ?? null
+}
+
+watch(
+  () => [props.open, props.workspaceId] as const,
+  ([open, id]) => {
+    if (!open) return
+    if (id) {
+      hydrateFromWorkspace(id)
+    } else {
+      resetForm()
+    }
+  },
+  { immediate: true }
+)
+
 const handleSave = () => {
   if (!form.brandName.trim() || isSaving.value) return
 
@@ -238,25 +275,51 @@ const handleSave = () => {
 
     try {
       const name = form.brandName.trim()
-      const workspace = await createWorkspace({ name })
-      if (!workspace) throw new Error('Failed to create workspace')
+      const stopWords = parseStopWords(form.stopWords)
+      const briefFilled =
+        !!form.niche.trim() ||
+        !!form.description.trim() ||
+        !!form.targetAudience.trim() ||
+        !!form.communicationStyle.trim() ||
+        stopWords.length > 0 ||
+        !!form.postExamples.trim()
 
-      await updateWorkspace(workspace.id, {
-        name,
-        industry: form.niche.trim() || null,
-        businessDescription: form.description.trim() || null,
-        targetAudience: form.targetAudience.trim() || null,
-        toneOfVoice: form.communicationStyle.trim() || null,
-        stopWords: parseStopWords(form.stopWords),
-        examplePosts: form.postExamples.trim() || null,
-      })
+      let workspaceId = props.workspaceId ?? null
 
-      emit('save', workspace.id)
+      if (!workspaceId) {
+        const workspace = await createWorkspace({
+          name,
+          contentLanguage: getLanguage() ?? 'ru',
+        })
+        if (!workspace) throw new Error('Failed to create workspace')
+        workspaceId = workspace.id
+      }
+
+      // POST only accepts name + contentLanguage, so brief fields go via PATCH.
+      // Skip the PATCH when nothing to set: avoids a pointless round-trip and
+      // a plan-gated 403 for users who just typed a name.
+      const nameChanged = isEditMode.value && props.workspaceId
+        ? (getWorkspaceById(props.workspaceId)?.name ?? '') !== name
+        : false
+
+      if (briefFilled || nameChanged) {
+        await updateWorkspace(workspaceId, {
+          name,
+          industry: form.niche.trim() || null,
+          businessDescription: form.description.trim() || null,
+          targetAudience: form.targetAudience.trim() || null,
+          toneOfVoice: form.communicationStyle.trim() || null,
+          stopWords,
+          examplePosts: form.postExamples.trim() || null,
+        })
+      }
+
+      emit('save', workspaceId)
 
       isOpen.value = false
       resetForm()
     } catch (error) {
-      console.error('Failed to create workspace:', error)
+      console.error('Failed to save workspace:', error)
     } finally {
       isSaving.value = false
     }
