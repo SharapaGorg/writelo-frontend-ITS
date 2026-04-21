@@ -57,7 +57,7 @@ watch(() => route.path, (newPath, oldPath) => {
   // Only init if navigating FROM a public page TO a non-public page and settings not loaded
   if (isPublicPath(oldPath) && !$settings.loaded.value) {
     loading.value = true
-    $settings.init(locale).then(() => {
+    $settings.init(locale).finally(() => {
       loading.value = false
     })
   }
@@ -68,7 +68,7 @@ watch(locale, () => {
 
   loading.value = true;
   setTimeout(() => {
-    $settings.init(locale).then(() => {
+    $settings.init(locale).finally(() => {
       loading.value = false;
     });
   }, 500)
@@ -90,7 +90,7 @@ if (!import.meta.server) {
     Promise.all([
       userInitPromise,
       $settings.init()
-    ]).then(() => {
+    ]).finally(() => {
       loading.value = false
     })
   }

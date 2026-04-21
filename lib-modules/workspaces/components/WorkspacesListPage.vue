@@ -34,6 +34,12 @@ const deletingId = ref<string | null>(null)
 const deleteTarget = ref<string | null>(null)
 const deleteDialogOpen = ref(false)
 
+function openCreate() {
+  guardAction(() => {
+    createOpen.value = true
+  })
+}
+
 interface DraftForm {
   name: string
   industry: string
@@ -169,7 +175,7 @@ onMounted(async () => {
           Управляйте воркспейсами: просматривайте и редактируйте бриф для каждого бренда.
         </p>
       </div>
-      <Button @click="createOpen = true" class="gap-2">
+      <Button @click="openCreate" class="gap-2">
         <Plus class="h-4 w-4" />
         Создать бренд
       </Button>
@@ -186,7 +192,7 @@ onMounted(async () => {
         class="flex flex-col items-center justify-center py-16 text-center text-muted-foreground"
       >
         <p class="mb-4">У вас ещё нет ни одного бренда.</p>
-        <Button @click="createOpen = true" class="gap-2">
+        <Button @click="openCreate" class="gap-2">
           <Plus class="h-4 w-4" />
           Создать первый бренд
         </Button>

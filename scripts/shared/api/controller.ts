@@ -43,17 +43,28 @@ type ResponseError = {
     data: {
         detail?: string | null,
         details?: string | null,
-        message?: string | null
+        message?: string | null,
+        errorKey?: string | null
     }
 }
+
+const PUBLIC_PATHS = ['/', '/landing', '/start', '/auth', '/verify-email', '/reset-password', '/forgot-password', '/email-sent'];
 
 const handleUnauthorized = () => {
     const $user = useUserController();
     $user.clearToken();
 
-    if (process.client) {
+    if (process.client && !PUBLIC_PATHS.includes(window.location.pathname)) {
         navigateTo('/auth');
     }
+};
+
+// Backend returns 404 with errorKey "error-user-not-found" when the user row is gone
+// (e.g. admin dropped the DB) but the client still holds a valid-looking token. Treat it
+// as an expired session: clear the cookie and bounce to /auth, otherwise the loading
+// screen hangs because /app/config never resolves.
+const isUserGoneError = (e: ResponseError | null | undefined): boolean => {
+    return e?.data?.errorKey === 'error-user-not-found';
 };
 
 const handleForbidden = () => {
@@ -163,6 +174,11 @@ export class ApiController {
                         statusText: response.statusText
                     };
 
+                    if (isUserGoneError(error)) {
+                        handleUnauthorized();
+                        return;
+                    }
+
                     if (errorData?.detail) {
                         toastError(errorData.detail);
                     }
@@ -184,6 +200,12 @@ export class ApiController {
 
             // Handle 401 - token expired (for non-streaming requests)
             if (errorStatus === 401) {
+                handleUnauthorized();
+                return;
+            }
+
+            // Handle stale session: user row is gone from DB but we still have a token
+            if (isUserGoneError(e)) {
                 handleUnauthorized();
                 return;
             }
