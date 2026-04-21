@@ -17,10 +17,6 @@
       </NuxtLayout>
 
       <ClientOnly>
-        <OnboardingPopover/>
-      </ClientOnly>
-
-      <ClientOnly>
         <Toaster/>
       </ClientOnly>
     </div>
@@ -31,7 +27,6 @@
 
 import {Toaster} from "~/components/ui/sonner";
 import AppLoader from "~/components/atoms/AppLoader.vue";
-import OnboardingPopover from "~/lib-modules/onboarding/components/OnboardingPopover.vue";
 
 // На сервере (SSR/prerender) не показываем loading — контент должен быть в HTML для SEO
 const loading = ref(!import.meta.server);

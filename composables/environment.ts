@@ -13,11 +13,7 @@ export function useEnv() {
 
 
 class EnvironmentController {
-    rolesSectionOpened = ref<boolean>(false);
-    settingsMenuOpened = ref<boolean>(false);
     processMessageId: Ref<number | string | null> = ref(null); // id of message, which is being generated right now
-
-    navbarVisible: Ref<boolean> = ref(true);
 
     loading: Ref<boolean> = ref(true);
     sendingMessagesBlocked: Ref<boolean> = ref(false);

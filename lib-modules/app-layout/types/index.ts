@@ -1,4 +1,4 @@
-export type SidebarSection = 'calendar' | 'editor' | 'reels-script' | 'trends' | 'settings'
+export type SidebarSection = 'calendar' | 'editor' | 'reels-script' | 'trends' | 'profile' | 'settings'
 
 export interface SidebarItem {
   id: SidebarSection

@@ -9,7 +9,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Film,
-  LogIn
+  LogIn,
+  User
 } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
@@ -29,6 +30,7 @@ const iconComponents: Record<string, typeof Calendar> = {
   'pen-square': PenSquare,
   'film': Film,
   'trending-up': TrendingUp,
+  'user': User,
   'settings': Settings,
 }
 

@@ -13,6 +13,7 @@ export function useAppLayout() {
   ]
 
   const bottomItems: SidebarItem[] = [
+    { id: 'profile', icon: 'user', label: 'Профиль', route: '/app/profile' },
     { id: 'settings', icon: 'settings', label: 'Настройки', route: '/app/settings' },
   ]
 

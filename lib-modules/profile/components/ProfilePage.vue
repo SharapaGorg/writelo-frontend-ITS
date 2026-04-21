@@ -32,7 +32,7 @@ const {isGuestDemo} = useDemoMode()
 <style scoped>
 
 .profile-page__container {
-  @apply w-full md:w-[600px] mx-auto pt-10 pb-20 px-2
+  @apply w-full max-w-[600px] pt-10 pb-20 px-8
   flex flex-col gap-y-6
 }
 

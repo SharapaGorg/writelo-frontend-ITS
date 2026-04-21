@@ -28,7 +28,6 @@ vi.stubGlobal('useSettings', vi.fn(() => ({
   getSubscription: vi.fn(() => null)
 })))
 vi.stubGlobal('useEnv', vi.fn(() => ({
-  navbarVisible: ref(true),
   // currentDialogTitle: ref('Test Dialog')
 })))
 

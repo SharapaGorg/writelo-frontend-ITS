@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import {ProfilePage} from "~/lib-modules/profile";
-import {useCurrentConversation} from "~/lib-modules/conversations";
 
-useCurrentConversation().clearConversation();
+definePageMeta({
+  layout: 'app'
+})
 </script>
 
 <template>
-  <div class="basic-page-wrapper">
-    <ProfilePage/>
-  </div>
+  <ProfilePage/>
 </template>
