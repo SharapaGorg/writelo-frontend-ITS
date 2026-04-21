@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import PostPreviewPanel from './PostPreviewPanel.vue'
 import NewsSidebar from './NewsSidebar.vue'
 import type { CalendarPost, InfoEvent, ContentTag, NewsItem, TrendItem, SocialAccount } from '../types'
@@ -17,6 +17,7 @@ const props = defineProps<{
   usedNews: Record<string, string>
   trends: TrendItem[]
   usedTrends: Record<string, string>
+  isCreatingPost?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -24,9 +25,36 @@ const emit = defineEmits<{
   closeDate: []
   closePost: []
   createPost: []
+  submitCreatePost: [title: string]
+  cancelCreatePost: []
   deletePost: []
   publishPost: []
 }>()
+
+const newPostTitle = ref('')
+const newPostInput = ref<HTMLInputElement | null>(null)
+
+watch(
+  () => props.isCreatingPost,
+  async (creating) => {
+    if (creating) {
+      newPostTitle.value = ''
+      await nextTick()
+      newPostInput.value?.focus()
+    }
+  }
+)
+
+function submitNewPost() {
+  const title = newPostTitle.value.trim()
+  if (!title) return
+  emit('submitCreatePost', title)
+}
+
+function cancelNewPost() {
+  newPostTitle.value = ''
+  emit('cancelCreatePost')
+}
 
 const activeTab = ref<'context' | 'news'>('news')
 
@@ -142,6 +170,37 @@ const funDay = computed(() =>
         </div>
 
         <div class="flex-1 overflow-y-auto p-3 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+          <div
+            v-if="isCreatingPost"
+            class="mb-3 p-3 rounded-lg border border-purple-500/50 bg-purple-500/5 space-y-2"
+          >
+            <label class="text-xs text-zinc-500 dark:text-zinc-400">Название поста</label>
+            <input
+              ref="newPostInput"
+              v-model="newPostTitle"
+              type="text"
+              placeholder="Введите название..."
+              class="w-full px-3 py-2 text-sm rounded-md bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              @keydown.enter.prevent="submitNewPost"
+              @keydown.esc.prevent="cancelNewPost"
+            />
+            <div class="flex items-center justify-end gap-2">
+              <button
+                class="px-3 py-1.5 text-xs rounded-md text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                @click="cancelNewPost"
+              >
+                Отмена
+              </button>
+              <button
+                class="px-3 py-1.5 text-xs rounded-md bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/40 disabled:cursor-not-allowed text-white transition-colors"
+                :disabled="!newPostTitle.trim()"
+                @click="submitNewPost"
+              >
+                Создать
+              </button>
+            </div>
+          </div>
+
           <div v-if="infoEvents.length > 0" class="mb-3 space-y-2">
             <div
               v-for="event in infoEvents"

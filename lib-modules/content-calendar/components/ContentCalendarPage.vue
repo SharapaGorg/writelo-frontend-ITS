@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import CalendarHeader from './CalendarHeader.vue'
 import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
@@ -164,32 +164,60 @@ async function createPostFromTrend(date: string, trend: TrendItem, accountId: st
   }
 }
 
-async function handleCreatePost(date: string) {
+// Inline post creation state — clicking "+" opens a local draft form
+// in the sidebar; no request fires until the user submits a title.
+const isCreatingPost = ref(false)
+const creatingForDate = ref<string | null>(null)
+
+function handleCreatePost(date: string) {
   const userController = useUserController()
   if (!userController.isAuthenticated()) {
     toastError('Войдите в аккаунт, чтобы создавать посты')
     return
   }
 
-  // Get the first account ID from the current project as default
+  selectDate(date)
+  selectPost(null)
+  creatingForDate.value = date
+  isCreatingPost.value = true
+}
+
+async function handleSubmitCreatePost(title: string) {
+  const trimmed = title.trim()
+  if (!trimmed || !creatingForDate.value) return
+
   const defaultAccountId = (currentProject.value?.accounts ?? [])[0]?.id || ''
 
   const newPost = await createPost({
-    title: 'Новый пост',
+    title: trimmed,
     type: 'post',
     status: 'idea',
     accountId: defaultAccountId,
     tags: [],
-    date: date
+    date: creatingForDate.value
   })
 
   if (newPost) {
-    selectDate(date)
+    isCreatingPost.value = false
+    creatingForDate.value = null
     selectPost(newPost.id)
   } else {
     toastError('Не удалось создать пост. Проверь workspace или повтори позже.')
   }
 }
+
+function handleCancelCreatePost() {
+  isCreatingPost.value = false
+  creatingForDate.value = null
+}
+
+// Cancel the inline draft if the user navigates to a different date
+watch(selectedDate, (newDate) => {
+  if (isCreatingPost.value && newDate !== creatingForDate.value) {
+    isCreatingPost.value = false
+    creatingForDate.value = null
+  }
+})
 
 const statusConfig = [
   { id: 'idea' as const, label: 'Идея', icon: 'idea', color: 'text-zinc-400' },
@@ -522,10 +550,13 @@ onUnmounted(() => {
           :used-news="usedNews"
           :trends="(currentProject?.trends ?? [])"
           :used-trends="usedTrends"
+          :is-creating-post="isCreatingPost"
           @select-post="selectPost"
           @close-date="selectDate(null)"
           @close-post="selectPost(null)"
           @create-post="handleCreatePost(selectedDate!)"
+          @submit-create-post="handleSubmitCreatePost"
+          @cancel-create-post="handleCancelCreatePost"
           @delete-post="handlePostDelete"
           @publish-post="handlePostPublish"
         />
