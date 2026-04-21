@@ -6,12 +6,6 @@
     </div>
 
     <div class="w-full flex justify-center items-center">
-      <!--      <PopupAds>-->
-      <!--        <Button size="sm">Тест попапа</Button>-->
-      <!--      </PopupAds>-->
-
-      <CrmPopup @click-action="clickActionButton"/>
-
       <ClientSelector
         v-if="useSettings().isPaidUser() || isGuestDemo"
         @open-create="showClientCreate = true"
@@ -24,7 +18,7 @@
 
       <!-- Logged in, not paid: show premium button -->
       <TiersWindow v-if="!useSettings().isPaidUser() && !isGuestDemo" @select-tier="selectTier">
-        <Button size="sm" variant="premium" ref="getPlusButton">
+        <Button size="sm" variant="premium">
           <Crown/>
           <div>{{ $t('premium-btn') }}</div>
         </Button>
@@ -54,7 +48,6 @@ import {useI18n} from 'vue-i18n'
 import PaymentProviders from "~/components/atoms/PaymentProviders.vue";
 import {PaymentProvider} from "~/scripts/shared/types/payment";
 import {ApiController} from "~/scripts/shared/api/controller";
-import CrmPopup from "~/components/molecules/CrmPopup.vue";
 import {ImageGeneratorNavbarButton} from "~/lib-modules/imageGenerator";
 import {DialogsSection, useCurrentConversation} from "~/lib-modules/conversations";
 import ClientSelector from "~/components/molecules/ClientSelector.vue";
@@ -78,8 +71,6 @@ const onClientCreated = async (workspaceId: string) => {
   await initialize();
   selectWorkspace(workspaceId);
 }
-
-const getPlusButton: Ref<HTMLElement | null> = ref(null);
 
 const selectedTierId: Ref<number | null> = ref(null);
 
@@ -121,13 +112,6 @@ const checkOut = async (method: PaymentProvider) => {
       buttons: [{type: "destructive", text: t('close')}],
     });
   }
-}
-
-/**
- * Click action button in crm
- */
-const clickActionButton = () => {
-  (getPlusButton.value as HTMLElement).$el.click();
 }
 
 </script>

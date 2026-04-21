@@ -25,11 +25,6 @@ export enum ApiAliases {
     // Payment (unchanged)
     payment = 'payment',
 
-    // CRM (unchanged)
-    popup = 'crm/popup/current',
-    viewPopup = 'crm/popup/view',
-    crmOpen = 'crm/open',
-
     // Auth endpoints
     authSignup = 'auth/signup/email',
     authSignin = 'auth/signin/email',

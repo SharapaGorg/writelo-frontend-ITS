@@ -1,7 +1,6 @@
 import type { UserType } from '~/scripts/shared/types/user'
 import { ApiAliases, RequestMethod, buildUrl } from '~/scripts/shared/types'
 import type { ConfigType } from '~/scripts/shared/types/common'
-import type { CurrentPopupType } from '~/scripts/shared/types/communication'
 import type {
     ConversationType,
     CreateConversationResponse,
@@ -363,13 +362,6 @@ export class ApiController {
         return this.request(ApiAliases.conversations + '/' + conversationId);
     }
 
-    /**
-     * @returns Current popup object if it must be shown for a user and null otherwise
-     */
-    async getCurrentPopup(): Promise<CurrentPopupType | null> {
-        return this.request(ApiAliases.popup);
-    }
-
     // ====== POST REQUESTS ======
 
     /**
@@ -446,18 +438,6 @@ export class ApiController {
             message: newText
         }, true)
     }
-
-    /**
-     * Mark as viewed to not show already viewed popup next time
-     *
-     * @param id id of popup which visible for user currently
-     */
-    async viewCurrentPopup(id: number): Promise<void> {
-        return this.request(ApiAliases.viewPopup, RequestMethod.POST, {
-            id: id
-        });
-    }
-
 
     /**
      * Update user settings (language)
