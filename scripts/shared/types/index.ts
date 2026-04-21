@@ -35,7 +35,7 @@ export enum ApiAliases {
     authSignin = 'auth/signin/email',
     authGoogle = 'auth/google',
     authTelegram = 'auth/telegram',
-    authVerify = 'auth/verify',
+    authVerify = 'auth/email/verify',
     authResendVerification = 'auth/resend-verification',
     authForgotPassword = 'auth/forgot-password',
     authResetPassword = 'auth/reset-password',
