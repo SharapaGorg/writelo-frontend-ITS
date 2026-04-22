@@ -56,6 +56,7 @@
 
 import {Role} from "~/lib-modules/conversations";
 import InteractiveLoader from "~/components/atoms/InteractiveLoader.vue";
+import "katex/dist/katex.min.css";
 import {toastCopyCodeClipboard} from "~/scripts/features/utils/toater";
 import {eventBus} from '~/composables/eventBus'
 import {MessageBottomBar} from "~/lib-modules/conversations";

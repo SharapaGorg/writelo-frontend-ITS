@@ -1,41 +1,16 @@
 import {defineNuxtPlugin} from "#app";
 
-export default defineNuxtPlugin(async () => {
+// Маркдаун-рендерер нужен только в редакторе постов (единственное место, где используется Message.vue).
+// Грузим katex/markdown-it/highlight.js (~300KB+) только при заходе на /app/editor,
+// чтобы не тащить их на лендос, /app/calendar, /app/profile и т.д.
+function needsMarkdownRenderer(path: string): boolean {
+    return path.startsWith('/app/editor');
+}
+
+async function buildMarkdownRenderer() {
     const MarkdownIt = await import("markdown-it").then((md) => md.default || md);
 
-    const lightTheme = window?.Telegram?.WebApp?.colorScheme === 'light';
-    // if (process.client) {
-    //     let theme;
-    //
-    //     const isTelegram =
-    //         window.Telegram &&
-    //         window.Telegram.WebApp &&
-    //         window.Telegram.WebApp.initData;
-    //
-    //     if (isTelegram) {
-    //         theme = window.Telegram.WebApp.colorScheme;
-    //         window.Telegram.WebApp.onEvent('themeChanged', () => {
-    //             loadHLJSTheme(window.Telegram.WebApp.colorScheme);
-    //         });
-    //     } else {
-    //         theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    //         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    //             loadHLJSTheme(e.matches ? 'dark' : 'light');
-    //         });
-    //     }
-    //
-    //     loadHLJSTheme(theme);
-    //
-    //     function loadHLJSTheme(theme) {
-    //         if (theme === 'light') {
-    //             import('highlight.js/styles/atom-one-light.min.css');
-    //         } else {
-    //             import('highlight.js/styles/atom-one-dark.min.css');
-    //         }
-    //     }
-    // }
-
-    import('highlight.js/styles/atom-one-dark.min.css');
+    await import('highlight.js/styles/atom-one-dark.min.css');
 
     const md = new MarkdownIt("default", {
         html: false,
@@ -56,14 +31,8 @@ export default defineNuxtPlugin(async () => {
         hasToolbar: true,
         toolbarTag: "div",
         toolbarClass: "code-toolbar",
-        toolbarLabel: (
-            tokens: any,
-            idx: any,
-            options: any,
-            env: any,
-            self: any,
-        ) => {
-            let toolbarLabel = tokens[idx].info.toLowerCase();
+        toolbarLabel: (tokens: any, idx: any) => {
+            const toolbarLabel = tokens[idx].info.toLowerCase();
             return `<span class="code-lang">${toolbarLabel}</span>`;
         },
         hasCopyButton: true,
@@ -71,13 +40,7 @@ export default defineNuxtPlugin(async () => {
         copyButtonAttrs: {
             class: "code-copy",
         },
-        copyButtonLabel: (
-            tokens: any,
-            idx: any,
-            options: any,
-            env: any,
-            self: any,
-        ) => {
+        copyButtonLabel: () => {
             return `
             <span class="code-copy">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 48 48">
@@ -106,13 +69,7 @@ export default defineNuxtPlugin(async () => {
         md.renderer.rules.paragraph_open ||
         ((tokens, idx, options, env, self) =>
             self.renderToken(tokens, idx, options));
-    md.renderer.rules.paragraph_open = function (
-        tokens,
-        idx,
-        options,
-        env,
-        self,
-    ) {
+    md.renderer.rules.paragraph_open = function (tokens, idx, options, env, self) {
         let result = "";
         if (idx > 1) {
             const inline = tokens[idx - 2];
@@ -133,9 +90,40 @@ export default defineNuxtPlugin(async () => {
         return result + defaultParagraphRenderer(tokens, idx, options, env, self);
     };
 
-    return {
-        provide: {
-            mdRenderer: md,
-        },
+    return md;
+}
+
+export default defineNuxtPlugin(async (nuxtApp) => {
+    const initialPath = import.meta.server
+        ? (nuxtApp.ssrContext?.url ?? '/')
+        : window.location.pathname;
+
+    let initPromise: Promise<any> | null = null;
+    const ensureRenderer = () => {
+        if (!initPromise) {
+            initPromise = buildMarkdownRenderer().then((md) => {
+                nuxtApp.provide('mdRenderer', md);
+                return md;
+            });
+        }
+        return initPromise;
     };
+
+    // Если пользователь сразу попал на /app/editor (hard reload, прямой URL) — инициализируем сейчас.
+    if (needsMarkdownRenderer(initialPath)) {
+        await ensureRenderer();
+        return;
+    }
+
+    // Иначе — ждём клиентской SPA-навигации в редактор. beforeResolve с async await'ится
+    // роутером до монтирования страницы, поэтому к моменту setup() Message.vue
+    // $mdRenderer уже будет provide'нут.
+    if (import.meta.client) {
+        const router = useRouter();
+        router.beforeResolve(async (to) => {
+            if (needsMarkdownRenderer(to.path)) {
+                await ensureRenderer();
+            }
+        });
+    }
 });

@@ -72,7 +72,6 @@ export default defineNuxtConfig({
     compatibilityDate: "2024-11-26",
 
     css: [
-        "katex/dist/katex.min.css",
         "@/assets/css/main.css",
         "@/assets/css/transitions.css"
     ],
