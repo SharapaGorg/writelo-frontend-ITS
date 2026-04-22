@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
-import CalendarHeader from './CalendarHeader.vue'
+import { AppNavbar } from '~/lib-modules/app-layout'
 import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
 import AccountsSidebar from './AccountsSidebar.vue'
@@ -25,7 +25,6 @@ const props = withDefaults(defineProps<{
 })
 
 const {
-  selectedProjectId,
   selectedDate,
   selectedPostId,
   activeAccountIds,
@@ -38,7 +37,6 @@ const {
   selectedPost,
   getPostsForDate,
   hasInfoEvent,
-  selectProject,
   selectDate,
   selectPost,
   toggleAccount,
@@ -53,7 +51,6 @@ const {
   usedNews,
   markTrendAsUsed,
   usedTrends,
-  projects
 } = useContentCalendar()
 
 function handlePostDelete() {
@@ -360,13 +357,12 @@ onUnmounted(() => {
 
 <template>
   <div :class="[
-    'bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 flex flex-col overflow-hidden',
+    'text-zinc-900 dark:text-zinc-100 flex flex-col overflow-hidden',
     props.showcaseMode ? 'h-[700px]' : 'h-screen'
   ]">
-    <CalendarHeader
-      :brands="projects"
-      :selected-brand-id="selectedProjectId"
-      @update:selected-brand-id="selectProject"
+    <AppNavbar
+      :breadcrumbs="[{ label: 'Календарь' }]"
+      :show-workspace-selector="!props.showcaseMode"
     />
     <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800">
       <div class="flex items-center gap-6">

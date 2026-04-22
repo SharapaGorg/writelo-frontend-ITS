@@ -8,7 +8,7 @@ import { AppSidebar } from '~/lib-modules/app-layout'
     <AppSidebar />
 
     <!-- Main Content Area (no header - calendar has its own) -->
-    <div class="flex flex-1 flex-col overflow-hidden">
+    <div class="flex flex-1 flex-col overflow-hidden bg-white dark:bg-zinc-950">
       <slot />
     </div>
   </div>

@@ -5,6 +5,7 @@ import { useContentCalendar } from '~/lib-modules/content-calendar'
 import ReelsFilters from './ReelsFilters.vue'
 import ReelsGrid from './ReelsGrid.vue'
 import CalendarDropModal from './CalendarDropModal.vue'
+import { AppNavbar } from '~/lib-modules/app-layout'
 import type { ReelItem } from '../types'
 
 const store = useReelsResearchStore()
@@ -69,20 +70,9 @@ function handlePanelClose() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-white dark:bg-zinc-900">
-    <div class="max-w-7xl mx-auto px-4 py-6">
-      <!-- Header -->
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-zinc-900 dark:text-white">
-            Исследование Reels
-          </h1>
-          <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Анализируй популярные рилсы и перетаскивай в календарь
-          </p>
-        </div>
-      </div>
-
+  <div class="min-h-screen flex flex-col">
+    <AppNavbar :breadcrumbs="[{ label: 'Тренды' }]" />
+    <div class="max-w-7xl mx-auto w-full px-4 py-6">
       <!-- Filters -->
       <div class="mb-6">
         <ReelsFilters />

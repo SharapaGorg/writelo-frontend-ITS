@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import interact from 'interactjs'
-import { ArrowLeft, MessageSquare, Image } from 'lucide-vue-next'
-import { Button } from '~/components/ui/button'
+import { MessageSquare, Image } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
 import { AccountsSidebar } from '~/lib-modules/content-calendar'
+import { AppNavbar, type BreadcrumbItem } from '~/lib-modules/app-layout'
 
 const {
   currentDraft,
   editorMode,
   setEditorMode,
-  goBackToCalendar,
   activePanel,
   setActivePanel,
   isEditMode,
@@ -66,35 +65,21 @@ onUnmounted(() => {
 })
 
 const headerTitle = computed(() => {
-  if (!currentDraft.value) return 'Новый пост'
-
-  // If editing existing post, show its title
-  if (isEditMode.value && currentDraft.value.title) {
+  if (isEditMode.value && currentDraft.value?.title) {
     return currentDraft.value.title
   }
-
-  // For new posts, show "Новый пост"
   return 'Новый пост'
 })
+
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+  { label: 'Календарь', to: '/app/calendar' },
+  { label: headerTitle.value },
+])
 </script>
 
 <template>
   <div :class="cn('flex h-full flex-col', isDragging && 'select-none')">
-    <!-- Header -->
-    <header class="flex items-center gap-4 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800 select-none">
-      <Button
-        v-if="isEditMode"
-        variant="ghost"
-        size="icon"
-        @click="goBackToCalendar"
-        class="h-8 w-8"
-      >
-        <ArrowLeft class="h-4 w-4" />
-      </Button>
-      <h1 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-        {{ headerTitle }}
-      </h1>
-    </header>
+    <AppNavbar :breadcrumbs="breadcrumbs" show-workspace-selector />
 
     <!-- Main content area -->
     <div class="flex flex-1 overflow-hidden">

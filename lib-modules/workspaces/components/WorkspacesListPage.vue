@@ -19,6 +19,7 @@ import {
 import WorkspaceCreateWindow from './WorkspaceCreateWindow.vue'
 import BrandAccountsSection from './BrandAccountsSection.vue'
 import BrandBriefSection from './BrandBriefSection.vue'
+import { AppNavbar } from '~/lib-modules/app-layout'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useDemoGuard } from '~/lib-modules/demo-mode'
 import { toastError, toastChangesSavedSuccess, toastDeleteSuccess } from '~/scripts/features/utils/toater'
@@ -200,19 +201,15 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full bg-background">
-    <header class="flex items-center justify-between px-6 py-4 border-b border-border">
-      <div>
-        <h1 class="text-xl font-semibold">Бренды</h1>
-        <p class="text-sm text-muted-foreground">
-          Управляйте воркспейсами: просматривайте и редактируйте бриф для каждого бренда.
-        </p>
-      </div>
-      <Button @click="openCreate" class="gap-2">
-        <Plus class="h-4 w-4" />
-        Создать бренд
-      </Button>
-    </header>
+  <div class="flex flex-col h-full">
+    <AppNavbar :breadcrumbs="[{ label: 'Бренды' }]">
+      <template #actions>
+        <Button size="sm" @click="openCreate" class="gap-2">
+          <Plus class="h-3.5 w-3.5" />
+          Создать бренд
+        </Button>
+      </template>
+    </AppNavbar>
 
     <div class="flex-1 overflow-y-auto px-6 py-4">
       <div v-if="loading && workspaces.length === 0" class="flex items-center justify-center py-16 text-muted-foreground">

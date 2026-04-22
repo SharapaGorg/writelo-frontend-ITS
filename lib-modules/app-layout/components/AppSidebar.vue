@@ -70,7 +70,7 @@ function navigate(item: SidebarItem) {
     <!-- Logo / Brand -->
     <div
       :class="cn(
-        'flex items-center h-14 px-4 border-b border-border',
+        'flex items-center h-16 px-4 border-b border-border',
         isCollapsed ? 'justify-center' : 'justify-between'
       )"
     >
