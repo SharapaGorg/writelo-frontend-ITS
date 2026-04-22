@@ -109,6 +109,10 @@
         "emailChangeCanceled": "Email change request canceled"
       }
     },
+    "connections": {
+      "header": "Connected accounts",
+      "description": "Sign in using third-party services"
+    },
     "dangerZone": {
       "header": "Danger Zone",
       "logout": "Log out",

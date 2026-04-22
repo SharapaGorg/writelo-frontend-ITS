@@ -4,7 +4,6 @@ import { SelectItem } from '~/components/ui/select'
 import MultiChoiceContainer from '~/components/molecules/MultiChoiceContainer.vue'
 import Spinner from '~/components/atoms/Spinner.vue'
 import { Button } from '~/components/ui/button'
-import { ProfileBadge } from '~/lib-modules/profile'
 import { useDemoMode } from '~/lib-modules/demo-mode'
 
 definePageMeta({

@@ -1,32 +1,24 @@
 <script setup lang="ts">
-import {defineComponent} from 'vue'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 
-defineComponent({
-  name: "ProfilePageBlock"
-})
+defineProps<{
+  headerClass?: string
+  contentClass?: string
+}>()
+
+const hasHeader = !!useSlots().header
 </script>
 
 <template>
-  <div class="flex flex-col gap-y-2">
-    <div class="profile-page__block-header">
-      <slot name="header"/>
-    </div>
+  <Card class="gap-3 py-5">
+    <CardHeader v-if="hasHeader" class="px-5">
+      <CardTitle :class="['text-base font-semibold', headerClass]">
+        <slot name="header" />
+      </CardTitle>
+    </CardHeader>
 
-    <div class="profile-page__block">
-      <slot name="content"/>
-    </div>
-  </div>
+    <CardContent :class="['px-5', contentClass]">
+      <slot name="content" />
+    </CardContent>
+  </Card>
 </template>
-
-<style scoped>
-
-.profile-page__block {
-  @apply w-full rounded-xl border-2
-  border-solid border-input p-4
-}
-
-.profile-page__block-header {
-  @apply text-lg font-bold
-}
-
-</style>

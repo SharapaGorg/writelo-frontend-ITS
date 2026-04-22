@@ -109,6 +109,10 @@
         "emailChangeCanceled": "Запрос на смену email отменён"
       }
     },
+    "connections": {
+      "header": "Привязанные аккаунты",
+      "description": "Входите в аккаунт через сторонние сервисы"
+    },
     "dangerZone": {
       "header": "Опасная зона",
       "logout": "Выйти из аккаунта",

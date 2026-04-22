@@ -3,7 +3,7 @@
       variant="outline"
       class="relative w-full group overflow-hidden active:scale-95 transition-all"
       :disabled="isLoading"
-      @click="handleGoogleSignIn"
+      @click="handleClick"
   >
     <span
         class="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 dark:via-white/5 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-in-out"
@@ -24,15 +24,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
-import {Button} from '@/components/ui/button'
-import {Loader2} from 'lucide-vue-next'
-import {useWebAuthI18n} from '../composables/useWebAuthI18n'
-import {AuthApiController} from '../helpers/api'
-import {toast} from 'vue-sonner'
-import {getToasterPosition} from '~/scripts/features/utils/toater'
-import {Routes} from '~/scripts/shared/types'
-import {useDemoGuard} from '~/lib-modules/demo-mode'
+import { Button } from '@/components/ui/button'
+import { Loader2 } from 'lucide-vue-next'
+import { useWebAuthI18n } from '../composables/useWebAuthI18n'
+import { useGoogleOAuth } from '../composables/useGoogleOAuth'
 
 export type GoogleButtonMode = 'signin' | 'link'
 
@@ -42,106 +37,13 @@ const props = withDefaults(defineProps<{
   mode: 'signin'
 })
 
-const GOOGLE_CLIENT_ID = '753438069387-0cm5jv7j2ceseoein8q7ba5jqrq3tdg0.apps.googleusercontent.com'
+const emit = defineEmits<{ linked: [] }>()
 
-const {t} = useWebAuthI18n()
-const {locale} = useI18n()
-const userController = useUserController()
-const settings = useSettings()
-const authApi = new AuthApiController()
-const {guardAction} = useDemoGuard()
+const { t } = useWebAuthI18n()
+const { isLoading, signIn } = useGoogleOAuth()
 
-const emit = defineEmits<{
-  linked: []
-}>()
-
-const isLoading = ref(false)
-
-function handleGoogleSignIn() {
-  // Block in demo mode when linking (mode === 'link')
-  if (props.mode === 'link' && guardAction(() => {})) return;
-
-  isLoading.value = true
-  openGooglePopup()
-}
-
-function openGooglePopup() {
-  const redirectUri = window.location.origin
-  const scope = 'openid email profile'
-  const responseType = 'id_token'
-  const nonce = Math.random().toString(36).substring(2)
-
-  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${GOOGLE_CLIENT_ID}` +
-      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-      `&response_type=${responseType}` +
-      `&scope=${encodeURIComponent(scope)}` +
-      `&nonce=${nonce}` +
-      `&prompt=select_account`
-
-  const width = 500
-  const height = 600
-  const left = window.screenX + (window.outerWidth - width) / 2
-  const top = window.screenY + (window.outerHeight - height) / 2
-
-  const popup = window.open(
-      authUrl,
-      'google-auth',
-      `width=${width},height=${height},left=${left},top=${top}`
-  )
-
-  const checkPopup = setInterval(() => {
-    try {
-      if (!popup || popup.closed) {
-        clearInterval(checkPopup)
-        isLoading.value = false
-        return
-      }
-
-      if (popup.location.href.includes(redirectUri)) {
-        const hash = popup.location.hash.substring(1)
-        const params = new URLSearchParams(hash)
-        const idToken = params.get('id_token')
-
-        popup.close()
-        clearInterval(checkPopup)
-
-        if (idToken) {
-          processIdToken(idToken)
-        } else {
-          isLoading.value = false
-          toast.error(t('google.error'), {position: getToasterPosition()})
-        }
-      }
-    } catch (e) {
-      // Cross-origin error - popup not yet redirected
-    }
-  }, 500)
-}
-
-async function processIdToken(idToken: string) {
-  try {
-    if (props.mode === 'signin') {
-      const authResponse = await authApi.signinGoogle(idToken)
-
-      if (authResponse?.token) {
-        userController.setAuthToken(authResponse.token)
-        await settings.init(locale)
-
-        toast.success(t('google.success'), {position: getToasterPosition()})
-        await navigateTo(Routes.app)
-      }
-    } else {
-      await authApi.linkGoogle(idToken)
-      await settings.refreshUserData()
-      toast.success(t('google.linked'), {position: getToasterPosition()})
-      emit('linked')
-    }
-  } catch (error: any) {
-    console.error('Google auth error:', error)
-    // Error toast is handled by ApiController
-  } finally {
-    isLoading.value = false
-  }
+async function handleClick() {
+  const ok = await signIn(props.mode)
+  if (ok && props.mode === 'link') emit('linked')
 }
 </script>

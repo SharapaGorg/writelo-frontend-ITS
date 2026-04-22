@@ -1,39 +1,129 @@
 <script setup lang="ts">
-import {defineComponent} from 'vue'
-import {ProfileBadge} from "~/lib-modules/profile";
-import {GoogleZone, TelegramZone, YandexZone} from './alternativeAuthZones'
-import DangerousZone from './DangerousSection.vue'
-import EditAccountZone from "./EditAccountZone.vue";
-import TariffPlanZone from "./TariffPlanZone.vue";
-import GiftsSection from "./GiftsSection.vue";
-import {isInTelegramApp} from "~/scripts/features/utils";
-import {useDemoMode} from "~/lib-modules/demo-mode";
+import { computed, ref } from 'vue'
+import { Clock, LogOut } from 'lucide-vue-next'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { AppNavbar } from '~/lib-modules/app-layout'
+import TariffPlanZone from './TariffPlanZone.vue'
+import GiftsSection from './GiftsSection.vue'
+import EditAccountZone from './EditAccountZone.vue'
+import ConnectionsZone from './ConnectionsZone.vue'
+import { isInTelegramApp } from '~/scripts/features/utils'
+import { useDemoMode, useDemoGuard } from '~/lib-modules/demo-mode'
+import { useProfileI18n } from '../composables/useProfileI18n'
 
-defineComponent({
-  name: "ProfilePage"
+const { t } = useProfileI18n()
+const { isGuestDemo } = useDemoMode()
+const { guardAction } = useDemoGuard()
+const $settings = useSettings()
+const userController = useUserController()
+
+const user = computed(() => $settings.getUser())
+
+const displayName = computed(() => {
+  if (isGuestDemo.value) return t('demoUser.name')
+  return user.value?.name ?? ''
 })
 
-const {isGuestDemo} = useDemoMode()
+const displayEmail = computed(() => {
+  if (isGuestDemo.value) return t('demoUser.email')
+  return user.value?.email ?? ''
+})
+
+const pendingEmail = computed(() => user.value?.pendingEmail)
+const initials = computed(() => {
+  const parts = displayName.value.trim().split(/\s+/)
+  const letters = parts.slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('')
+  return letters || 'U'
+})
+
+const logoutDialogOpen = ref(false)
+const canLogout = computed(() => !isInTelegramApp.value)
+
+const openLogoutDialog = () => {
+  if (guardAction(() => {})) return
+  logoutDialogOpen.value = true
+}
+
+async function handleLogout() {
+  userController.clearToken()
+  logoutDialogOpen.value = false
+  await navigateTo('/auth')
+}
 </script>
 
 <template>
-  <div class="profile-page__container">
-    <ProfileBadge :full-width="true"/>
-    <TariffPlanZone/>
-    <GiftsSection/>
-    <EditAccountZone/>
-    <TelegramZone/>
-    <!--    <YandexZone/>-->
-    <GoogleZone/>
-    <DangerousZone v-if="!isInTelegramApp"/>
+  <div class="flex flex-col h-full">
+    <AppNavbar :breadcrumbs="[{ label: 'Профиль' }]" />
+
+    <div class="flex-1 overflow-y-auto">
+      <div class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 flex flex-col gap-6">
+        <!-- Hero -->
+        <section class="flex items-center gap-4 rounded-xl border bg-card px-5 py-4 shadow-sm">
+          <Avatar class="h-16 w-16 sm:h-20 sm:w-20 shrink-0">
+            <AvatarImage src="https://github.com/shadcn.png" alt="@avatar" />
+            <AvatarFallback>{{ initials }}</AvatarFallback>
+          </Avatar>
+          <div class="flex flex-col min-w-0 flex-1">
+            <span class="text-lg sm:text-xl font-semibold truncate">{{ displayName }}</span>
+            <span class="text-sm text-muted-foreground truncate">{{ displayEmail }}</span>
+            <span
+              v-if="pendingEmail"
+              class="mt-1 flex items-center gap-1 text-xs text-yellow-600 dark:text-yellow-400 truncate"
+            >
+              <Clock class="h-3 w-3 shrink-0" />
+              {{ pendingEmail }}
+            </span>
+          </div>
+          <Button
+            v-if="canLogout"
+            variant="ghost"
+            size="sm"
+            class="shrink-0 text-muted-foreground hover:text-destructive"
+            @click="openLogoutDialog"
+          >
+            <LogOut class="h-4 w-4" />
+            <span class="hidden sm:inline">{{ t('dangerZone.logout') }}</span>
+          </Button>
+        </section>
+
+        <!-- Tariff — full width on every breakpoint -->
+        <TariffPlanZone />
+
+        <!-- Two-column grid on lg+, single column below -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <EditAccountZone />
+          <GiftsSection />
+          <ConnectionsZone />
+        </div>
+      </div>
+    </div>
+
+    <Dialog v-model:open="logoutDialogOpen">
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{{ t('dangerZone.logoutConfirm.title') }}</DialogTitle>
+          <DialogDescription>
+            {{ t('dangerZone.logoutConfirm.description') }}
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button variant="outline" @click="logoutDialogOpen = false">
+            {{ t('dangerZone.logoutConfirm.cancel') }}
+          </Button>
+          <Button variant="destructive" @click="handleLogout">
+            {{ t('dangerZone.logoutConfirm.confirm') }}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
-
-<style scoped>
-
-.profile-page__container {
-  @apply w-full max-w-[600px] pt-10 pb-20 px-8
-  flex flex-col gap-y-6
-}
-
-</style>

@@ -79,6 +79,7 @@
       "success": "Вход через Telegram выполнен!",
       "linked": "Telegram аккаунт привязан!",
       "unlinked": "Telegram аккаунт отвязан!",
+      "link": "Привязать",
       "unlink": "Отвязать",
       "account_linked": "Аккаунт привязан",
       "error": "Ошибка авторизации Telegram",

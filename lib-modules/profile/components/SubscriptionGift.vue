@@ -86,9 +86,9 @@ const copyToClipboard = async () => {
 <style scoped>
 
 .subscription-gift__container {
-  @apply w-full border-input border-2
+  @apply w-full border border-border
   pl-2.5 pr-1.5 py-1.5 rounded-lg flex
-  cursor-pointer select-none
+  select-none
 }
 
 .subscription-gift__title {
@@ -101,13 +101,11 @@ const copyToClipboard = async () => {
 }
 
 .subscription-gift__activation-date {
-  @apply text-[13px] text-stone-500
+  @apply text-[13px] text-muted-foreground
 }
 
 .activator-chip {
-  background: rgb(59 130 246 / 0.3);
-  color: rgb(59 130 246);
-  @apply rounded-lg px-2 py-1 text-sm
+  @apply inline-flex items-center rounded-md bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium
 }
 
 </style>

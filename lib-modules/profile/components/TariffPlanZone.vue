@@ -1,123 +1,105 @@
 <script setup lang="ts">
+import { Check, Lock } from 'lucide-vue-next'
+import ProfilePageBlock from './ProfilePageBlock.vue'
+import AppLoader from '~/components/atoms/AppLoader.vue'
+import SubscriptionTimer from './SubscriptionTimer.vue'
+import { FeatureType, type SubscriptionType } from '~/scripts/shared/types/common'
+import { useProfileI18n } from '../composables/useProfileI18n'
+import { useDemoMode } from '~/lib-modules/demo-mode'
 
-import ProfilePageBlock from "./ProfilePageBlock.vue";
-import AppLoader from "~/components/atoms/AppLoader.vue";
-import SubscriptionTimer from "./SubscriptionTimer.vue";
-import {FeatureType, type SubscriptionType} from "~/scripts/shared/types/common";
-import {Dot} from 'lucide-vue-next'
-import {useProfileI18n} from '../composables/useProfileI18n';
-import {useDemoMode} from '~/lib-modules/demo-mode';
+const $settings = useSettings()
+const { t } = useProfileI18n()
+const { isGuestDemo } = useDemoMode()
 
-const $settings = useSettings();
-const {t} = useProfileI18n();
-const {isGuestDemo} = useDemoMode();
+const subscription = computed<SubscriptionType | null>(() => $settings.getSubscription())
 
-const subscription = computed<SubscriptionType | null>(() => $settings.getSubscription());
-
-// Use localized strings for demo mode
 const subscriptionTitle = computed(() => {
-  if (isGuestDemo.value) {
-    return t('tariffPlan.demo.title');
-  }
-  return subscription.value?.title ?? '';
-});
+  if (isGuestDemo.value) return t('tariffPlan.demo.title')
+  return subscription.value?.title ?? ''
+})
 
 const subscriptionDescription = computed(() => {
-  if (isGuestDemo.value) {
-    return t('tariffPlan.demo.description');
-  }
-  return subscription.value?.description ?? '';
-});
+  if (isGuestDemo.value) return t('tariffPlan.demo.description')
+  return subscription.value?.description ?? ''
+})
 
 const subscriptionFeaturesText = computed(() => {
   if (isGuestDemo.value) {
     return [
       t('tariffPlan.demo.featuresText.interface'),
       t('tariffPlan.demo.featuresText.functionality'),
-      t('tariffPlan.demo.featuresText.demoData')
-    ];
+      t('tariffPlan.demo.featuresText.demoData'),
+    ]
   }
-  return subscription.value?.featuresText ?? [];
-});
+  return subscription.value?.featuresText ?? []
+})
 
-const FEATURES_CHIPS = computed(() => ({
+const FEATURE_LABELS = computed<Record<FeatureType, string>>(() => ({
   [FeatureType.search]: t('tariffPlan.features.search'),
   [FeatureType.workspaces]: t('tariffPlan.features.clients'),
   [FeatureType.templates]: t('tariffPlan.features.templates'),
-  [FeatureType.imageGeneration]: t('tariffPlan.features.imageGeneration')
+  [FeatureType.imageGeneration]: t('tariffPlan.features.imageGeneration'),
 }))
 
+const activeFeatures = computed(() =>
+  (Object.keys(FEATURE_LABELS.value) as FeatureType[]).filter((f) => $settings.hasFeature(f))
+)
+
+const lockedFeatures = computed(() =>
+  (Object.keys(FEATURE_LABELS.value) as FeatureType[]).filter((f) => !$settings.hasFeature(f))
+)
 </script>
 
 <template>
   <ProfilePageBlock>
     <template #header>{{ t('tariffPlan.header') }}</template>
     <template #content>
-      <div class="tariff-plan__container">
-        <AppLoader :show-texts="false" v-if="!$settings.loaded"/>
+      <AppLoader :show-texts="false" v-if="!$settings.loaded" />
 
-        <div v-if="subscription" class="flex flex-col gap-y-3">
-          <div class="grid grid-cols-2 justify-items-end items-center gap-3">
-            <h1 class="text-xl font-bold w-full">{{ subscriptionTitle }}</h1>
-            <SubscriptionTimer v-if="subscription.price"/>
+      <div v-if="subscription" class="flex flex-col gap-4">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex flex-col gap-0.5 min-w-0">
+            <h2 class="text-xl font-semibold truncate">{{ subscriptionTitle }}</h2>
+            <p class="text-sm text-muted-foreground">{{ subscriptionDescription }}</p>
           </div>
+          <SubscriptionTimer v-if="subscription.price" />
+        </div>
 
-          <h3>{{ subscriptionDescription }}</h3>
+        <div v-if="subscriptionFeaturesText.length" class="flex flex-col gap-1.5">
+          <div
+            v-for="feature in subscriptionFeaturesText"
+            :key="feature"
+            class="flex items-start gap-2 text-sm"
+          >
+            <Check class="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+            <span>{{ feature }}</span>
+          </div>
+        </div>
 
-          <h3 class="font-bold">{{ t('tariffPlan.functionality') }}</h3>
-
-          <div class="flex flex-col gap-y-1">
-            <div
-                class="flex items-center -translate-x-3"
-                v-for="feature in subscriptionFeaturesText"
-                :key="feature"
+        <div v-if="activeFeatures.length || lockedFeatures.length" class="flex flex-col gap-2 pt-1">
+          <div v-if="activeFeatures.length" class="flex flex-wrap gap-1.5">
+            <span
+              v-for="f in activeFeatures"
+              :key="f"
+              class="inline-flex items-center gap-1 rounded-md bg-primary/10 text-primary px-2 py-0.5 text-xs font-medium"
             >
-              <Dot class="w-8 h-8 flex-shrink-0"/>
-
-              <span class="text-[13px]">
-              {{ feature }}
+              <Check class="h-3 w-3" />
+              {{ FEATURE_LABELS[f] }}
             </span>
-            </div>
           </div>
 
-          <div class="feature-chips__container">
-            <template
-                v-for="(label, chip) in FEATURES_CHIPS"
-                :key="chip"
+          <div v-if="lockedFeatures.length" class="flex flex-wrap gap-1.5">
+            <span
+              v-for="f in lockedFeatures"
+              :key="f"
+              class="inline-flex items-center gap-1 rounded-md bg-muted text-muted-foreground px-2 py-0.5 text-xs font-medium"
             >
-              <div
-                  :class="{ 'feature-chips__disabled-item': !$settings.hasFeature(chip as FeatureType) }"
-                  class="feature-chips__item"
-              >
-                {{ label }}
-              </div>
-            </template>
+              <Lock class="h-3 w-3" />
+              {{ FEATURE_LABELS[f] }}
+            </span>
           </div>
         </div>
       </div>
     </template>
   </ProfilePageBlock>
 </template>
-
-<style scoped>
-
-.tariff-plan__container {
-  @apply w-full p-4
-}
-
-.feature-chips__container {
-  @apply flex items-center gap-x-2 flex-wrap gap-y-2
-}
-
-.feature-chips__item {
-  background: rgb(59 130 246 / 0.3);
-  color: rgb(59 130 246);
-  @apply rounded-lg px-2 py-1 text-sm flex-shrink-0
-}
-
-.feature-chips__disabled-item {
-  background: rgb(59 130 246 / 0.1) !important;
-  color: rgb(59 130 246 / 0.5) !important;
-}
-
-</style>

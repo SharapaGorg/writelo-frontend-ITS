@@ -79,6 +79,7 @@
       "success": "Telegram sign-in successful!",
       "linked": "Telegram account linked!",
       "unlinked": "Telegram account unlinked!",
+      "link": "Link",
       "unlink": "Unlink",
       "account_linked": "Account linked",
       "error": "Telegram authentication error",
