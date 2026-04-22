@@ -5,6 +5,7 @@ import MultiChoiceContainer from '~/components/molecules/MultiChoiceContainer.vu
 import Spinner from '~/components/atoms/Spinner.vue'
 import { Button } from '~/components/ui/button'
 import { useDemoMode } from '~/lib-modules/demo-mode'
+import { AppNavbar } from '~/lib-modules/app-layout'
 
 definePageMeta({
   layout: 'app'
@@ -70,29 +71,33 @@ const saveChanges = async () => {
 </script>
 
 <template>
-  <div class="max-w-2xl p-8 flex flex-col gap-8">
-    <h1 class="text-2xl font-bold">{{ $t('settings') }}</h1>
+  <div class="flex flex-col h-full">
+    <AppNavbar :breadcrumbs="[{ label: $t('settings') }]" />
 
-    <Spinner v-show="!$settings.loaded.value" />
+    <div class="flex-1 overflow-y-auto">
+      <div class="max-w-2xl w-full px-4 sm:px-6 py-6 flex flex-col gap-8">
+        <Spinner v-show="!$settings.loaded.value" />
 
-    <div v-show="$settings.loaded.value" class="flex flex-col gap-6">
-      <section class="flex flex-col gap-2">
-        <h2 class="text-sm font-medium text-muted-foreground">{{ $t('settings-lang') }}</h2>
-        <MultiChoiceContainer
-          v-model="language"
-          :default-value="language"
-          placeholder="Выберите язык"
-        >
-          <SelectItem v-for="lang in Object.keys(languages)" :key="lang" :value="lang">
-            {{ languages[lang] }}
-          </SelectItem>
-        </MultiChoiceContainer>
-      </section>
+        <div v-show="$settings.loaded.value" class="flex flex-col gap-6">
+          <section class="flex flex-col gap-2">
+            <h2 class="text-sm font-medium text-muted-foreground">{{ $t('settings-lang') }}</h2>
+            <MultiChoiceContainer
+              v-model="language"
+              :default-value="language"
+              placeholder="Выберите язык"
+            >
+              <SelectItem v-for="lang in Object.keys(languages)" :key="lang" :value="lang">
+                {{ languages[lang] }}
+              </SelectItem>
+            </MultiChoiceContainer>
+          </section>
 
-      <div class="flex gap-2">
-        <Button variant="secondary" size="sm" :disabled="!beenChanged" @click="saveChanges">
-          {{ $t('save') }}
-        </Button>
+          <div class="flex gap-2">
+            <Button variant="secondary" size="sm" :disabled="!beenChanged" @click="saveChanges">
+              {{ $t('save') }}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

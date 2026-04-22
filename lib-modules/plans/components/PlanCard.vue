@@ -55,7 +55,7 @@ function handlePurchase(mode: 'self' | 'gift') {
       class="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-0.5 text-[11px] font-medium text-white shadow"
     >
       <Star class="h-3 w-3 fill-current" />
-      Обычно выбирают
+      Популярный
     </div>
 
     <div class="flex items-center gap-2">
