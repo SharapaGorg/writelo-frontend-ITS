@@ -63,21 +63,21 @@ function navigate(item: SidebarItem) {
 <template>
   <aside
     :class="cn(
-      'flex flex-col h-full bg-background border-r border-border transition-all duration-300',
+      'flex flex-col h-full bg-background border-r border-border overflow-hidden transition-all duration-300',
       isCollapsed ? 'w-16' : 'w-60'
     )"
   >
     <!-- Logo / Brand -->
-    <div
-      :class="cn(
-        'flex items-center h-16 px-4 border-b border-border',
-        isCollapsed ? 'justify-center' : 'justify-between'
-      )"
-    >
-      <div v-if="!isCollapsed" class="flex items-baseline gap-1.5">
-        <span class="text-lg font-semibold">Writelo</span>
+    <div class="flex items-center justify-between h-16 px-4 border-b border-border gap-2">
+      <div
+        :class="cn(
+          'flex items-baseline gap-1.5 overflow-hidden transition-all duration-300',
+          isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'
+        )"
+      >
+        <span class="text-lg font-semibold whitespace-nowrap">Writelo</span>
         <span
-          class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded bg-primary/10 text-primary leading-none"
+          class="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded bg-primary/10 text-primary leading-none whitespace-nowrap"
         >
           beta
         </span>
@@ -85,7 +85,7 @@ function navigate(item: SidebarItem) {
       <Button
         variant="ghost"
         size="icon"
-        class="h-8 w-8"
+        class="h-8 w-8 shrink-0"
         @click="toggleSidebar"
       >
         <ChevronLeft v-if="!isCollapsed" class="h-4 w-4" />
@@ -100,14 +100,18 @@ function navigate(item: SidebarItem) {
         :key="item.id"
         variant="ghost"
         :class="cn(
-          'justify-start gap-3 h-10',
-          isCollapsed && 'justify-center px-2',
+          'w-full justify-start gap-3 h-10 px-3 overflow-hidden',
           isActive(item) && 'bg-accent text-accent-foreground'
         )"
         @click="navigate(item)"
       >
         <component :is="getIcon(item.icon)" class="h-5 w-5 shrink-0" />
-        <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
+        <span
+          :class="cn(
+            'truncate whitespace-nowrap transition-all duration-300',
+            isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'
+          )"
+        >{{ item.label }}</span>
       </Button>
     </nav>
 
@@ -118,21 +122,27 @@ function navigate(item: SidebarItem) {
     >
       <Button
         variant="default"
-        :class="cn(
-          'w-full gap-2 h-10 bg-primary text-primary-foreground hover:bg-primary/90',
-          isCollapsed ? 'justify-center px-2' : 'justify-start'
-        )"
+        class="w-full gap-2 h-10 px-3 bg-primary text-primary-foreground hover:bg-primary/90 justify-start overflow-hidden"
         @click="router.push('/auth')"
       >
         <LogIn class="h-5 w-5 shrink-0" />
-        <span v-if="!isCollapsed" class="truncate">Войти в аккаунт</span>
+        <span
+          :class="cn(
+            'truncate whitespace-nowrap transition-all duration-300',
+            isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'
+          )"
+        >Войти в аккаунт</span>
       </Button>
-      <p
-        v-if="!isCollapsed"
-        class="mt-2 px-2 text-xs text-muted-foreground leading-snug"
+      <div
+        :class="cn(
+          'overflow-hidden transition-all duration-300',
+          isCollapsed ? 'max-h-0 opacity-0 mt-0' : 'max-h-24 opacity-100 mt-2'
+        )"
       >
-        Сейчас вы не авторизованы — часть функций недоступна
-      </p>
+        <p class="px-2 text-xs text-muted-foreground leading-snug">
+          Сейчас вы не авторизованы — часть функций недоступна
+        </p>
+      </div>
     </div>
 
     <!-- Subscription chip -->
@@ -140,8 +150,7 @@ function navigate(item: SidebarItem) {
       v-if="isAuthenticated"
       type="button"
       :class="cn(
-        'mx-2 mb-1 mt-1 flex items-center gap-2 rounded-md border px-3 py-2 text-left transition-colors hover:bg-accent',
-        isCollapsed && 'justify-center px-0',
+        'mx-2 mb-1 mt-1 flex items-center gap-2 rounded-md border px-3 py-2 text-left overflow-hidden transition-colors hover:bg-accent',
         isFreePlan
           ? 'border-border bg-muted/50'
           : 'border-amber-300/60 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800/60'
@@ -155,11 +164,16 @@ function navigate(item: SidebarItem) {
           isFreePlan ? 'text-muted-foreground' : 'text-amber-600 dark:text-amber-400'
         )"
       />
-      <div v-if="!isCollapsed" class="flex-1 min-w-0">
-        <div class="text-xs font-medium truncate">
+      <div
+        :class="cn(
+          'min-w-0 overflow-hidden transition-all duration-300',
+          isCollapsed ? 'max-w-0 opacity-0' : 'flex-1 max-w-[200px] opacity-100'
+        )"
+      >
+        <div class="text-xs font-medium truncate whitespace-nowrap">
           {{ isFreePlan ? 'Бесплатный тариф' : planTitle }}
         </div>
-        <div v-if="isFreePlan" class="text-[11px] text-muted-foreground truncate">
+        <div v-if="isFreePlan" class="text-[11px] text-muted-foreground truncate whitespace-nowrap">
           Открыть тарифы →
         </div>
       </div>
@@ -172,14 +186,18 @@ function navigate(item: SidebarItem) {
         :key="item.id"
         variant="ghost"
         :class="cn(
-          'justify-start gap-3 h-10',
-          isCollapsed && 'justify-center px-2',
+          'w-full justify-start gap-3 h-10 px-3 overflow-hidden',
           isActive(item) && 'bg-accent text-accent-foreground'
         )"
         @click="navigate(item)"
       >
         <component :is="getIcon(item.icon)" class="h-5 w-5 shrink-0" />
-        <span v-if="!isCollapsed" class="truncate">{{ item.label }}</span>
+        <span
+          :class="cn(
+            'truncate whitespace-nowrap transition-all duration-300',
+            isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'
+          )"
+        >{{ item.label }}</span>
       </Button>
     </div>
   </aside>
