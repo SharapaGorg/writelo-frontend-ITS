@@ -50,9 +50,11 @@ export const useContentProjectStore = defineStore('contentProject', () => {
   }
 
   function disableDemoMode() {
+    if (!isDemo.value) return
     isDemo.value = false
     projects.value = []
     selectedProjectId.value = context.currentWorkspaceId.value ?? ''
+    syncProjects()
   }
 
   function ensureProjectSkeleton(workspaceId: string, name: string) {
