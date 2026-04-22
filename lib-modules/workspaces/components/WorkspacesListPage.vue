@@ -17,9 +17,15 @@ import {
   AlertDialogTitle,
 } from '~/components/ui/alert-dialog'
 import WorkspaceCreateWindow from './WorkspaceCreateWindow.vue'
+import BrandAccountsSection from './BrandAccountsSection.vue'
+import BrandBriefSection from './BrandBriefSection.vue'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useDemoGuard } from '~/lib-modules/demo-mode'
 import { toastError, toastChangesSavedSuccess, toastDeleteSuccess } from '~/scripts/features/utils/toater'
+// Direct imports (not via barrel) to avoid module-eval cycle: content-calendar
+// barrel re-exports ContentCalendarPage, which imports from '~/lib-modules/workspaces'.
+import { useContentCalendarApi } from '~/lib-modules/content-calendar/helpers/api'
+import type { SocialAccount } from '~/lib-modules/content-calendar/types'
 import type { WorkspaceDto } from '../types'
 
 const { t: t_ } = useI18n()
@@ -33,6 +39,30 @@ const savingId = ref<string | null>(null)
 const deletingId = ref<string | null>(null)
 const deleteTarget = ref<string | null>(null)
 const deleteDialogOpen = ref(false)
+
+// Accounts state per workspace — loaded lazily when the accordion opens.
+const accountsByWorkspace = reactive<Record<string, SocialAccount[]>>({})
+const accountsLoading = reactive<Record<string, boolean>>({})
+const accountsLoaded = reactive<Record<string, boolean>>({})
+const calendarApi = useContentCalendarApi()
+
+async function loadAccounts(workspaceId: string) {
+  if (accountsLoaded[workspaceId] || accountsLoading[workspaceId]) return
+  accountsLoading[workspaceId] = true
+  try {
+    accountsByWorkspace[workspaceId] = await calendarApi.getSocialAccounts(workspaceId)
+    accountsLoaded[workspaceId] = true
+  } catch (e) {
+    console.error('[WorkspacesListPage] load accounts failed:', e)
+    accountsByWorkspace[workspaceId] = []
+  } finally {
+    accountsLoading[workspaceId] = false
+  }
+}
+
+watch(openValue, (id) => {
+  if (id) loadAccounts(id)
+})
 
 function openCreate() {
   guardAction(() => {
@@ -137,6 +167,9 @@ async function confirmDelete() {
       const ok = await deleteWorkspace(id)
       if (ok) {
         delete drafts[id]
+        delete accountsByWorkspace[id]
+        delete accountsLoading[id]
+        delete accountsLoaded[id]
         if (openValue.value === id) openValue.value = undefined
         toastDeleteSuccess(t_)
       }
@@ -241,7 +274,14 @@ onMounted(async () => {
           </button>
 
           <AccordionContent>
-            <div v-if="drafts[w.id]" class="space-y-4 pt-2 pb-4">
+            <div v-if="drafts[w.id]" class="space-y-4 px-1 pt-2 pb-4">
+              <BrandAccountsSection
+                :workspace-id="w.id"
+                :accounts="accountsByWorkspace[w.id] ?? []"
+                :loading="accountsLoading[w.id] === true"
+                :loaded="accountsLoaded[w.id] === true"
+              />
+
               <div class="space-y-2">
                 <Label :for="`name-${w.id}`">
                   {{ t_('addClient.brandName') }} <span class="text-red-500">*</span>
@@ -253,69 +293,11 @@ onMounted(async () => {
                 />
               </div>
 
-              <div class="space-y-2">
-                <Label :for="`industry-${w.id}`">{{ t_('addClient.niche') }}</Label>
-                <Input
-                  :id="`industry-${w.id}`"
-                  v-model="drafts[w.id].industry"
-                  :disabled="!canEdit(w.id)"
-                  :placeholder="t_('addClient.nichePlaceholder')"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <Label :for="`description-${w.id}`">{{ t_('addClient.description') }}</Label>
-                <Textarea
-                  :id="`description-${w.id}`"
-                  v-model="drafts[w.id].businessDescription"
-                  :disabled="!canEdit(w.id)"
-                  :rows="3"
-                  :placeholder="t_('addClient.descriptionPlaceholder')"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <Label :for="`audience-${w.id}`">{{ t_('addClient.targetAudience') }}</Label>
-                <Textarea
-                  :id="`audience-${w.id}`"
-                  v-model="drafts[w.id].targetAudience"
-                  :disabled="!canEdit(w.id)"
-                  :rows="2"
-                  :placeholder="t_('addClient.targetAudiencePlaceholder')"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <Label :for="`tone-${w.id}`">{{ t_('addClient.communicationStyle') }}</Label>
-                <Textarea
-                  :id="`tone-${w.id}`"
-                  v-model="drafts[w.id].toneOfVoice"
-                  :disabled="!canEdit(w.id)"
-                  :rows="2"
-                  :placeholder="t_('addClient.communicationStylePlaceholder')"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <Label :for="`stop-${w.id}`">{{ t_('addClient.stopWords') }}</Label>
-                <Input
-                  :id="`stop-${w.id}`"
-                  v-model="drafts[w.id].stopWords"
-                  :disabled="!canEdit(w.id)"
-                  :placeholder="t_('addClient.stopWordsPlaceholder')"
-                />
-              </div>
-
-              <div class="space-y-2">
-                <Label :for="`examples-${w.id}`">{{ t_('addClient.postExamples') }}</Label>
-                <Textarea
-                  :id="`examples-${w.id}`"
-                  v-model="drafts[w.id].examplePosts"
-                  :disabled="!canEdit(w.id)"
-                  :rows="6"
-                  :placeholder="t_('addClient.postExamplesPlaceholder')"
-                />
-              </div>
+              <BrandBriefSection
+                :id-prefix="w.id"
+                :draft="drafts[w.id]"
+                :can-edit="canEdit(w.id)"
+              />
 
               <div class="flex items-center justify-end gap-2 pt-2 border-t border-border">
                 <Button

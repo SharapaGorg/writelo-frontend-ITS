@@ -1,5 +1,6 @@
 export * from './types'
 export { demoProjects } from './data/demoData'
+export { ContentCalendarApiController, useContentCalendarApi } from './helpers/api'
 export { useContentCalendar } from './composables/useContentCalendar'
 export { useContentProjectStore } from './stores/contentProjectStore'
 export { default as ContentCalendarPage } from './components/ContentCalendarPage.vue'

@@ -12,6 +12,40 @@ export interface SocialAccount {
   avatarUrl?: string
 }
 
+export type SocialAccountType = 'personal' | 'business' | 'channel' | 'group'
+export type SocialConnectionStatus = 'active' | 'expired' | 'revoked' | 'error'
+
+export interface SocialAccountDto {
+  id: string
+  platform: string
+  platformAccountId: string
+  accountType: SocialAccountType
+  authType: string
+  username: string | null
+  displayName: string
+  avatarUrl: string | null
+  publishCapabilities: string[]
+  connectionStatus: SocialConnectionStatus
+  connectedAt: string
+  lastSyncAt: string | null
+  lastError: string | null
+  tokenExpiresAt: string | null
+}
+
+export interface UpsertSocialAccountRequest {
+  platform: SocialNetwork
+  platformAccountId: string
+  accountType: SocialAccountType
+  authType: string
+  displayName: string
+  username?: string | null
+  avatarUrl?: string | null
+  publishCapabilities?: string[]
+  connectionStatus?: SocialConnectionStatus
+  accessToken?: string
+  refreshToken?: string
+}
+
 export interface ContentTag {
   id: string
   name: string

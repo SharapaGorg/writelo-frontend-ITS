@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { Plus } from 'lucide-vue-next'
 import type { SocialAccount, SocialNetwork } from '../types'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 const props = withDefaults(defineProps<{
   accounts: SocialAccount[]
@@ -11,6 +13,17 @@ const props = withDefaults(defineProps<{
   activeAccountIds: () => [],
   singleSelect: false
 })
+
+const { currentWorkspaceId } = useWorkspaceContext()
+
+function goToConnect() {
+  const id = currentWorkspaceId.value
+  if (!id) {
+    navigateTo('/app/workspaces')
+    return
+  }
+  navigateTo(`/app/connect-account?workspaceId=${encodeURIComponent(id)}`)
+}
 
 const emit = defineEmits<{
   toggle: [accountId: string]
@@ -111,6 +124,23 @@ function isActive(accountId: string): boolean {
     </div>
 
     <div class="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+      <div
+        v-if="accounts.length === 0"
+        class="flex flex-col items-center text-center gap-3 px-2 py-6"
+      >
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+          Нет подключённых аккаунтов
+        </p>
+        <button
+          type="button"
+          class="w-full rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-purple-500 dark:hover:border-purple-500 text-zinc-600 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-purple-400 transition-all flex items-center gap-2 p-3 justify-center"
+          @click="goToConnect"
+        >
+          <Plus class="w-4 h-4" />
+          <span class="text-sm font-medium">Подключить</span>
+        </button>
+      </div>
+
       <button
         v-for="account in accounts"
         :key="account.id"

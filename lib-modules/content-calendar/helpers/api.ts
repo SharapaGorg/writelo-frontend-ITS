@@ -2,12 +2,25 @@ import { ApiController } from '~/scripts/shared/api/controller'
 import { ApiAliases, RequestMethod, buildUrl } from '~/scripts/shared/types'
 import type {
   SocialAccount,
+  SocialNetwork,
   ContentTag,
   CalendarPost,
   InfoEvent,
   PostStatus,
   ContentType,
+  SocialAccountDto,
+  UpsertSocialAccountRequest,
 } from '../types'
+
+function toSocialAccount(dto: SocialAccountDto): SocialAccount {
+  return {
+    id: dto.id,
+    network: dto.platform as SocialNetwork,
+    name: dto.displayName,
+    username: dto.username ?? '',
+    avatarUrl: dto.avatarUrl ?? undefined,
+  }
+}
 
 /**
  * Content-calendar API controller (composition over inheritance to avoid
@@ -23,8 +36,35 @@ export class ContentCalendarApiController {
   // Social accounts
   async getSocialAccounts(workspaceId: string): Promise<SocialAccount[]> {
     const url = buildUrl(ApiAliases.workspaceSocialAccounts, { workspaceId })
-    const res = await this.api.request(url, RequestMethod.GET) as { items?: SocialAccount[] } | SocialAccount[]
-    return Array.isArray(res) ? res : (res.items ?? [])
+    const res = await this.api.request(url, RequestMethod.GET) as
+      | { items?: SocialAccountDto[] }
+      | SocialAccountDto[]
+    const items = Array.isArray(res) ? res : (res.items ?? [])
+    return items.map(toSocialAccount)
+  }
+
+  async createSocialAccount(
+    workspaceId: string,
+    data: UpsertSocialAccountRequest,
+  ): Promise<SocialAccount> {
+    const url = buildUrl(ApiAliases.workspaceSocialAccounts, { workspaceId })
+    const res = await this.api.request(url, RequestMethod.POST, data) as SocialAccountDto
+    return toSocialAccount(res)
+  }
+
+  async updateSocialAccount(
+    workspaceId: string,
+    socialAccountId: string,
+    data: Partial<UpsertSocialAccountRequest>,
+  ): Promise<SocialAccount> {
+    const url = buildUrl(ApiAliases.workspaceSocialAccount, { workspaceId, socialAccountId })
+    const res = await this.api.request(url, RequestMethod.PATCH, data) as SocialAccountDto
+    return toSocialAccount(res)
+  }
+
+  async deleteSocialAccount(workspaceId: string, socialAccountId: string): Promise<void> {
+    const url = buildUrl(ApiAliases.workspaceSocialAccount, { workspaceId, socialAccountId })
+    await this.api.request(url, RequestMethod.DELETE)
   }
 
   // Tags
