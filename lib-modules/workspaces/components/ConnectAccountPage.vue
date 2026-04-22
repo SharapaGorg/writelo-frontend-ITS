@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { ArrowLeft, Loader2 } from 'lucide-vue-next'
+import { Loader2 } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
-import { Button } from '~/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -11,6 +10,7 @@ import {
   DialogDescription,
 } from '~/components/ui/dialog'
 import TelegramLoginButton from '~/lib-modules/web-auth/components/TelegramLoginButton.vue'
+import { AppNavbar, type BreadcrumbItem } from '~/lib-modules/app-layout'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useWorkspacesApi } from '../helpers/api'
 import type { WorkspaceDto } from '../types'
@@ -20,7 +20,6 @@ const route = useRoute()
 
 const workspaceId = computed(() => String(route.query.workspaceId ?? ''))
 const workspace = ref<WorkspaceDto | null>(null)
-const loadingWorkspace = ref(true)
 
 const { getWorkspaceById, initialize, workspaces } = useWorkspaces()
 const api = useWorkspacesApi()
@@ -75,9 +74,11 @@ function openPlatform(id: SocialNetwork) {
   dialogOpen.value = true
 }
 
-function goBack() {
-  navigateTo('/app/workspaces')
-}
+const breadcrumbs = computed<BreadcrumbItem[]>(() => [
+  { label: 'Бренды', to: '/app/workspaces' },
+  { label: workspace.value?.name ?? '…' },
+  { label: 'Добавить соц. сети' },
+])
 
 onMounted(async () => {
   if (!workspaceId.value) {
@@ -95,28 +96,13 @@ onMounted(async () => {
     }
   } catch (e) {
     console.error('[ConnectAccountPage] load workspace failed:', e)
-  } finally {
-    loadingWorkspace.value = false
   }
 })
 </script>
 
 <template>
-  <div class="flex flex-col h-full bg-background">
-    <header class="flex items-center gap-3 px-6 py-4 border-b border-border">
-      <Button variant="ghost" size="icon" @click="goBack" aria-label="Назад">
-        <ArrowLeft class="h-5 w-5" />
-      </Button>
-      <div class="min-w-0">
-        <h1 class="text-xl font-semibold">Подключить аккаунт</h1>
-        <p v-if="workspace" class="text-sm text-muted-foreground truncate">
-          к бренду «{{ workspace.name }}»
-        </p>
-        <p v-else-if="loadingWorkspace" class="text-sm text-muted-foreground">
-          Загрузка...
-        </p>
-      </div>
-    </header>
+  <div class="flex flex-col h-full">
+    <AppNavbar :breadcrumbs="breadcrumbs" />
 
     <div class="flex-1 overflow-y-auto px-6 py-6">
       <div class="mx-auto max-w-2xl">
