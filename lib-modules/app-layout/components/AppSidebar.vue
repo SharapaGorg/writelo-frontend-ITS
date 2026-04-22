@@ -155,7 +155,7 @@ function navigate(item: SidebarItem) {
           ? 'border-border bg-muted/50'
           : 'border-amber-300/60 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-800/60'
       )"
-      @click="router.push('/app/profile')"
+      @click="router.push('/app/plans')"
     >
       <component
         :is="isFreePlan ? Sparkles : Crown"
