@@ -90,10 +90,6 @@ const saveChanges = async () => {
         </MultiChoiceContainer>
       </section>
 
-      <section>
-        <ProfileBadge />
-      </section>
-
       <div class="flex gap-2">
         <Button variant="secondary" size="sm" :disabled="!beenChanged" @click="saveChanges">
           {{ $t('save') }}
