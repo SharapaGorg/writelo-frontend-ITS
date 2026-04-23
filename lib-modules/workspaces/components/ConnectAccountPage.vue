@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { Loader2 } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
+import { toast } from 'vue-sonner'
 import {
   Dialog,
   DialogContent,
@@ -9,12 +10,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from '~/components/ui/dialog'
-import TelegramLoginButton from '~/lib-modules/web-auth/components/TelegramLoginButton.vue'
+import TelegramLinkFlow from '~/lib-modules/content-calendar/components/TelegramLinkFlow.vue'
 import { AppNavbar, type BreadcrumbItem } from '~/lib-modules/app-layout'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useWorkspacesApi } from '../helpers/api'
 import type { WorkspaceDto } from '../types'
 import type { SocialNetwork } from '~/lib-modules/content-calendar/types'
+import { getToasterPosition } from '~/scripts/features/utils/toater'
 
 const route = useRoute()
 
@@ -72,6 +74,12 @@ const selectedPlatform = computed(() =>
 function openPlatform(id: SocialNetwork) {
   selectedPlatformId.value = id
   dialogOpen.value = true
+}
+
+function onChannelLinked(_socialAccountId: string) {
+  toast.success('Канал привязан', { position: getToasterPosition() })
+  dialogOpen.value = false
+  navigateTo('/app/calendar')
 }
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
@@ -167,12 +175,11 @@ onMounted(async () => {
           </DialogDescription>
         </DialogHeader>
 
-        <div v-if="selectedPlatform?.id === 'telegram'" class="py-2 space-y-3">
-          <TelegramLoginButton mode="link" />
-          <p class="text-xs text-muted-foreground text-center">
-            Привязка канала к бренду в разработке — пока кнопка только подтверждает Telegram-аккаунт пользователя.
-          </p>
-        </div>
+        <TelegramLinkFlow
+          v-if="selectedPlatform?.id === 'telegram' && workspaceId"
+          :workspace-id="workspaceId"
+          @linked="onChannelLinked"
+        />
         <div v-else class="py-6 flex items-center justify-center text-sm text-muted-foreground gap-2">
           <Loader2 class="h-4 w-4 animate-spin" />
           Скоро будет доступно
