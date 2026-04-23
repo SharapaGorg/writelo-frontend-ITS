@@ -2,7 +2,7 @@ export type ContentType = 'post' | 'story' | 'reels' | 'article'
 
 export type SocialNetwork = 'vk' | 'youtube' | 'telegram' | 'instagram'
 
-export type PostStatus = 'idea' | 'draft' | 'ready' | 'published'
+export type PostStatus = 'idea' | 'draft' | 'ready' | 'publishing' | 'published' | 'failed'
 
 export interface SocialAccount {
   id: string
@@ -10,6 +10,9 @@ export interface SocialAccount {
   name: string
   username: string
   avatarUrl?: string
+  // Backend-declared content types this account can publish
+  // (values from PostContentType: 'post' | 'story' | 'reel' | 'article').
+  publishCapabilities?: string[]
 }
 
 export type SocialAccountType = 'personal' | 'business' | 'channel' | 'group'
@@ -150,7 +153,8 @@ export interface CalendarPost {
   date: string // 'YYYY-MM-DD'
   time?: string // 'HH:MM' (optional)
   image?: string // Single image (legacy)
-  images?: string[] // Multiple images (up to 10)
+  images?: string[] // Multiple images (up to 10) — download URLs for calendar thumbs
+  mediaItems?: PostMediaDto[] // Full media metadata (for editor: mediaId, storageObjectId, sortOrder)
   conversationId?: string // Link to conversation where this was created
   sourceNewsId?: string // Link to news item this was created from
   sourceTrendId?: string // Link to trend item this was created from
@@ -198,4 +202,34 @@ export interface DemoProject {
   infoEvents: InfoEvent[]
   news: NewsItem[]
   trends: TrendItem[]
+}
+
+// ---- Publish flow (API 23.04) ----
+
+export interface PublishReelOptions {
+  locationId?: string
+  shareToFeed?: boolean
+  coverUrl?: string
+}
+
+export interface PublishAcceptedResponse {
+  postId: string
+  publicationAttemptId?: string
+  publicationAttemptIds?: string[]  // stories возвращают массив
+  status: PostStatus
+}
+
+export interface Publication {
+  id: string                // локальный UUID
+  postId: string
+  workspaceId: string
+  platform: SocialNetwork
+  mediaType: PostMediaType
+  postTitle: string
+  accountName: string
+  status: 'publishing' | 'published' | 'failed'
+  error?: string
+  publishedLink?: string
+  startedAt: number
+  completedAt?: number
 }

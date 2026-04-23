@@ -83,7 +83,17 @@ export enum ApiAliases {
     workspacePosts = 'workspaces/{workspaceId}/posts',
     workspacePost = 'workspaces/{workspaceId}/posts/{postId}',
     workspacePostMedia = 'workspaces/{workspaceId}/posts/{postId}/media',
+    workspacePostMediaItem = 'workspaces/{workspaceId}/posts/{postId}/media/{mediaId}',
+    workspacePostsUploadsInit = 'workspaces/{workspaceId}/posts/uploads/init',
+    workspacePostsUploadsFinalize = 'workspaces/{workspaceId}/posts/uploads/finalize',
     workspacePostComments = 'workspaces/{workspaceId}/posts/{postId}/comments',
+
+    // Publish — platform-specific (API 23.04)
+    workspaceInstagramPublishPost = 'workspaces/{workspaceId}/instagram/{socialAccountId}/posts',
+    workspaceInstagramPublishReel = 'workspaces/{workspaceId}/instagram/{socialAccountId}/reels',
+    workspaceInstagramPublishStory = 'workspaces/{workspaceId}/instagram/{socialAccountId}/stories',
+    workspaceTelegramPublishPost = 'workspaces/{workspaceId}/telegram/{socialAccountId}/posts',
+    workspaceTelegramPublishStory = 'workspaces/{workspaceId}/telegram/{socialAccountId}/stories',
 
     // Members & Invites
     workspaceMembers = 'workspaces/{workspaceId}/members',

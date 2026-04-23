@@ -1,6 +1,13 @@
 import { ApiController } from '~/scripts/shared/api/controller'
 import { ApiAliases, RequestMethod, buildUrl } from '~/scripts/shared/types'
 import type {
+  InitUploadResponse,
+  InitPostMediaUploadRequest,
+  FinalizePostMediaUploadRequest,
+  FinalizePostMediaUploadResponse,
+  UpsertPostMediaRequest,
+} from '~/scripts/shared/types/workspace'
+import type {
   SocialAccount,
   SocialNetwork,
   ContentTag,
@@ -11,10 +18,13 @@ import type {
   SocialAccountDto,
   UpsertSocialAccountRequest,
   PostListItemDto,
+  PostMediaDto,
   PostMediaType,
   UpsertPostRequest,
   TelegramLinkStartResponse,
   TelegramLinkStatusResponse,
+  PublishAcceptedResponse,
+  PublishReelOptions,
 } from '../types'
 
 function toSocialAccount(dto: SocialAccountDto): SocialAccount {
@@ -24,6 +34,7 @@ function toSocialAccount(dto: SocialAccountDto): SocialAccount {
     name: dto.displayName,
     username: dto.username ?? '',
     avatarUrl: dto.avatarUrl ?? undefined,
+    publishCapabilities: dto.publishCapabilities,
   }
 }
 
@@ -53,7 +64,10 @@ function buildScheduledAt(date: string, time?: string): string {
 
 export function toCalendarPost(dto: PostListItemDto): CalendarPost {
   const { date, time } = splitScheduledAt(dto.scheduledAt)
-  const images = (dto.media ?? [])
+  const mediaItems = (dto.media ?? [])
+    .slice()
+    .sort((a, b) => Number(a.sortOrder) - Number(b.sortOrder))
+  const images = mediaItems
     .filter(m => m.fileType === 'image')
     .map(m => m.asset?.downloadUrl ?? '')
     .filter(Boolean)
@@ -70,6 +84,7 @@ export function toCalendarPost(dto: PostListItemDto): CalendarPost {
     time,
     image: images[0],
     images: images.length > 1 ? images : undefined,
+    mediaItems,
   }
 }
 
@@ -185,6 +200,12 @@ export class ContentCalendarApiController {
     return items.map(toCalendarPost)
   }
 
+  async getPost(workspaceId: string, postId: string): Promise<CalendarPost> {
+    const url = buildUrl(ApiAliases.workspacePost, { workspaceId, postId })
+    const dto = await this.api.request(url, RequestMethod.GET) as PostListItemDto
+    return toCalendarPost(dto)
+  }
+
   async createPost(workspaceId: string, data: Omit<CalendarPost, 'id'>): Promise<CalendarPost> {
     const url = buildUrl(ApiAliases.workspacePosts, { workspaceId })
     const dto = await this.api.request(url, RequestMethod.POST, toUpsertPostRequest(data)) as PostListItemDto
@@ -199,6 +220,122 @@ export class ContentCalendarApiController {
 
   deletePost(workspaceId: string, postId: string): Promise<void> {
     const url = buildUrl(ApiAliases.workspacePost, { workspaceId, postId })
+    return this.api.request(url, RequestMethod.DELETE)
+  }
+
+  // Publish dispatcher — routes by platform × mediaType.
+  async publishPost(
+    workspaceId: string,
+    socialAccountId: string,
+    postId: string,
+    platform: SocialNetwork,
+    mediaType: PostMediaType,
+    reelOpts?: PublishReelOptions,
+  ): Promise<PublishAcceptedResponse> {
+    type DispatchEntry = { alias: ApiAliases; body: Record<string, unknown> }
+
+    const entry: DispatchEntry | null = (() => {
+      if (platform === 'instagram') {
+        if (mediaType === 'post') {
+          return { alias: ApiAliases.workspaceInstagramPublishPost, body: { postId } }
+        }
+        if (mediaType === 'reel') {
+          return {
+            alias: ApiAliases.workspaceInstagramPublishReel,
+            body: {
+              postId,
+              locationId: reelOpts?.locationId,
+              shareToFeed: reelOpts?.shareToFeed,
+              coverUrl: reelOpts?.coverUrl,
+            },
+          }
+        }
+        if (mediaType === 'story') {
+          return { alias: ApiAliases.workspaceInstagramPublishStory, body: { postId } }
+        }
+      }
+      if (platform === 'telegram') {
+        if (mediaType === 'post') {
+          return { alias: ApiAliases.workspaceTelegramPublishPost, body: { postId } }
+        }
+        if (mediaType === 'story') {
+          return { alias: ApiAliases.workspaceTelegramPublishStory, body: { postId } }
+        }
+      }
+      return null
+    })()
+
+    if (!entry) {
+      const platformLabel =
+        platform === 'vk' ? 'VK' :
+        platform === 'youtube' ? 'YouTube' :
+        platform
+      throw new Error(`Публикация ${mediaType} в ${platformLabel} пока не поддерживается`)
+    }
+
+    const url = buildUrl(entry.alias, { workspaceId, socialAccountId })
+    return this.api.request(url, RequestMethod.POST, entry.body) as Promise<PublishAcceptedResponse>
+  }
+
+  // Post media — separate init/finalize pair (NOT shared uploadFile, per API 23.04)
+
+  initPostMediaUpload(
+    workspaceId: string,
+    request: InitPostMediaUploadRequest,
+  ): Promise<InitUploadResponse> {
+    const url = buildUrl(ApiAliases.workspacePostsUploadsInit, { workspaceId })
+    return this.api.request(url, RequestMethod.POST, request) as Promise<InitUploadResponse>
+  }
+
+  finalizePostMediaUpload(
+    workspaceId: string,
+    request: FinalizePostMediaUploadRequest,
+  ): Promise<FinalizePostMediaUploadResponse> {
+    const url = buildUrl(ApiAliases.workspacePostsUploadsFinalize, { workspaceId })
+    return this.api.request(url, RequestMethod.POST, request) as Promise<FinalizePostMediaUploadResponse>
+  }
+
+  /**
+   * Orchestrates init → S3 PUT → finalize. Returns storageObjectId ready to attach via createPostMedia.
+   */
+  async uploadPostMedia(
+    workspaceId: string,
+    file: File,
+  ): Promise<FinalizePostMediaUploadResponse> {
+    const init = await this.initPostMediaUpload(workspaceId, {
+      fileName: file.name,
+      contentType: file.type || 'application/octet-stream',
+      sizeBytes: file.size,
+    })
+
+    const formData = new FormData()
+    for (const [key, value] of Object.entries(init.formFields)) {
+      formData.append(key, value)
+    }
+    formData.append('file', file)
+
+    const s3Res = await fetch(init.url, { method: 'POST', body: formData })
+    if (!s3Res.ok) {
+      throw new Error(`S3 upload failed with status ${s3Res.status}`)
+    }
+
+    return this.finalizePostMediaUpload(workspaceId, {
+      objectId: init.objectId,
+      fileName: file.name,
+    })
+  }
+
+  createPostMedia(
+    workspaceId: string,
+    postId: string,
+    request: UpsertPostMediaRequest,
+  ): Promise<PostMediaDto> {
+    const url = buildUrl(ApiAliases.workspacePostMedia, { workspaceId, postId })
+    return this.api.request(url, RequestMethod.POST, request) as Promise<PostMediaDto>
+  }
+
+  deletePostMedia(workspaceId: string, postId: string, mediaId: string): Promise<void> {
+    const url = buildUrl(ApiAliases.workspacePostMediaItem, { workspaceId, postId, mediaId })
     return this.api.request(url, RequestMethod.DELETE)
   }
 
