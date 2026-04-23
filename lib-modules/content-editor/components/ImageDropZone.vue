@@ -83,21 +83,10 @@ const processFile = (file: File) => {
   if (!isValidFileType(file)) return
   if (!canAddMore.value) return
 
-  // For videos, use object URL instead of base64 (videos can be large)
-  if (file.type.startsWith('video/')) {
-    const url = URL.createObjectURL(file)
-    emit('addImage', { url, file })
-    return
-  }
-
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    const result = e.target?.result as string
-    if (result) {
-      emit('addImage', { url: result, file })
-    }
-  }
-  reader.readAsDataURL(file)
+  // Blob URL instead of base64: FullHD image as a data-URL can be multi-MB of
+  // reactive string state + forces `<img>` to re-decode full-res on every render.
+  const url = URL.createObjectURL(file)
+  emit('addImage', { url, file })
 }
 
 // Paste from clipboard - only when active

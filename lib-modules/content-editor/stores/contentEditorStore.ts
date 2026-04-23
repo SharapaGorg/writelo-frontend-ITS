@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { ContentDraft, ContentType, ContentStatus, EditorMode, ReelFrame, EditorChatMessage } from '../types'
+import type { ContentDraft, ContentType, ContentStatus, DraftImage, EditorMode, ReelFrame, EditorChatMessage } from '../types'
 import { generateUUID } from '~/scripts/features/utils'
+
+function revokeBlobUrl(url: string | undefined) {
+  if (url && url.startsWith('blob:')) {
+    URL.revokeObjectURL(url)
+  }
+}
 
 export type ActivePanel = 'left' | 'right'
 
@@ -21,11 +27,6 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
   // Getters
   const isReel = computed(() => currentDraft.value?.type === 'reel')
   const isEditMode = computed(() => postId.value !== null)
-
-  const hasUnsavedChanges = computed(() => {
-    if (!currentDraft.value || !originalDraft.value) return false
-    return JSON.stringify(currentDraft.value) !== JSON.stringify(originalDraft.value)
-  })
 
   // Actions
   const createNewDraft = (type: ContentType, accountId: string): ContentDraft => {
@@ -68,13 +69,20 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     currentDraft.value = { ...currentDraft.value, ...updates }
   }
 
-  const addImage = (imageUrl: string) => {
+  const addImage = (image: DraftImage) => {
     if (!currentDraft.value) return
-    currentDraft.value.images = [...currentDraft.value.images, imageUrl]
+    currentDraft.value.images = [...currentDraft.value.images, image]
   }
 
   const removeImage = (index: number) => {
     if (!currentDraft.value) return
+    const removed = currentDraft.value.images[index]
+    // Only safe to revoke if the blob isn't referenced elsewhere (originalDraft clone
+    // drops File refs but keeps previewUrl strings). We rely on the fact that local
+    // unsaved items never appear in originalDraft.
+    if (removed && !removed.mediaId) {
+      revokeBlobUrl(removed.previewUrl)
+    }
     currentDraft.value.images = currentDraft.value.images.filter((_, i) => i !== index)
   }
 
@@ -190,7 +198,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     accountId: string
     title: string
     description?: string
-    images?: string[]
+    images?: DraftImage[]
     scheduledDate?: string | null
     status?: ContentStatus
   }) => {
@@ -201,7 +209,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
       title: post.title,
       description: post.description || '',
       hashtags: [],
-      images: post.images || [],
+      images: post.images ?? [],
       scheduledDate: post.scheduledDate || null,
       status: post.status || 'idea',
       script: post.type === 'reel' ? { duration: 0, frames: [] } : undefined
@@ -229,6 +237,10 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     activePanel.value = panel
   }
 
+  const setIsSaving = (value: boolean) => {
+    isSaving.value = value
+  }
+
   return {
     // State
     currentDraft: computed(() => currentDraft.value),
@@ -241,10 +253,12 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     postId: computed(() => postId.value),
     selectedAccountId: computed(() => selectedAccountId.value),
 
+    // Raw refs (read-only consumers: use currentDraft / originalDraftSnapshot)
+    originalDraftSnapshot: computed(() => originalDraft.value),
+
     // Getters
     isReel,
     isEditMode,
-    hasUnsavedChanges,
 
     // Actions
     createNewDraft,
@@ -270,6 +284,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     loadDraft,
     getLastMessage,
     loadChatMessages,
-    setActivePanel
+    setActivePanel,
+    setIsSaving
   }
 })

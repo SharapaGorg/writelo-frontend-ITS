@@ -262,6 +262,7 @@ export const useContentProjectStore = defineStore('contentProject', () => {
     selectProject,
     fetchProjectData,
     updatePost,
+    updatePostLocal,
     createPost,
     deletePost,
     createTag,

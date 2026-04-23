@@ -9,11 +9,11 @@ import {
   PostPreviewPanel,
   useContentEditor
 } from '~/lib-modules/content-editor'
-import type { ContentType as EditorContentType } from '~/lib-modules/content-editor'
+import type { ContentType as EditorContentType, DraftImage } from '~/lib-modules/content-editor'
 import { useContentProjectStore } from '~/lib-modules/content-calendar'
 import type { CalendarPost } from '~/lib-modules/content-calendar'
 import { ApiController } from '~/scripts/shared/api/controller'
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import { useWorkspaceContext, useWorkspaces } from '~/lib-modules/workspaces'
 
 definePageMeta({
   layout: 'app'
@@ -40,7 +40,27 @@ function toEditorDraftInput(post: CalendarPost) {
   const type: EditorContentType =
     post.type === 'reels' ? 'reel' : post.type === 'article' ? 'post' : post.type
   const scheduledDate = post.time ? `${post.date}T${post.time}` : post.date
-  const images = post.images ?? (post.image ? [post.image] : [])
+
+  let images: DraftImage[]
+  if (post.mediaItems && post.mediaItems.length > 0) {
+    images = post.mediaItems
+      .map((m): DraftImage | null => {
+        const url = m.asset?.downloadUrl
+        if (!url) return null
+        return {
+          previewUrl: url,
+          fileType: m.fileType,
+          mediaId: m.id,
+          storageObjectId: m.storageObjectId,
+        }
+      })
+      .filter((x): x is DraftImage => x !== null)
+  } else {
+    // Demo data and legacy fallback: URLs without backend media metadata.
+    const urls = post.images ?? (post.image ? [post.image] : [])
+    images = urls.map(url => ({ previewUrl: url, fileType: 'image' }))
+  }
+
   return {
     id: post.id,
     type,
@@ -54,6 +74,18 @@ function toEditorDraftInput(post: CalendarPost) {
 }
 
 onMounted(async () => {
+  // Ensure workspace context is initialized. On hard reload of /app/editor/{id}
+  // nothing else kicks off the workspaces fetch (the calendar page does it in
+  // its own onMounted), so requireWorkspaceId() would otherwise throw.
+  const { initialize, workspaces, currentWorkspaceId } = useWorkspaces()
+  if (workspaces.value.length === 0) {
+    await initialize()
+  }
+  if (!currentWorkspaceId.value) {
+    router.replace('/app/workspaces')
+    return
+  }
+
   const postId = route.params.postId as string | undefined
   const chatId = route.query.chat as string | undefined
 

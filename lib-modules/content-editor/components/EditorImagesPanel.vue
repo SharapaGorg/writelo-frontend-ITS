@@ -53,23 +53,19 @@ watch(() => imageStore.attachedImage, (file) => {
   const isAlreadyAdded = referenceFiles.value.some(f => f === file)
   if (isAlreadyAdded) return
 
-  // Convert file to base64 and add to reference images
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    const url = e.target?.result as string
-    if (url) {
-      referenceImages.value = [url]
-      referenceFiles.value = [file]
-    }
-  }
-  reader.readAsDataURL(file)
+  referenceImages.value = [URL.createObjectURL(file)]
+  referenceFiles.value = [file]
 })
 
 // Add generated image to post
 const addToPost = () => {
-  if (!imageStore.outputFile) return
-  const url = URL.createObjectURL(imageStore.outputFile)
-  addImage(url)
+  const file = imageStore.outputFile
+  if (!file) return
+  addImage({
+    previewUrl: URL.createObjectURL(file),
+    fileType: 'image',
+    file,
+  })
 }
 </script>
 

@@ -20,11 +20,12 @@ import CelebrationEffect from './CelebrationEffect.vue'
 import { useContentEditor } from '../composables/useContentEditor'
 import type { ContentType, ContentStatus } from '../types'
 import type { SocialNetwork } from '~/lib-modules/content-calendar'
-import { usePublicationsStore } from '~/lib-modules/content-calendar'
+import { usePublicationsStore, useContentProjectStore } from '~/lib-modules/content-calendar'
 import ImageDropZone from './ImageDropZone.vue'
 import { toast } from 'vue-sonner'
 import { useRouter } from 'vue-router'
 import { getToasterPosition } from '~/scripts/features/utils/toater'
+import { ExternalLink } from 'lucide-vue-next'
 
 const {
   currentDraft,
@@ -44,6 +45,15 @@ const {
 
 const router = useRouter()
 const publicationsStore = usePublicationsStore()
+const projectStore = useContentProjectStore()
+
+// Published posts are view-only. Look up the canonical post in the project store
+// so we can show the live published link (which the editor's own ContentDraft drops).
+const publishedLink = computed<string | undefined>(() => {
+  const id = postId.value
+  if (!id) return undefined
+  return projectStore.currentProject?.posts.find(p => p.id === id)?.publishedLink
+})
 
 // Current selected account
 const currentAccount = computed(() => {
@@ -234,18 +244,39 @@ const handlePublish = async () => {
 
 <template>
   <div v-if="currentDraft" class="flex h-full flex-col" @click="handlePanelFocus" @focusin="handlePanelFocus">
+    <!-- Published banner (read-only mode) -->
+    <div
+      v-if="isPublished"
+      class="flex items-center gap-2 border-b border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-300"
+    >
+      <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10" fill="currentColor" fill-opacity="0.15"/>
+        <path d="M8 12l2.5 2.5L16 9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="flex-1">Пост опубликован — редактирование закрыто</span>
+      <a
+        v-if="publishedLink"
+        :href="publishedLink"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1 text-xs font-medium underline decoration-dotted hover:no-underline"
+      >
+        Открыть <ExternalLink class="h-3 w-3" />
+      </a>
+    </div>
+
     <!-- Content Type Selector -->
     <div class="border-b border-zinc-200 p-4 dark:border-zinc-800">
       <div class="flex items-center gap-1">
         <button
           v-for="type in contentTypes"
           :key="type.value"
-          :disabled="!isContentTypeAvailable(type.value)"
+          :disabled="!isContentTypeAvailable(type.value) || isPublished"
           :title="getDisabledTooltip(type.value)"
-          @click="isContentTypeAvailable(type.value) && setContentType(type.value)"
+          @click="isContentTypeAvailable(type.value) && !isPublished && setContentType(type.value)"
           :class="cn(
             'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-            !isContentTypeAvailable(type.value)
+            (!isContentTypeAvailable(type.value) || isPublished)
               ? 'cursor-not-allowed opacity-40 text-zinc-400 dark:text-zinc-600'
               : selectedType === type.value
                 ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
@@ -261,15 +292,17 @@ const handlePublish = async () => {
     <div class="flex-1 overflow-y-auto">
       <div class="space-y-6 p-4">
         <!-- Media Section: 1 video for reel, up to 10 images for post/story -->
-        <ImageDropZone
-          :images="previewUrls"
-          :max-images="isReel ? 1 : 10"
-          :is-active="isActivePanel"
-          :accept-video="isReel"
-          @add-image="handleAddImage"
-          @remove-image="removeImage"
-          @generate="goToImagesPanel"
-        />
+        <div :class="isPublished ? 'pointer-events-none opacity-70' : ''">
+          <ImageDropZone
+            :images="previewUrls"
+            :max-images="isReel ? 1 : 10"
+            :is-active="isActivePanel"
+            :accept-video="isReel"
+            @add-image="handleAddImage"
+            @remove-image="removeImage"
+            @generate="goToImagesPanel"
+          />
+        </div>
 
         <!-- Description (for all types) -->
         <section class="space-y-2">
@@ -278,6 +311,7 @@ const handlePublish = async () => {
           </label>
           <Textarea
             :model-value="description"
+            :disabled="isPublished"
             @update:model-value="updateDescription"
             :placeholder="isReel ? 'Описание для рилс...' : 'Write a captivating description for your post...'"
             class="min-h-[120px] resize-none"
