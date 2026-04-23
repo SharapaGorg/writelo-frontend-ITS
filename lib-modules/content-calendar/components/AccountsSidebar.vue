@@ -174,6 +174,16 @@ function isActive(accountId: string): boolean {
           {{ account.name }}
         </span>
       </button>
+
+      <button
+        v-if="accounts.length > 0"
+        type="button"
+        class="w-full rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-purple-500 dark:hover:border-purple-500 text-zinc-500 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all flex items-center justify-center p-3"
+        title="Подключить аккаунт"
+        @click="goToConnect"
+      >
+        <Plus class="w-5 h-5" />
+      </button>
     </div>
 
     <!-- Resize handle -->
