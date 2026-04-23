@@ -1,344 +1,148 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code when working with the frontend codebase.
+Guidance for Claude Code when working with the Writelo frontend.
 
 ## Hard Rules
 
 ### Styling
-- NEVER write plain CSS. Use only Tailwind classes
-- For complex components use shadcn-vue from `components/ui/`
-- Use `cn()` from `lib-modules/utils.ts` to merge classes
+- NEVER write plain CSS. Tailwind classes only.
+- For composite components use shadcn-vue from `components/ui/`.
+- Merge classes with `cn()` from `lib-modules/utils.ts`.
 
 ### API
-- ALWAYS use `ApiController` from `scripts/shared/api/controller.ts`
-- NEVER write raw fetch/axios calls
-- For domain-specific APIs, extend ApiController (see WorkspacesApiController, AuthApiController)
-- Use `ApiAliases` enum for endpoints
-- Most API calls are workspace-scoped — use `useWorkspaceContext()` to get the current workspace ID
-
-### Utilities
-- BEFORE writing any utility, check "Utilities Reference" section below
-- Especially: date formatting, validation, toasts, UUID generation
+- ALWAYS use `ApiController` from `scripts/shared/api/controller.ts`. No raw fetch/axios.
+- For a new domain, extend `ApiController` (see `WorkspacesApiController`, `AuthApiController`).
+- Endpoints live in `ApiAliases` enum (`scripts/shared/types/`), URLs built via `buildUrl()`.
+- Most endpoints are workspace-scoped — get the id via `useWorkspaceContext().requireWorkspaceId()`.
 
 ### Components
-- Follow Atomic Design: atoms → molecules → organisms → templates
-- Reuse components from `components/ui/` (shadcn-vue)
-- New features go in `lib-modules/`, not scattered files
+- Atomic design: atoms → molecules → organisms → templates.
+- Reuse `components/ui/` primitives.
+- New features go in `lib-modules/<feature>/`, not scattered files.
 
-## Import Rules
+### Utilities
+- Before writing a utility, check whether one already exists under:
+  - `lib-modules/utils.ts` — `cn()`
+  - `scripts/features/utils/` — `generateUUID`, `isMobile`, `getScreenSize`, `downloadFile`
+  - `scripts/features/utils/toater.ts` — toasts (note the filename typo, real file is `toater.ts`)
+  - `scripts/features/conversations/formatting.ts` — date grouping for chat lists
+  - `lib-modules/shared/services/` — `uploadFile` / `uploadFiles` / `getDownloadUrl`
+
+## Imports
 
 ### Aliases
-- `~/` — project root (preferred)
-- `@/` — alternative, also project root
-
-### Correct imports
-
-```typescript
-// From global code into module
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
-import { ApiController } from '~/scripts/shared/api/controller'
-import { Button } from '~/components/ui/button'
-import { useUserController } from '~/composables/useUserController'
-
-// Inside a module — relative paths
-import { useImageGeneratorStore } from '../stores'
-import type { ImageHistoryItem } from '../types'
-import { toastImageCopySuccess } from '../helpers/toaster'
-```
-
-### WRONG imports (never do this)
-```typescript
-import { something } from 'lib-modules/module'      // missing ~/
-import { something } from '@lib-modules/module'     // no such alias
-import { something } from 'app-modules/module'      // doesn't exist
-import { something } from '~/lib-modules/workspaces/stores/workspacesStore' // don't reach into internals
-```
-
-### Import from modules — only via index.ts
-```typescript
-// Correct — via public API
-import { useWorkspaceContext, useWorkspaces } from '~/lib-modules/workspaces'
-
-// Wrong — direct import of internals
-import { useWorkspacesStore } from '~/lib-modules/workspaces/stores/workspacesStore'
-```
-
-## Code Organization
-
-### Where to put new code
-
-| Type of code | Location |
-|--------------|----------|
-| New feature (UI + logic + state) | `lib-modules/new-feature/` |
-| Component for single feature | `lib-modules/feature/components/` |
-| Component shared across modules | `components/` (atoms/molecules/organisms) |
-| UI primitives (shadcn) | `components/ui/` |
-| Global state | `composables/` or `stores/` |
-| General utility | `lib-modules/shared/` |
+- `~/` (preferred) and `@/` — both point to project root.
 
 ### Rules
-- **All new code** → goes in `lib-modules/`
-- **`components/`** — only for reusable cross-module components
-- **`scripts/`** — legacy, do NOT add new code there
-- **When in doubt** → put in module, extract later if needed
+- From outside a module — import only from its `index.ts` public API:
+  ```ts
+  import { useWorkspaceContext } from '~/lib-modules/workspaces' // ✅
+  import { useWorkspacesStore } from '~/lib-modules/workspaces/stores/workspacesStore' // ❌ internals
+  ```
+- Inside a module — use relative paths (`../stores`, `./types`).
+- No `lib-modules/...` without `~/`. No `@lib-modules/...`, no `app-modules/...` — these aliases don't exist.
 
-### New module structure
+## Code organization
+
+| Code type | Location |
+|-----------|----------|
+| New feature (UI + logic + state) | `lib-modules/<feature>/` |
+| Cross-module reusable component | `components/` (atoms/molecules/organisms) |
+| shadcn primitives | `components/ui/` |
+| Global state / composables | `composables/` |
+| Shared services/utilities | `lib-modules/shared/` |
+| **Legacy** — do NOT add new code | `scripts/` |
+
+### New module skeleton
 ```
 lib-modules/my-feature/
-├── components/          # Vue components
-├── composables/         # Hooks (useMyFeature.ts)
-├── stores/              # Pinia store
-├── helpers/             # Utilities, API, toasts
-├── types/               # TypeScript types
-└── index.ts             # Public API (exports)
+├── components/
+├── composables/
+├── stores/
+├── helpers/         # API controller, toasts, formatting
+├── types/
+└── index.ts         # public API — re-export here only
 ```
 
-## Utilities Reference
+## Existing modules (`lib-modules/`)
 
-### Formatting
-| Function | Location | Purpose |
-|----------|----------|---------|
-| `eraseConversationTitle(title, limit?)` | `lib-modules/conversations/.../formatting.ts` | Truncate to 20 chars with ellipsis |
-| `isToday(date)` | `scripts/features/conversations/formatting.ts` | Check if date is today |
-| `isWithinLastDays(date, days)` | same | Check if within last N days |
-| `getConversationGroup(datetime)` | same | Categorize: today/7d/30d/year |
-| `getChatsGroupsFormationArray(conversations)` | same | Group conversations by time |
+Self-contained. Always import via `index.ts`. Browse the module's `index.ts` for its public surface — don't rely on a table in this file, it drifts.
 
-**Example — Grouping conversations:**
-```typescript
-import { getChatsGroupsFormationArray } from '~/scripts/features/conversations/formatting'
+- **workspaces** — workspace context, CRUD. Provides `useWorkspaceContext()` (required for all workspace-scoped calls) and `useWorkspaces()`.
+- **conversations** — chat UI, messages, dialogs, streaming.
+- **imageGenerator** — txt2img / img2img, history slider.
+- **content-calendar** — calendar of scheduled posts.
+- **content-editor** — post editor (draft, publish, platform-specific content).
+- **plans** — subscription plans & pricing UI.
+- **profile** — account, subscription, gifts.
+- **web-auth** — email + OAuth (Google/Telegram/Yandex) auth.
+- **reels-research** — Reels discovery/analysis.
+- **demo-mode** — guest/demo experience.
+- **app-layout** — shared app shell (sidebar, navbar).
+- **shared** — `uploadFile`, `uploadFiles`, `getDownloadUrl`.
 
-const grouped = getChatsGroupsFormationArray(conversations)
-// Returns: [
-//   { key: 'today', conversations: [...] },
-//   { key: 'last_7_days', conversations: [...] },
-//   { key: '2024', conversations: [...] }
-// ]
+## Global composables (`composables/`)
+
+| Composable | File | Purpose |
+|------------|------|---------|
+| `useUserController()` | `user.ts` | Auth, user data, token |
+| `useWorkspaceContext()` | `lib-modules/workspaces` | Current workspace id |
+| `useSettings()` | `settings.ts` | App config, language |
+| `useEnv()` | `environment.ts` | Env state, current dialog, attached files |
+| `eventBus` | `eventBus/` | Cross-component pub/sub |
+
+### Event bus
+```ts
+import { eventBus } from '~/composables/eventBus'
+
+eventBus.emit('dialog:titleUpdated', { id, title })
+eventBus.on('dialog:titleUpdated', handler)
+// Cleanup
+onUnmounted(() => eventBus.off('dialog:titleUpdated', handler))
 ```
 
-### Device Detection
-| Function | Location | Purpose |
-|----------|----------|---------|
-| `isMobile()` | `scripts/features/utils/index.ts` | Detect mobile device |
-| `isIOS()` | same | Detect iOS |
-| `isAndroid()` | same | Detect Android |
-| `getScreenSize()` | same | Get size category (sm/md/lg/xl) |
-| `isInTelegramApp` | `scripts/features/utils/telegram.ts` | Check if in Telegram Mini App |
+## API patterns
 
-### General
-| Function | Location | Purpose |
-|----------|----------|---------|
-| `generateUUID()` | `scripts/features/utils/index.ts` | Generate UUID v4 |
-| `generateRandomHash(length?)` | `scripts/shared/utils.ts` | Random hex string |
-| `downloadFile(data, filename, mimeType)` | `scripts/features/utils/index.ts` | Trigger file download |
-| `cn(...classes)` | `lib-modules/utils.ts` | Merge Tailwind classes |
-
-### Toasts
-All in `scripts/features/utils/toaster.ts`:
-
-| Function | Purpose |
-|----------|---------|
-| `toastError(message)` | Show error |
-| `toastCopyClipboard(t_)` | Success: copied |
-| `toastGenericError()` | Generic error |
-| `toastFeatureUnavailable(t_)` | Feature restricted |
-| `toastChangesSavedSuccess(t_)` | Changes saved |
-| `toastDeleteSuccess(t_)` | Deletion success |
-
-Image toasts in `lib-modules/imageGenerator/helpers/toaster.ts`:
-- `toastImageCopySuccess(t_)`, `toastImageDownloadSuccess(t_, format)`, etc.
-
-## API Reference
-
-### How to make API calls
-ALWAYS use ApiController, NEVER raw fetch/axios:
-
-```typescript
+### Basic call
+```ts
 import { ApiController } from '~/scripts/shared/api/controller'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 const api = new ApiController()
-const user = await api.getMe()
-
-// Most API calls require workspace ID
 const { requireWorkspaceId } = useWorkspaceContext()
-const workspaceId = requireWorkspaceId()
-const conversations = await api.getWorkspaceConversations(workspaceId, 0, 20)
+const conversations = await api.getWorkspaceConversations(requireWorkspaceId(), 0, 20)
 ```
 
-### Main methods (ApiController)
-
-| Method | Purpose |
-|--------|---------|
-| `getMe()` | Get current user |
-| `getConfig()` | Get app config (subscriptions, roles, workspacePresets) |
-| `getWorkspaceConversations(workspaceId, offset, limit)` | List conversations |
-| `getWorkspaceConversation(workspaceId, id)` | Get conversation with messages |
-| `createWorkspaceConversation(workspaceId, title?)` | Create new conversation |
-| `deleteWorkspaceConversation(workspaceId, id)` | Delete conversation |
-| `sendWorkspaceMessage(workspaceId, convId, text, files?)` | Send message (streaming) |
-| `generateWorkspaceImage(workspaceId, request)` | Generate image |
-| `editWorkspaceImage(workspaceId, request)` | Edit image |
-| `getWorkspaceImageHistory(workspaceId, offset, limit)` | Image history |
-| `initUpload(workspaceId, request)` | Initialize file upload |
-| `finalizeUpload(workspaceId, request)` | Finalize file upload |
-| `saveSettings(language)` | Save language preference |
-| `createPayment(subscriptionId, provider)` | Create payment |
-
-### File Upload (Two-Step Process)
-```typescript
-import { uploadFile } from '~/lib-modules/shared'
-
-// Simple upload
-const result = await uploadFile(file)
-// result: { storageObjectId, type, ... }
-
-// Upload with progress
-const result = await uploadFile(file, (progress) => {
-  console.log(`${progress.phase}: ${progress.percent}%`)
-})
-```
-
-### Extended controllers
-
-**WorkspacesApiController** (`lib-modules/workspaces/helpers/api.ts`):
-- `getWorkspaces()`, `createWorkspace(data)`, `deleteWorkspace(id)`
-- `updateWorkspace(id, data)`, `getWorkspace(id)`
-
-**AuthApiController** (`lib-modules/web-auth/helpers/api.ts`):
-- `signupEmail()`, `signinEmail()`, `signinGoogle()`, `signinTelegram()`
-- `verifyEmail()`, `forgotPassword()`, `resetPassword()`
-- `linkGoogle()`, `linkTelegram()`, `unlinkProvider()`
-
-### Extending API for new domain
-```typescript
+### Extending for a new domain
+```ts
 // lib-modules/my-feature/helpers/api.ts
 import { ApiController, RequestMethod } from '~/scripts/shared/api/controller'
 import { buildUrl, ApiAliases } from '~/scripts/shared/types'
 
 export class MyFeatureApiController extends ApiController {
   getItems(workspaceId: string) {
-    const url = buildUrl(ApiAliases.workspaceItems, { workspaceId })
-    return this.request(url)
+    return this.request(buildUrl(ApiAliases.workspaceItems, { workspaceId }))
   }
-
   createItem(workspaceId: string, data: CreateItemInput) {
-    const url = buildUrl(ApiAliases.workspaceItems, { workspaceId })
-    return this.request(url, RequestMethod.POST, data)
+    return this.request(buildUrl(ApiAliases.workspaceItems, { workspaceId }), RequestMethod.POST, data)
   }
 }
 ```
 
-## Lib-Modules Reference
+### File upload
+```ts
+import { uploadFile } from '~/lib-modules/shared'
 
-Each module is self-contained with components, composables, store, and types.
-Import only via `index.ts` public API.
-
-### conversations
-**Purpose:** Chat interface, messages, dialogs
-
-**Exports:**
-- Components: `Message`, `MessagesSection`, `SendMessageSection`, `DialogButton`, `AttachMediaButton`
-- Composable: `useCurrentConversation()` → `addMessage()`, `makeNewChat()`, `clearConversation()`
-- Store: `useCurrentConversationStore()` → messages, title state
-- Types: `MessageType`, `ConversationType`, `ShortConversationType`
-
-### imageGenerator
-**Purpose:** txt2img/img2img generation
-
-**Exports:**
-- Components: `ImageGeneratorInput`, `ImageGeneratorOutput`, `ImageHistorySlider`
-- Composable: `useImageGenerator()` → `generate()`, `attachImage()`, `downloadImage()`, `copyImage()`
-- Composable: `useImageHistory()` → `fetchImages()`, `addToHistory()`
-- Store: `useImageGeneratorStore()` → prompt, ratio, outputFile, isGenerating
-- Constants: `ACCEPTED_IMAGE_TYPES`, `MAX_FILE_SIZE` (10MB)
-
-**Example:**
-```typescript
-const { prompt, generate, isGenerating, outputFile } = useImageGenerator()
-
-prompt.value = "A cat in space"
-await generate()
-// outputFile.value contains the generated image
+const result = await uploadFile(file, (progress) => {
+  console.log(`${progress.phase}: ${progress.percent}%`)
+})
+// result.storageObjectId
 ```
 
-### workspaces
-**Purpose:** Workspace context and management (replaces projects)
+> Для медиа к постам использовать отдельную пару `posts/uploads/init` + `finalize` (см. `docs/api-changelog-2026-04-23.md`), НЕ общий `uploadFile()`.
 
-**Exports:**
-- Composable: `useWorkspaceContext()` → `currentWorkspaceId`, `requireWorkspaceId()`, `initialize()`, `clear()`
-- Composable: `useWorkspaces()` → `createWorkspace()`, `updateWorkspace()`, `deleteWorkspace()`, `selectWorkspace()`
-- Store: `useWorkspacesStore()` → workspaces, currentWorkspace
-- Types: `WorkspaceDto`, `CreateWorkspaceRequest`, `UpdateWorkspaceRequest`
-
-**Example:**
-```typescript
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
-
-const { requireWorkspaceId } = useWorkspaceContext()
-const workspaceId = requireWorkspaceId()
-// Use workspaceId for workspace-scoped API calls
-```
-
-### shared
-**Purpose:** Common utilities and services
-
-**Exports:**
-- Service: `uploadFile(file, onProgress?)` → Upload files with progress tracking
-- Service: `uploadFiles(files, onProgress?)` → Upload multiple files
-- Service: `getDownloadUrl(objectId)` → Get signed download URL
-
-### profile
-**Purpose:** User account, subscription, gifts
-
-**Exports:**
-- Components: `ProfilePage`, `ProfileBadge`
-- Composable: `useProfileI18n()` → profile-scoped translations
-
-### web-auth
-**Purpose:** Email/OAuth authentication (non-Telegram)
-
-**Exports:**
-- Components: `AuthForm`, `GoogleButton`, `TelegramLoginButton`, `YandexAuthButton`
-- API: `AuthApiController` (see API Reference)
-- Types: `TelegramAuthData`, `OAuthProvider` enum
-
-### onboarding
-**Purpose:** Guided tour for new users
-
-**Exports:**
-- Composable: `useOnboarding()` → `start()`, `finish()`, `next()`, `previous()`
-
-## State Management
-
-### Global Composables
-| Composable | Purpose | Key API |
-|------------|---------|---------|
-| `useUserController()` | Auth, user data | `user`, `isLoggedIn`, `getToken()`, `logout()` |
-| `useWorkspaceContext()` | Current workspace | `currentWorkspaceId`, `requireWorkspaceId()`, `initialize()` |
-| `useSettings()` | App settings | `config`, `getLanguage()`, `saveLanguage()` |
-| `useEnv()` | Current environment | `currentDialog`, `attachedFiles` |
-| `eventBus` | Cross-component events | `emit()`, `on()`, `off()` |
-
-### Event Bus
-```typescript
-import { eventBus } from '~/composables/eventBus'
-
-// Emit event
-eventBus.emit('dialog:titleUpdated', { id, title })
-
-// Listen
-eventBus.on('dialog:titleUpdated', (data) => { ... })
-
-// Cleanup in onUnmounted
-eventBus.off('dialog:titleUpdated', handler)
-```
-
-## Common Patterns
-
-### Streaming Messages
-```typescript
-const {requireWorkspaceId} = useWorkspaceContext()
+### Streaming messages (SSE)
+```ts
 const stream = await api.sendWorkspaceMessage(requireWorkspaceId(), convId, text)
 const reader = stream.getReader()
 const decoder = new TextDecoder()
@@ -346,38 +150,29 @@ const decoder = new TextDecoder()
 while (true) {
   const { done, value } = await reader.read()
   if (done) break
-
   const chunk = decoder.decode(value)
-  // Parse SSE: each line is "data: {...}\n"
   const lines = chunk.split('\n').filter(l => l.startsWith('data: '))
   for (const line of lines) {
     const data: MessageStreamData = JSON.parse(line.slice(6))
-    // Server assigns IDs via `request_message_id` / `response_message_id` events.
+    // Server assigns ids via request_message_id / response_message_id events.
     // Handle: text_chunk, set_title, response_end, etc.
   }
 }
 ```
 
-### Creating New Module
-```typescript
-// lib-modules/my-feature/index.ts
-export { default as MyComponent } from './components/MyComponent.vue'
-export { useMyFeature } from './composables/useMyFeature'
-export * from './types'
-```
-
-## Development Commands
+## Dev commands
 
 ```bash
-# Dev server (local backend)
-yarn dev
-
-# Dev server (remote backend)
-yarn devo
-
-# Build
-yarn build
-
-# Preview
-yarn preview
+yarn dev       # dev server
+yarn devo      # dev server against remote backend
+yarn build     # build
+yarn preview   # preview built app
+yarn test      # vitest
 ```
+
+## Reference docs
+
+- `docs/api-changelog-2026-04-23.md` — latest API spec diff (IG/TG integrations, post uploads).
+- `docs/migration-summary-2026-04-14.md` — Neovision → Writelo migration.
+- `docs/v1-23.04.json` — current OpenAPI spec.
+- `docs/modules/projects.md` — historical context (projects → workspaces).
