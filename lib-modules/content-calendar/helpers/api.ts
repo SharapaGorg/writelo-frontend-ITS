@@ -13,6 +13,8 @@ import type {
   PostListItemDto,
   PostMediaType,
   UpsertPostRequest,
+  TelegramLinkStartResponse,
+  TelegramLinkStatusResponse,
 } from '../types'
 
 function toSocialAccount(dto: SocialAccountDto): SocialAccount {
@@ -145,6 +147,20 @@ export class ContentCalendarApiController {
   async deleteSocialAccount(workspaceId: string, socialAccountId: string): Promise<void> {
     const url = buildUrl(ApiAliases.workspaceSocialAccount, { workspaceId, socialAccountId })
     await this.api.request(url, RequestMethod.DELETE)
+  }
+
+  // Telegram channel linking
+  startTelegramLink(workspaceId: string): Promise<TelegramLinkStartResponse> {
+    const url = buildUrl(ApiAliases.workspaceTelegramLinkStart, { workspaceId })
+    return this.api.request(url, RequestMethod.POST) as Promise<TelegramLinkStartResponse>
+  }
+
+  getTelegramLinkStatus(
+    workspaceId: string,
+    code: string,
+  ): Promise<TelegramLinkStatusResponse> {
+    const url = buildUrl(ApiAliases.workspaceTelegramLinkStatus, { workspaceId, code })
+    return this.api.request(url, RequestMethod.GET) as Promise<TelegramLinkStatusResponse>
   }
 
   // Tags
