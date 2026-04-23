@@ -54,6 +54,12 @@ function applyStyle(value: string) {
   if (!props.canEdit) return
   props.draft.toneOfVoice = value
 }
+
+defineExpose({
+  collapse: () => {
+    expanded.value = false
+  },
+})
 </script>
 
 <template>

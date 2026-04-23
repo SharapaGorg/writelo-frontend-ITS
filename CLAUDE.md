@@ -266,7 +266,6 @@ await generate()
 **Purpose:** Workspace context and management (replaces projects)
 
 **Exports:**
-- Components: `WorkspaceCreateWindow`
 - Composable: `useWorkspaceContext()` → `currentWorkspaceId`, `requireWorkspaceId()`, `initialize()`, `clear()`
 - Composable: `useWorkspaces()` → `createWorkspace()`, `updateWorkspace()`, `deleteWorkspace()`, `selectWorkspace()`
 - Store: `useWorkspacesStore()` → workspaces, currentWorkspace

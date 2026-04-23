@@ -16,12 +16,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '~/components/ui/alert-dialog'
-import WorkspaceCreateWindow from './WorkspaceCreateWindow.vue'
 import BrandAccountsSection from './BrandAccountsSection.vue'
 import BrandBriefSection from './BrandBriefSection.vue'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useDemoGuard } from '~/lib-modules/demo-mode'
+import { useSettings } from '~/composables/settings'
 import { toastError, toastChangesSavedSuccess, toastDeleteSuccess } from '~/scripts/features/utils/toater'
 // Direct imports (not via barrel) to avoid module-eval cycle: content-calendar
 // barrel re-exports ContentCalendarPage, which imports from '~/lib-modules/workspaces'.
@@ -31,15 +31,16 @@ import type { WorkspaceDto } from '../types'
 
 const { t: t_ } = useI18n()
 const { guardAction } = useDemoGuard()
-const { workspaces, loading, initialize, updateWorkspace, deleteWorkspace, canEdit } =
+const { workspaces, loading, initialize, createWorkspace, updateWorkspace, deleteWorkspace, canEdit } =
   useWorkspaces()
+const { getLanguage } = useSettings()
 
-const createOpen = ref(false)
 const openValue = ref<string | undefined>(undefined)
 const savingId = ref<string | null>(null)
 const deletingId = ref<string | null>(null)
 const deleteTarget = ref<string | null>(null)
 const deleteDialogOpen = ref(false)
+const isCreating = ref(false)
 
 // Accounts state per workspace — loaded lazily when the accordion opens.
 const accountsByWorkspace = reactive<Record<string, SocialAccount[]>>({})
@@ -65,12 +66,6 @@ watch(openValue, (id) => {
   if (id) loadAccounts(id)
 })
 
-function openCreate() {
-  guardAction(() => {
-    createOpen.value = true
-  })
-}
-
 interface DraftForm {
   name: string
   industry: string
@@ -82,6 +77,100 @@ interface DraftForm {
 }
 
 const drafts = reactive<Record<string, DraftForm>>({})
+
+// Refs to per-workspace BrandBriefSection instances so we can collapse them
+// after a successful save. Populated via function refs in the template.
+type BriefSectionRef = { collapse: () => void }
+const briefRefs: Record<string, BriefSectionRef | null> = {}
+
+const emptyDraft = (): DraftForm => ({
+  name: '',
+  industry: '',
+  businessDescription: '',
+  targetAudience: '',
+  toneOfVoice: '',
+  stopWords: '',
+  examplePosts: '',
+})
+
+// Pending draft is the inline create slot; null when no slot is open.
+const pendingDraft = ref<DraftForm | null>(null)
+
+function openCreate() {
+  guardAction(() => {
+    if (pendingDraft.value) return
+    pendingDraft.value = emptyDraft()
+  })
+}
+
+function cancelPending() {
+  pendingDraft.value = null
+}
+
+function briefFilled(d: DraftForm): boolean {
+  return (
+    !!d.industry.trim() ||
+    !!d.businessDescription.trim() ||
+    !!d.targetAudience.trim() ||
+    !!d.toneOfVoice.trim() ||
+    parseStopWords(d.stopWords).length > 0 ||
+    !!d.examplePosts.trim()
+  )
+}
+
+async function createFromPending() {
+  const d = pendingDraft.value
+  if (!d) return
+  const name = d.name.trim()
+  if (!name) {
+    toastError('Название бренда обязательно')
+    return
+  }
+
+  guardAction(async () => {
+    isCreating.value = true
+    try {
+      // Backend POST accepts only name + contentLanguage, so brief fields
+      // go via a follow-up PATCH. See lib-modules/workspaces/helpers/api.ts.
+      const created = await createWorkspace({
+        name,
+        contentLanguage: getLanguage() ?? 'ru',
+      })
+      if (!created) {
+        toastError('Не удалось создать бренд')
+        return
+      }
+
+      let final = created
+      if (briefFilled(d)) {
+        const updated = await updateWorkspace(created.id, {
+          name,
+          industry: d.industry.trim() || null,
+          businessDescription: d.businessDescription.trim() || null,
+          targetAudience: d.targetAudience.trim() || null,
+          toneOfVoice: d.toneOfVoice.trim() || null,
+          stopWords: parseStopWords(d.stopWords),
+          examplePosts: d.examplePosts.trim() || null,
+        })
+        if (updated) final = updated
+        else toastError('Бренд создан, но бриф не сохранился')
+      }
+
+      // Force-seed the draft from the post-PATCH workspace: the deep watcher
+      // creates a draft as soon as POST pushes to the store, which would
+      // otherwise cache an empty-brief draft before PATCH lands.
+      drafts[final.id] = toDraft(final)
+      pendingDraft.value = null
+      openValue.value = final.id
+      toastChangesSavedSuccess(t_)
+    } catch (e) {
+      console.error('[WorkspacesListPage] create failed:', e)
+      toastError('Не удалось создать бренд')
+    } finally {
+      isCreating.value = false
+    }
+  })
+}
 
 function toDraft(w: WorkspaceDto): DraftForm {
   return {
@@ -143,6 +232,7 @@ async function saveDraft(w: WorkspaceDto) {
       })
       if (updated) {
         drafts[w.id] = toDraft(updated)
+        briefRefs[w.id]?.collapse()
         toastChangesSavedSuccess(t_)
       }
     } catch (e) {
@@ -189,10 +279,6 @@ watch(
   { immediate: true, deep: true }
 )
 
-function handleCreated(workspaceId: string) {
-  openValue.value = workspaceId
-}
-
 onMounted(async () => {
   if (workspaces.value.length === 0) {
     await initialize()
@@ -212,13 +298,13 @@ onMounted(async () => {
     </AppNavbar>
 
     <div class="flex-1 overflow-y-auto px-6 py-4">
-      <div v-if="loading && workspaces.length === 0" class="flex items-center justify-center py-16 text-muted-foreground">
+      <div v-if="loading && workspaces.length === 0 && !pendingDraft" class="flex items-center justify-center py-16 text-muted-foreground">
         <Loader2 class="h-5 w-5 animate-spin mr-2" />
         Загрузка...
       </div>
 
       <div
-        v-else-if="workspaces.length === 0"
+        v-else-if="workspaces.length === 0 && !pendingDraft"
         class="flex flex-col items-center justify-center py-16 text-center text-muted-foreground"
       >
         <p class="mb-4">У вас ещё нет ни одного бренда.</p>
@@ -228,13 +314,67 @@ onMounted(async () => {
         </Button>
       </div>
 
-      <Accordion
-        v-else
-        type="single"
-        collapsible
-        class="flex flex-col gap-2"
-        v-model="openValue"
-      >
+      <div v-else class="flex flex-col gap-2">
+        <!-- Inline create slot: same card style as accordion items, but lives outside the accordion -->
+        <!-- so its expand/collapse state is independent and doesn't fight the v-model. -->
+        <div
+          v-if="pendingDraft"
+          class="rounded-lg border border-purple-500/40 bg-card px-4 py-4"
+        >
+          <div class="flex items-center gap-2 pb-3 border-b border-border">
+            <span class="flex items-center justify-center h-6 w-6 rounded-md bg-purple-500/10 text-purple-500 dark:text-purple-400">
+              <Plus class="h-3.5 w-3.5" />
+            </span>
+            <span class="text-sm font-medium">Новый бренд</span>
+          </div>
+          <div class="space-y-4 pt-4">
+            <div class="space-y-2">
+              <Label for="pending-name">
+                {{ t_('addClient.brandName') }} <span class="text-red-500">*</span>
+              </Label>
+              <Input
+                id="pending-name"
+                v-model="pendingDraft.name"
+                :placeholder="t_('addClient.brandNamePlaceholder')"
+              />
+            </div>
+
+            <BrandBriefSection
+              id-prefix="pending"
+              :draft="pendingDraft"
+              :can-edit="!isCreating"
+            />
+
+            <div class="flex items-center justify-end gap-2 pt-2 border-t border-border">
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="isCreating"
+                @click="cancelPending"
+              >
+                {{ t_('cancel') }}
+              </Button>
+              <Button
+                size="sm"
+                class="gap-2"
+                :disabled="!pendingDraft.name.trim() || isCreating"
+                @click="createFromPending"
+              >
+                <Loader2 v-if="isCreating" class="h-4 w-4 animate-spin" />
+                <Check v-else class="h-4 w-4" />
+                Создать
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        <Accordion
+          v-if="workspaces.length > 0"
+          type="single"
+          collapsible
+          class="flex flex-col gap-2"
+          v-model="openValue"
+        >
         <AccordionItem
           v-for="w in workspaces"
           :key="w.id"
@@ -291,6 +431,7 @@ onMounted(async () => {
               </div>
 
               <BrandBriefSection
+                :ref="(el) => { briefRefs[w.id] = el as BriefSectionRef | null }"
                 :id-prefix="w.id"
                 :draft="drafts[w.id]"
                 :can-edit="canEdit(w.id)"
@@ -319,10 +460,9 @@ onMounted(async () => {
             </div>
           </AccordionContent>
         </AccordionItem>
-      </Accordion>
+        </Accordion>
+      </div>
     </div>
-
-    <WorkspaceCreateWindow v-model:open="createOpen" @save="handleCreated" />
 
     <AlertDialog v-model:open="deleteDialogOpen">
       <AlertDialogContent>
