@@ -21,6 +21,7 @@ import { useAppLayout } from '../composables/useAppLayout'
 import type { SidebarItem } from '../types'
 import { useUserController } from '~/composables/user'
 import { useSettings } from '~/composables/settings'
+import PublicationsPanel from './PublicationsPanel.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -178,6 +179,8 @@ function navigate(item: SidebarItem) {
         </div>
       </div>
     </button>
+
+    <PublicationsPanel />
 
     <!-- Bottom Navigation -->
     <div class="flex flex-col gap-1 p-2 border-t border-border">

@@ -20,7 +20,11 @@ import CelebrationEffect from './CelebrationEffect.vue'
 import { useContentEditor } from '../composables/useContentEditor'
 import type { ContentType, ContentStatus } from '../types'
 import type { SocialNetwork } from '~/lib-modules/content-calendar'
+import { usePublicationsStore } from '~/lib-modules/content-calendar'
 import ImageDropZone from './ImageDropZone.vue'
+import { toast } from 'vue-sonner'
+import { useRouter } from 'vue-router'
+import { getToasterPosition } from '~/scripts/features/utils/toater'
 
 const {
   currentDraft,
@@ -34,58 +38,88 @@ const {
   setActivePanel,
   goToImagesPanel,
   selectedAccountId,
-  currentProjectAccounts
+  currentProjectAccounts,
+  postId
 } = useContentEditor()
 
-// Get current account's network
-const currentNetwork = computed<SocialNetwork | null>(() => {
+const router = useRouter()
+const publicationsStore = usePublicationsStore()
+
+// Current selected account
+const currentAccount = computed(() => {
   if (!selectedAccountId.value) return null
-  const account = currentProjectAccounts.value.find(a => a.id === selectedAccountId.value)
-  return account?.network ?? null
+  return currentProjectAccounts.value.find(a => a.id === selectedAccountId.value) ?? null
 })
 
-// Define which content types are available per network
-const networkCapabilities: Record<SocialNetwork, ContentType[]> = {
+const currentNetwork = computed<SocialNetwork | null>(() => currentAccount.value?.network ?? null)
+
+// Fallback capabilities if the backend didn't populate publishCapabilities yet
+// (e.g., legacy accounts, dev fixtures). Matches old hardcoded behavior.
+const fallbackCapabilities: Record<SocialNetwork, ContentType[]> = {
   vk: ['post', 'story', 'reel'],
   instagram: ['post', 'story', 'reel'],
   telegram: ['post', 'story'],
-  youtube: ['reel'] // YouTube only supports video content (shorts/videos)
+  youtube: ['reel'],
 }
 
-// Network display names for tooltips
 const networkNames: Record<SocialNetwork, string> = {
   vk: 'ВКонтакте',
   instagram: 'Instagram',
   telegram: 'Telegram',
-  youtube: 'YouTube'
+  youtube: 'YouTube',
 }
 
-// Check if content type is available for current network
+const EDITOR_TYPES: ContentType[] = ['post', 'story', 'reel']
+
+const allowedTypes = computed<ContentType[]>(() => {
+  const account = currentAccount.value
+  if (!account) return EDITOR_TYPES
+  const caps = account.publishCapabilities
+  if (caps && caps.length > 0) {
+    // Backend sometimes emits PascalCase ("Post"/"Story"/"Reel"); normalize.
+    const normalized = new Set(caps.map(c => c.toLowerCase()))
+    const filtered = EDITOR_TYPES.filter(t => normalized.has(t))
+    if (filtered.length > 0) return filtered
+    // Capabilities were non-empty but didn't match any known editor type —
+    // don't disable the whole tab bar; drop to the network-level whitelist.
+  }
+  return fallbackCapabilities[account.network] ?? EDITOR_TYPES
+})
+
+const isPlatformSupported = computed<boolean>(() => {
+  const net = currentAccount.value?.network
+  return net === 'instagram' || net === 'telegram'
+})
+
+const publishDisabledReason = computed<string | undefined>(() => {
+  if (!currentAccount.value) return undefined
+  if (isPlatformSupported.value) return undefined
+  const net = currentAccount.value.network
+  const label = networkNames[net]
+  return `Публикация в ${label} скоро появится`
+})
+
 function isContentTypeAvailable(type: ContentType): boolean {
-  if (!currentNetwork.value) return true // No account selected = all available
-  return networkCapabilities[currentNetwork.value].includes(type)
+  if (!currentAccount.value) return true
+  return allowedTypes.value.includes(type)
 }
 
-// Get tooltip for disabled content type
 function getDisabledTooltip(type: ContentType): string | undefined {
   if (isContentTypeAvailable(type)) return undefined
   if (!currentNetwork.value) return undefined
   return `Недоступно в ${networkNames[currentNetwork.value]}`
 }
 
-// Auto-switch to available content type when network changes
-watch(currentNetwork, (network) => {
-  if (!network || !currentDraft.value) return
-  const currentType = currentDraft.value.type
-  if (!networkCapabilities[network].includes(currentType)) {
-    // Switch to first available type
-    const firstAvailable = networkCapabilities[network][0]
-    if (firstAvailable) {
-      updateDraft({
-        type: firstAvailable,
-        script: firstAvailable === 'reel' ? { duration: 0, frames: [] } : undefined
-      })
-    }
+// Auto-switch to an available content type when the account's capabilities change
+watch(allowedTypes, (types) => {
+  if (!currentDraft.value) return
+  if (types.length === 0) return
+  if (!types.includes(currentDraft.value.type)) {
+    const firstAvailable = types[0]
+    updateDraft({
+      type: firstAvailable,
+      script: firstAvailable === 'reel' ? { duration: 0, frames: [] } : undefined
+    })
   }
 })
 
@@ -105,7 +139,8 @@ const contentTypes: { value: ContentType; label: string }[] = [
 
 // Computed values from draft
 const selectedType = computed(() => currentDraft.value?.type ?? 'post')
-const images = computed(() => currentDraft.value?.images ?? [])
+const draftImages = computed(() => currentDraft.value?.images ?? [])
+const previewUrls = computed(() => draftImages.value.map(i => i.previewUrl))
 const description = computed(() => currentDraft.value?.description ?? '')
 const scheduledDate = computed(() => currentDraft.value?.scheduledDate ?? null)
 const status = computed(() => currentDraft.value?.status ?? 'idea')
@@ -156,7 +191,11 @@ const updateScheduledDate = (event: Event) => {
 
 // Handle image add (receives { url, file } from ImageDropZone)
 const handleAddImage = (event: { url: string; file: File }) => {
-  addImage(event.url)
+  addImage({
+    previewUrl: event.url,
+    fileType: isReel.value ? 'video' : 'image',
+    file: event.file,
+  })
 }
 
 // Save the post
@@ -173,14 +212,23 @@ const canPublish = computed(() => status.value === 'ready')
 
 const handlePublish = async () => {
   isPublishing.value = true
+  try {
+    await saveDraft()
+    const effectivePostId = postId.value
+    if (!effectivePostId) throw new Error('Пост не сохранён')
 
-  // TODO: Call actual publish API here
-  await new Promise(resolve => setTimeout(resolve, 500)) // Simulate API call
+    await publicationsStore.publishPost(effectivePostId)
 
-  updateDraft({ status: 'published' })
-  isPublishing.value = false
-  showPublishDialog.value = false
-  showCelebration.value = true
+    showPublishDialog.value = false
+    showCelebration.value = true
+    toast.success('Публикуем...', { position: getToasterPosition() })
+    router.push('/app/calendar')
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Не удалось отправить на публикацию'
+    toast.error(msg, { position: getToasterPosition() })
+  } finally {
+    isPublishing.value = false
+  }
 }
 </script>
 
@@ -214,7 +262,7 @@ const handlePublish = async () => {
       <div class="space-y-6 p-4">
         <!-- Media Section: 1 video for reel, up to 10 images for post/story -->
         <ImageDropZone
-          :images="images"
+          :images="previewUrls"
           :max-images="isReel ? 1 : 10"
           :is-active="isActivePanel"
           :accept-video="isReel"
@@ -327,8 +375,10 @@ const handlePublish = async () => {
       <!-- Publish button (only when status is 'ready') -->
       <Button
         v-if="canPublish"
+        :disabled="!isPlatformSupported || isPublishing"
+        :title="publishDisabledReason"
         @click="showPublishDialog = true"
-        class="w-full gap-2 bg-green-600 hover:bg-green-700"
+        class="w-full gap-2 bg-green-600 hover:bg-green-700 disabled:bg-green-600/50 disabled:hover:bg-green-600/50"
       >
         <Send class="h-4 w-4" />
         Опубликовать
