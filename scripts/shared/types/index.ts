@@ -90,6 +90,9 @@ export enum ApiAliases {
     // Activity log
     workspaceActivityLog = 'workspaces/{workspaceId}/activity-log',
 
+    // Dev-only endpoints (available only on staging/local backend)
+    devUserSubscription = 'dev/users/{userId}/subscription',
+
     // === DEPRECATED (old endpoints, kept for reference during migration) ===
     /** @deprecated Use workspaceConversations */
     conversations = 'conversations',

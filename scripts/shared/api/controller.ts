@@ -811,6 +811,17 @@ export class ApiController {
         return this.request(url, RequestMethod.POST)
     }
 
+    // === Dev-only ===
+
+    /**
+     * Dev-only: grant a business subscription to a user. Endpoint exists on
+     * staging/local backends and is absent in production.
+     */
+    async grantDevSubscription(userId: string): Promise<void> {
+        const url = buildUrl(ApiAliases.devUserSubscription, { userId })
+        return this.request(url, RequestMethod.POST)
+    }
+
     // === Helper to get current workspace ID ===
 
     /**

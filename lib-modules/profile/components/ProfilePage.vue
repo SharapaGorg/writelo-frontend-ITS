@@ -16,6 +16,7 @@ import TariffPlanZone from './TariffPlanZone.vue'
 import GiftsSection from './GiftsSection.vue'
 import EditAccountZone from './EditAccountZone.vue'
 import ConnectionsZone from './ConnectionsZone.vue'
+import DevToolsZone from './DevToolsZone.vue'
 import { isInTelegramApp } from '~/scripts/features/utils'
 import { useDemoMode, useDemoGuard } from '~/lib-modules/demo-mode'
 import { useProfileI18n } from '../composables/useProfileI18n'
@@ -47,6 +48,7 @@ const initials = computed(() => {
 
 const logoutDialogOpen = ref(false)
 const canLogout = computed(() => !isInTelegramApp.value)
+const isDev = import.meta.dev
 
 const openLogoutDialog = () => {
   if (guardAction(() => {})) return
@@ -102,6 +104,7 @@ async function handleLogout() {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <EditAccountZone />
           <GiftsSection />
+          <DevToolsZone v-if="isDev" />
           <ConnectionsZone />
         </div>
       </div>
