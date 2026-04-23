@@ -46,6 +46,27 @@ export interface UpsertSocialAccountRequest {
   refreshToken?: string
 }
 
+// ---- Telegram channel linking (API 23.04) ----
+
+export type TelegramLinkStatus =
+  | 'pending'
+  | 'user_started'
+  | 'completed'
+  | 'failed'
+  | 'expired'
+
+export interface TelegramLinkStartResponse {
+  deepLink: string
+  verificationCode: string
+  expiresAt: string // ISO
+}
+
+export interface TelegramLinkStatusResponse {
+  status: TelegramLinkStatus
+  failureReason?: string | null
+  socialAccountId?: string | null
+}
+
 export interface ContentTag {
   id: string
   name: string
