@@ -31,12 +31,16 @@ export function useContentCalendar() {
     }
   }, { immediate: true })
 
-  // Also re-init activeAccountIds when the current project's accounts list is populated (async fetch)
-  watch(() => currentProject.value?.accounts.map(a => a.id).join(','), (newIds) => {
-    if (!newIds) return
-    if (activeAccountIds.value.length === 0) {
-      activeAccountIds.value = currentProject.value?.accounts.map(a => a.id) ?? []
+  // Sync activeAccountIds with the project's accounts list as it evolves
+  // (async fetch, accounts linked/unlinked): newly-appeared accounts become
+  // active by default; removed accounts are pruned.
+  watch(() => currentProject.value?.accounts.map(a => a.id).join(','), () => {
+    const allIds = currentProject.value?.accounts.map(a => a.id) ?? []
+    const current = new Set(activeAccountIds.value)
+    for (const id of allIds) {
+      if (!current.has(id)) activeAccountIds.value.push(id)
     }
+    activeAccountIds.value = activeAccountIds.value.filter(id => allIds.includes(id))
   })
 
   const filteredPosts = computed(() => {
