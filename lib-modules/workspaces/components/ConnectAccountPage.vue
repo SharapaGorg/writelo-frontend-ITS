@@ -179,6 +179,7 @@ onMounted(async () => {
           v-if="selectedPlatform?.id === 'telegram' && workspaceId"
           :workspace-id="workspaceId"
           @linked="onChannelLinked"
+          @cancel="dialogOpen = false"
         />
         <div v-else class="py-6 flex items-center justify-center text-sm text-muted-foreground gap-2">
           <Loader2 class="h-4 w-4 animate-spin" />

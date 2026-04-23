@@ -83,6 +83,11 @@ async function poll() {
   }
 }
 
+function cancel() {
+  stopPolling()
+  emit('cancel')
+}
+
 async function copyCode() {
   if (!session.value) return
   try {
@@ -132,6 +137,10 @@ onBeforeUnmount(stopPolling)
         <span v-if="status === 'user_started'">Пользователь открыл бота, ждём подтверждения…</span>
         <span v-else>Откройте бота и нажмите Start — мы сами дождёмся подтверждения.</span>
       </div>
+
+      <Button type="button" variant="ghost" size="sm" class="w-full" @click="cancel">
+        Отменить
+      </Button>
     </template>
 
     <template v-else-if="status === 'failed' || status === 'expired'">
