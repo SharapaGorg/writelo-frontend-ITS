@@ -61,6 +61,62 @@ export interface SocialPreviewData {
   views?: number
 }
 
+// ---- Backend DTOs (see docs/v1-23.04.json: PostListItemDto, UpsertPostRequest) ----
+
+export type PostMediaType = 'post' | 'story' | 'reel' | 'article'
+
+export interface PostTagDto {
+  id: string
+  name: string
+  color?: string | null
+}
+
+export interface PostSocialAccountSummaryDto {
+  id: string
+  platform?: string
+  username?: string | null
+  displayName?: string | null
+  avatarUrl?: string | null
+}
+
+export interface PostMediaDto {
+  id: string
+  storageObjectId: string
+  thumbnailObjectId?: string | null
+  fileType: 'image' | 'video'
+  sortOrder: number | string
+  asset?: { downloadUrl?: string } | null
+  thumbnail?: { downloadUrl?: string } | null
+}
+
+export interface PostListItemDto {
+  id: string
+  workspaceId: string
+  title: string | null
+  contentText: string
+  platformContent: string | null
+  mediaType: PostMediaType
+  status: PostStatus
+  scheduledAt: string
+  publishedAt: string | null
+  socialAccount: PostSocialAccountSummaryDto
+  tags?: PostTagDto[]
+  media?: PostMediaDto[]
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface UpsertPostRequest {
+  socialAccountId: string
+  title: string | null
+  contentText: string
+  platformContent: string | null
+  mediaType: PostMediaType
+  status: PostStatus
+  scheduledAt: string
+  tagIds?: string[]
+}
+
 export interface CalendarPost {
   id: string
   title: string

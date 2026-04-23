@@ -184,6 +184,10 @@ async function handleSubmitCreatePost(title: string) {
   if (!trimmed || !creatingForDate.value) return
 
   const defaultAccountId = (currentProject.value?.accounts ?? [])[0]?.id || ''
+  if (!defaultAccountId) {
+    toastError('Сначала подключите соц. аккаунт к этому workspace')
+    return
+  }
 
   const newPost = await createPost({
     title: trimmed,
