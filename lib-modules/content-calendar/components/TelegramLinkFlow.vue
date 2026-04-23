@@ -52,6 +52,16 @@ async function start() {
 
 async function poll() {
   if (!session.value) return
+
+  // Client-side safety: if the backend's own TTL has passed but it still
+  // reports pending, stop polling and surface as expired ourselves.
+  const expiresAtMs = Date.parse(session.value.expiresAt)
+  if (Number.isFinite(expiresAtMs) && Date.now() > expiresAtMs) {
+    stopPolling()
+    status.value = 'expired'
+    return
+  }
+
   try {
     const res = await api.getTelegramLinkStatus(
       props.workspaceId,
