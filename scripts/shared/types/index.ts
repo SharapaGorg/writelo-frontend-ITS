@@ -22,8 +22,8 @@ export enum ApiAliases {
     // Config (unchanged)
     config = 'app/config',
 
-    // Payment (unchanged)
-    payment = 'payment',
+    // Payments
+    payments = 'payments',
 
     // Auth endpoints
     authSignup = 'auth/signup/email',

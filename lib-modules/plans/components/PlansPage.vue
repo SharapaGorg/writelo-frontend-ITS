@@ -1,10 +1,38 @@
 <script setup lang="ts">
+import { onMounted, onBeforeUnmount } from 'vue'
+import { toast } from 'vue-sonner'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import AppLoader from '~/components/atoms/AppLoader.vue'
+import { getToasterPosition, toastError } from '~/scripts/features/utils/toater'
 import PlanCard from './PlanCard.vue'
 import { usePlans } from '../composables/usePlans'
 
 const { plans, loaded, isCurrentPlan, isPopularPlan } = usePlans()
+
+async function handlePaymentMessage(event: MessageEvent) {
+  if (event.origin !== window.location.origin) return
+  const data = event.data
+  if (!data || data.type !== 'writelo:payment-result') return
+
+  if (data.status === 'success') {
+    try {
+      await useSettings().refreshUserData()
+    } catch (e) {
+      console.error('refreshUserData after payment failed', e)
+    }
+    toast.success('Подписка активирована', { position: getToasterPosition() })
+  } else if (data.status === 'fail') {
+    toastError('Оплата не прошла')
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('message', handlePaymentMessage)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('message', handlePaymentMessage)
+})
 </script>
 
 <template>

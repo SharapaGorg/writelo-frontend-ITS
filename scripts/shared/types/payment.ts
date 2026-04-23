@@ -1,5 +1,10 @@
-export type CreatePaymentType = {
-    url: string
+export type PaymentSessionDto = {
+    paymentId: number
+    provider: string
+    subscriptionId: number
+    checkoutUrl: string
+    status: string
+    isGift: boolean
 }
 
 export enum PaymentProvider {

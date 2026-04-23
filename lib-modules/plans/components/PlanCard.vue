@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { Check, Crown, Sparkles, Star } from 'lucide-vue-next'
-import { toast } from 'vue-sonner'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
-import { getToasterPosition } from '~/scripts/features/utils/toater'
+import { toastError } from '~/scripts/features/utils/toater'
+import { ApiController } from '~/scripts/shared/api/controller'
+import { PaymentProvider } from '~/scripts/shared/types/payment'
 import type { SubscriptionType } from '~/scripts/shared/types/common'
 import { formatDuration } from '../helpers/duration'
 import PlanPurchaseButton from './PlanPurchaseButton.vue'
@@ -21,11 +22,30 @@ const priceLabel = computed(() => (isFree.value ? '0 ₽' : `${props.plan.price}
 const showPopularBadge = computed(() => props.isPopular && !props.isCurrent)
 const showPurchase = computed(() => !props.isCurrent && !isFree.value)
 
-function handlePurchase(mode: 'self' | 'gift') {
-  const message = mode === 'gift'
-    ? 'Покупка в подарок пока недоступна'
-    : 'Оплата скоро появится'
-  toast(message, { position: getToasterPosition() })
+const api = new ApiController()
+const isPurchasing = ref(false)
+
+async function handlePurchase(mode: 'self' | 'gift') {
+  if (isPurchasing.value) return
+  isPurchasing.value = true
+  try {
+    const session = await api.createPayment(
+      props.plan.id,
+      PaymentProvider.tinkoff,
+      mode === 'gift',
+    )
+    const popup = window.open(
+      session.checkoutUrl,
+      'writelo-pay',
+      'popup=yes,width=520,height=720',
+    )
+    if (!popup || popup.closed) window.location.href = session.checkoutUrl
+  } catch (e) {
+    console.error('createPayment failed', e)
+    toastError('Не удалось создать платёж, попробуйте позже')
+  } finally {
+    isPurchasing.value = false
+  }
 }
 </script>
 
@@ -100,6 +120,7 @@ function handlePurchase(mode: 'self' | 'gift') {
 
     <PlanPurchaseButton
       v-else-if="showPurchase"
+      :disabled="isPurchasing"
       @purchase="handlePurchase"
     />
   </div>

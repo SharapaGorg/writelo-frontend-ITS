@@ -9,7 +9,7 @@ import type {
     UploadFileResponse
 } from '~/lib-modules/conversations'
 import type { SendMessageBody } from '~/scripts/shared/types/private'
-import type { CreatePaymentType, PaymentProvider } from '~/scripts/shared/types/payment'
+import type { PaymentSessionDto, PaymentProvider } from '~/scripts/shared/types/payment'
 import { toastError, toastForbidden, toastRateLimit, toastGenericError } from '~/scripts/features/utils/toater'
 import { process } from 'std-env'
 import { useAttachMedia } from '~/composables/useAttachMedia'
@@ -514,11 +514,13 @@ export class ApiController {
      *
      * @returns url for pay money for subscription
      */
-    async createPayment(subscriptionId: number, provider: PaymentProvider): Promise<CreatePaymentType> {
-        return this.request(ApiAliases.payment, RequestMethod.POST, {
-            subscriptionId: subscriptionId,
-            provider: provider
-        });
+    async createPayment(subscriptionId: number, provider: PaymentProvider, forGift?: boolean): Promise<PaymentSessionDto> {
+        const body: Record<string, unknown> = {
+            subscriptionId,
+            provider,
+        };
+        if (forGift) body.forGift = true;
+        return this.request(ApiAliases.payments, RequestMethod.POST, body);
     }
 
     /**

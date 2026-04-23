@@ -66,6 +66,8 @@ export default defineNuxtConfig({
                 ((process.env.APP_ENV || process.env.NODE_ENV) === 'production'
                     ? 'writelo_bot'
                     : 'writelo_staging_bot'),
+            supportTelegram: process.env.NUXT_PUBLIC_SUPPORT_TELEGRAM || 'NeoVisionSupport',
+            supportEmail: process.env.NUXT_PUBLIC_SUPPORT_EMAIL || 'dushin.egor.dm@yandex.ru',
         },
     },
 
