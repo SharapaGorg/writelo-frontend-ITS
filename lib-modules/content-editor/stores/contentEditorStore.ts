@@ -184,10 +184,10 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     }
   }
 
-  // Stub for loading post data when API is ready
   const loadDraft = (post: {
     id: string
-    type: 'post' | 'story' | 'reel'
+    type: ContentType
+    accountId: string
     title: string
     description?: string
     images?: string[]
@@ -197,7 +197,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     currentDraft.value = {
       id: post.id,
       type: post.type,
-      accountId: 'default-account', // TODO: get from post when API ready
+      accountId: post.accountId,
       title: post.title,
       description: post.description || '',
       hashtags: [],
@@ -207,6 +207,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
       script: post.type === 'reel' ? { duration: 0, frames: [] } : undefined
     }
     originalDraft.value = JSON.parse(JSON.stringify(currentDraft.value))
+    selectedAccountId.value = post.accountId
   }
 
   const getLastMessage = () => {

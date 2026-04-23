@@ -9,7 +9,9 @@ import {
   PostPreviewPanel,
   useContentEditor
 } from '~/lib-modules/content-editor'
+import type { ContentType as EditorContentType } from '~/lib-modules/content-editor'
 import { useContentProjectStore } from '~/lib-modules/content-calendar'
+import type { CalendarPost } from '~/lib-modules/content-calendar'
 import { ApiController } from '~/scripts/shared/api/controller'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
@@ -26,19 +28,50 @@ const {
   editorMode,
   conversationId,
   setConversationId,
-  loadChatMessages
+  loadChatMessages,
+  loadDraft,
+  setPostId
 } = useContentEditor()
 
 const projectStore = useContentProjectStore()
 const { currentProjectAccounts } = storeToRefs(projectStore)
+
+function toEditorDraftInput(post: CalendarPost) {
+  const type: EditorContentType =
+    post.type === 'reels' ? 'reel' : post.type === 'article' ? 'post' : post.type
+  const scheduledDate = post.time ? `${post.date}T${post.time}` : post.date
+  const images = post.images ?? (post.image ? [post.image] : [])
+  return {
+    id: post.id,
+    type,
+    accountId: post.accountId,
+    title: post.title,
+    description: post.content ?? post.description ?? '',
+    images,
+    scheduledDate,
+    status: post.status,
+  }
+}
 
 onMounted(async () => {
   const postId = route.params.postId as string | undefined
   const chatId = route.query.chat as string | undefined
 
   if (postId) {
-    // TODO: Load existing post via API
-    console.log('Loading post:', postId)
+    const { requireWorkspaceId } = useWorkspaceContext()
+    const workspaceId = requireWorkspaceId()
+    let post = projectStore.currentProject?.posts.find(p => p.id === postId)
+    if (!post) {
+      await projectStore.fetchProjectData(workspaceId)
+      post = projectStore.currentProject?.posts.find(p => p.id === postId)
+    }
+    if (post) {
+      loadDraft(toEditorDraftInput(post))
+      setPostId(postId)
+    } else {
+      router.replace('/app/calendar')
+      return
+    }
   } else if (!currentDraft.value) {
     const defaultAccountId = currentProjectAccounts.value[0]?.id || ''
     createNewDraft('post', defaultAccountId)
