@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(yarn nuxt *)",
-      "Bash(awk -F'\\(' '{print $1}')"
+      "Bash(awk -F'\\(' '{print $1}')",
+      "Bash(curl -sf http://localhost:3000 -o /dev/null)",
+      "Bash(git commit *)"
     ]
   }
 }

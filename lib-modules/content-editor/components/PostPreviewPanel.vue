@@ -34,6 +34,7 @@ const {
   removeImage,
   saveDraft,
   isSaving,
+  isDirty,
   isReel,
   activePanel,
   setActivePanel,
@@ -397,7 +398,7 @@ const handlePublish = async () => {
       <!-- Save button -->
       <Button
         @click="handleSave"
-        :disabled="isSaving || isPublished"
+        :disabled="isSaving || isPublished || !isDirty"
         class="w-full gap-2"
         variant="outline"
       >

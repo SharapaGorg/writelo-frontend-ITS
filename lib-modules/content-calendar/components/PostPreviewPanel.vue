@@ -94,6 +94,12 @@ function navigateToEditor() {
   router.push(`/app/editor/${props.post.id}`)
 }
 
+function openPublishedLink() {
+  if (props.post.publishedLink) {
+    window.open(props.post.publishedLink, '_blank', 'noopener,noreferrer')
+  }
+}
+
 function confirmDelete() {
   emit('delete')
 }
@@ -135,7 +141,23 @@ async function handlePublish() {
 
     <!-- Action buttons bar -->
     <div class="px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 flex gap-2">
+      <!-- Published + has link → open the live post in a new tab -->
       <button
+        v-if="post.status === 'published' && post.publishedLink"
+        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
+        @click="openPublishedLink"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+          <polyline points="15 3 21 3 21 9"/>
+          <line x1="10" y1="14" x2="21" y2="3"/>
+        </svg>
+        Открыть пост
+      </button>
+
+      <!-- Draft / ready / etc → open editor -->
+      <button
+        v-else-if="post.status !== 'published'"
         class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-medium transition-colors"
         @click="navigateToEditor"
       >

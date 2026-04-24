@@ -27,6 +27,10 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
   // Getters
   const isReel = computed(() => currentDraft.value?.type === 'reel')
   const isEditMode = computed(() => postId.value !== null)
+  const isDirty = computed(() => {
+    if (!currentDraft.value || !originalDraft.value) return false
+    return JSON.stringify(currentDraft.value) !== JSON.stringify(originalDraft.value)
+  })
 
   // Actions
   const createNewDraft = (type: ContentType, accountId: string): ContentDraft => {
@@ -259,6 +263,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     // Getters
     isReel,
     isEditMode,
+    isDirty,
 
     // Actions
     createNewDraft,
