@@ -19,6 +19,7 @@ export default defineNuxtConfig({
         '/auth': {ssr: true},
         '/auth/**': {ssr: true},
         '/landing': {ssr: true, prerender: true},
+        '/landing-new': {ssr: true, prerender: true},
         '/start': {ssr: true, prerender: true},
         // SPA для приложения и остального
         '/app/**': {ssr: false},
@@ -130,7 +131,7 @@ export default defineNuxtConfig({
 
     nitro: {
         prerender: {
-            routes: ['/', '/en', '/ru', '/landing', '/start', '/auth'],
+            routes: ['/', '/en', '/ru', '/landing', '/landing-new', '/start', '/auth'],
         },
         // Ускоряем билд
         minify: false,
