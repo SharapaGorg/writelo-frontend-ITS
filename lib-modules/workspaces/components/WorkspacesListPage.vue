@@ -319,7 +319,7 @@ onMounted(async () => {
         <!-- so its expand/collapse state is independent and doesn't fight the v-model. -->
         <div
           v-if="pendingDraft"
-          class="rounded-md border border-brand/40 bg-card px-4 py-4"
+          class="rounded-md border border-brand/40 bg-background px-4 py-4"
         >
           <div class="flex items-center gap-2 pb-3 border-b border-border">
             <span class="flex items-center justify-center h-6 w-6 rounded-md bg-brand/10 text-brand">
@@ -379,7 +379,7 @@ onMounted(async () => {
           v-for="w in workspaces"
           :key="w.id"
           :value="w.id"
-          class="relative rounded-md border border-border bg-card px-4"
+          class="relative rounded-md border border-border bg-background px-4"
         >
           <AccordionTrigger class="hover:no-underline pr-20">
             <div class="flex items-center gap-3 flex-1 min-w-0">

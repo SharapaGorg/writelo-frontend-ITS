@@ -72,7 +72,7 @@ defineExpose({
       'rounded-md border overflow-hidden transition-colors',
       expanded
         ? 'border-brand/40 bg-brand/5'
-        : 'border-border bg-muted/20 hover:bg-muted/40',
+        : 'border-border bg-card hover:bg-secondary',
     ]"
   >
     <button
