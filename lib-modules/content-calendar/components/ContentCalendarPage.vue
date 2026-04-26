@@ -221,7 +221,7 @@ watch(selectedDate, (newDate) => {
 })
 
 const statusConfig = [
-  { id: 'idea' as const, label: 'Идея', icon: 'idea', color: 'text-zinc-400' },
+  { id: 'idea' as const, label: 'Идея', icon: 'idea', color: 'text-muted-foreground' },
   { id: 'draft' as const, label: 'Черновик', icon: 'draft', color: 'text-yellow-500' },
   { id: 'ready' as const, label: 'Готов', icon: 'ready', color: 'text-green-500' },
   { id: 'published' as const, label: 'Опубликован', icon: 'published', color: 'text-blue-500' }
@@ -361,26 +361,26 @@ onUnmounted(() => {
 
 <template>
   <div :class="[
-    'text-zinc-900 dark:text-zinc-100 flex flex-col overflow-hidden',
+    'text-foreground flex flex-col overflow-hidden',
     props.showcaseMode ? 'h-[700px]' : 'h-screen'
   ]">
     <AppNavbar
       :breadcrumbs="[{ label: 'Календарь' }]"
       :show-workspace-selector="!props.showcaseMode"
     />
-    <div class="flex items-center justify-between px-4 py-2 border-b border-zinc-200 dark:border-zinc-800">
+    <div class="flex items-center justify-between px-4 py-2 border-b border-border">
       <div class="flex items-center gap-6">
         <!-- Status filter -->
         <div class="flex items-center gap-2">
-          <span class="text-sm text-zinc-500">Статус:</span>
+          <span class="text-sm text-muted-foreground">Статус:</span>
           <button
             v-for="status in statusConfig"
             :key="status.id"
             :class="[
               'px-3 py-1.5 text-sm rounded-full border transition-all flex items-center gap-1.5',
               activeStatuses.includes(status.id)
-                ? 'bg-zinc-200 dark:bg-zinc-700 border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-white'
-                : 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+                ? 'bg-secondary border-border text-foreground'
+                : 'bg-muted border-border text-muted-foreground hover:text-foreground'
             ]"
             @click="toggleStatus(status.id)"
           >
@@ -408,7 +408,7 @@ onUnmounted(() => {
         </div>
       </div>
       <!-- Content type legend -->
-      <div class="flex items-center gap-4 text-sm text-zinc-500 dark:text-zinc-400">
+      <div class="flex items-center gap-4 text-sm text-muted-foreground">
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-full bg-blue-500" />
           <span>Пост</span>
@@ -428,8 +428,8 @@ onUnmounted(() => {
       </div>
     </div>
     <!-- Tag filter -->
-    <div class="flex items-center gap-2 px-4 py-2 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-900/30">
-      <span class="text-sm text-zinc-500">Теги:</span>
+    <div class="flex items-center gap-2 px-4 py-2 border-b border-border bg-muted/30">
+      <span class="text-sm text-muted-foreground">Теги:</span>
 
       <!-- Selected tags -->
       <div class="flex items-center gap-1 flex-wrap">
@@ -447,7 +447,7 @@ onUnmounted(() => {
       <!-- Tag combobox -->
       <div class="relative">
         <button
-          class="px-3 py-1 text-xs rounded-full border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-600 flex items-center gap-1"
+          class="px-3 py-1 text-xs rounded-full border border-border bg-muted text-muted-foreground hover:text-foreground hover:border-border flex items-center gap-1"
           @click="openTagDropdown"
         >
           <span>+ Добавить тег</span>
@@ -456,27 +456,27 @@ onUnmounted(() => {
         <!-- Dropdown -->
         <div
           v-if="tagDropdownOpen"
-          class="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-xl z-50"
+          class="absolute top-full left-0 mt-1 w-56 bg-popover border border-border rounded-md shadow-xl z-50"
         >
-          <div class="p-2 border-b border-zinc-200 dark:border-zinc-700">
+          <div class="p-2 border-b border-border">
             <input
               ref="tagInputRef"
               v-model="tagSearch"
               type="text"
               placeholder="Поиск тегов..."
-              class="w-full px-2 py-1 text-sm bg-zinc-50 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-600 rounded text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-purple-500"
+              class="w-full px-2 py-1 text-sm bg-muted border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring"
               @keydown.escape="closeTagDropdown"
             />
           </div>
-          <div class="max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+          <div class="max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
             <button
               v-for="tag in filteredTags"
               :key="tag.id"
               :class="[
                 'w-full px-3 py-1.5 text-sm text-left rounded flex items-center gap-2 transition-colors',
                 activeTags.includes(tag.id)
-                  ? 'bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-white'
-                  : 'text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700'
+                  ? 'bg-secondary text-foreground'
+                  : 'text-muted-foreground hover:bg-accent'
               ]"
               @click="handleTagSelect(tag.id)"
             >
@@ -484,7 +484,7 @@ onUnmounted(() => {
               <span>{{ tag.name }}</span>
               <span v-if="activeTags.includes(tag.id)" class="ml-auto text-green-400">✓</span>
             </button>
-            <div v-if="filteredTags.length === 0" class="px-3 py-2 text-sm text-zinc-500">
+            <div v-if="filteredTags.length === 0" class="px-3 py-2 text-sm text-muted-foreground">
               Ничего не найдено
             </div>
           </div>
@@ -498,7 +498,7 @@ onUnmounted(() => {
         @click="closeTagDropdown"
       />
 
-      <span v-if="activeTags.length === 0" class="text-xs text-zinc-600">
+      <span v-if="activeTags.length === 0" class="text-xs text-muted-foreground">
         (все)
       </span>
     </div>
@@ -510,7 +510,7 @@ onUnmounted(() => {
         @toggle="toggleAccount"
       />
 
-      <div class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+      <div class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
         <div class="p-4">
           <CalendarGrid
             :current-month="currentMonth"
@@ -529,14 +529,14 @@ onUnmounted(() => {
       </div>
       <!-- Resizable Sidebar -->
       <div
-        class="relative flex-shrink-0 border-l border-zinc-200 dark:border-zinc-800 h-full overflow-hidden"
+        class="relative flex-shrink-0 border-l border-border h-full overflow-hidden"
         :style="{ width: `${effectiveSidebarWidth}px` }"
       >
         <!-- Resize handle (hidden in showcase mode) -->
         <div
           v-if="!props.showcaseMode"
-          class="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-purple-500/50 transition-colors z-10"
-          :class="{ 'bg-purple-500/50': isResizing }"
+          class="absolute left-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/50 transition-colors z-10"
+          :class="{ 'bg-primary/50': isResizing }"
           @mousedown="startResize"
         />
         <SidebarContainer
@@ -576,11 +576,11 @@ onUnmounted(() => {
           <button
             v-for="account in (currentProject?.accounts ?? [])"
             :key="account.id"
-            class="flex items-center gap-3 p-3 rounded-lg border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors text-left"
+            class="flex items-center gap-3 p-3 rounded-md border border-border hover:bg-accent transition-colors text-left"
             @click="selectAccountForDrop(account.id)"
           >
             <!-- Network icon -->
-            <div class="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+            <div class="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
               <svg v-if="account.network === 'vk'" class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.587-1.496c.596-.19 1.365 1.26 2.178 1.818.616.422 1.084.33 1.084.33l2.178-.03s1.14-.07.598-.962c-.044-.073-.316-.659-1.627-1.861-1.372-1.26-1.188-1.055.464-3.233.996-1.356 1.47-2.184 1.338-2.537-.125-.337-.907-.248-.907-.248l-2.45.015s-.182-.025-.316.056c-.132.078-.216.263-.216.263s-.388 1.031-.904 1.908c-1.092 1.852-1.528 1.95-1.706 1.836-.416-.267-.312-1.074-.312-1.646 0-1.79.272-2.535-.529-2.728-.266-.065-.461-.107-1.14-.114-.87-.01-1.606.003-2.023.207-.278.136-.492.439-.362.457.162.022.529.1.724.364.252.343.243 1.113.243 1.113s.145 2.106-.337 2.368c-.332.18-.786-.187-1.762-1.867-.5-.86-.878-1.81-.878-1.81s-.073-.178-.203-.273c-.158-.116-.378-.153-.378-.153l-2.327.015s-.35.01-.478.162c-.114.135-.009.414-.009.414s1.825 4.267 3.893 6.417c1.896 1.972 4.046 1.842 4.046 1.842h.975z"/>
               </svg>
@@ -595,8 +595,8 @@ onUnmounted(() => {
               </svg>
             </div>
             <div class="flex-1 min-w-0">
-              <div class="font-medium text-zinc-900 dark:text-zinc-100 truncate">{{ account.name }}</div>
-              <div class="text-sm text-zinc-500 truncate">{{ account.username }}</div>
+              <div class="font-medium text-foreground truncate">{{ account.name }}</div>
+              <div class="text-sm text-muted-foreground truncate">{{ account.username }}</div>
             </div>
           </button>
         </div>

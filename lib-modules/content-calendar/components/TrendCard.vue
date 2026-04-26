@@ -49,7 +49,7 @@ function handleClick() {
 <template>
   <div
     :class="[
-      'p-3 rounded-lg border transition-all cursor-grab active:cursor-grabbing group relative',
+      'p-3 rounded-md border transition-all cursor-grab active:cursor-grabbing group relative',
       usedDate
         ? 'bg-green-100 dark:bg-green-900/20 border-green-300 dark:border-green-700/50 hover:border-green-400 dark:hover:border-green-600'
         : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700/50 hover:border-blue-400 dark:hover:border-blue-600'
@@ -74,13 +74,13 @@ function handleClick() {
       <svg class="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="currentColor">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
       </svg>
-      <h4 :class="['text-sm font-medium line-clamp-2', usedDate ? 'text-zinc-600 dark:text-zinc-300' : 'text-zinc-800 dark:text-zinc-200']">
+      <h4 :class="['text-sm font-medium line-clamp-2', usedDate ? 'text-muted-foreground' : 'text-foreground']">
         {{ displayName }}
       </h4>
     </div>
 
     <!-- Stats -->
-    <div class="flex items-center justify-between text-xs text-zinc-500">
+    <div class="flex items-center justify-between text-xs text-muted-foreground">
       <span class="text-blue-500 dark:text-blue-400">{{ formattedCount }} твитов</span>
       <span>{{ trend.category }}</span>
     </div>

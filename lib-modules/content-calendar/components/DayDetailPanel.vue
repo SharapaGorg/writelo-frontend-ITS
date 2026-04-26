@@ -26,15 +26,15 @@ const funDay = computed(() => getFunDayForDate(props.date))
 </script>
 
 <template>
-  <div class="border-t border-zinc-800 bg-zinc-900/80 backdrop-blur">
-    <div class="flex items-center justify-between px-6 py-3 border-b border-zinc-800">
+  <div class="border-t border-border bg-card/80 backdrop-blur">
+    <div class="flex items-center justify-between px-6 py-3 border-b border-border">
       <div class="flex items-center gap-3">
-        <h3 class="text-sm font-medium text-zinc-100">
+        <h3 class="text-sm font-medium text-foreground">
           {{ formattedDate }}
         </h3>
         <span
           v-if="funDay"
-          class="px-2.5 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-xs text-purple-200 flex items-center gap-1.5"
+          class="px-2.5 py-1 rounded-full bg-gradient-to-r from-primary/20 to-pink-500/20 border border-primary/30 text-xs text-primary flex items-center gap-1.5"
         >
           <span v-if="funDay.emoji" class="text-sm">{{ funDay.emoji }}</span>
           <span>{{ funDay.title }}</span>
@@ -42,7 +42,7 @@ const funDay = computed(() => getFunDayForDate(props.date))
       </div>
       <div class="flex items-center gap-2">
         <button
-          class="w-7 h-7 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center transition-colors"
+          class="w-7 h-7 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-colors"
           @click="emit('createPost')"
           title="Создать пост"
         >
@@ -51,7 +51,7 @@ const funDay = computed(() => getFunDayForDate(props.date))
           </svg>
         </button>
         <button
-          class="text-zinc-500 hover:text-white transition-colors"
+          class="text-muted-foreground hover:text-foreground transition-colors"
           @click="emit('close')"
         >
           ✕
@@ -63,11 +63,11 @@ const funDay = computed(() => getFunDayForDate(props.date))
         <div
           v-for="event in infoEvents"
           :key="event.id"
-          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30"
+          class="flex items-center gap-2 px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/30"
         >
           <span class="text-amber-400">★</span>
           <span class="text-sm text-amber-200">{{ event.title }}</span>
-          <span v-if="event.description" class="text-xs text-zinc-500">
+          <span v-if="event.description" class="text-xs text-muted-foreground">
             — {{ event.description }}
           </span>
         </div>
@@ -82,7 +82,7 @@ const funDay = computed(() => getFunDayForDate(props.date))
           @select="emit('selectPost', $event)"
         />
       </div>
-      <div v-else-if="infoEvents.length === 0" class="text-center py-8 text-zinc-500">
+      <div v-else-if="infoEvents.length === 0" class="text-center py-8 text-muted-foreground">
         Нет постов на эту дату
       </div>
     </div>

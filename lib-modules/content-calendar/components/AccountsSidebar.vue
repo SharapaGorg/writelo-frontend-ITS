@@ -114,26 +114,26 @@ function isActive(accountId: string): boolean {
 
 <template>
   <aside
-    class="relative flex-shrink-0 border-r border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 flex flex-col h-full"
+    class="relative flex-shrink-0 border-r border-border bg-card flex flex-col h-full"
     :style="{ width: `${sidebarWidth}px` }"
   >
-    <div class="px-3 py-3 border-b border-zinc-200 dark:border-zinc-800">
-      <span class="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+    <div class="px-3 py-3 border-b border-border">
+      <span class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
         Аккаунты
       </span>
     </div>
 
-    <div class="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+    <div class="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
       <div
         v-if="accounts.length === 0"
         class="flex flex-col items-center text-center gap-3 px-2 py-6"
       >
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+        <p class="text-xs text-muted-foreground leading-relaxed">
           Нет подключённых аккаунтов
         </p>
         <button
           type="button"
-          class="w-full rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-purple-500 dark:hover:border-purple-500 text-zinc-600 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-purple-400 transition-all flex items-center gap-2 p-3 justify-center"
+          class="w-full rounded-md border-2 border-dashed border-border hover:border-primary text-muted-foreground hover:text-primary transition-all flex items-center gap-2 p-3 justify-center"
           @click="goToConnect"
         >
           <Plus class="w-4 h-4" />
@@ -145,10 +145,10 @@ function isActive(accountId: string): boolean {
         v-for="account in accounts"
         :key="account.id"
         :class="[
-          'w-full rounded-lg border-2 transition-all flex items-center gap-3 p-3',
+          'w-full rounded-md border-2 transition-all flex items-center gap-3 p-3',
           isActive(account.id)
             ? `${networkConfig[account.network].bgActive} text-white shadow-md`
-            : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600'
+            : 'bg-card border-border text-muted-foreground hover:border-border'
         ]"
         :title="account.username"
         @click="props.singleSelect ? emit('select', account.id) : emit('toggle', account.id)"
@@ -178,7 +178,7 @@ function isActive(accountId: string): boolean {
       <button
         v-if="accounts.length > 0"
         type="button"
-        class="w-full rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-purple-500 dark:hover:border-purple-500 text-zinc-500 dark:text-zinc-400 hover:text-purple-600 dark:hover:text-purple-400 transition-all flex items-center justify-center p-3"
+        class="w-full rounded-md border-2 border-dashed border-border hover:border-primary text-muted-foreground hover:text-primary transition-all flex items-center justify-center p-3"
         title="Подключить аккаунт"
         @click="goToConnect"
       >
@@ -188,8 +188,8 @@ function isActive(accountId: string): boolean {
 
     <!-- Resize handle -->
     <div
-      class="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-purple-500/50 transition-colors z-10"
-      :class="{ 'bg-purple-500/50': isResizing }"
+      class="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/50 transition-colors z-10"
+      :class="{ 'bg-primary/50': isResizing }"
       @mousedown="startResize"
     />
   </aside>

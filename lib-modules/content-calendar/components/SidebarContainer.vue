@@ -88,18 +88,18 @@ const funDay = computed(() =>
 </script>
 
 <template>
-  <aside class="w-full h-full bg-zinc-100/50 dark:bg-zinc-900/50 flex flex-col overflow-hidden">
+  <aside class="w-full h-full bg-card flex flex-col overflow-hidden">
     <!-- Tabs -->
     <div
-      class="flex border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900"
+      class="flex border-b border-border bg-muted"
     >
       <button
         v-if="showTabs"
         :class="[
           'flex-1 px-4 py-2.5 text-sm font-medium transition-colors',
           activeTab === 'context'
-            ? 'text-zinc-900 dark:text-white border-b-2 border-purple-500 bg-zinc-200/50 dark:bg-zinc-800/50'
-            : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/30 dark:hover:bg-zinc-800/30'
+            ? 'text-foreground border-b-2 border-primary bg-secondary/50'
+            : 'text-muted-foreground hover:text-foreground hover:bg-accent'
         ]"
         @click="activeTab = 'context'"
       >
@@ -109,8 +109,8 @@ const funDay = computed(() =>
         :class="[
           'flex-1 px-4 py-2.5 text-sm font-medium transition-colors',
           activeTab === 'news'
-            ? 'text-zinc-900 dark:text-white border-b-2 border-purple-500 bg-zinc-200/50 dark:bg-zinc-800/50'
-            : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/30 dark:hover:bg-zinc-800/30'
+            ? 'text-foreground border-b-2 border-primary bg-secondary/50'
+            : 'text-muted-foreground hover:text-foreground hover:bg-accent'
         ]"
         @click="activeTab = 'news'"
       >
@@ -137,14 +137,14 @@ const funDay = computed(() =>
         v-else-if="selectedDate && !selectedPost && activeTab === 'context'"
         class="h-full flex flex-col overflow-hidden"
       >
-        <div class="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-border">
           <div class="flex items-center gap-2 flex-wrap">
-            <h3 class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+            <h3 class="text-sm font-medium text-foreground">
               {{ formattedDate }}
             </h3>
             <span
               v-if="funDay"
-              class="px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-xs text-purple-600 dark:text-purple-200 flex items-center gap-1"
+              class="px-2 py-0.5 rounded-full bg-gradient-to-r from-primary/20 to-pink-500/20 border border-primary/30 text-xs text-primary flex items-center gap-1"
             >
               <span v-if="funDay.emoji" class="text-sm">{{ funDay.emoji }}</span>
               <span>{{ funDay.title }}</span>
@@ -152,7 +152,7 @@ const funDay = computed(() =>
           </div>
           <div class="flex items-center gap-2">
             <button
-              class="w-7 h-7 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center transition-colors"
+              class="w-7 h-7 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-colors"
               title="Создать пост"
               @click="emit('createPost')"
             >
@@ -161,7 +161,7 @@ const funDay = computed(() =>
               </svg>
             </button>
             <button
-              class="text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors text-lg"
+              class="text-muted-foreground hover:text-foreground transition-colors text-lg"
               @click="emit('closeDate')"
             >
               ×
@@ -169,30 +169,30 @@ const funDay = computed(() =>
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-3 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+        <div class="flex-1 overflow-y-auto p-3 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
           <div
             v-if="isCreatingPost"
-            class="mb-3 p-3 rounded-lg border border-purple-500/50 bg-purple-500/5 space-y-2"
+            class="mb-3 p-3 rounded-md border border-primary/50 bg-primary/5 space-y-2"
           >
-            <label class="text-xs text-zinc-500 dark:text-zinc-400">Название поста</label>
+            <label class="text-xs text-muted-foreground">Название поста</label>
             <input
               ref="newPostInput"
               v-model="newPostTitle"
               type="text"
               placeholder="Введите название..."
-              class="w-full px-3 py-2 text-sm rounded-md bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              class="w-full px-3 py-2 text-sm rounded-md bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               @keydown.enter.prevent="submitNewPost"
               @keydown.esc.prevent="cancelNewPost"
             />
             <div class="flex items-center justify-end gap-2">
               <button
-                class="px-3 py-1.5 text-xs rounded-md text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+                class="px-3 py-1.5 text-xs rounded-md text-muted-foreground hover:bg-accent transition-colors"
                 @click="cancelNewPost"
               >
                 Отмена
               </button>
               <button
-                class="px-3 py-1.5 text-xs rounded-md bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/40 disabled:cursor-not-allowed text-white transition-colors"
+                class="px-3 py-1.5 text-xs rounded-md bg-primary hover:bg-primary/90 disabled:bg-primary/40 disabled:cursor-not-allowed text-white transition-colors"
                 :disabled="!newPostTitle.trim()"
                 @click="submitNewPost"
               >
@@ -205,12 +205,12 @@ const funDay = computed(() =>
             <div
               v-for="event in infoEvents"
               :key="event.id"
-              class="flex items-start gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30"
+              class="flex items-start gap-2 px-3 py-2 rounded-md bg-amber-500/10 border border-amber-500/30"
             >
               <span class="text-amber-400 mt-0.5">★</span>
               <div>
                 <span class="text-sm text-amber-600 dark:text-amber-200">{{ event.title }}</span>
-                <p v-if="event.description" class="text-xs text-zinc-500 mt-0.5">
+                <p v-if="event.description" class="text-xs text-muted-foreground mt-0.5">
                   {{ event.description }}
                 </p>
               </div>
@@ -227,7 +227,7 @@ const funDay = computed(() =>
               @select="emit('selectPost', $event)"
             />
           </div>
-          <div v-else-if="infoEvents.length === 0" class="text-center py-8 text-zinc-500 text-sm">
+          <div v-else-if="infoEvents.length === 0" class="text-center py-8 text-muted-foreground text-sm">
             Нет постов на эту дату
           </div>
         </div>

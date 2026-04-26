@@ -68,10 +68,10 @@ const displayItems = computed<DisplayItem[]>(() => {
 </script>
 
 <template>
-  <aside class="w-full h-full bg-zinc-100/50 dark:bg-zinc-900/50 flex flex-col overflow-hidden">
+  <aside class="w-full h-full bg-card flex flex-col overflow-hidden">
     <!-- Header with source filters -->
-    <div class="px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
-      <h3 class="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">Актуальное</h3>
+    <div class="px-4 py-3 border-b border-border">
+      <h3 class="text-sm font-medium text-foreground mb-2">Актуальное</h3>
 
       <!-- Source filter chips -->
       <div class="flex gap-2">
@@ -81,7 +81,7 @@ const displayItems = computed<DisplayItem[]>(() => {
             'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all',
             isSourceActive('google')
               ? 'bg-emerald-500 text-white'
-              : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600'
+              : 'bg-secondary text-muted-foreground hover:bg-accent'
           ]"
           @click="toggleSource('google')"
         >
@@ -100,7 +100,7 @@ const displayItems = computed<DisplayItem[]>(() => {
             'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all',
             isSourceActive('twitter')
               ? 'bg-blue-500 text-white'
-              : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600'
+              : 'bg-secondary text-muted-foreground hover:bg-accent'
           ]"
           @click="toggleSource('twitter')"
         >
@@ -111,11 +111,11 @@ const displayItems = computed<DisplayItem[]>(() => {
         </button>
       </div>
 
-      <p class="text-xs text-zinc-500 mt-2">Перетащите в календарь для создания идеи</p>
+      <p class="text-xs text-muted-foreground mt-2">Перетащите в календарь для создания идеи</p>
     </div>
 
     <!-- Combined items list -->
-    <div class="flex-1 overflow-y-auto p-3 space-y-2 min-h-0 scrollbar-thin scrollbar-thumb-zinc-300 dark:scrollbar-thumb-zinc-600 scrollbar-track-transparent">
+    <div class="flex-1 overflow-y-auto p-3 space-y-2 min-h-0 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
       <template v-for="item in displayItems" :key="item.id">
         <NewsCard
           v-if="item.type === 'news'"
@@ -130,7 +130,7 @@ const displayItems = computed<DisplayItem[]>(() => {
       </template>
 
       <!-- Empty state -->
-      <div v-if="displayItems.length === 0" class="text-center py-8 text-zinc-400">
+      <div v-if="displayItems.length === 0" class="text-center py-8 text-muted-foreground">
         <p class="text-sm">Нет данных для отображения</p>
       </div>
     </div>

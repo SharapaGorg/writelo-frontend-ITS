@@ -92,12 +92,12 @@ const extraCount = computed(() => props.posts.length - 4)
   <button
     :data-calendar-date="date"
     :class="[
-      'day-cell relative h-24 p-2 text-left transition-all border rounded-lg flex flex-col overflow-hidden',
+      'day-cell relative h-24 p-2 text-left transition-all border rounded-md flex flex-col overflow-hidden',
       isCurrentMonth
-        ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-zinc-50 dark:bg-zinc-900')
-        : 'bg-zinc-100 dark:bg-zinc-950 opacity-40',
-      isSelected ? 'border-purple-500 ring-1 ring-purple-500' : (hasInfoEvent && isCurrentMonth ? 'border-amber-500/40 hover:border-amber-500/60' : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-600'),
-      isToday && !isSelected ? 'border-purple-500/50' : '',
+        ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-card')
+        : 'bg-muted opacity-40',
+      isSelected ? 'border-primary ring-1 ring-primary' : (hasInfoEvent && isCurrentMonth ? 'border-amber-500/40 hover:border-amber-500/60' : 'border-border hover:border-border'),
+      isToday && !isSelected ? 'border-primary/50' : '',
       isDragOver ? 'border-green-500 bg-green-500/10 ring-1 ring-green-500' : ''
     ]"
     @click="emit('select', date)"
@@ -111,7 +111,7 @@ const extraCount = computed(() => props.posts.length - 4)
     <button
       v-if="isCurrentMonth"
       :class="[
-        'absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-purple-600 hover:bg-purple-500 text-white flex items-center justify-center transition-all z-10',
+        'absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all z-10',
         isHovered ? 'opacity-100' : 'opacity-0'
       ]"
       @click.stop="emit('createPost', date)"
@@ -127,7 +127,7 @@ const extraCount = computed(() => props.posts.length - 4)
       <span
         :class="[
           'text-sm font-medium flex-shrink-0',
-          isToday ? 'text-purple-400' : isCurrentMonth ? 'text-zinc-700 dark:text-zinc-300' : 'text-zinc-400 dark:text-zinc-600'
+          isToday ? 'text-primary' : isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'
         ]"
       >
         {{ dayNumber }}
@@ -212,7 +212,7 @@ const extraCount = computed(() => props.posts.length - 4)
         </template>
       </div>
       <!-- Extra count -->
-      <span v-if="extraCount > 0" class="text-xs text-zinc-400">+{{ extraCount }}</span>
+      <span v-if="extraCount > 0" class="text-xs text-muted-foreground">+{{ extraCount }}</span>
     </div>
   </button>
 </template>

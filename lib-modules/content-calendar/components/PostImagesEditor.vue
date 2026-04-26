@@ -124,7 +124,7 @@ onUnmounted(() => {
       <div
         v-for="(img, idx) in images"
         :key="img"
-        class="relative aspect-square rounded-lg overflow-hidden bg-zinc-800 group"
+        class="relative aspect-square rounded-md overflow-hidden bg-muted group"
       >
         <img
           :src="img"
@@ -147,10 +147,10 @@ onUnmounted(() => {
       v-if="canAddMore"
       ref="dropZoneRef"
       :class="[
-        'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors',
+        'border-2 border-dashed rounded-md p-6 text-center cursor-pointer transition-colors',
         isDragging
-          ? 'border-purple-500 bg-purple-500/10'
-          : 'border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800/50'
+          ? 'border-primary bg-primary/10'
+          : 'border-border hover:border-border hover:bg-accent'
       ]"
       @drop="onDrop"
       @dragover="onDragOver"
@@ -166,17 +166,17 @@ onUnmounted(() => {
         @change="onFileSelect"
       />
 
-      <svg class="w-8 h-8 mx-auto mb-2 text-zinc-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <svg class="w-8 h-8 mx-auto mb-2 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
         <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
       </svg>
 
-      <p class="text-sm text-zinc-400 mb-1">
+      <p class="text-sm text-muted-foreground mb-1">
         Перетащите изображения сюда
       </p>
-      <p class="text-xs text-zinc-500">
+      <p class="text-xs text-muted-foreground">
         или кликните для выбора (Ctrl+V для вставки)
       </p>
-      <p class="text-xs text-zinc-600 mt-2">
+      <p class="text-xs text-muted-foreground mt-2">
         {{ images.length }}/{{ MAX_IMAGES }} изображений
       </p>
     </div>
@@ -184,7 +184,7 @@ onUnmounted(() => {
     <!-- Limit reached message -->
     <div
       v-else
-      class="text-center py-3 text-xs text-zinc-500"
+      class="text-center py-3 text-xs text-muted-foreground"
     >
       Достигнут лимит изображений ({{ MAX_IMAGES }})
     </div>

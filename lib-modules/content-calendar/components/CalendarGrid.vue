@@ -105,7 +105,7 @@ const calendarDays = computed((): DayInfo[] => {
       <Button variant="ghost" size="sm" @click="emit('prevMonth')">
         ◄
       </Button>
-      <h2 class="text-lg font-semibold capitalize text-zinc-900 dark:text-zinc-100">
+      <h2 class="text-lg font-semibold capitalize text-foreground">
         {{ monthName }}
       </h2>
       <Button variant="ghost" size="sm" @click="emit('nextMonth')">
@@ -118,7 +118,7 @@ const calendarDays = computed((): DayInfo[] => {
       <div
         v-for="day in weekDays"
         :key="day"
-        class="text-center text-xs font-medium text-zinc-500 py-2"
+        class="text-center text-xs font-medium text-muted-foreground py-2"
       >
         {{ day }}
       </div>

@@ -24,7 +24,7 @@ function isActive(accountId: string): boolean {
 
 <template>
   <div class="flex items-center gap-2">
-    <span class="text-sm text-zinc-500 mr-2">Аккаунты:</span>
+    <span class="text-sm text-muted-foreground mr-2">Аккаунты:</span>
     <button
       v-for="account in accounts"
       :key="account.id"
@@ -32,7 +32,7 @@ function isActive(accountId: string): boolean {
         'px-3 py-1.5 text-sm rounded-full border transition-all flex items-center gap-2',
         isActive(account.id)
           ? `${networkColors[account.network]} border-transparent text-white`
-          : 'bg-zinc-100 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+          : 'bg-muted border-border text-muted-foreground hover:text-foreground'
       ]"
       :data-state="isActive(account.id) ? 'on' : 'off'"
       :title="account.username"

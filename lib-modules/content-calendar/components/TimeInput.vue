@@ -138,9 +138,9 @@ const hasValue = computed(() => hours.value || minutes.value || props.modelValue
 </script>
 
 <template>
-  <div class="inline-flex items-center gap-2 bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 focus-within:border-purple-500 transition-colors">
+  <div class="inline-flex items-center gap-2 bg-muted border border-border rounded-md px-3 py-2 focus-within:border-ring transition-colors">
     <!-- Clock icon -->
-    <svg class="w-4 h-4 text-zinc-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <svg class="w-4 h-4 text-muted-foreground shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <circle cx="12" cy="12" r="10"/>
       <path d="M12 6v6l4 2"/>
     </svg>
@@ -153,13 +153,13 @@ const hasValue = computed(() => hours.value || minutes.value || props.modelValue
       inputmode="numeric"
       maxlength="2"
       placeholder="00"
-      class="w-6 bg-transparent text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none text-center"
+      class="w-6 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none text-center"
       @input="handleHoursInput"
       @blur="handleHoursBlur"
       @keydown="handleHoursKeydown"
     />
 
-    <span class="text-zinc-500 text-sm">:</span>
+    <span class="text-muted-foreground text-sm">:</span>
 
     <!-- Minutes -->
     <input
@@ -169,7 +169,7 @@ const hasValue = computed(() => hours.value || minutes.value || props.modelValue
       inputmode="numeric"
       maxlength="2"
       placeholder="00"
-      class="w-6 bg-transparent text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none text-center"
+      class="w-6 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none text-center"
       @input="handleMinutesInput"
       @blur="handleMinutesBlur"
       @keydown="handleMinutesKeydown"
@@ -179,7 +179,7 @@ const hasValue = computed(() => hours.value || minutes.value || props.modelValue
     <button
       v-if="hasValue"
       type="button"
-      class="text-zinc-600 hover:text-zinc-400 transition-colors ml-1"
+      class="text-muted-foreground hover:text-foreground transition-colors ml-1"
       title="Очистить"
       @click="clearTime"
     >
