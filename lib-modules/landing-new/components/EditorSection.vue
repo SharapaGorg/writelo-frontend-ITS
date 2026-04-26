@@ -33,10 +33,10 @@ const { elementRef, isVisible } = useScrollReveal()
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start mb-12 md:mb-16">
         <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094] max-w-[60ch]">
-          {{ t('landingNew.editor.body1') }}
+          {{ t('landingNew.editor.body1Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body1AccentBrand') }}</span>{{ t('landingNew.editor.body1Mid') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body1AccentTemplate') }}</span>{{ t('landingNew.editor.body1Post') }}
         </p>
         <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094] max-w-[60ch]">
-          {{ t('landingNew.editor.body2') }}
+          {{ t('landingNew.editor.body2Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body2AccentType') }}</span>{{ t('landingNew.editor.body2Mid1') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body2AccentStatus') }}</span>{{ t('landingNew.editor.body2Mid2') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body2AccentCalendar') }}</span>{{ t('landingNew.editor.body2Mid3') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body2AccentTeam') }}</span>{{ t('landingNew.editor.body2Post') }}
         </p>
       </div>
 

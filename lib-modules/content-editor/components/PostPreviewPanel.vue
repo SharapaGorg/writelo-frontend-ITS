@@ -104,6 +104,8 @@ const allowedTypes = computed<ContentType[]>(() => {
 })
 
 const isPlatformSupported = computed<boolean>(() => {
+  // Showcase has no real account — treat as supported so Publish isn't disabled.
+  if (props.showcaseMode) return true
   const net = currentAccount.value?.network
   return net === 'instagram' || net === 'telegram'
 })
@@ -217,6 +219,11 @@ const handleAddImage = (event: { url: string; file: File }) => {
 
 // Save the post
 const handleSave = async () => {
+  if (props.showcaseMode) {
+    // Showcase: no auth, no API. Pretend it worked so the UX feels real.
+    toast.success('Сохранено', { position: getToasterPosition() })
+    return
+  }
   await saveDraft()
 }
 
@@ -228,6 +235,12 @@ const isPublishing = ref(false)
 const canPublish = computed(() => status.value === 'ready')
 
 const handlePublish = async () => {
+  if (props.showcaseMode) {
+    showPublishDialog.value = false
+    showCelebration.value = true
+    toast.success('Публикуем...', { position: getToasterPosition() })
+    return
+  }
   isPublishing.value = true
   try {
     await saveDraft()
@@ -403,9 +416,8 @@ const handlePublish = async () => {
 
       <!-- Save button -->
       <Button
-        v-if="!props.showcaseMode"
         @click="handleSave"
-        :disabled="isSaving || isPublished || !isDirty"
+        :disabled="isSaving || isPublished || (!isDirty && !props.showcaseMode)"
         class="w-full gap-2"
         variant="outline"
       >
@@ -416,7 +428,7 @@ const handlePublish = async () => {
 
       <!-- Publish button (only when status is 'ready') -->
       <Button
-        v-if="canPublish && !props.showcaseMode"
+        v-if="canPublish"
         :disabled="!isPlatformSupported || isPublishing"
         :title="publishDisabledReason"
         @click="showPublishDialog = true"
