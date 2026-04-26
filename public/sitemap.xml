@@ -2,21 +2,43 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- Homepage (landing) -->
+  <!-- Homepage (RU default) -->
   <url>
     <loc>https://writelo.io/</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://writelo.io/"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://writelo.io/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://writelo.io/ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://writelo.io/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://writelo.io/"/>
+  </url>
+
+  <!-- Russian explicit -->
+  <url>
+    <loc>https://writelo.io/ru</loc>
+    <lastmod>2026-04-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://writelo.io/ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://writelo.io/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://writelo.io/"/>
+  </url>
+
+  <!-- English explicit (still old landing until landingNew is translated) -->
+  <url>
+    <loc>https://writelo.io/en</loc>
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://writelo.io/ru"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://writelo.io/en"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://writelo.io/"/>
   </url>
 
   <!-- Start page (entry to app) -->
   <url>
     <loc>https://writelo.io/start</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
@@ -24,7 +46,7 @@
   <!-- Auth page -->
   <url>
     <loc>https://writelo.io/auth</loc>
-    <lastmod>2026-03-16</lastmod>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>

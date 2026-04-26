@@ -6,9 +6,12 @@ Disallow: /reset-password
 Disallow: /forgot-password
 Disallow: /email-sent
 Disallow: /test
+Disallow: /landing-new
 
 # Allow SEO pages
 Allow: /
+Allow: /ru
+Allow: /en
 Allow: /start
 Allow: /auth
 Allow: /landing
