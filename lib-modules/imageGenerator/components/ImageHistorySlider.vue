@@ -142,8 +142,8 @@ onUnmounted(() => {
 }
 
 .image-history__item {
-  @apply flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden
-  border-2 border-input bg-muted;
+  @apply flex-shrink-0 w-20 h-20 rounded-md overflow-hidden
+  border-2 border-border bg-muted;
 }
 
 .image-history__item--clickable {
@@ -180,7 +180,7 @@ onUnmounted(() => {
 }
 
 .fullscreen-image {
-  @apply max-w-full max-h-[85vh] object-contain rounded-lg;
+  @apply max-w-full max-h-[85vh] object-contain rounded-md;
 }
 
 .fullscreen-prompt {

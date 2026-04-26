@@ -1,6 +1,6 @@
 .image-generator-block {
     @apply p-3 md:p-6 rounded-[20px] shadow-2xl
-    border-stone-200 border-2 dark:border-stone-800
+    border-border border-2
     flex-shrink-0 h-fit
 }
 

@@ -123,7 +123,7 @@ const acceptedTypes = ACCEPTED_IMAGE_TYPES.join(',');
     <div v-if="loading" class="flex flex-col items-center space-y-4">
       <Loader2 class="w-16 h-16 animate-spin text-primary"/>
       <span class="text-lg font-semibold">{{ $t('imageGenerator.attachZone.loading') }}</span>
-      <div v-if="uploadProgress > 0" class="w-48 bg-gray-200 rounded-full h-2">
+      <div v-if="uploadProgress > 0" class="w-48 bg-muted rounded-full h-2">
         <div class="bg-primary h-2 rounded-full transition-all" :style="{ width: uploadProgress + '%' }"></div>
       </div>
     </div>
@@ -142,10 +142,10 @@ const acceptedTypes = ACCEPTED_IMAGE_TYPES.join(',');
       <img
           :src="imagePreviewUrl"
           alt="Прикрепленное изображение"
-          class="w-full h-full object-contain rounded-lg"
+          class="w-full h-full object-contain rounded-md"
       />
       <div
-          class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+          class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-md flex items-center justify-center">
         <button
             @click.stop="removeImage"
             class="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
@@ -168,9 +168,9 @@ const acceptedTypes = ACCEPTED_IMAGE_TYPES.join(',');
 <style scoped>
 
 .attach-image-zone__container {
-  @apply relative max-w-full rounded-lg
+  @apply relative max-w-full rounded-md
   w-[330px] h-[330px] lg:w-[400px] lg:h-[400px]
-  border-black dark:border-gray-400
+  border-border
   flex flex-col items-center justify-center
   border-dashed border-2 select-none cursor-pointer
   transition-all duration-200 overflow-hidden;

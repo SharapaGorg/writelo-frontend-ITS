@@ -112,8 +112,8 @@ onUnmounted(() => {
 .generator-output-image__container {
   @apply flex flex-col items-center justify-center space-y-2
   w-[330px] h-[330px] lg:w-[400px] lg:h-[400px]
-  rounded-lg
-  border-black dark:border-gray-400
+  rounded-md
+  border-border
   border-solid border-2 select-none
   transition-all duration-200 overflow-hidden;
 }
