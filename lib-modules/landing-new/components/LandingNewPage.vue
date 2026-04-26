@@ -10,6 +10,7 @@ import BriefSection from './BriefSection.vue'
 import ReelsSection from './ReelsSection.vue'
 import EditorSection from './EditorSection.vue'
 import PublishSection from './PublishSection.vue'
+import ComparisonSection from './ComparisonSection.vue'
 import PricingSection from './PricingSection.vue'
 import FinalCtaSection from './FinalCtaSection.vue'
 import ContactsSection from './ContactsSection.vue'
@@ -105,6 +106,7 @@ function goToApp() {
       <ReelsSection />
       <EditorSection />
       <PublishSection />
+      <ComparisonSection />
       <PricingSection />
       <FinalCtaSection />
       <ContactsSection />

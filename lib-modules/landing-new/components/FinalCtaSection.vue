@@ -26,7 +26,9 @@ function ctaClick() {
       <h2 class="lnf-display font-extrabold text-[36px] sm:text-[48px] md:text-[64px] lg:text-[80px] leading-[1.0] tracking-[-0.04em] text-[#ede8de]">
         {{ t('landingNew.finalCta.titlePart1') }}
         <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.finalCta.titleAccent') }}</span>
+        <br>
         {{ t('landingNew.finalCta.titlePart2') }}
+        <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.finalCta.titleAccent2') }}</span>
       </h2>
       <p class="lnf-body text-[15px] md:text-[17px] text-[#a8a094] mt-8 max-w-[60ch] mx-auto">
         {{ t('landingNew.finalCta.sub') }}

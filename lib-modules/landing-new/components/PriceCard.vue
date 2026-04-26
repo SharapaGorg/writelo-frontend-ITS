@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Check } from 'lucide-vue-next'
 import type { PriceCardProps, PriceCardCtaAction } from '../types'
 import PrimaryButton from './PrimaryButton.vue'
 import GhostButton from './GhostButton.vue'
 
-withDefaults(defineProps<PriceCardProps>(), {
+const props = withDefaults(defineProps<PriceCardProps>(), {
   highlighted: false,
 })
+
+const isNumericPrice = computed(() => /\d/.test(props.price))
 
 const emit = defineEmits<{ cta: [action: PriceCardCtaAction] }>()
 </script>
@@ -24,8 +27,22 @@ const emit = defineEmits<{ cta: [action: PriceCardCtaAction] }>()
       <h3 class="lnf-display font-medium text-[22px] md:text-[26px] tracking-[-0.02em] text-[#ede8de]">
         {{ name }}
       </h3>
-      <div class="flex items-baseline gap-1 shrink-0">
-        <span class="lnf-display font-bold text-[26px] md:text-[36px] text-[#ede8de] tracking-[-0.02em] leading-none">
+      <div
+        :class="[
+          'flex items-baseline gap-1 shrink-0',
+          !isNumericPrice && 'self-center',
+        ]"
+      >
+        <span
+          v-if="isNumericPrice"
+          class="lnf-display font-bold text-[26px] md:text-[36px] text-[#ede8de] tracking-[-0.02em] leading-none"
+        >
+          {{ price }}
+        </span>
+        <span
+          v-else
+          class="lnf-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-[#d4683f] border border-[#d4683f] px-2.5 py-1.5"
+        >
           {{ price }}
         </span>
         <span v-if="period" class="text-sm text-[#5a5550]">{{ period }}</span>

@@ -572,11 +572,45 @@
     },
     "publish": {
       "label": "INLINE / N°06½",
-      "line1": "И публикация прямо из редактора.",
-      "line2": "Без копи-паста между приложениями."
+      "line1": "ИИ помнит ваш бренд.",
+      "line2": "Не нужно объяснять заново в каждом запросе"
+    },
+    "comparison": {
+      "label": "N°07 / VS",
+      "titlePre": "Один инструмент",
+      "titleAccent": "вместо",
+      "titlePost": "трёх",
+      "brands": {
+        "writelo": "Writelo",
+        "trendsee": "TrendSee",
+        "livedune": "LiveDune",
+        "smmplanner": "SMMplanner"
+      },
+      "groups": {
+        "analysis": "Анализ рилсов и трендов",
+        "creation": "Создание контента",
+        "planning": "Планирование"
+      },
+      "rows": {
+        "topReels": "Топ трендовых рилсов с фильтрами",
+        "aiBreakdown": "ИИ-разбор структуры рилса",
+        "diagnostics": "Диагностика своих рилсов",
+        "scenarios": "ИИ-генерация сценариев рилсов",
+        "brandPosts": "ИИ-генерация постов под бренд",
+        "brandProfile": "Профиль бренда",
+        "imageGen": "Генерация изображений",
+        "calendar": "Контент-календарь",
+        "newsAuto": "Автогенерация новостей под бренд в календарь",
+        "autopost": "Автопостинг в соцсети"
+      },
+      "legend": {
+        "yes": "есть",
+        "partial": "частично",
+        "no": "нет"
+      }
     },
     "pricing": {
-      "label": "N°07 / PRICING",
+      "label": "N°08 / PRICING",
       "title": "Тарифы.",
       "free": {
         "name": "Free",
@@ -627,7 +661,7 @@
       "cta": "Попробовать бесплатно"
     },
     "contacts": {
-      "label": "N°08 / CONTACTS",
+      "label": "N°09 / CONTACTS",
       "title": "Контакты.",
       "directLabel": "НАПРЯМУЮ",
       "socialsLabel": "СОЦСЕТИ",
