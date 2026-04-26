@@ -9,6 +9,8 @@ export interface UsePromptImproverOptions {
     debounceMs?: number;
     minLength?: number;
     enabled?: boolean;
+    // Landing showcase: behave like demo mode (no API call, fake response).
+    showcaseMode?: boolean;
 }
 
 export function usePromptImprover(
@@ -18,12 +20,14 @@ export function usePromptImprover(
     const {
         debounceMs = 2000,
         minLength = 10,
-        enabled = true
+        enabled = true,
+        showcaseMode = false
     } = options;
 
     const {t} = useI18n();
     const $api = new ApiController();
     const {isDemoMode} = useDemoMode();
+    const useFakeResponse = () => isDemoMode.value || showcaseMode;
 
     // State
     const isTyping = ref(false);
@@ -80,8 +84,8 @@ export function usePromptImprover(
         lastText.value = text.value;
 
         try {
-            // Demo mode: simulate loading and show demo message
-            if (isDemoMode.value) {
+            // Demo / showcase: simulate loading and show demo message
+            if (useFakeResponse()) {
                 await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 1000));
                 const demoResult = t('prompt-improver.demo-result');
                 text.value = demoResult;

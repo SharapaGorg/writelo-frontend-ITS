@@ -54,7 +54,7 @@ const { elementRef, isVisible } = useScrollReveal()
           </div>
           <div class="w-[52px]" />
         </div>
-        <div class="bg-white dark:bg-[#0a0a0a]">
+        <div>
           <ClientOnly>
             <EditorShowcaseInner />
             <template #fallback>

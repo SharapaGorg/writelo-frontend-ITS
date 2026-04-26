@@ -14,9 +14,11 @@ const props = withDefaults(defineProps<{
   modelValue: string;
   options?: UsePromptImproverOptions;
   disabled?: boolean;
+  showcaseMode?: boolean;
   class?: string;
 }>(), {
   disabled: false,
+  showcaseMode: false,
   class: ''
 });
 
@@ -48,6 +50,7 @@ const {
   buttonTooltip
 } = usePromptImprover(text, {
   enabled: !props.disabled,
+  showcaseMode: props.showcaseMode,
   ...props.options
 });
 

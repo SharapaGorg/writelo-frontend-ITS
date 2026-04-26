@@ -315,6 +315,7 @@ onUnmounted(() => {
             ref="promptImprover"
             v-model="newMessage"
             :disabled="isChatProcessing"
+            :showcase-mode="props.showcaseMode"
             class="w-full"
           >
             <Textarea
