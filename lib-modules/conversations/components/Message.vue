@@ -1,8 +1,8 @@
 <template>
   <div :class="isAssistant ? 'assistant-message-container' : 'user-message-container'">
     <div
-        class="rounded-lg px-3 py-2"
-        :class="isAssistant ? '' : 'bg-stone-200 dark:bg-stone-800 dark:text-white'"
+        class="rounded-md px-3 py-2"
+        :class="isAssistant ? '' : 'bg-muted text-foreground'"
         v-if="!editing && (messageText || role === Role.assistant)"
     >
       <div
@@ -156,7 +156,7 @@ onMounted(() => {
 <style>
 
 .assistant-message-container {
-  @apply flex flex-col gap-2 rounded-lg text-sm
+  @apply flex flex-col gap-2 rounded-md text-sm
   flex-grow
 }
 
@@ -318,9 +318,9 @@ code.hljs {
 }
 
 .edit-message-field {
-  @apply w-full rounded-lg px-3 py-2
-  bg-stone-200 dark:bg-stone-800 dark:text-white block
-  border-blue-600 border-4 border-solid
+  @apply w-full rounded-md px-3 py-2
+  bg-muted text-foreground block
+  border-ring border-4 border-solid
   outline-none min-w-[200px] max-h-[500px]
   overflow-y-auto
 }

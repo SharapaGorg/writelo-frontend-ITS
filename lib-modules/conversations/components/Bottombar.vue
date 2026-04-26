@@ -43,7 +43,7 @@
           v-if="generationInProcess"
           @click="eventBus.emit('stopGeneration')"
       >
-        <div class="w-[18px] h-[18px] bg-white rounded-sm"></div>
+        <div class="w-[18px] h-[18px] bg-secondary-foreground rounded-sm"></div>
       </Button>
       <!--      <VoiceRecorderButton/>-->
     </div>
@@ -112,7 +112,7 @@ const searchButtonClass = computed(() => {
     return `${baseStyles} hover:bg-blue-500/20 hover:text-blue-500`;
   } else {
     // Inactive state: data-[state=off] equivalent with hover effect
-    return `${baseStyles} text-black/80 dark:text-white/90 hover:bg-blue-500/10 hover:text-black/80 hover:dark:text-white/90`;
+    return `${baseStyles} text-foreground hover:bg-blue-500/10 hover:text-foreground`;
   }
 });
 
@@ -171,7 +171,7 @@ watch(() => props.message, value => {
   disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground
   [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0
   border border-input shadow-sm transition-all duration-200
-  hover:text-white
+  hover:text-foreground
 }
 
 </style>

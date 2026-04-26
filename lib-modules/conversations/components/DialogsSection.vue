@@ -5,7 +5,7 @@
         <MessageSquare/>
       </Button>
     </DrawerTrigger>
-    <DrawerContent class="bg-white dark:bg-black">
+    <DrawerContent class="bg-card">
       <DrawerHeader>
         <DrawerTitle>{{ $t('conversations') }}</DrawerTitle>
         <DrawerDescription class="w-full overflow-hidden">

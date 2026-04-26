@@ -168,7 +168,7 @@ const handleDelete = () => {
     <!-- Swipeable content -->
     <div
       :style="swipeStyle"
-      class="relative bg-white dark:bg-black z-10"
+      class="relative bg-card z-10"
       @touchstart="handleTouchStart"
       @touchmove="handleTouchMove"
       @touchend="handleTouchEnd"

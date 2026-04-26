@@ -129,25 +129,24 @@ const showDocumentMetadata = computed(() => {
 <style scoped>
 
 .file-message-container {
-  @apply rounded-lg px-3 py-2 border-2 border-solid
+  @apply rounded-md px-3 py-2 border-2 border-solid
   border-input
   flex items-center gap-x-2 select-none cursor-pointer
 }
 
 .attached-picture {
-  @apply block rounded-lg w-full lg:w-auto lg:max-w-[600px]
+  @apply block rounded-md w-full lg:w-auto lg:max-w-[600px]
   cursor-pointer select-none
 }
 
 .image-skeleton {
-  @apply relative rounded-lg overflow-hidden
-  bg-gray-200 dark:bg-gray-800
+  @apply relative rounded-md overflow-hidden
+  bg-muted
 }
 
 .skeleton-shimmer {
-  @apply absolute inset-0 
-  bg-gradient-to-r from-transparent via-white/10 to-transparent
-  dark:via-white/5
+  @apply absolute inset-0
+  bg-gradient-to-r from-transparent via-foreground/10 to-transparent
 }
 
 .skeleton-content {
@@ -155,7 +154,7 @@ const showDocumentMetadata = computed(() => {
 }
 
 .skeleton-icon {
-  @apply text-gray-400 dark:text-gray-600
+  @apply text-muted-foreground
 }
 
 @keyframes shimmer {

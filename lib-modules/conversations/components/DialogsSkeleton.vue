@@ -17,13 +17,13 @@ const widths = ['85%', '70%', '60%'];
 
 <style scoped>
 .skeleton-item {
-  @apply h-10 rounded-md bg-gray-100 dark:bg-gray-800/50 flex items-center px-3;
+  @apply h-10 rounded-md bg-muted flex items-center px-3;
   animation: fadeIn 0.3s ease-out forwards;
   opacity: 0;
 }
 
 .skeleton-bar {
-  @apply h-4 rounded bg-gray-200 dark:bg-gray-700;
+  @apply h-4 rounded bg-muted-foreground/30;
   animation: pulse 1.5s ease-in-out infinite;
 }
 

@@ -38,13 +38,13 @@ const {attachedFiles} = useAttachMedia();
 .attached-file-container {
   @apply flex items-center gap-x-2 px-5 pt-3 pb-[30px] rounded-t-3xl
   border-x-[1px] border-t-[1px] translate-y-5 -mt-[18px]
-  backdrop-blur-lg bg-white/30 dark:bg-black/30
+  backdrop-blur-lg bg-background/30
   fixed bottom-[150px] w-screen  border-border
 }
 
 .attached-file-container-inline {
   @apply flex items-center gap-x-2 px-3 py-2 w-full
-  bg-white/60 dark:bg-black/30 border-t border-border
+  bg-background/60 border-t border-border
 }
 
 </style>
