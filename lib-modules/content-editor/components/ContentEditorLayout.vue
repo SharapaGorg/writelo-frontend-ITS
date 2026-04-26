@@ -7,6 +7,12 @@ import { useContentEditor } from '../composables/useContentEditor'
 import { AccountsSidebar } from '~/lib-modules/content-calendar'
 import { AppNavbar, type BreadcrumbItem } from '~/lib-modules/app-layout'
 
+const props = withDefaults(defineProps<{
+  showcaseMode?: boolean
+}>(), {
+  showcaseMode: false
+})
+
 const {
   currentDraft,
   editorMode,
@@ -78,13 +84,14 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 </script>
 
 <template>
-  <div :class="cn('flex h-full flex-col', isDragging && 'select-none')">
-    <AppNavbar :breadcrumbs="breadcrumbs" show-workspace-selector />
+  <div :class="cn('flex flex-col', props.showcaseMode ? 'h-[700px]' : 'h-full', isDragging && 'select-none')">
+    <AppNavbar v-if="!props.showcaseMode" :breadcrumbs="breadcrumbs" show-workspace-selector />
 
     <!-- Main content area -->
     <div class="flex flex-1 overflow-hidden">
       <!-- Accounts Sidebar -->
       <AccountsSidebar
+        v-if="!props.showcaseMode"
         :accounts="currentProjectAccounts"
         :selected-account-id="selectedAccountId ?? undefined"
         :single-select="true"

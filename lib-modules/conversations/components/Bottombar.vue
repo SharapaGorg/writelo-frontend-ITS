@@ -73,15 +73,19 @@ const handleTemplateSelect = (text: string) => {
 }
 const props = defineProps<{
   message: String,
-  generationInProcess: Boolean
+  generationInProcess: Boolean,
+  showcaseMode?: Boolean
 }>();
 
 // ==== SEARCH ====
 const $settings = useSettings();
 const {isDemoMode} = useDemoMode();
+// Showcase (landing) gets the same local-toggle behavior as demo mode — no API,
+// no "feature unavailable" toast, just visual feedback.
+const isInteractiveOnly = computed(() => isDemoMode.value || !!props.showcaseMode);
 const demoSearchEnabled = ref(false);
 const isSearchEnabled = computed(() => {
-  if (isDemoMode.value) {
+  if (isInteractiveOnly.value) {
     return demoSearchEnabled.value;
   }
   return $settings.user.value?.searchEnabled ?? false;
@@ -89,8 +93,7 @@ const isSearchEnabled = computed(() => {
 const isUpdatingSearch = ref(false);
 
 const searchAvailable = computed(() => {
-  // In demo mode, allow toggle (it's just visual, sending is blocked anyway)
-  if (isDemoMode.value) return true;
+  if (isInteractiveOnly.value) return true;
   return $settings.hasFeature(FeatureType.search);
 });
 
@@ -116,8 +119,8 @@ const searchButtonClass = computed(() => {
 const handleToggleClick = async () => {
   emit('searchButtonClicked');
 
-  // In demo mode, just toggle local state (no API call needed)
-  if (isDemoMode.value) {
+  // In demo / showcase mode, just toggle local state (no API call needed)
+  if (isInteractiveOnly.value) {
     demoSearchEnabled.value = !demoSearchEnabled.value;
     return;
   }

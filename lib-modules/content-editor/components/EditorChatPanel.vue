@@ -10,6 +10,12 @@ import { ApiController } from '~/scripts/shared/api/controller'
 import { eventBus } from '~/composables/eventBus'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
+const props = withDefaults(defineProps<{
+  showcaseMode?: boolean
+}>(), {
+  showcaseMode: false
+})
+
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -59,6 +65,13 @@ const countSentences = (text: string): number => {
 const sendMessage = async () => {
   const text = newMessage.value.trim()
   if (!text || isChatProcessing.value) return
+
+  // Showcase mode (landing): clear input and bail — there's no workspace/auth
+  // to send against, and we don't want a fake API error toast on visitors.
+  if (props.showcaseMode) {
+    newMessage.value = ''
+    return
+  }
 
   newMessage.value = ''
 
@@ -306,7 +319,7 @@ onUnmounted(() => {
           >
             <Textarea
               v-model="newMessage"
-              class="resize-none border-none p-0"
+              class="resize-none border-none p-0 shadow-none focus-visible:ring-0"
               :placeholder="t('placeholder')"
               @keydown="handleKeydown"
               :rows="rows"
@@ -329,6 +342,7 @@ onUnmounted(() => {
         <BottomBar
           :generation-in-process="isChatProcessing"
           :message="newMessage"
+          :showcase-mode="props.showcaseMode"
           @send="sendMessage"
           @searchButtonClicked="onSearchButtonClicked"
           @templateSelect="onTemplateSelect"

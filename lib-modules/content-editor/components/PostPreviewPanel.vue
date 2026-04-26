@@ -27,6 +27,12 @@ import { useRouter } from 'vue-router'
 import { getToasterPosition } from '~/scripts/features/utils/toater'
 import { ExternalLink } from 'lucide-vue-next'
 
+const props = withDefaults(defineProps<{
+  showcaseMode?: boolean
+}>(), {
+  showcaseMode: false
+})
+
 const {
   currentDraft,
   updateDraft,
@@ -397,6 +403,7 @@ const handlePublish = async () => {
 
       <!-- Save button -->
       <Button
+        v-if="!props.showcaseMode"
         @click="handleSave"
         :disabled="isSaving || isPublished || !isDirty"
         class="w-full gap-2"
@@ -409,7 +416,7 @@ const handlePublish = async () => {
 
       <!-- Publish button (only when status is 'ready') -->
       <Button
-        v-if="canPublish"
+        v-if="canPublish && !props.showcaseMode"
         :disabled="!isPlatformSupported || isPublishing"
         :title="publishDisabledReason"
         @click="showPublishDialog = true"
