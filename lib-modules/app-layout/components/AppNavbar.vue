@@ -35,31 +35,31 @@ const selectedWorkspaceId = computed<string>({
 
 <template>
   <header
-    class="grid grid-cols-3 items-center h-16 px-6 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950"
+    class="grid grid-cols-3 items-center h-16 px-6 border-b border-border bg-background"
   >
     <!-- Breadcrumbs -->
     <nav class="flex items-center gap-1.5 text-sm min-w-0">
       <template v-for="(item, index) in props.breadcrumbs" :key="index">
         <ChevronRight
           v-if="index > 0"
-          class="h-4 w-4 text-zinc-400 dark:text-zinc-600 shrink-0"
+          class="h-4 w-4 text-muted-foreground shrink-0"
         />
         <NuxtLink
           v-if="item.to && index < props.breadcrumbs.length - 1"
           :to="item.to"
-          class="text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 truncate transition-colors"
+          class="text-muted-foreground hover:text-foreground truncate transition-colors"
         >
           {{ item.label }}
         </NuxtLink>
         <span
           v-else-if="index < props.breadcrumbs.length - 1"
-          class="text-zinc-500 dark:text-zinc-400 truncate"
+          class="text-muted-foreground truncate"
         >
           {{ item.label }}
         </span>
         <span
           v-else
-          class="text-zinc-900 dark:text-zinc-100 font-medium truncate"
+          class="text-foreground font-medium truncate"
         >
           {{ item.label }}
         </span>
@@ -73,7 +73,7 @@ const selectedWorkspaceId = computed<string>({
         v-model="selectedWorkspaceId"
       >
         <SelectTrigger
-          class="w-[220px] bg-zinc-50 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700"
+          class="w-[220px] bg-card border-border"
         >
           <SelectValue placeholder="Выберите бренд" />
         </SelectTrigger>

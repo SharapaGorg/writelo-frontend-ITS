@@ -10,7 +10,7 @@ import AppSidebar from './AppSidebar.vue'
     <!-- Main Content Area -->
     <div class="flex flex-1 flex-col overflow-hidden">
       <!-- Page Content -->
-      <main class="flex-1 overflow-auto bg-white dark:bg-zinc-950">
+      <main class="flex-1 overflow-auto bg-background">
         <slot />
       </main>
     </div>
