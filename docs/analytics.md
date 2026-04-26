@@ -27,6 +27,11 @@ Plugin: `plugins/yandex-metrika.client.ts`
 | `calculator_start_saving` | "Начать экономить" в калькуляторе | `TimeCalculator.vue` |
 | `pricing_free` | Кнопка тарифа Free | `LandingPricing.vue` |
 | `pricing_pro` | Кнопка тарифа Pro (покупка!) | `LandingPricing.vue` |
+| `header_try_free` | Header CTA (новый лендинг) | `landing-new/LandingNewPage.vue` |
+| `final_try_free` | Final CTA (новый лендинг) | `landing-new/FinalCtaSection.vue` |
+| `pricing_business` | Тариф Business — demo (новый лендинг) | `landing-new/PricingSection.vue` |
+
+> Новый лендинг (`lib-modules/landing-new/`) использует те же event names (`landing_cta_click`, `feedback_submitted`), чтобы цели в Метрике работали для обеих версий. Сегментировать old vs new можно по URL.
 
 ### Landing Page — Прочие события
 

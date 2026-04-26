@@ -6,10 +6,10 @@ import { Routes } from '~/scripts/shared/types'
 
 const { t } = useI18n()
 const router = useRouter()
-const nuxt = useNuxtApp()
+const { $trackGoal } = useNuxtApp()
 
 function ctaClick() {
-  ;(nuxt as any).$trackGoal?.('landing_new_cta_click', { button: 'hero' })
+  $trackGoal('landing_cta_click', { button: 'hero_try_free' })
   router.push(Routes.app)
 }
 </script>

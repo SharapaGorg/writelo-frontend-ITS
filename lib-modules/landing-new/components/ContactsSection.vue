@@ -8,7 +8,7 @@ import { Input } from '~/components/ui/input'
 import { Textarea } from '~/components/ui/textarea'
 
 const { t } = useI18n()
-const nuxt = useNuxtApp()
+const { $trackGoal } = useNuxtApp()
 const { elementRef, isVisible } = useScrollReveal()
 
 const feedbackText = ref('')
@@ -28,7 +28,7 @@ const socials = [
 
 function submitFeedback() {
   if (!feedbackText.value.trim() || isOverLimit.value) return
-  ;(nuxt as any).$trackGoal?.('feedback_submitted', {
+  $trackGoal('feedback_submitted', {
     text: feedbackText.value,
     email: feedbackEmail.value || undefined,
   })

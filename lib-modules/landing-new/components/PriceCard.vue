@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Check } from 'lucide-vue-next'
-import type { PriceCardProps, PriceCardCtaAction } from '../types'
+import type { PriceCardProps, PriceCardCtaAction, PriceCardTier } from '../types'
 import PrimaryButton from './PrimaryButton.vue'
 import GhostButton from './GhostButton.vue'
 
@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<PriceCardProps>(), {
 
 const isNumericPrice = computed(() => /\d/.test(props.price))
 
-const emit = defineEmits<{ cta: [action: PriceCardCtaAction] }>()
+const emit = defineEmits<{ cta: [action: PriceCardCtaAction, tier: PriceCardTier] }>()
 </script>
 
 <template>
@@ -67,14 +67,14 @@ const emit = defineEmits<{ cta: [action: PriceCardCtaAction] }>()
     <PrimaryButton
       v-if="highlighted || cta.action === 'demo'"
       class="w-full"
-      @click="emit('cta', cta.action)"
+      @click="emit('cta', cta.action, tier)"
     >
       {{ cta.label }}
     </PrimaryButton>
     <GhostButton
       v-else
       class="w-full"
-      @click="emit('cta', cta.action)"
+      @click="emit('cta', cta.action, tier)"
     >
       {{ cta.label }}
     </GhostButton>

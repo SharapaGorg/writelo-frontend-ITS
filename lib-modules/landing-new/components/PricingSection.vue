@@ -6,12 +6,12 @@ import PriceCard from './PriceCard.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { useUserController } from '~/composables/user'
 import { Routes } from '~/scripts/shared/types'
-import type { PriceCardProps, PriceCardCtaAction } from '../types'
+import type { PriceCardProps, PriceCardCtaAction, PriceCardTier } from '../types'
 
 const { t, tm, rt } = useI18n()
 const router = useRouter()
 const userController = useUserController()
-const nuxt = useNuxtApp()
+const { $trackGoal } = useNuxtApp()
 const { elementRef, isVisible } = useScrollReveal()
 
 function features(key: string): string[] {
@@ -22,6 +22,7 @@ function features(key: string): string[] {
 
 const cards = computed<PriceCardProps[]>(() => [
   {
+    tier: 'free',
     name: t('landingNew.pricing.free.name'),
     description: t('landingNew.pricing.free.description'),
     price: t('landingNew.pricing.free.price'),
@@ -29,6 +30,7 @@ const cards = computed<PriceCardProps[]>(() => [
     cta: { label: t('landingNew.pricing.free.cta'), action: 'signup' },
   },
   {
+    tier: 'pro',
     name: t('landingNew.pricing.pro.name'),
     description: t('landingNew.pricing.pro.description'),
     price: t('landingNew.pricing.pro.price'),
@@ -38,6 +40,7 @@ const cards = computed<PriceCardProps[]>(() => [
     highlighted: true,
   },
   {
+    tier: 'business',
     name: t('landingNew.pricing.business.name'),
     description: t('landingNew.pricing.business.description'),
     price: t('landingNew.pricing.business.price'),
@@ -46,13 +49,12 @@ const cards = computed<PriceCardProps[]>(() => [
   },
 ])
 
-function handleCta(action: PriceCardCtaAction) {
+function handleCta(action: PriceCardCtaAction, tier: PriceCardTier) {
+  $trackGoal('landing_cta_click', { button: `pricing_${tier}` })
   if (action === 'demo') {
-    ;(nuxt as any).$trackGoal?.('landing_new_cta_click', { button: 'pricing_business' })
     window.location.href = 'mailto:hello@writelo.io?subject=' + encodeURIComponent('Демо Writelo Business')
     return
   }
-  ;(nuxt as any).$trackGoal?.('landing_new_cta_click', { button: 'pricing_signup' })
   if (userController.getToken()) {
     router.push(Routes.app)
   } else {

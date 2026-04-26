@@ -19,6 +19,7 @@ import { Routes } from '~/scripts/shared/types'
 
 const { t } = useI18n()
 const router = useRouter()
+const { $trackGoal } = useNuxtApp()
 const mobileMenuOpen = ref(false)
 
 function closeMobile() {
@@ -26,6 +27,7 @@ function closeMobile() {
 }
 
 function goToApp() {
+  $trackGoal('landing_cta_click', { button: 'header_try_free' })
   router.push(Routes.app)
   closeMobile()
 }

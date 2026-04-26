@@ -7,11 +7,11 @@ import { Routes } from '~/scripts/shared/types'
 
 const { t } = useI18n()
 const router = useRouter()
-const nuxt = useNuxtApp()
+const { $trackGoal } = useNuxtApp()
 const { elementRef, isVisible } = useScrollReveal()
 
 function ctaClick() {
-  ;(nuxt as any).$trackGoal?.('landing_new_cta_click', { button: 'final' })
+  $trackGoal('landing_cta_click', { button: 'final_try_free' })
   router.push(Routes.app)
 }
 </script>
