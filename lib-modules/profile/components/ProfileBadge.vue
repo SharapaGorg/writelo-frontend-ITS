@@ -75,8 +75,8 @@ const pendingEmail = computed(() => user.value?.pendingEmail);
 <style scoped>
 
 .profile-badge__container {
-  @apply flex gap-x-4 p-3 rounded-xl border-2 relative
-  border-input w-full md:w-[350px] items-center
+  @apply flex gap-x-4 p-3 rounded-md border-2 relative
+  border-border w-full md:w-[350px] items-center
   transition-all duration-200
 }
 
@@ -89,7 +89,7 @@ const pendingEmail = computed(() => user.value?.pendingEmail);
 }
 
 .profile-badge_hover-effects {
-  @apply hover:shadow-md hover:border-gray-200 cursor-pointer
+  @apply hover:shadow-md hover:border-foreground/20 cursor-pointer
 }
 
 </style>
