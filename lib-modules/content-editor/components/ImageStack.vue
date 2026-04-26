@@ -75,11 +75,11 @@ const getCardStyle = (index: number) => {
       <!-- Empty state -->
       <div
         v-if="images.length === 0"
-        class="flex h-40 w-32 items-center justify-center rounded-lg border-2 border-dashed border-zinc-300 dark:border-zinc-600"
+        class="flex h-40 w-32 items-center justify-center rounded-md border-2 border-dashed border-border"
       >
         <button
           @click="handleAddClick"
-          class="flex flex-col items-center gap-2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+          class="flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <Plus class="h-8 w-8" />
           <span class="text-xs">Add photo</span>
@@ -98,7 +98,7 @@ const getCardStyle = (index: number) => {
           )"
           @click="bringToFront(index)"
         >
-          <div class="relative h-40 w-32 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
+          <div class="relative h-40 w-32 overflow-hidden rounded-md bg-muted">
             <img
               :src="image"
               :alt="`Photo ${index + 1}`"
@@ -126,8 +126,8 @@ const getCardStyle = (index: number) => {
         :class="cn(
           'h-2 w-2 rounded-full transition-colors',
           index === activeIndex
-            ? 'bg-blue-600 dark:bg-blue-500'
-            : 'bg-zinc-300 hover:bg-zinc-400 dark:bg-zinc-600 dark:hover:bg-zinc-500'
+            ? 'bg-primary'
+            : 'bg-border hover:bg-muted-foreground'
         )"
       />
     </div>
@@ -144,7 +144,7 @@ const getCardStyle = (index: number) => {
         <Plus class="h-4 w-4" />
         Add Photo
       </Button>
-      <span class="text-sm text-zinc-500 dark:text-zinc-400">
+      <span class="text-sm text-muted-foreground">
         {{ counterText }}
       </span>
     </div>

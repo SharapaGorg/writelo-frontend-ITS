@@ -85,7 +85,7 @@ const addToPost = () => {
       </section>
 
       <!-- Divider -->
-      <div class="border-t border-zinc-200 dark:border-zinc-700" />
+      <div class="border-t border-border" />
 
       <!-- Prompt -->
       <section>
@@ -102,7 +102,7 @@ const addToPost = () => {
 
       <!-- Output -->
       <section v-if="imageStore.outputFile || imageStore.isGenerating">
-        <div class="border-t border-zinc-200 dark:border-zinc-700 mb-6" />
+        <div class="border-t border-border mb-6" />
 
         <GeneratorOutputImage />
 

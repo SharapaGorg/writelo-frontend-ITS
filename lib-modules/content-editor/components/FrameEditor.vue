@@ -50,31 +50,31 @@ const removeVisual = () => {
     <!-- Header with time indicator -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <span class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <span class="text-sm font-medium text-foreground">
           Frame at
         </span>
-        <span class="rounded bg-zinc-100 px-2 py-0.5 font-mono text-sm font-semibold text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100">
+        <span class="rounded bg-secondary px-2 py-0.5 font-mono text-sm font-semibold text-foreground">
           {{ formatSecond(second) }}
         </span>
       </div>
-      <span class="text-xs text-zinc-500 dark:text-zinc-400">
+      <span class="text-xs text-muted-foreground">
         Second {{ second }}
       </span>
     </div>
 
     <!-- Visual section -->
     <div class="space-y-2">
-      <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <label class="text-sm font-medium text-foreground">
         Visual
       </label>
 
       <!-- Visual preview or placeholder -->
       <div
         :class="cn(
-          'relative aspect-video w-full rounded-lg border-2 border-dashed overflow-hidden',
+          'relative aspect-video w-full rounded-md border-2 border-dashed overflow-hidden',
           hasVisual
-            ? 'border-zinc-300 dark:border-zinc-600'
-            : 'border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900'
+            ? 'border-foreground/40'
+            : 'border-border bg-muted'
         )"
       >
         <!-- Visual preview -->
@@ -98,8 +98,8 @@ const removeVisual = () => {
         <!-- Placeholder with action buttons -->
         <template v-else>
           <div class="flex h-full flex-col items-center justify-center gap-3 p-4">
-            <ImageIcon class="h-8 w-8 text-zinc-400 dark:text-zinc-500" />
-            <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            <ImageIcon class="h-8 w-8 text-muted-foreground" />
+            <p class="text-sm text-muted-foreground">
               No visual for this frame
             </p>
             <div class="flex items-center gap-2">
@@ -158,9 +158,9 @@ const removeVisual = () => {
 
     <!-- Description textarea -->
     <div class="space-y-2">
-      <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <label class="text-sm font-medium text-foreground">
         Description
-        <span class="ml-1 font-normal text-zinc-500 dark:text-zinc-400">
+        <span class="ml-1 font-normal text-muted-foreground">
           (what happens in this second)
         </span>
       </label>
@@ -173,9 +173,9 @@ const removeVisual = () => {
 
     <!-- Voiceover/Text textarea -->
     <div class="space-y-2">
-      <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <label class="text-sm font-medium text-foreground">
         Voiceover / Text
-        <span class="ml-1 font-normal text-zinc-500 dark:text-zinc-400">
+        <span class="ml-1 font-normal text-muted-foreground">
           (what to say or display)
         </span>
       </label>

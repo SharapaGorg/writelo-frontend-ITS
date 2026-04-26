@@ -138,7 +138,7 @@ watch(() => props.currentSecond, () => {
 <template>
   <div :class="cn('w-full space-y-2 select-none', isDragging && 'cursor-grabbing')">
     <!-- Time display -->
-    <div class="flex items-center justify-between text-sm text-zinc-500 dark:text-zinc-400">
+    <div class="flex items-center justify-between text-sm text-muted-foreground">
       <span class="font-mono">{{ formatTime(currentSecond) }}</span>
       <span class="font-mono">{{ formatTime(script.duration) }}</span>
     </div>
@@ -163,7 +163,7 @@ watch(() => props.currentSecond, () => {
         @click="handleTimelineClick"
       >
         <!-- Background track -->
-        <div class="absolute top-1/2 left-0 right-0 h-1 -translate-y-1/2 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+        <div class="absolute top-1/2 left-0 right-0 h-1 -translate-y-1/2 rounded-full bg-secondary" />
 
         <!-- Second markers -->
         <div class="absolute top-1/2 left-0 right-0 flex -translate-y-1/2">
@@ -177,15 +177,15 @@ watch(() => props.currentSecond, () => {
             <div
               :class="cn(
                 'w-0.5 rounded-full transition-colors',
-                second % 5 === 0 ? 'h-3 bg-zinc-400 dark:bg-zinc-500' : 'h-2 bg-zinc-300 dark:bg-zinc-600',
-                framesWithContent.has(second) && 'bg-blue-500 dark:bg-blue-400'
+                second % 5 === 0 ? 'h-3 bg-muted-foreground' : 'h-2 bg-border',
+                framesWithContent.has(second) && 'bg-primary'
               )"
             />
 
             <!-- Frame indicator dot -->
             <div
               v-if="framesWithContent.has(second)"
-              class="absolute -bottom-2 h-1.5 w-1.5 rounded-full bg-blue-500 dark:bg-blue-400"
+              class="absolute -bottom-2 h-1.5 w-1.5 rounded-full bg-primary"
             />
           </div>
         </div>
@@ -201,12 +201,12 @@ watch(() => props.currentSecond, () => {
         >
           <div class="flex flex-col items-center">
             <!-- Vertical line -->
-            <div class="h-6 w-0.5 rounded-full bg-white shadow-sm" />
+            <div class="h-6 w-0.5 rounded-full bg-foreground shadow-sm" />
             <!-- Handle -->
             <div
               :class="cn(
-                'absolute top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-white border-2 border-blue-500 shadow-md transition-transform',
-                isDragging && 'scale-125 border-blue-600'
+                'absolute top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-card border-2 border-ring shadow-md transition-transform',
+                isDragging && 'scale-125'
               )"
             />
           </div>
@@ -231,7 +231,7 @@ watch(() => props.currentSecond, () => {
         v-for="second in secondMarkers.filter(s => s % 5 === 0 || s === script.duration)"
         :key="`label-${second}`"
         :style="{ left: `${(second / script.duration) * 100}%` }"
-        class="absolute -translate-x-1/2 text-xs text-zinc-400 dark:text-zinc-500 font-mono"
+        class="absolute -translate-x-1/2 text-xs text-muted-foreground font-mono"
       >
         {{ second }}
       </div>

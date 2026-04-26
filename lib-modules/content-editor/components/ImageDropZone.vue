@@ -130,7 +130,7 @@ watch(() => props.isActive, () => {
   <div class="space-y-3">
     <!-- Header with counter -->
     <div class="flex items-center justify-between">
-      <h4 class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <h4 class="text-sm font-medium text-foreground">
         {{ acceptVideo ? 'Видео' : 'Images' }}
       </h4>
       <span
@@ -139,7 +139,7 @@ watch(() => props.isActive, () => {
           'text-xs font-medium',
           images.length >= maxImages
             ? 'text-amber-600 dark:text-amber-400'
-            : 'text-zinc-500 dark:text-zinc-400'
+            : 'text-muted-foreground'
         )"
       >
         {{ counterText }}
@@ -150,10 +150,10 @@ watch(() => props.isActive, () => {
     <div
       ref="dropZoneRef"
       :class="cn(
-        'relative rounded-lg border-2 border-dashed p-3 transition-all',
+        'relative rounded-md border-2 border-dashed p-3 transition-all',
         isDragOver
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
-          : 'border-zinc-300 dark:border-zinc-700'
+          ? 'border-ring bg-accent'
+          : 'border-border'
       )"
       @drop="handleDrop"
       @dragover="handleDragOver"
@@ -163,18 +163,18 @@ watch(() => props.isActive, () => {
       <!-- Drag overlay -->
       <div
         v-if="isDragOver && canAddMore"
-        class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-blue-500/10"
+        class="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-ring/10"
       >
         <div class="flex flex-col items-center">
-          <Upload class="h-10 w-10 text-blue-500" />
-          <p class="mt-2 text-sm font-medium text-blue-600">{{ acceptVideo ? 'Перетащите видео сюда' : 'Drop images here' }}</p>
+          <Upload class="h-10 w-10 text-primary" />
+          <p class="mt-2 text-sm font-medium text-primary">{{ acceptVideo ? 'Перетащите видео сюда' : 'Drop images here' }}</p>
         </div>
       </div>
 
       <!-- Max reached overlay -->
       <div
         v-if="isDragOver && !canAddMore"
-        class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-amber-500/10"
+        class="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-amber-500/10"
       >
         <p class="text-sm font-medium text-amber-600">Maximum images reached</p>
       </div>
@@ -185,7 +185,7 @@ watch(() => props.isActive, () => {
           v-for="(media, index) in images"
           :key="index"
           :class="cn(
-            'group relative overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800',
+            'group relative overflow-hidden rounded-md bg-muted',
             acceptVideo ? 'aspect-video w-full' : 'aspect-square'
           )"
         >
@@ -217,8 +217,8 @@ watch(() => props.isActive, () => {
         class="flex flex-col items-center justify-center py-6 cursor-pointer"
         @click="handleFileSelect"
       >
-        <Upload class="h-8 w-8 text-zinc-400 mb-2" />
-        <p class="text-sm text-zinc-500 dark:text-zinc-400 text-center">
+        <Upload class="h-8 w-8 text-muted-foreground mb-2" />
+        <p class="text-sm text-muted-foreground text-center">
           <template v-if="acceptVideo">
             Перетащите видео или нажмите для загрузки
           </template>

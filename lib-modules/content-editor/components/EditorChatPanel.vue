@@ -277,7 +277,7 @@ onUnmounted(() => {
         v-if="chatMessages.length === 0"
         class="flex h-full items-center justify-center"
       >
-        <div class="text-center text-zinc-500 dark:text-zinc-400">
+        <div class="text-center text-muted-foreground">
           <p class="text-sm">Start a conversation to get AI assistance</p>
           <p class="mt-1 text-xs">Ask for help with your post description, hashtags, or ideas</p>
         </div>
@@ -301,7 +301,7 @@ onUnmounted(() => {
     </div>
 
     <!-- Input area -->
-    <div class="border-t border-zinc-200 dark:border-zinc-800">
+    <div class="border-t border-border">
       <Transition name="lazy-loading">
         <AttachedFileArea
           v-if="hasAttachedFiles"
