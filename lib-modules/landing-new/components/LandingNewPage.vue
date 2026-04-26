@@ -153,6 +153,30 @@ function goToApp() {
 .landing-new-root .lnf-body    { font-family: var(--font-body); }
 .landing-new-root .lnf-mono    { font-family: var(--font-mono); }
 
+.landing-new-root {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(237, 232, 222, 0.12) transparent;
+}
+
+.landing-new-root::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.landing-new-root::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.landing-new-root::-webkit-scrollbar-thumb {
+  background-color: rgba(237, 232, 222, 0.12);
+  border-radius: 9999px;
+  transition: background-color 200ms;
+}
+
+.landing-new-root::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(237, 232, 222, 0.24);
+}
+
 .landing-new-root .lnu-fade-up {
   opacity: 0;
   transform: translateY(8px);
