@@ -305,7 +305,7 @@ onUnmounted(() => {
       <Transition name="lazy-loading">
         <AttachedFileArea
           v-if="hasAttachedFiles"
-          :height="Math.max(rows, 3) * 20 + 90"
+          inline
         />
       </Transition>
 
