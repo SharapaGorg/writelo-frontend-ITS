@@ -2,10 +2,15 @@ import {defineNuxtPlugin} from "#app";
 
 // Маркдаун-рендерер нужен только там, где монтируется Message.vue:
 // — /app/editor (живой чат);
-// — /landing-new (showcase редактора с пред-заполненной перепиской).
+// — landing-new (showcase редактора с пред-заполненной перепиской);
+//   landing-new сейчас смонтирован на / (+ локали /en, /ru); legacy путь /landing-new
+//   тоже оставлен на случай прямой ссылки.
 // Грузим katex/markdown-it/highlight.js (~300KB+) только на этих страницах.
 function needsMarkdownRenderer(path: string): boolean {
-    return path.startsWith('/app/editor') || path.startsWith('/landing-new');
+    if (path.startsWith('/app/editor')) return true;
+    if (path.startsWith('/landing-new')) return true;
+    if (path === '/' || path === '/en' || path === '/ru') return true;
+    return false;
 }
 
 async function buildMarkdownRenderer() {
