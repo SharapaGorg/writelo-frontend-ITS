@@ -111,7 +111,7 @@ const extraCount = computed(() => props.posts.length - 4)
     <button
       v-if="isCurrentMonth"
       :class="[
-        'absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-all z-10',
+        'absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground flex items-center justify-center transition-all z-10',
         isHovered ? 'opacity-100' : 'opacity-0'
       ]"
       @click.stop="emit('createPost', date)"

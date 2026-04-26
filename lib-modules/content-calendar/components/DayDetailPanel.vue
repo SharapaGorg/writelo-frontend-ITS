@@ -42,7 +42,7 @@ const funDay = computed(() => getFunDayForDate(props.date))
       </div>
       <div class="flex items-center gap-2">
         <button
-          class="w-7 h-7 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-colors"
+          class="w-7 h-7 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground flex items-center justify-center transition-colors"
           @click="emit('createPost')"
           title="Создать пост"
         >

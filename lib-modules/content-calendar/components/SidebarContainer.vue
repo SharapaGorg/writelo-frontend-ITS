@@ -152,7 +152,7 @@ const funDay = computed(() =>
           </div>
           <div class="flex items-center gap-2">
             <button
-              class="w-7 h-7 rounded-full bg-primary hover:bg-primary/90 text-white flex items-center justify-center transition-colors"
+              class="w-7 h-7 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground flex items-center justify-center transition-colors"
               title="Создать пост"
               @click="emit('createPost')"
             >
@@ -192,7 +192,7 @@ const funDay = computed(() =>
                 Отмена
               </button>
               <button
-                class="px-3 py-1.5 text-xs rounded-md bg-primary hover:bg-primary/90 disabled:bg-primary/40 disabled:cursor-not-allowed text-white transition-colors"
+                class="px-3 py-1.5 text-xs rounded-md bg-brand hover:bg-brand/90 disabled:bg-brand/40 disabled:cursor-not-allowed text-brand-foreground transition-colors"
                 :disabled="!newPostTitle.trim()"
                 @click="submitNewPost"
               >

@@ -144,7 +144,7 @@ async function handlePublish() {
       <!-- Published + has link → open the live post in a new tab -->
       <button
         v-if="post.status === 'published' && post.publishedLink"
-        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors"
+        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-brand hover:bg-brand/90 text-brand-foreground text-sm font-medium transition-colors"
         @click="openPublishedLink"
       >
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -158,7 +158,7 @@ async function handlePublish() {
       <!-- Draft / ready / etc → open editor -->
       <button
         v-else-if="post.status !== 'published'"
-        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium transition-colors"
+        class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-brand hover:bg-brand/90 text-brand-foreground text-sm font-medium transition-colors"
         @click="navigateToEditor"
       >
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

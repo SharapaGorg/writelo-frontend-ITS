@@ -123,7 +123,7 @@ function navigate(item: SidebarItem) {
     >
       <Button
         variant="default"
-        class="w-full gap-2 h-10 px-3 bg-primary text-primary-foreground hover:bg-primary/90 justify-start overflow-hidden"
+        class="w-full gap-2 h-10 px-3 bg-brand text-brand-foreground hover:bg-brand/90 justify-start overflow-hidden"
         @click="router.push('/auth')"
       >
         <LogIn class="h-5 w-5 shrink-0" />
