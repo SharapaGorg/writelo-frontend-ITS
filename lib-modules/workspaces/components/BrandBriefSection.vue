@@ -15,15 +15,19 @@ interface BriefDraft {
   examplePosts: string
 }
 
-const props = defineProps<{
-  idPrefix: string
-  draft: BriefDraft
-  canEdit: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    idPrefix: string
+    draft: BriefDraft
+    canEdit: boolean
+    initialExpanded?: boolean
+  }>(),
+  { initialExpanded: false },
+)
 
 const { t: t_ } = useI18n()
 const { nichePresets, stylePresets } = useBriefPresets()
-const expanded = ref(false)
+const expanded = ref(props.initialExpanded)
 
 const fields = computed(() => [
   { key: 'industry', value: props.draft.industry },

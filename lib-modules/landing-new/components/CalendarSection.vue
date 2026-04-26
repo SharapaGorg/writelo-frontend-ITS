@@ -16,10 +16,13 @@ const { elementRef, isVisible } = useScrollReveal()
     :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'"
   >
     <div class="max-w-[1400px] mx-auto">
-      <SectionHeader
-        :label="t('landingNew.calendar.label')"
-        :title="t('landingNew.calendar.title')"
-      />
+      <SectionHeader :label="t('landingNew.calendar.label')">
+        <template #title>
+          {{ t('landingNew.calendar.titlePre') }}
+          <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.calendar.titleAccent') }}</span>
+          {{ t('landingNew.calendar.titlePost') }}
+        </template>
+      </SectionHeader>
 
       <p class="lnf-body text-[16px] md:text-[17px] leading-[1.6] text-[#a8a094] max-w-[60ch] mb-12 md:mb-16">
         {{ t('landingNew.calendar.sub') }}

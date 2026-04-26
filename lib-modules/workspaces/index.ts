@@ -15,5 +15,8 @@ export { useWorkspacesStore } from './stores/workspacesStore'
 // API
 export { WorkspacesApiController, useWorkspacesApi } from './helpers/api'
 
+// Components
+export { default as BrandBriefSection } from './components/BrandBriefSection.vue'
+
 // Types
 export * from './types'

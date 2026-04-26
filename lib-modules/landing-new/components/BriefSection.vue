@@ -1,10 +1,21 @@
 <script setup lang="ts">
+import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SectionHeader from './SectionHeader.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { BrandBriefSection } from '~/lib-modules/workspaces'
 
 const { t } = useI18n()
 const { elementRef, isVisible } = useScrollReveal()
+
+const draft = reactive({
+  industry: '',
+  businessDescription: '',
+  targetAudience: '',
+  toneOfVoice: '',
+  stopWords: '',
+  examplePosts: '',
+})
 </script>
 
 <template>
@@ -24,7 +35,14 @@ const { elementRef, isVisible } = useScrollReveal()
             {{ t('landingNew.brief.body1') }}
           </p>
           <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094]">
-            {{ t('landingNew.brief.body2') }}
+            {{ t('landingNew.brief.body2Pre') }}
+            <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.brief.body2Accent1') }}</span>
+            {{ t('landingNew.brief.body2Mid') }}
+            <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.brief.body2Accent2') }}</span>
+            {{ t('landingNew.brief.body2Post') }}
+          </p>
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094]">
+            {{ t('landingNew.brief.body3') }}
           </p>
           <p class="lnf-mono text-[11px] uppercase tracking-[0.15em] text-[#5a5550] pt-4">
             {{ t('landingNew.brief.aside') }}
@@ -40,8 +58,12 @@ const { elementRef, isVisible } = useScrollReveal()
             </div>
             <div class="lnf-mono text-[10px] text-[#5a5550]">writelo.app/brand/brief</div>
           </div>
-          <div class="aspect-[4/3] bg-[#111110] flex items-center justify-center text-[#5a5550] text-[12px] lnf-mono uppercase tracking-[0.15em]">
-            {{ t('landingNew.brief.placeholder') }}
+          <div class="bg-[#111110] p-4 md:p-5">
+            <BrandBriefSection
+              id-prefix="landing-brief"
+              :draft="draft"
+              :can-edit="true"
+            />
           </div>
         </div>
       </div>
