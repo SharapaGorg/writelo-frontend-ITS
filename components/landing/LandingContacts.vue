@@ -18,7 +18,7 @@ const charCount = computed(() => feedbackText.value.length)
 const isOverLimit = computed(() => charCount.value > 600)
 
 const socials = [
-  { name: 'Telegram', url: 'https://t.me/writelo', icon: 'telegram' },
+  { name: 'Telegram', url: 'https://t.me/+HsYq7_S-Fw1iMmI6', icon: 'telegram' },
   { name: 'YouTube', url: 'https://youtube.com/@writelo-io', icon: 'youtube' },
   { name: 'Instagram', url: 'https://instagram.com/writelo.io', icon: 'instagram' },
   { name: 'VK', url: 'https://vk.ru/writelo', icon: 'vk' },
