@@ -37,7 +37,7 @@ const $user = useUserController();
 
 const {locale} = useI18n();
 
-const publicPages = ['/', '/landing', '/landing-new', '/start', '/auth', '/verify-email', '/reset-password', '/forgot-password', '/email-sent']
+const publicPages = ['/', '/landing', '/start', '/auth', '/verify-email', '/reset-password', '/forgot-password', '/email-sent']
 const route = useRoute()
 
 function isPublicPath(path: string): boolean {

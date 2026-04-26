@@ -4,7 +4,7 @@ import {ApiController} from "~/scripts/shared/api/controller";
 // Routes where there's no workspace/auth context — landing showcase. Attach
 // flow there is purely visual; skip the real upload so visitors don't see
 // failed-upload state (and we don't fire unauthenticated requests).
-const NO_UPLOAD_ROUTES = ['/landing-new']
+const NO_UPLOAD_ROUTES = ['/', '/ru', '/landing']
 
 let init: boolean = false;
 
@@ -18,7 +18,7 @@ export const useAttachMedia = () => {
         init = true;
         store.onAttach(async (attachedFile: AttachedFile) => {
             const path = route?.path ?? (import.meta.client ? window.location.pathname : '')
-            if (NO_UPLOAD_ROUTES.some(p => path.startsWith(p))) {
+            if (NO_UPLOAD_ROUTES.includes(path)) {
                 // Showcase: pretend the upload succeeded with a dummy id so the
                 // chip renders as "loaded" and detach works normally.
                 store.loadFile(attachedFile.hash, `showcase-${attachedFile.hash}`, 'image')
