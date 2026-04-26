@@ -79,10 +79,15 @@ export default {
                 code: '#27272A',
                 "light-code": "#f9f9f9"
             },
+            fontFamily: {
+                display: ['Unbounded', 'system-ui', 'sans-serif'],
+                sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+                mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+            },
             borderRadius: {
                 lg: 'var(--radius)',
-                md: 'calc(var(--radius) - 2px)',
-                sm: 'calc(var(--radius) - 4px)'
+                md: 'var(--radius)',
+                sm: 'var(--radius)'
             },
             // Add transition and transform configuration
             transitionProperty: {

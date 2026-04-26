@@ -50,6 +50,9 @@ export default defineNuxtConfig({
                 {rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg'},
                 {rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'},
                 {rel: 'apple-touch-icon', href: '/apple-touch-icon.png'},
+                {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
+                {rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: ''},
+                {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap'},
             ],
             script: [
                 {src: "https://telegram.org/js/telegram-web-app.js?57", defer: true},
