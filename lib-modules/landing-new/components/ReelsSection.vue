@@ -29,9 +29,14 @@ const { elementRef, isVisible } = useScrollReveal()
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
-        <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#a8a094] max-w-[60ch]">
-          {{ t('landingNew.reels.body') }}
-        </p>
+        <div class="space-y-5 max-w-[60ch]">
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#a8a094]">
+            {{ t('landingNew.reels.body1') }}
+          </p>
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#a8a094]">
+            {{ t('landingNew.reels.body2') }}
+          </p>
+        </div>
 
         <div class="relative h-[300px] md:h-[400px] flex items-center justify-center">
           <div class="absolute w-[160px] md:w-[200px] aspect-[9/16] border border-[#ede8de]/15 bg-[#111110] -rotate-[8deg] -translate-x-[60%] md:-translate-x-[80%] p-4 flex flex-col justify-between">

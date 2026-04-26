@@ -14,30 +14,18 @@ const { elementRef, isVisible } = useScrollReveal()
     :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'"
   >
     <div class="max-w-[1200px] mx-auto">
-      <SectionHeader
-        :label="t('landingNew.editor.label')"
-        :title="t('landingNew.editor.title')"
-      />
+      <SectionHeader :label="t('landingNew.editor.label')">
+        <template #title>
+          {{ t('landingNew.editor.titleLine1') }}<br>
+          {{ t('landingNew.editor.titleLine2') }}
+        </template>
+      </SectionHeader>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
         <div class="space-y-6 max-w-[60ch]">
-          <p class="lnf-body text-[16px] md:text-[17px] leading-[1.6] text-[#ede8de]">
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094]">
             {{ t('landingNew.editor.body1') }}
           </p>
-          <ul class="space-y-3 lnf-body text-[15px] text-[#a8a094]">
-            <li class="flex items-baseline gap-4">
-              <span class="lnf-mono text-[10px] text-[#d4683f] uppercase tracking-[0.15em] shrink-0 w-6">IG</span>
-              <span>{{ t('landingNew.editor.platforms.instagram') }}</span>
-            </li>
-            <li class="flex items-baseline gap-4">
-              <span class="lnf-mono text-[10px] text-[#d4683f] uppercase tracking-[0.15em] shrink-0 w-6">TG</span>
-              <span>{{ t('landingNew.editor.platforms.telegram') }}</span>
-            </li>
-            <li class="flex items-baseline gap-4">
-              <span class="lnf-mono text-[10px] text-[#d4683f] uppercase tracking-[0.15em] shrink-0 w-6">VK</span>
-              <span>{{ t('landingNew.editor.platforms.vk') }}</span>
-            </li>
-          </ul>
-          <p class="lnf-body text-[15px] leading-[1.6] text-[#a8a094]">
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094]">
             {{ t('landingNew.editor.body2') }}
           </p>
         </div>
