@@ -134,7 +134,7 @@ export default defineNuxtConfig({
 
     nitro: {
         prerender: {
-            routes: ['/', '/en', '/ru', '/landing', '/landing-new', '/start', '/auth'],
+            routes: ['/', '/en', '/ru', '/landing', '/start', '/auth'],
         },
         // Ускоряем билд
         minify: false,
