@@ -65,20 +65,20 @@ const handleRatioClick = (ratio: string) => {
 
 .aspect-ratio__container {
   @apply w-[60px] h-[60px] lg:w-[70px] lg:h-[70px] border-input border-2 border-solid
-  rounded-lg flex flex-col items-center justify-center cursor-pointer
-  hover:border-primary transition-all duration-200
+  rounded-md flex flex-col items-center justify-center cursor-pointer
+  hover:border-brand transition-all duration-200
 }
 
 .aspect-ratio__container--selected {
-  @apply border-primary bg-primary/10 scale-[1.05];
+  @apply border-brand bg-brand/10 scale-[1.05];
 }
 
 .aspect-ratio__container--selected .aspect-ratio__shape {
-  @apply bg-primary;
+  @apply bg-brand;
 }
 
 .aspect-ratio__shape {
-  @apply bg-primary/20 rounded transition-colors duration-200;
+  @apply bg-brand/20 rounded transition-colors duration-200;
 }
 
 </style>

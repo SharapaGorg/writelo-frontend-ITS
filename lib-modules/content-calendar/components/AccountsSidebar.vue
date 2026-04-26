@@ -133,7 +133,7 @@ function isActive(accountId: string): boolean {
         </p>
         <button
           type="button"
-          class="w-full rounded-md border-2 border-dashed border-border hover:border-primary text-muted-foreground hover:text-primary transition-all flex items-center gap-2 p-3 justify-center"
+          class="w-full rounded-md border-2 border-dashed border-border hover:border-brand text-muted-foreground hover:text-brand transition-all flex items-center gap-2 p-3 justify-center"
           @click="goToConnect"
         >
           <Plus class="w-4 h-4" />
@@ -178,7 +178,7 @@ function isActive(accountId: string): boolean {
       <button
         v-if="accounts.length > 0"
         type="button"
-        class="w-full rounded-md border-2 border-dashed border-border hover:border-primary text-muted-foreground hover:text-primary transition-all flex items-center justify-center p-3"
+        class="w-full rounded-md border-2 border-dashed border-border hover:border-brand text-muted-foreground hover:text-brand transition-all flex items-center justify-center p-3"
         title="Подключить аккаунт"
         @click="goToConnect"
       >
