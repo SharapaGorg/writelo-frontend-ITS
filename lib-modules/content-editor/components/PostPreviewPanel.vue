@@ -3,8 +3,8 @@ import { computed, watch, ref } from 'vue'
 import { Save, Loader2, Send } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
-import { Input } from '~/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
+import ScheduledDatePicker from './ScheduledDatePicker.vue'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -166,7 +166,7 @@ const status = computed(() => currentDraft.value?.status ?? 'idea')
 
 // Status options with colors (published is not selectable - it's set through calendar publish flow)
 const statusOptions: { value: ContentStatus; label: string; color: string }[] = [
-  { value: 'idea', label: 'Идея', color: 'text-zinc-400' },
+  { value: 'idea', label: 'Идея', color: 'text-muted-foreground' },
   { value: 'draft', label: 'Черновик', color: 'text-yellow-500' },
   { value: 'ready', label: 'Готово', color: 'text-green-500' }
 ]
@@ -203,9 +203,8 @@ const updateDescription = (value: string | number) => {
 }
 
 // Handle scheduled date
-const updateScheduledDate = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  updateDraft({ scheduledDate: target.value || null })
+const updateScheduledDate = (value: string | null) => {
+  updateDraft({ scheduledDate: value })
 }
 
 // Handle image add (receives { url, file } from ImageDropZone)
@@ -286,7 +285,7 @@ const handlePublish = async () => {
     </div>
 
     <!-- Content Type Selector -->
-    <div class="border-b border-zinc-200 p-4 dark:border-zinc-800">
+    <div class="border-b border-border p-4">
       <div class="flex items-center gap-1">
         <button
           v-for="type in contentTypes"
@@ -297,10 +296,10 @@ const handlePublish = async () => {
           :class="cn(
             'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
             (!isContentTypeAvailable(type.value) || isPublished)
-              ? 'cursor-not-allowed opacity-40 text-zinc-400 dark:text-zinc-600'
+              ? 'cursor-not-allowed opacity-40 text-muted-foreground'
               : selectedType === type.value
-                ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900'
-                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
+                ? 'bg-brand text-brand-foreground'
+                : 'text-muted-foreground hover:bg-accent hover:text-foreground'
           )"
         >
           {{ type.label }}
@@ -326,7 +325,7 @@ const handlePublish = async () => {
 
         <!-- Description (for all types) -->
         <section class="space-y-2">
-          <label class="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label class="text-sm font-medium text-foreground">
             {{ isReel ? 'Описание' : 'Description' }}
           </label>
           <Textarea
@@ -336,7 +335,7 @@ const handlePublish = async () => {
             :placeholder="isReel ? 'Описание для рилс...' : 'Write a captivating description for your post...'"
             class="min-h-[120px] resize-none"
           />
-          <p class="text-xs text-zinc-500 dark:text-zinc-400">
+          <p class="text-xs text-muted-foreground">
             {{ description.length }} / 2200 characters
           </p>
         </section>
@@ -344,7 +343,7 @@ const handlePublish = async () => {
     </div>
 
     <!-- Footer with status/date and save button -->
-    <div class="border-t border-zinc-200 p-4 dark:border-zinc-800 space-y-4">
+    <div class="border-t border-border p-4 space-y-4">
       <!-- Status and Date row -->
       <div class="flex items-center gap-3">
         <!-- Status selector -->
@@ -402,15 +401,11 @@ const handlePublish = async () => {
 
         <!-- Date picker -->
         <div class="flex-1">
-          <div class="relative">
-            <Input
-              type="datetime-local"
-              :value="scheduledDate ?? ''"
-              :disabled="isPublished"
-              @change="updateScheduledDate"
-              class="h-9"
-            />
-          </div>
+          <ScheduledDatePicker
+            :model-value="scheduledDate"
+            :disabled="isPublished"
+            @update:model-value="updateScheduledDate"
+          />
         </div>
       </div>
 
