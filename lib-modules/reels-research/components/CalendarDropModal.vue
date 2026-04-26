@@ -112,7 +112,7 @@ function handleCreatePost(date: string) {
       >
         <!-- Rainbow border wrapper -->
         <div class="rainbow-island-border rounded-2xl p-[3px]">
-          <div class="bg-white dark:bg-zinc-900 rounded-xl overflow-hidden shadow-2xl">
+          <div class="bg-card rounded-md overflow-hidden shadow-2xl">
             <!-- Header -->
             <div class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-pink-500/10">
               <div class="flex items-center gap-2">
@@ -125,16 +125,16 @@ function handleCreatePost(date: string) {
                   </svg>
                 </div>
                 <div>
-                  <h2 class="text-sm font-semibold text-zinc-900 dark:text-white">
+                  <h2 class="text-sm font-semibold text-foreground">
                     Брось на день
                   </h2>
-                  <p class="text-xs text-zinc-500">
+                  <p class="text-xs text-muted-foreground">
                     Перетащи рилс сюда
                   </p>
                 </div>
               </div>
               <button
-                class="w-7 h-7 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-700 flex items-center justify-center text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+                class="w-7 h-7 rounded-full hover:bg-accent flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                 @click="emit('close')"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

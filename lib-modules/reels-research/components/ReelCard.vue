@@ -135,12 +135,12 @@ onUnmounted(() => {
 <template>
   <div
     ref="cardRef"
-    class="group cursor-grab rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 overflow-hidden transition-all hover:border-zinc-400 dark:hover:border-zinc-500 hover:shadow-lg touch-none"
+    class="group cursor-grab rounded-md border border-border bg-card overflow-hidden transition-all hover:border-foreground/30 hover:shadow-lg touch-none"
     :class="{ 'cursor-grabbing': isDragging }"
     @click="openReel"
   >
     <!-- Thumbnail -->
-    <div class="relative aspect-[9/16] overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+    <div class="relative aspect-[9/16] overflow-hidden bg-muted">
       <img
         :src="reel.thumbnail"
         :alt="reel.description"
@@ -149,8 +149,8 @@ onUnmounted(() => {
 
       <!-- Hover overlay with play icon -->
       <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-        <div class="w-16 h-16 rounded-full bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center">
-          <svg class="w-8 h-8 text-zinc-800 dark:text-white ml-1" viewBox="0 0 24 24" fill="currentColor">
+        <div class="w-16 h-16 rounded-full bg-card/90 flex items-center justify-center">
+          <svg class="w-8 h-8 text-foreground ml-1" viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z" />
           </svg>
         </div>
@@ -170,27 +170,27 @@ onUnmounted(() => {
     <div class="p-3">
       <!-- Author row -->
       <div class="flex items-center gap-2 mb-2">
-        <div class="w-6 h-6 rounded-full overflow-hidden bg-zinc-200 dark:bg-zinc-700 flex-shrink-0">
+        <div class="w-6 h-6 rounded-full overflow-hidden bg-secondary flex-shrink-0">
           <img
             v-if="reel.authorAvatar"
             :src="reel.authorAvatar"
             :alt="reel.author"
             class="w-full h-full object-cover"
           />
-          <div v-else class="w-full h-full flex items-center justify-center text-xs text-zinc-500 dark:text-zinc-400">
+          <div v-else class="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
             {{ reel.author.charAt(0).toUpperCase() }}
           </div>
         </div>
-        <span class="text-sm text-zinc-600 dark:text-zinc-400 truncate">@{{ reel.author }}</span>
+        <span class="text-sm text-muted-foreground truncate">@{{ reel.author }}</span>
       </div>
 
       <!-- Description -->
-      <p class="text-sm text-zinc-800 dark:text-zinc-200 line-clamp-2 mb-3">
+      <p class="text-sm text-foreground line-clamp-2 mb-3">
         {{ reel.description }}
       </p>
 
       <!-- Metrics row -->
-      <div class="flex items-center gap-4 text-xs text-zinc-500 dark:text-zinc-400">
+      <div class="flex items-center gap-4 text-xs text-muted-foreground">
         <!-- Likes -->
         <div class="flex items-center gap-1">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

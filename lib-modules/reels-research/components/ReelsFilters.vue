@@ -33,7 +33,7 @@ function handleCategoryChange(category: ReelsFilters['category']) {
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center justify-between gap-4 px-6 py-3 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-900/50">
+  <div class="flex flex-wrap items-center justify-between gap-4 px-6 py-3 border-b border-border bg-card">
     <!-- Category buttons -->
     <div class="flex flex-wrap items-center gap-2">
       <button
@@ -42,8 +42,8 @@ function handleCategoryChange(category: ReelsFilters['category']) {
         :class="[
           'px-3 py-1.5 text-sm rounded-full transition-all',
           store.filters.category === category.value
-            ? 'bg-purple-600 text-white'
-            : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-300 dark:hover:bg-zinc-700 hover:text-zinc-900 dark:hover:text-white'
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground'
         ]"
         @click="handleCategoryChange(category.value)"
       >
@@ -53,7 +53,7 @@ function handleCategoryChange(category: ReelsFilters['category']) {
 
     <!-- Sort dropdown -->
     <div class="flex items-center gap-2">
-      <span class="text-sm text-zinc-500">Сортировка:</span>
+      <span class="text-sm text-muted-foreground">Сортировка:</span>
       <Select :model-value="store.filters.sortBy" @update:model-value="(v) => store.setSortBy(v as ReelsFilters['sortBy'])">
         <SelectTrigger class="w-[140px]">
           <SelectValue />

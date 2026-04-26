@@ -12,19 +12,19 @@
         </Button>
 
         <!-- Avatar -->
-        <Avatar class="h-8 w-8 bg-zinc-600 flex-shrink-0">
+        <Avatar class="h-8 w-8 bg-muted flex-shrink-0">
           <AvatarImage :src="user.avatar" :alt="user.name"/>
-          <AvatarFallback class="bg-zinc-600 text-zinc-200 text-sm font-medium flex items-center justify-center">
+          <AvatarFallback class="bg-muted text-muted-foreground text-sm font-medium flex items-center justify-center">
             {{ getInitials(user.name) }}
           </AvatarFallback>
         </Avatar>
 
         <!-- User Info -->
         <div class="flex-1 min-w-0 text-start">
-          <h3 class="text-zinc-800 dark:text-zinc-100 font-medium text-sm truncate">
+          <h3 class="text-foreground font-medium text-sm truncate">
             {{ user.name }}
           </h3>
-          <p class="text-zinc-500 dark:text-zinc-400 text-xs">
+          <p class="text-muted-foreground text-xs">
             {{ user.plan }}
           </p>
         </div>
@@ -57,8 +57,8 @@ const getInitials = (name: string): string => {
 
 .user-card__container {
   @apply
-  w-full md:w-64 bg-white dark:bg-zinc-900
-  hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer py-2
+  w-full md:w-64 bg-card
+  hover:bg-accent transition-colors cursor-pointer py-2
 }
 
 </style>

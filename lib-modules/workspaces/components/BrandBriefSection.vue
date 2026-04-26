@@ -69,9 +69,9 @@ defineExpose({
 <template>
   <div
     :class="[
-      'rounded-lg border overflow-hidden transition-colors',
+      'rounded-md border overflow-hidden transition-colors',
       expanded
-        ? 'border-purple-500/40 bg-purple-500/5 dark:bg-purple-400/5'
+        ? 'border-brand/40 bg-brand/5'
         : 'border-border bg-muted/20 hover:bg-muted/40',
     ]"
   >
@@ -82,7 +82,7 @@ defineExpose({
       @click="expanded = !expanded"
     >
       <span
-        class="flex items-center justify-center w-9 h-9 rounded-md bg-gradient-to-br from-purple-500/20 to-fuchsia-500/20 text-purple-500 dark:text-purple-400 shrink-0"
+        class="flex items-center justify-center w-9 h-9 rounded-md bg-brand/10 text-brand shrink-0"
       >
         <Sparkles class="h-5 w-5" />
       </span>
@@ -92,7 +92,7 @@ defineExpose({
           <span class="font-medium">Бриф для ИИ</span>
           <span
             v-if="filledCount === total"
-            class="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-600 dark:text-purple-400"
+            class="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded bg-brand/15 text-brand"
           >
             полный
           </span>
@@ -107,7 +107,7 @@ defineExpose({
           :class="[
             'w-1.5 h-1.5 rounded-full transition-colors duration-300',
             f.value.trim().length > 0
-              ? 'bg-purple-500 dark:bg-purple-400'
+              ? 'bg-brand'
               : 'bg-muted-foreground/25',
           ]"
         />
@@ -140,7 +140,7 @@ defineExpose({
                 :class="[
                   'px-2.5 py-1 text-xs rounded-full border transition-colors',
                   draft.industry === preset.value
-                    ? 'bg-purple-500/10 border-purple-500/50 text-purple-700 dark:text-purple-300'
+                    ? 'bg-brand/10 border-brand/50 text-brand'
                     : 'bg-background border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/50',
                   !canEdit && 'opacity-50 cursor-not-allowed',
                 ]"
@@ -196,7 +196,7 @@ defineExpose({
                 :class="[
                   'px-2.5 py-1 text-xs rounded-full border transition-colors',
                   draft.toneOfVoice === preset.value
-                    ? 'bg-purple-500/10 border-purple-500/50 text-purple-700 dark:text-purple-300'
+                    ? 'bg-brand/10 border-brand/50 text-brand'
                     : 'bg-background border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/50',
                   !canEdit && 'opacity-50 cursor-not-allowed',
                 ]"
