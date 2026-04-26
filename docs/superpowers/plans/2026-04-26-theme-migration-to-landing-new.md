@@ -19,6 +19,49 @@
 
 ---
 
+## Status — paused 2026-04-26 evening
+
+### Done — committed
+
+| Phase | Commits | What landed |
+|-------|---------|-------------|
+| 1. Foundation | `c9e85e3`, `a7a8848` | Tokens (light + dark), Google Fonts globally, `--radius: 0.375rem`, app-shell hardcodes (Button, AppLayout, AppNavbar, .icon-button) |
+| Palette refinement | inside `a7a8848` | Light forced to neutral white (rejected warm cream), dark surfaces stripped of sub-10% hue (rejected "blevotny" yellow-green tint), `--primary` switched to monochrome (was rust, rejected) |
+| `--brand` token | `ceaa072`, `162f77c` | New `--brand` slot for hand-picked rust accents (separate from `--primary` monochrome and `--ring` focus). Default `<Button>` + `premium` variant + custom CTAs in calendar/sidebar use `bg-brand`. `--brand-foreground` always white in both modes. |
+| 3.1 content-calendar | `d32acc8`, `25fc872` | All 15 calendar UI files on tokens (kept previews/* — mimic external platforms). Workspace-card-vs-brief hierarchy fix. |
+| 3.2 content-editor | `922b03f` | All 9 editor files on tokens. ImageDropZone drag-active uses `border-ring`, ReelTimeline handle uses brand ring. |
+| 3.3 imageGenerator | `ed1def3` | 4 files on tokens. ImagesAspectRatios selected ratio uses `bg-brand` (per user "ратио оранжевые должны быть"). |
+| 3.4 profile | `2800164` | ProfileBadge border on tokens. |
+| 3.5 conversations | `d34863a` | All 8 chat files on tokens. User bubble = `bg-muted text-foreground` (gray, not primary — user explicitly said "серые были, такие пусть и будут"). Markdown rendering colors in scoped style intentionally untouched. |
+| 3.6 reels-research + workspaces + web-auth | `a86055e` | 6 files. WorkspacesListPage/BrandBriefSection lean heavily on `bg-brand` (brand-themed UI). |
+| Bug fix | `4ae1751` | Markdown renderer load gate didn't include `/` (landing-new moved there in `d88696b`); editor showcase on landing was crashing. |
+
+### Deviations from original plan (all overrode by user feedback)
+
+- **`--radius: 0` → `0.375rem`** — sharp corners looked broken on dense UI. See memory `feedback_radius_not_zero`.
+- **Light bg cream `#f4efe3` → pure white `#ffffff`** — warm cream made everything peachy. Memory `feedback_light_mode_neutral`.
+- **`--primary` rust → monochrome (black light / cream dark)** — rust everywhere was overwhelming on dense UI. Memory `feedback_primary_is_neutral`.
+- **Dark surface tokens (`--card`/`--popover`/`--accent`/`--border`) stripped of low-sat hue** — even 3% saturation at hue 60/30 read as visible "blevotny" tint. Memory `feedback_neutral_dark_surfaces`.
+- **`--brand` introduced as a third accent slot** — to give back rust on hand-picked CTAs without infecting `--primary` everywhere. Memory `reference_brand_token`.
+- **`--brand-foreground` white in both modes** — brand hue (rust) doesn't invert between modes, so its readable text shouldn't either. Discovered when dark-mode rust button text was unreadable.
+- **Default `<Button>` variant uses `bg-brand`** — user mental model is "the button" = brand CTA, but selection-state surfaces (chat user bubble, active filter pill, calendar selected day, checkbox checked) keep `bg-primary` (monochrome) to avoid orange overload.
+- **Workspace card = `bg-background` (no lift)** — was `bg-card`, but the brief inside also lifted = visual merge. Now workspace bordered against page bg, brief inside is `bg-card` clearly raised.
+
+### Left to do (deferred — user said "хватит на сегодня")
+
+- [ ] **`components/atoms/*`** — ~7 files with hardcoded colors: `Loader.vue`, `InteractiveLoader.vue`, `AppLoader.vue`, `ScrollDownButton.vue`, `FullScreenFilePreview.vue`, `FileDropZone.vue`, `SplitDownloadButton.vue`. Mostly standalone widgets, low risk.
+- [ ] **`components/molecules/Tier.vue`** — pricing tier card (one file).
+- [ ] **`components/molecules/PromptImproverWrapper/css/index.css`** — scoped CSS file with `@apply` of legacy classes.
+
+### Explicitly skipped (per user "не используемое не трогать")
+
+- `components/landing/*` — old landing, replaced by `lib-modules/landing-new` mounted at `/`. Likely dead but **not verified** as unused. If user confirms dead, candidate for deletion in a separate task, not theme port.
+- `scripts/*` — legacy code per CLAUDE.md, no new code added there.
+- `components/ui/*` shadcn primitives — internal `bg-black/80` overlays etc. are intentional shadcn defaults, not theme chrome.
+- **Phase 5 (landing-new tokenization)** from the original plan — `lib-modules/landing-new` keeps its inline hex colors. The landing already matches the global theme visually since the global tokens were derived from it; tokenizing it is mechanical work with regression risk for no visual benefit. Re-open if global palette ever drifts from landing.
+
+---
+
 ## Palette Decision (must be approved before Phase 1 lands)
 
 ### Source colors from landing-new (hex)
