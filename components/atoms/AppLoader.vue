@@ -20,7 +20,7 @@
 
       <!-- Loading text -->
       <div class="loading-text" v-if="showTexts">
-        <span class="text-gradient">{{ loadingText }}</span>
+        <span class="text-foreground/80">{{ loadingText }}</span>
       </div>
     </div>
   </div>
@@ -91,47 +91,47 @@ onUnmounted(() => {
 
 .logo-face {
   @apply absolute w-full h-full;
-  @apply border-2 border-gray-200 dark:border-gray-700;
+  @apply border-2 border-border;
   @apply backdrop-blur-sm;
 }
 
 .logo-face-front {
-  @apply bg-gradient-to-br from-blue-500/30 to-purple-500/30;
+  @apply bg-gradient-to-br from-brand/40 to-brand/15;
   transform: rotateY(0deg) translateZ(48px);
 }
 
 .logo-face-back {
-  @apply bg-gradient-to-br from-purple-500/30 to-pink-500/30;
+  @apply bg-gradient-to-br from-brand/40 to-brand/15;
   transform: rotateY(180deg) translateZ(48px);
 }
 
 .logo-face-right {
-  @apply bg-gradient-to-br from-pink-500/30 to-rose-500/30;
+  @apply bg-gradient-to-tr from-primary/15 to-brand/25;
   transform: rotateY(90deg) translateZ(48px);
 }
 
 .logo-face-left {
-  @apply bg-gradient-to-br from-indigo-500/30 to-blue-500/30;
+  @apply bg-gradient-to-tr from-primary/15 to-brand/25;
   transform: rotateY(-90deg) translateZ(48px);
 }
 
 .logo-face-top {
-  @apply bg-gradient-to-br from-teal-500/30 to-cyan-500/30;
+  @apply bg-gradient-to-br from-primary/10 to-primary/5;
   transform: rotateX(90deg) translateZ(48px);
 }
 
 .logo-face-bottom {
-  @apply bg-gradient-to-br from-amber-500/30 to-orange-500/30;
+  @apply bg-gradient-to-br from-primary/10 to-primary/5;
   transform: rotateX(-90deg) translateZ(48px);
 }
 
 /* Progress Bar */
 .loading-progress {
-  @apply w-48 h-1 mt-4 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden;
+  @apply w-48 h-1 mt-4 bg-muted rounded-full overflow-hidden;
 }
 
 .progress-bar {
-  @apply h-full bg-gradient-to-r from-blue-600 to-purple-500 rounded-full;
+  @apply h-full bg-gradient-to-r from-brand/60 to-brand rounded-full;
   width: 0%;
   animation: loadProgress 3s ease-out forwards;
 }
@@ -139,11 +139,6 @@ onUnmounted(() => {
 /* Loading Text */
 .loading-text {
   @apply text-sm font-medium;
-}
-
-.text-gradient {
-  @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
-  @apply dark:from-blue-400 dark:to-purple-400;
 }
 
 /* Animations */

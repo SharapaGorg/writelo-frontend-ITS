@@ -279,43 +279,6 @@
     "cancel": "Cancel",
     "message": "This action is irreversible. You are deleting the task «{ dialogTitle }» from the servers."
   },
-  "loader": {
-    "conversation": {
-      "loading": "Loading conversation...",
-      "fetching": "Fetching messages...",
-      "preparing": "Preparing chat..."
-    },
-    "image": {
-      "loading": "Loading image...",
-      "processing": "Processing image...",
-      "optimizing": "Optimizing display..."
-    },
-    "file": {
-      "loading": "Loading file...",
-      "analyzing": "Analyzing content...",
-      "preparing": "Preparing document...",
-      "subtext": "This may take a moment"
-    },
-    "message": {
-      "sending": "Sending message...",
-      "processing": "Processing..."
-    },
-    "search": {
-      "searching": "Searching...",
-      "finding": "Finding results...",
-      "subtext": "Looking through all tasks"
-    },
-    "tasks": {
-      "loading": "Loading your tasks...",
-      "fetching": "Fetching history...",
-      "organizing": "Organizing tasks...",
-      "subtext": "Organizing by date"
-    },
-    "default": {
-      "loading": "Loading...",
-      "please_wait": "Please wait..."
-    }
-  },
   "requestCounter": {
     "title": "Request Limits",
     "basic": "Basic",

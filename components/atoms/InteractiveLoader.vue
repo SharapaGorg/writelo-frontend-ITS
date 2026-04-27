@@ -19,7 +19,7 @@
       <Transition name="fade" mode="out-in">
         <div
             :key="`${currentTipIndex}`"
-            class="text-xs sm:text-sm text-gray-700 dark:text-gray-300 italic absolute inset-0 flex items-center"
+            class="text-xs sm:text-sm text-muted-foreground italic absolute inset-0 flex items-center"
         >
           <span class="mr-1">{{ tipIcon }}</span>
           <span>{{ currentTip }}</span>
@@ -124,37 +124,37 @@ onUnmounted(() => {
 /* Cube faces */
 .cube-face {
   @apply absolute w-full h-full;
-  @apply border border-gray-300 dark:border-gray-600;
+  @apply border border-border/60;
   opacity: 0.9;
 }
 
 .cube-face-front {
-  @apply bg-blue-500/20 dark:bg-blue-400/20;
+  @apply bg-brand/30;
   transform: rotateY(0deg) translateZ(10px);
 }
 
 .cube-face-back {
-  @apply bg-purple-500/20 dark:bg-purple-400/20;
+  @apply bg-brand/30;
   transform: rotateY(180deg) translateZ(10px);
 }
 
 .cube-face-right {
-  @apply bg-pink-500/20 dark:bg-pink-400/20;
+  @apply bg-gradient-to-br from-primary/15 to-brand/20;
   transform: rotateY(90deg) translateZ(10px);
 }
 
 .cube-face-left {
-  @apply bg-indigo-500/20 dark:bg-indigo-400/20;
+  @apply bg-gradient-to-br from-primary/15 to-brand/20;
   transform: rotateY(-90deg) translateZ(10px);
 }
 
 .cube-face-top {
-  @apply bg-teal-500/20 dark:bg-teal-400/20;
+  @apply bg-primary/10;
   transform: rotateX(90deg) translateZ(10px);
 }
 
 .cube-face-bottom {
-  @apply bg-rose-500/20 dark:bg-rose-400/20;
+  @apply bg-primary/10;
   transform: rotateX(-90deg) translateZ(10px);
 }
 
