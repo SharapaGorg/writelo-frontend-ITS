@@ -36,7 +36,7 @@ const isOpen = ref(false)
     <DropdownMenu v-model:open="isOpen">
       <DropdownMenuTrigger as-child>
         <Button
-          class="rounded-l-none border-l border-l-primary-foreground/25 px-3"
+          class="rounded-l-none border-l border-l-brand-foreground/25 px-3"
           :disabled="disabled"
           aria-label="Другие варианты покупки"
         >
@@ -48,17 +48,17 @@ const isOpen = ref(false)
 
       <DropdownMenuContent
         align="end"
-        class="bg-primary text-primary-foreground border-primary/40 p-1.5"
+        class="bg-brand text-brand-foreground border-brand/40 p-1.5"
       >
         <DropdownMenuItem
-          class="cursor-pointer py-2.5 focus:bg-primary-foreground/15 focus:text-primary-foreground"
+          class="cursor-pointer py-2.5 focus:bg-brand-foreground/15 focus:text-brand-foreground"
           @select="emit('purchase', 'self')"
         >
           <ShoppingCart class="h-4 w-4" />
           <span>Купить</span>
         </DropdownMenuItem>
         <DropdownMenuItem
-          class="cursor-pointer py-2.5 focus:bg-primary-foreground/15 focus:text-primary-foreground"
+          class="cursor-pointer py-2.5 focus:bg-brand-foreground/15 focus:text-brand-foreground"
           @select="emit('purchase', 'gift')"
         >
           <Gift class="h-4 w-4" />
