@@ -156,7 +156,12 @@ export const useContentProjectStore = defineStore('contentProject', () => {
     }
   }
 
-  async function createPost(post: Omit<CalendarPost, 'id'>): Promise<CalendarPost | null> {
+  async function createPost(
+    post: Omit<CalendarPost, 'id'>,
+    options: { optimistic?: boolean } = {}
+  ): Promise<CalendarPost | null> {
+    const useOptimistic = options.optimistic ?? true
+
     if (isDemo.value) {
       const project = currentProject.value
       if (!project) {
@@ -183,18 +188,26 @@ export const useContentProjectStore = defineStore('contentProject', () => {
     }
 
     const tempId = `post-tmp-${Date.now()}`
-    const optimistic: CalendarPost = { ...post, id: tempId }
-    project.posts.push(optimistic)
+    if (useOptimistic) {
+      project.posts.push({ ...post, id: tempId })
+    }
 
     try {
       const created = await api.createPost(workspaceId, post)
-      const idx = project.posts.findIndex(p => p.id === tempId)
-      if (idx !== -1) project.posts[idx] = created
+      if (useOptimistic) {
+        const idx = project.posts.findIndex(p => p.id === tempId)
+        if (idx !== -1) project.posts[idx] = created
+        else project.posts.push(created)
+      } else {
+        project.posts.push(created)
+      }
       return created
     } catch (e) {
       console.error('[contentProjectStore] createPost failed:', e)
-      const idx = project.posts.findIndex(p => p.id === tempId)
-      if (idx !== -1) project.posts.splice(idx, 1)
+      if (useOptimistic) {
+        const idx = project.posts.findIndex(p => p.id === tempId)
+        if (idx !== -1) project.posts.splice(idx, 1)
+      }
       return null
     }
   }

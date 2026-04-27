@@ -199,6 +199,7 @@ async function createPostFromTrend(date: string, trend: TrendItem, accountId: st
 // Inline post creation state — clicking "+" opens a local draft form
 // in the sidebar; no request fires until the user submits a title.
 const isCreatingPost = ref(false)
+const isSubmittingPost = ref(false)
 const creatingForDate = ref<string | null>(null)
 
 function handleCreatePost(date: string) {
@@ -215,6 +216,7 @@ function handleCreatePost(date: string) {
 }
 
 async function handleSubmitCreatePost(title: string) {
+  if (isSubmittingPost.value) return
   const trimmed = title.trim()
   if (!trimmed || !creatingForDate.value) return
 
@@ -224,6 +226,9 @@ async function handleSubmitCreatePost(title: string) {
     return
   }
 
+  isSubmittingPost.value = true
+  // optimistic:false — keep the form mounted with a button spinner during the
+  // network round-trip so the post doesn't render alongside the still-open form.
   const newPost = await createPost({
     title: trimmed,
     type: 'post',
@@ -231,24 +236,26 @@ async function handleSubmitCreatePost(title: string) {
     accountId: defaultAccountId,
     tags: [],
     date: creatingForDate.value
-  })
+  }, { optimistic: false })
+  isSubmittingPost.value = false
 
   if (newPost) {
     isCreatingPost.value = false
     creatingForDate.value = null
-    selectPost(newPost.id)
   } else {
     toastError('Не удалось создать пост. Проверь workspace или повтори позже.')
   }
 }
 
 function handleCancelCreatePost() {
+  if (isSubmittingPost.value) return
   isCreatingPost.value = false
   creatingForDate.value = null
 }
 
 // Cancel the inline draft if the user navigates to a different date
 watch(selectedDate, (newDate) => {
+  if (isSubmittingPost.value) return
   if (isCreatingPost.value && newDate !== creatingForDate.value) {
     isCreatingPost.value = false
     creatingForDate.value = null
@@ -588,6 +595,7 @@ onUnmounted(() => {
           :trends="(currentProject?.trends ?? [])"
           :used-trends="usedTrends"
           :is-creating-post="isCreatingPost"
+          :is-submitting-post="isSubmittingPost"
           @select-post="selectPost"
           @close-date="selectDate(null)"
           @close-post="selectPost(null)"

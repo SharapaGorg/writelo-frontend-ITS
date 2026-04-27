@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
+import { Loader2 } from 'lucide-vue-next'
 import PostPreviewPanel from './PostPreviewPanel.vue'
 import NewsSidebar from './NewsSidebar.vue'
 import type { CalendarPost, InfoEvent, ContentTag, NewsItem, TrendItem, SocialAccount } from '../types'
@@ -18,6 +19,7 @@ const props = defineProps<{
   trends: TrendItem[]
   usedTrends: Record<string, string>
   isCreatingPost?: boolean
+  isSubmittingPost?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -46,12 +48,14 @@ watch(
 )
 
 function submitNewPost() {
+  if (props.isSubmittingPost) return
   const title = newPostTitle.value.trim()
   if (!title) return
   emit('submitCreatePost', title)
 }
 
 function cancelNewPost() {
+  if (props.isSubmittingPost) return
   newPostTitle.value = ''
   emit('cancelCreatePost')
 }
@@ -180,22 +184,25 @@ const funDay = computed(() =>
               v-model="newPostTitle"
               type="text"
               placeholder="Введите название..."
-              class="w-full px-3 py-2 text-sm rounded-md bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              :disabled="isSubmittingPost"
+              class="w-full px-3 py-2 text-sm rounded-md bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60 disabled:cursor-not-allowed"
               @keydown.enter.prevent="submitNewPost"
               @keydown.esc.prevent="cancelNewPost"
             />
             <div class="flex items-center justify-end gap-2">
               <button
-                class="px-3 py-1.5 text-xs rounded-md text-muted-foreground hover:bg-accent transition-colors"
+                class="px-3 py-1.5 text-xs rounded-md text-muted-foreground hover:bg-accent transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                :disabled="isSubmittingPost"
                 @click="cancelNewPost"
               >
                 Отмена
               </button>
               <button
-                class="px-3 py-1.5 text-xs rounded-md bg-brand hover:bg-brand/90 disabled:bg-brand/40 disabled:cursor-not-allowed text-brand-foreground transition-colors"
-                :disabled="!newPostTitle.trim()"
+                class="px-3 py-1.5 text-xs rounded-md bg-brand hover:bg-brand/90 disabled:bg-brand/40 disabled:cursor-not-allowed text-brand-foreground transition-colors flex items-center gap-1.5"
+                :disabled="!newPostTitle.trim() || isSubmittingPost"
                 @click="submitNewPost"
               >
+                <Loader2 v-if="isSubmittingPost" class="w-3 h-3 animate-spin" />
                 Создать
               </button>
             </div>

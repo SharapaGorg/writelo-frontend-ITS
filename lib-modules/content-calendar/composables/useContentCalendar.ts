@@ -140,8 +140,11 @@ export function useContentCalendar() {
     return projectStore.updatePost(postId, updates)
   }
 
-  function createPost(post: Omit<CalendarPost, 'id'>): Promise<CalendarPost | null> {
-    return projectStore.createPost(post)
+  function createPost(
+    post: Omit<CalendarPost, 'id'>,
+    options?: { optimistic?: boolean }
+  ): Promise<CalendarPost | null> {
+    return projectStore.createPost(post, options)
   }
 
   function deletePost(postId: string): Promise<boolean> {
