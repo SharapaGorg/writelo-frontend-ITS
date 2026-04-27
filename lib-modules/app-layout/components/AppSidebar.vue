@@ -13,7 +13,9 @@ import {
   User,
   Briefcase,
   Sparkles,
-  Crown
+  Crown,
+  Users,
+  History,
 } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
@@ -21,6 +23,7 @@ import { useAppLayout } from '../composables/useAppLayout'
 import type { SidebarItem } from '../types'
 import { useUserController } from '~/composables/user'
 import { useSettings } from '~/composables/settings'
+import { usePlans } from '~/lib-modules/plans'
 import PublicationsPanel from './PublicationsPanel.vue'
 
 const router = useRouter()
@@ -38,6 +41,8 @@ const isFreePlan = computed(() => {
 })
 const planTitle = computed(() => subscription.value?.title ?? 'Бесплатный')
 
+const { isBusinessPlan } = usePlans()
+
 const iconComponents: Record<string, typeof Calendar> = {
   'calendar': Calendar,
   'pen-square': PenSquare,
@@ -46,6 +51,8 @@ const iconComponents: Record<string, typeof Calendar> = {
   'briefcase': Briefcase,
   'user': User,
   'settings': Settings,
+  'users': Users,
+  'history': History,
 }
 
 function getIcon(iconName: string) {
@@ -173,6 +180,12 @@ function navigate(item: SidebarItem) {
       >
         <div class="text-xs font-medium truncate whitespace-nowrap">
           {{ isFreePlan ? 'Бесплатный тариф' : planTitle }}
+        </div>
+        <div
+          v-if="isBusinessPlan"
+          class="text-[11px] text-muted-foreground truncate whitespace-nowrap"
+        >
+          Командная версия
         </div>
         <div v-if="isFreePlan" class="text-[11px] text-muted-foreground truncate whitespace-nowrap">
           Открыть тарифы →
