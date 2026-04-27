@@ -276,3 +276,55 @@ export interface UserSummaryDto {
   name: string
   avatarUrl: string | null
 }
+
+// === Members & Invites & Activity Log ===
+
+export type WorkspaceInviteStatus = 'pending' | 'accepted' | 'expired' | 'revoked'
+
+export interface WorkspaceMemberDto {
+  userId: string
+  name: string
+  email: string | null
+  role: WorkspaceRole
+  joinedAt: string
+}
+
+export interface WorkspaceInviteDto {
+  id: string
+  email: string
+  role: WorkspaceInviteRole
+  status: WorkspaceInviteStatus
+  expiresAt: string
+  createdAt: string
+  invitedBy: UserSummaryDto | null
+}
+
+export interface WorkspaceInvitePreviewDto {
+  id: string
+  workspaceId: string
+  workspaceName: string
+  role: WorkspaceInviteRole
+  status: WorkspaceInviteStatus
+  expiresAt: string
+  invitedBy: UserSummaryDto
+}
+
+export interface CreateWorkspaceInviteRequest {
+  email: string
+  role: WorkspaceInviteRole
+}
+
+export interface UpdateWorkspaceMemberRequest {
+  role: WorkspaceRole
+}
+
+export interface ActivityLogItemDto {
+  id: string
+  userId: string | null
+  actor: UserSummaryDto | null
+  entityType: string
+  entityId: string
+  action: string
+  payload: unknown | null
+  createdAt: string
+}

@@ -95,6 +95,11 @@ export enum ApiAliases {
     workspaceMember = 'workspaces/{workspaceId}/members/{userId}',
     workspaceInvites = 'workspaces/{workspaceId}/invites',
     workspaceInvite = 'workspaces/{workspaceId}/invites/{inviteId}',
+    workspaceInviteRevoke = 'workspaces/{workspaceId}/invites/{inviteId}/revoke',
+    // Token-based (publicly previewable; accept/decline require auth):
+    workspaceInvitePreview = 'workspace-invites/{token}',
+    workspaceInviteAccept = 'workspace-invites/{token}/accept',
+    workspaceInviteDecline = 'workspace-invites/{token}/decline',
 
     // Activity log
     workspaceActivityLog = 'workspaces/{workspaceId}/activity-log',
