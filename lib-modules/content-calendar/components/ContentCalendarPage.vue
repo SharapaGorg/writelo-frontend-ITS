@@ -88,10 +88,30 @@ async function confirmUnlink() {
   }
 }
 
+const deletePostDialogOpen = ref(false)
+const pendingDeletePostId = ref<string | null>(null)
+
+const pendingDeletePost = computed(() => {
+  const id = pendingDeletePostId.value
+  if (!id) return null
+  return (currentProject.value?.posts ?? []).find(p => p.id === id) ?? null
+})
+
 function handlePostDelete() {
-  if (selectedPostId.value) {
-    deletePost(selectedPostId.value)
-    selectPost(null)
+  if (!selectedPostId.value) return
+  pendingDeletePostId.value = selectedPostId.value
+  deletePostDialogOpen.value = true
+}
+
+async function confirmPostDelete() {
+  const id = pendingDeletePostId.value
+  if (!id) return
+  deletePostDialogOpen.value = false
+  pendingDeletePostId.value = null
+  selectPost(null)
+  const ok = await deletePost(id)
+  if (!ok) {
+    toastError('Не удалось удалить пост. Повтори попытку позже.')
   }
 }
 
@@ -663,6 +683,26 @@ onUnmounted(() => {
             @click="confirmUnlink"
           >
             Отвязать
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <AlertDialog v-model:open="deletePostDialogOpen">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Удалить пост?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Пост «{{ pendingDeletePost?.title || 'без названия' }}» будет удалён без возможности восстановления.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel class="cursor-pointer">Отмена</AlertDialogCancel>
+          <AlertDialogAction
+            class="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            @click="confirmPostDelete"
+          >
+            Удалить
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
