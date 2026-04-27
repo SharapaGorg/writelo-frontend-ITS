@@ -32,7 +32,7 @@ function draftToCalendarPostInput(draft: ContentDraft): Omit<CalendarPost, 'id'>
   // Editor ContentType ('post' | 'story' | 'reel') → Calendar ContentType ('post' | 'story' | 'reels' | 'article')
   const type: CalendarContentType = draft.type === 'reel' ? 'reels' : draft.type
   const { date, time } = splitScheduledDate(draft.scheduledDate)
-  // Media is persisted via the separate /posts/uploads/* pipeline — not through upsert.
+  // Media is persisted via the workspace /uploads/* pipeline — not through upsert.
   return {
     title: draft.title,
     // Editor's single main textarea maps to backend contentText (CalendarPost.content).

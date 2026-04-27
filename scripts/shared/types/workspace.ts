@@ -115,24 +115,6 @@ export interface FinalizeUploadResponse {
   type: MessageFileType
 }
 
-// Post-media upload (separate pair per API 23.04 — не переиспользовать общий uploadFile).
-export interface InitPostMediaUploadRequest {
-  fileName: string
-  contentType: string
-  sizeBytes: number
-}
-
-export interface FinalizePostMediaUploadRequest {
-  objectId: string
-  fileName: string
-}
-
-export interface FinalizePostMediaUploadResponse {
-  storageObjectId: string
-  contentType: string
-  sizeBytes: number | string
-}
-
 export type PostMediaFileType = 'image' | 'video'
 
 export interface UpsertPostMediaRequest {

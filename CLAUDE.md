@@ -139,7 +139,7 @@ const result = await uploadFile(file, (progress) => {
 // result.storageObjectId
 ```
 
-> Для медиа к постам использовать отдельную пару `posts/uploads/init` + `finalize` (см. `docs/api-changelog-2026-04-23.md`), НЕ общий `uploadFile()`.
+> Для медиа к постам использовать общий `workspaces/{id}/uploads/init|finalize` — отдельной `posts/uploads/*` пары больше нет (актуальный спек `docs/v1-26.04.json`). См. `lib-modules/content-calendar/helpers/api.ts → uploadPostMedia`.
 
 ### Streaming messages (SSE)
 ```ts
