@@ -14,6 +14,7 @@ import TelegramLinkFlow from '~/lib-modules/content-calendar/components/Telegram
 import { AppNavbar, type BreadcrumbItem } from '~/lib-modules/app-layout'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useWorkspacesApi } from '../helpers/api'
+import { useContentProjectStore } from '~/lib-modules/content-calendar/stores/contentProjectStore'
 import type { WorkspaceDto } from '../types'
 import type { SocialNetwork } from '~/lib-modules/content-calendar/types'
 import { getToasterPosition } from '~/scripts/features/utils/toater'
@@ -25,6 +26,7 @@ const workspace = ref<WorkspaceDto | null>(null)
 
 const { getWorkspaceById, initialize, workspaces } = useWorkspaces()
 const api = useWorkspacesApi()
+const projectStore = useContentProjectStore()
 
 interface PlatformOption {
   id: SocialNetwork
@@ -76,9 +78,16 @@ function openPlatform(id: SocialNetwork) {
   dialogOpen.value = true
 }
 
-function onChannelLinked(_socialAccountId: string) {
+async function onChannelLinked(_socialAccountId: string) {
   toast.success('Канал привязан', { position: getToasterPosition() })
   dialogOpen.value = false
+  // Принудительный рефетч в стор: дефолтный watcher на смене workspaceId
+  // молчит, когда воркспейс не сменился (или когда в проекте уже есть данные),
+  // поэтому без явного вызова на /app/calendar придётся жать F5, чтобы увидеть
+  // только что привязанный канал.
+  if (workspaceId.value) {
+    projectStore.fetchProjectData(workspaceId.value)
+  }
   navigateTo('/app/calendar')
 }
 

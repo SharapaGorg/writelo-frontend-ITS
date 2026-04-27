@@ -542,6 +542,7 @@ onUnmounted(() => {
       <AccountsSidebar
         :accounts="(currentProject?.accounts ?? [])"
         :active-account-ids="activeAccountIds"
+        :loading="projectStore.loading"
         @toggle="toggleAccount"
         @unlink="onUnlinkRequest"
       />

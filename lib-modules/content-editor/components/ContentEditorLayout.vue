@@ -136,6 +136,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         :accounts="currentProjectAccounts"
         :selected-account-id="selectedAccountId ?? undefined"
         :single-select="true"
+        :loading="projectStore.loading"
         @select="selectAccount"
         @unlink="onUnlinkRequest"
       />

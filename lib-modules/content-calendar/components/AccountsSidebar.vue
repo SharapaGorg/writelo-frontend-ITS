@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Plus, Trash2 } from 'lucide-vue-next'
+import { Plus, Trash2, Loader2 } from 'lucide-vue-next'
 import type { SocialAccount, SocialNetwork } from '../types'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import {
@@ -15,9 +15,11 @@ const props = withDefaults(defineProps<{
   activeAccountIds?: string[]
   selectedAccountId?: string
   singleSelect?: boolean
+  loading?: boolean
 }>(), {
   activeAccountIds: () => [],
-  singleSelect: false
+  singleSelect: false,
+  loading: false,
 })
 
 const { currentWorkspaceId } = useWorkspaceContext()
@@ -132,7 +134,15 @@ function isActive(accountId: string): boolean {
 
     <div class="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
       <div
-        v-if="accounts.length === 0"
+        v-if="accounts.length === 0 && loading"
+        class="flex items-center justify-center gap-2 px-2 py-6 text-xs text-muted-foreground"
+      >
+        <Loader2 class="h-4 w-4 animate-spin" />
+        Загрузка…
+      </div>
+
+      <div
+        v-else-if="accounts.length === 0"
         class="flex flex-col items-center text-center gap-3 px-2 py-6"
       >
         <p class="text-xs text-muted-foreground leading-relaxed">
