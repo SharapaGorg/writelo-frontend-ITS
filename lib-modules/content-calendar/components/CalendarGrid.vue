@@ -5,7 +5,7 @@ import type { CalendarPost, TrendItem, SocialAccount } from '../types'
 import type { ReelItem } from '~/lib-modules/reels-research'
 
 const props = defineProps<{
-  currentMonth: Date
+  currentMonth: Date | null
   selectedDate: string | null
   getPostsForDate: (date: string) => CalendarPost[]
   hasInfoEvent: (date: string) => boolean
@@ -33,6 +33,7 @@ const emit = defineEmits<{
 const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 
 const monthName = computed(() => {
+  if (!props.currentMonth) return ''
   return props.currentMonth.toLocaleString('ru', { month: 'long', year: 'numeric' })
 })
 
@@ -44,6 +45,7 @@ interface DayInfo {
 }
 
 const calendarDays = computed((): DayInfo[] => {
+  if (!props.currentMonth) return []
   const year = props.currentMonth.getFullYear()
   const month = props.currentMonth.getMonth()
 
@@ -126,23 +128,32 @@ const calendarDays = computed((): DayInfo[] => {
 
     <!-- Calendar grid -->
     <div class="grid grid-cols-7 gap-1 px-2">
-      <DayCell
-        v-for="day in calendarDays"
-        :key="day.date"
-        :date="day.date"
-        :day-number="day.dayNumber"
-        :is-current-month="day.isCurrentMonth"
-        :is-today="day.isToday"
-        :is-selected="selectedDate === day.date"
-        :posts="getPostsForDate(day.date)"
-        :has-info-event="hasInfoEvent(day.date)"
-        :accounts="accounts"
-        @select="emit('selectDate', $event)"
-        @drop-news="(date, news) => emit('dropNews', date, news)"
-        @drop-trend="(date, trend) => emit('dropTrend', date, trend)"
-        @drop-reel="(date, reel) => emit('dropReel', date, reel)"
-        @create-post="emit('createPost', $event)"
-      />
+      <template v-if="calendarDays.length > 0">
+        <DayCell
+          v-for="day in calendarDays"
+          :key="day.date"
+          :date="day.date"
+          :day-number="day.dayNumber"
+          :is-current-month="day.isCurrentMonth"
+          :is-today="day.isToday"
+          :is-selected="selectedDate === day.date"
+          :posts="getPostsForDate(day.date)"
+          :has-info-event="hasInfoEvent(day.date)"
+          :accounts="accounts"
+          @select="emit('selectDate', $event)"
+          @drop-news="(date, news) => emit('dropNews', date, news)"
+          @drop-trend="(date, trend) => emit('dropTrend', date, trend)"
+          @drop-reel="(date, reel) => emit('dropReel', date, reel)"
+          @create-post="emit('createPost', $event)"
+        />
+      </template>
+      <template v-else>
+        <div
+          v-for="i in 42"
+          :key="`placeholder-${i}`"
+          class="h-24 rounded-md border border-transparent"
+        />
+      </template>
     </div>
   </div>
 </template>

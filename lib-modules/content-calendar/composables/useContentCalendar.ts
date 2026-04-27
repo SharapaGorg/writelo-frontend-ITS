@@ -1,4 +1,4 @@
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import type { CalendarPost, InfoEvent, PostStatus, ContentTag, SocialAccount } from '../types'
 import { useContentProjectStore } from '../stores/contentProjectStore'
@@ -13,7 +13,12 @@ export function useContentCalendar() {
   const activeAccountIds = ref<string[]>([])
   const activeStatuses = ref<PostStatus[]>(['idea', 'draft', 'ready', 'published'])
   const activeTags = ref<string[]>([])
-  const currentMonth = ref<Date>(new Date())
+  // Lazy init on client to avoid SSR/CSR mismatch on month boundary:
+  // pre-rendered HTML must not bake in build-time `new Date()`.
+  const currentMonth = ref<Date | null>(null)
+  onMounted(() => {
+    if (!currentMonth.value) currentMonth.value = new Date()
+  })
 
   const usedNews = ref<Record<string, string>>({})
   const usedTrends = ref<Record<string, string>>({})
@@ -172,12 +177,14 @@ export function useContentCalendar() {
   }
 
   function nextMonth() {
+    if (!currentMonth.value) return
     const next = new Date(currentMonth.value)
     next.setMonth(next.getMonth() + 1)
     currentMonth.value = next
   }
 
   function prevMonth() {
+    if (!currentMonth.value) return
     const prev = new Date(currentMonth.value)
     prev.setMonth(prev.getMonth() - 1)
     currentMonth.value = prev
