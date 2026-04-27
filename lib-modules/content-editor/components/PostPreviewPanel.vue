@@ -4,7 +4,7 @@ import { Save, Loader2, Send } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
-import ScheduledDatePicker from './ScheduledDatePicker.vue'
+import ScheduledDatePicker from '~/components/molecules/DateTimePicker.vue'
 import {
   AlertDialog,
   AlertDialogAction,

@@ -20,10 +20,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover
 import { TimeInput } from '~/components/ui/time-input'
 import { cn } from '~/lib-modules/utils'
 
-const props = defineProps<{
-  modelValue: string | null
-  disabled?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    modelValue: string | null
+    disabled?: boolean
+    placeholder?: string
+    showPresets?: boolean
+  }>(),
+  { placeholder: 'Запланировать', showPresets: true },
+)
 
 const emit = defineEmits<{ 'update:modelValue': [value: string | null] }>()
 
@@ -44,7 +49,7 @@ const calendarValue = computed<DateValue | undefined>(() => {
 const monthsRu = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек']
 
 const buttonLabel = computed(() => {
-  if (!props.modelValue || !dateStr.value) return 'Запланировать'
+  if (!props.modelValue || !dateStr.value) return props.placeholder
   const [, m, d] = dateStr.value.split('-')
   const dd = parseInt(d, 10)
   const mm = monthsRu[parseInt(m, 10) - 1]
@@ -184,7 +189,7 @@ function clear() {
               <span class="text-xs text-muted-foreground">Время</span>
               <TimeInput :model-value="timeStr" @update:model-value="onTimeChange" />
             </div>
-            <div class="flex flex-wrap gap-1.5">
+            <div v-if="showPresets" class="flex flex-wrap gap-1.5">
               <button
                 type="button"
                 class="rounded-md border border-border px-2 py-1 text-xs text-foreground hover:bg-accent"
