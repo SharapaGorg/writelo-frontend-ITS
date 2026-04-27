@@ -94,10 +94,11 @@ const extraCount = computed(() => props.posts.length - 4)
     :class="[
       'day-cell relative h-24 p-2 text-left transition-all border rounded-md flex flex-col overflow-hidden',
       isCurrentMonth
-        ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-card')
-        : 'bg-muted opacity-40',
-      isSelected ? 'border-primary ring-1 ring-primary' : (hasInfoEvent && isCurrentMonth ? 'border-amber-500/40 hover:border-amber-500/60' : 'border-border hover:border-border'),
-      isToday && !isSelected ? 'border-primary/50' : '',
+        ? (hasInfoEvent ? 'bg-amber-500/10' : 'bg-muted/60 hover:bg-muted')
+        : 'bg-transparent opacity-50',
+      isSelected
+        ? 'border-primary ring-1 ring-primary'
+        : (hasInfoEvent && isCurrentMonth ? 'border-amber-500/40 hover:border-amber-500/60' : 'border-border hover:border-foreground/20'),
       isDragOver ? 'border-green-500 bg-green-500/10 ring-1 ring-green-500' : ''
     ]"
     @click="emit('select', date)"
@@ -125,9 +126,17 @@ const extraCount = computed(() => props.posts.length - 4)
     <!-- Top row: day number + social icons -->
     <div class="flex items-start justify-between w-full gap-1 overflow-hidden">
       <span
+        v-if="isToday"
+        class="inline-flex items-center justify-center min-w-[1.5rem] h-6 px-1.5 rounded-full bg-brand text-brand-foreground text-xs font-semibold leading-none flex-shrink-0"
+        title="Сегодня"
+      >
+        {{ dayNumber }}
+      </span>
+      <span
+        v-else
         :class="[
           'text-sm font-medium flex-shrink-0',
-          isToday ? 'text-primary' : isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'
+          isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'
         ]"
       >
         {{ dayNumber }}
