@@ -3,7 +3,7 @@ import TailwindScrollbar from "tailwind-scrollbar";
 /** @type {import('tailwindcss').Config} */
 export default {
     mode: "jit",
-    darkMode: "media",
+    darkMode: "class",
     content: [
         "./components/**/*.{js,vue,ts}",
         "./layouts/**/*.vue",

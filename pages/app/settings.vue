@@ -6,6 +6,7 @@ import Spinner from '~/components/atoms/Spinner.vue'
 import { Button } from '~/components/ui/button'
 import { useDemoMode } from '~/lib-modules/demo-mode'
 import { AppNavbar } from '~/lib-modules/app-layout'
+import { useTheme, type ThemeMode } from '~/composables/useTheme'
 
 definePageMeta({
   layout: 'app'
@@ -17,7 +18,17 @@ const $settings = useSettings()
 
 const language = ref('')
 const languages = ref<Record<string, string>>({})
-const beenChanged = ref(false)
+const langChanged = ref(false)
+
+const { theme, setTheme } = useTheme()
+const themeOptions: { value: ThemeMode; label: string }[] = [
+  { value: 'system', label: 'settings-theme-system' },
+  { value: 'light',  label: 'settings-theme-light'  },
+  { value: 'dark',   label: 'settings-theme-dark'   },
+]
+const pendingTheme = ref<ThemeMode>(theme.value)
+const themeChanged = computed(() => pendingTheme.value !== theme.value)
+const beenChanged = computed(() => langChanged.value || themeChanged.value)
 
 const initSettings = async () => {
   const config = $settings.getConfig()
@@ -25,9 +36,10 @@ const initSettings = async () => {
 
   languages.value = config.languages
   language.value = $settings.getLanguage()
+  pendingTheme.value = theme.value
 
   await nextTick(() => {
-    beenChanged.value = false
+    langChanged.value = false
   })
 }
 
@@ -41,16 +53,22 @@ watch($settings.loaded, async (value) => {
 })
 
 watch(language, (lang) => {
-  beenChanged.value = $settings.isBeenChanged(lang)
+  langChanged.value = $settings.isBeenChanged(lang)
 })
 
 const saveChanges = async () => {
   if (!beenChanged.value) return
 
+  if (themeChanged.value) {
+    setTheme(pendingTheme.value)
+  }
+
+  if (!langChanged.value) return
+
   if (isGuestDemo.value) {
     locale.value = language.value as typeof locale.value
     localStorage.setItem('preferred-locale', language.value)
-    beenChanged.value = false
+    langChanged.value = false
     return
   }
 
@@ -58,14 +76,14 @@ const saveChanges = async () => {
   const prevLocale = locale.value
 
   locale.value = language.value as typeof locale.value
-  beenChanged.value = false
+  langChanged.value = false
 
   try {
     await $settings.saveLanguage(language.value)
   } catch {
     language.value = prevLanguage
     locale.value = prevLocale
-    beenChanged.value = true
+    langChanged.value = true
   }
 }
 </script>
@@ -88,6 +106,22 @@ const saveChanges = async () => {
             >
               <SelectItem v-for="lang in Object.keys(languages)" :key="lang" :value="lang">
                 {{ languages[lang] }}
+              </SelectItem>
+            </MultiChoiceContainer>
+          </section>
+
+          <section class="flex flex-col gap-2">
+            <h2 class="text-sm font-medium text-muted-foreground">{{ $t('settings-theme') }}</h2>
+            <MultiChoiceContainer
+              v-model="pendingTheme"
+              :default-value="pendingTheme"
+            >
+              <SelectItem
+                v-for="opt in themeOptions"
+                :key="opt.value"
+                :value="opt.value"
+              >
+                {{ $t(opt.label) }}
               </SelectItem>
             </MultiChoiceContainer>
           </section>

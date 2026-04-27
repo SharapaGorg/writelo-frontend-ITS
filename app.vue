@@ -1,5 +1,5 @@
 <template>
-  <div class="app-root" :class="{ dark: isDark }">
+  <div class="app-root">
     <Meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
     <ClientOnly>
@@ -30,7 +30,8 @@ import AppLoader from "~/components/atoms/AppLoader.vue";
 
 // На сервере (SSR/prerender) не показываем loading — контент должен быть в HTML для SEO
 const loading = ref(!import.meta.server);
-const isDark = ref(false);
+
+useTheme();
 
 const $settings = useSettings();
 const $user = useUserController();
@@ -72,11 +73,6 @@ watch(locale, () => {
       loading.value = false;
     });
   }, 500)
-});
-
-// Check dark mode only on client after hydration
-onMounted(() => {
-  isDark.value = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
 });
 
 // Инициализация только на клиенте

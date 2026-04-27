@@ -79,35 +79,33 @@ html, body {
         --chart-5: 17 61% 45%;
     }
 
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --background: 0 0% 4%;
-            --foreground: 40 29% 90%;
-            --card: 0 0% 7%;
-            --card-foreground: 40 29% 90%;
-            --popover: 0 0% 7%;
-            --popover-foreground: 40 29% 90%;
-            --primary: 40 29% 90%;
-            --primary-foreground: 0 0% 9%;
-            --secondary: 0 0% 9%;
-            --secondary-foreground: 40 29% 90%;
-            --muted: 0 0% 9%;
-            --muted-foreground: 0 0% 62%;
-            --accent: 0 0% 14%;
-            --accent-foreground: 40 29% 90%;
-            --destructive: 0 62% 35%;
-            --destructive-foreground: 40 29% 90%;
-            --border: 0 0% 14%;
-            --input: 0 0% 14%;
-            --ring: 17 63% 54%;
-            --brand: 17 63% 54%;
-            --brand-foreground: 0 0% 100%;
-            --chart-1: 17 63% 54%;
-            --chart-2: 36 10% 62%;
-            --chart-3: 40 29% 90%;
-            --chart-4: 30 6% 33%;
-            --chart-5: 17 61% 45%;
-        }
+    .dark {
+        --background: 0 0% 4%;
+        --foreground: 40 29% 90%;
+        --card: 0 0% 7%;
+        --card-foreground: 40 29% 90%;
+        --popover: 0 0% 7%;
+        --popover-foreground: 40 29% 90%;
+        --primary: 40 29% 90%;
+        --primary-foreground: 0 0% 9%;
+        --secondary: 0 0% 9%;
+        --secondary-foreground: 40 29% 90%;
+        --muted: 0 0% 9%;
+        --muted-foreground: 0 0% 62%;
+        --accent: 0 0% 14%;
+        --accent-foreground: 40 29% 90%;
+        --destructive: 0 62% 35%;
+        --destructive-foreground: 40 29% 90%;
+        --border: 0 0% 14%;
+        --input: 0 0% 14%;
+        --ring: 17 63% 54%;
+        --brand: 17 63% 54%;
+        --brand-foreground: 0 0% 100%;
+        --chart-1: 17 63% 54%;
+        --chart-2: 36 10% 62%;
+        --chart-3: 40 29% 90%;
+        --chart-4: 30 6% 33%;
+        --chart-5: 17 61% 45%;
     }
 }
 
