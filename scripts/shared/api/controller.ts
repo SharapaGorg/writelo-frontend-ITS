@@ -111,7 +111,8 @@ export class ApiController {
         url: string,
         method: RequestMethod = RequestMethod.GET,
         data = {},
-        streaming: boolean = false
+        streaming: boolean = false,
+        silent: boolean = false
     ): Promise<ReadableStream<Uint8Array> | any | null> {
         const $user = useUserController();
 
@@ -235,8 +236,11 @@ export class ApiController {
                 throw e;
             }
 
-            // Show error toast for other errors (4xx)
-            if (!streaming) {
+            // Show error toast for other errors (4xx).
+            // `silent: true` suppresses controller-level toasts so the caller can
+            // implement verify-by-refetch / custom error UX (e.g. unlinkAccount where
+            // backend may return 4xx but actually mutated state — we re-fetch to know).
+            if (!streaming && !silent) {
                 if (serverMessage) {
                     toastError(serverMessage);
                 } else if (errorStatus && errorStatus >= 400 && errorStatus < 500) {

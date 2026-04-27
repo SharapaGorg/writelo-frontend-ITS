@@ -2,10 +2,24 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import interact from 'interactjs'
 import { MessageSquare, Image } from 'lucide-vue-next'
+import { toast } from 'vue-sonner'
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
 import { AccountsSidebar } from '~/lib-modules/content-calendar'
+import { useContentProjectStore } from '~/lib-modules/content-calendar/stores/contentProjectStore'
+import type { SocialAccount } from '~/lib-modules/content-calendar/types'
 import { AppNavbar, type BreadcrumbItem } from '~/lib-modules/app-layout'
+import { getToasterPosition } from '~/scripts/features/utils/toater'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '~/components/ui/alert-dialog'
 
 const props = withDefaults(defineProps<{
   showcaseMode?: boolean
@@ -27,6 +41,33 @@ const {
 
 const isLeftActive = computed(() => activePanel.value === 'left')
 const isRightActive = computed(() => activePanel.value === 'right')
+
+const projectStore = useContentProjectStore()
+const unlinkDialogOpen = ref(false)
+const pendingUnlink = ref<SocialAccount | null>(null)
+
+function onUnlinkRequest(accountId: string) {
+  const acc = currentProjectAccounts.value.find(a => a.id === accountId)
+  if (!acc) return
+  pendingUnlink.value = acc
+  unlinkDialogOpen.value = true
+}
+
+async function confirmUnlink() {
+  const acc = pendingUnlink.value
+  if (!acc) return
+  unlinkDialogOpen.value = false
+  if (selectedAccountId.value === acc.id) {
+    selectAccount(null)
+  }
+  const ok = await projectStore.unlinkAccount(acc.id)
+  pendingUnlink.value = null
+  if (ok) {
+    toast.success('Аккаунт отвязан', { position: getToasterPosition() })
+  } else {
+    toast.error('Не получилось отвязать аккаунт', { position: getToasterPosition() })
+  }
+}
 
 // Resizable panel state
 const leftPanelWidth = ref(50) // percentage
@@ -96,6 +137,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         :selected-account-id="selectedAccountId ?? undefined"
         :single-select="true"
         @select="selectAccount"
+        @unlink="onUnlinkRequest"
       />
 
       <!-- Panels container -->
@@ -172,5 +214,25 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         </div>
       </div>
     </div>
+
+    <AlertDialog v-model:open="unlinkDialogOpen">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Отвязать аккаунт?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Канал «{{ pendingUnlink?.name }}» будет отвязан от бренда. Запланированные публикации в него не пройдут.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel class="cursor-pointer">Отмена</AlertDialogCancel>
+          <AlertDialogAction
+            class="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            @click="confirmUnlink"
+          >
+            Отвязать
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>

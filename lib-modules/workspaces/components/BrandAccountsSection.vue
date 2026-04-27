@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { Loader2, Plus } from 'lucide-vue-next'
+import { Loader2, Plus, MoreVertical, Trash2 } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu'
 import type { SocialAccount } from '~/lib-modules/content-calendar/types'
 
 defineProps<{
@@ -9,6 +15,10 @@ defineProps<{
   accounts: SocialAccount[]
   loading: boolean
   loaded: boolean
+}>()
+
+const emit = defineEmits<{
+  unlink: [accountId: string]
 }>()
 
 function goToConnect(workspaceId: string) {
@@ -72,6 +82,26 @@ function goToConnect(workspaceId: string) {
         <span v-if="a.username" class="text-xs text-muted-foreground truncate max-w-[10rem]">
           {{ a.username }}
         </span>
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <button
+              type="button"
+              class="ml-1 rounded p-0.5 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Действия с аккаунтом"
+            >
+              <MoreVertical class="h-3.5 w-3.5" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              class="cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
+              @click="emit('unlink', a.id)"
+            >
+              <Trash2 class="mr-2 h-4 w-4" />
+              Отвязать
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
 

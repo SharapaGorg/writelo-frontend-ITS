@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { Plus, Trash2 } from 'lucide-vue-next'
 import type { SocialAccount, SocialNetwork } from '../types'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from '~/components/ui/context-menu'
 
 const props = withDefaults(defineProps<{
   accounts: SocialAccount[]
@@ -28,6 +34,7 @@ function goToConnect() {
 const emit = defineEmits<{
   toggle: [accountId: string]
   select: [accountId: string]
+  unlink: [accountId: string]
 }>()
 
 const STORAGE_KEY = 'accounts-sidebar-width'
@@ -141,9 +148,9 @@ function isActive(accountId: string): boolean {
         </button>
       </div>
 
+      <ContextMenu v-for="account in accounts" :key="account.id">
+        <ContextMenuTrigger as-child>
       <button
-        v-for="account in accounts"
-        :key="account.id"
         :class="[
           'w-full rounded-md border-2 transition-all flex items-center gap-3 p-3',
           isActive(account.id)
@@ -174,6 +181,17 @@ function isActive(accountId: string): boolean {
           {{ account.name }}
         </span>
       </button>
+        </ContextMenuTrigger>
+        <ContextMenuContent>
+          <ContextMenuItem
+            class="cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
+            @click="emit('unlink', account.id)"
+          >
+            <Trash2 class="mr-2 h-4 w-4" />
+            Отвязать
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
 
       <button
         v-if="accounts.length > 0"

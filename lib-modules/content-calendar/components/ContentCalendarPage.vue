@@ -16,7 +16,18 @@ import { useContentProjectStore } from '../stores/contentProjectStore'
 import type { NewsItem, TrendItem, ContentTag, SocialAccount } from '../types'
 import { useWorkspaces } from '~/lib-modules/workspaces'
 import { useUserController } from '~/composables/user'
-import { toastError } from '~/scripts/features/utils/toater'
+import { toastError, getToasterPosition } from '~/scripts/features/utils/toater'
+import { toast } from 'vue-sonner'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '~/components/ui/alert-dialog'
 
 const props = withDefaults(defineProps<{
   showcaseMode?: boolean
@@ -52,6 +63,30 @@ const {
   markTrendAsUsed,
   usedTrends,
 } = useContentCalendar()
+
+const projectStore = useContentProjectStore()
+const unlinkDialogOpen = ref(false)
+const pendingUnlink = ref<SocialAccount | null>(null)
+
+function onUnlinkRequest(accountId: string) {
+  const acc = currentProject.value?.accounts.find(a => a.id === accountId)
+  if (!acc) return
+  pendingUnlink.value = acc
+  unlinkDialogOpen.value = true
+}
+
+async function confirmUnlink() {
+  const acc = pendingUnlink.value
+  if (!acc) return
+  unlinkDialogOpen.value = false
+  const ok = await projectStore.unlinkAccount(acc.id)
+  pendingUnlink.value = null
+  if (ok) {
+    toast.success('Аккаунт отвязан', { position: getToasterPosition() })
+  } else {
+    toast.error('Не получилось отвязать аккаунт', { position: getToasterPosition() })
+  }
+}
 
 function handlePostDelete() {
   if (selectedPostId.value) {
@@ -508,6 +543,7 @@ onUnmounted(() => {
         :accounts="(currentProject?.accounts ?? [])"
         :active-account-ids="activeAccountIds"
         @toggle="toggleAccount"
+        @unlink="onUnlinkRequest"
       />
 
       <div class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
@@ -602,5 +638,25 @@ onUnmounted(() => {
         </div>
       </DialogContent>
     </Dialog>
+
+    <AlertDialog v-model:open="unlinkDialogOpen">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Отвязать аккаунт?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Канал «{{ pendingUnlink?.name }}» будет отвязан от бренда. Запланированные публикации в него не пройдут.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel class="cursor-pointer">Отмена</AlertDialogCancel>
+          <AlertDialogAction
+            class="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            @click="confirmUnlink"
+          >
+            Отвязать
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>

@@ -22,7 +22,8 @@ import { AppNavbar } from '~/lib-modules/app-layout'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useDemoGuard } from '~/lib-modules/demo-mode'
 import { useSettings } from '~/composables/settings'
-import { toastError, toastChangesSavedSuccess, toastDeleteSuccess } from '~/scripts/features/utils/toater'
+import { toastError, toastChangesSavedSuccess, toastDeleteSuccess, getToasterPosition } from '~/scripts/features/utils/toater'
+import { toast } from 'vue-sonner'
 // Direct imports (not via barrel) to avoid module-eval cycle: content-calendar
 // barrel re-exports ContentCalendarPage, which imports from '~/lib-modules/workspaces'.
 import { useContentCalendarApi } from '~/lib-modules/content-calendar/helpers/api'
@@ -41,6 +42,8 @@ const deletingId = ref<string | null>(null)
 const deleteTarget = ref<string | null>(null)
 const deleteDialogOpen = ref(false)
 const isCreating = ref(false)
+const unlinkAccountDialogOpen = ref(false)
+const pendingUnlinkAccount = ref<{ workspaceId: string; account: SocialAccount } | null>(null)
 
 // Accounts state per workspace — loaded lazily when the accordion opens.
 const accountsByWorkspace = reactive<Record<string, SocialAccount[]>>({})
@@ -271,6 +274,42 @@ async function confirmDelete() {
   })
 }
 
+function onAccountUnlinkRequest(workspaceId: string, accountId: string) {
+  const acc = (accountsByWorkspace[workspaceId] ?? []).find(a => a.id === accountId)
+  if (!acc) return
+  pendingUnlinkAccount.value = { workspaceId, account: acc }
+  unlinkAccountDialogOpen.value = true
+}
+
+async function confirmAccountUnlink() {
+  const p = pendingUnlinkAccount.value
+  if (!p) return
+  unlinkAccountDialogOpen.value = false
+  // Бэк иногда отдаёт 4xx, но фактически удаляет аккаунт. Игнорим ошибку
+  // DELETE и проверяем результат через рефетч — если в свежем списке id нет,
+  // считаем успешным.
+  try {
+    await calendarApi.deleteSocialAccount(p.workspaceId, p.account.id)
+  } catch (e) {
+    console.warn('[WorkspacesListPage] DELETE returned error, will verify via refetch', e)
+  }
+
+  try {
+    const fresh = await calendarApi.getSocialAccounts(p.workspaceId, true)
+    accountsByWorkspace[p.workspaceId] = fresh
+    if (!fresh.some(a => a.id === p.account.id)) {
+      toast.success('Аккаунт отвязан', { position: getToasterPosition() })
+    } else {
+      toast.error('Не получилось отвязать аккаунт', { position: getToasterPosition() })
+    }
+  } catch (e) {
+    console.error('[WorkspacesListPage] refetch after unlink failed:', e)
+    toast.error('Не получилось отвязать аккаунт', { position: getToasterPosition() })
+  } finally {
+    pendingUnlinkAccount.value = null
+  }
+}
+
 watch(
   workspaces,
   (list) => {
@@ -417,6 +456,7 @@ onMounted(async () => {
                 :accounts="accountsByWorkspace[w.id] ?? []"
                 :loading="accountsLoading[w.id] === true"
                 :loaded="accountsLoaded[w.id] === true"
+                @unlink="(id) => onAccountUnlinkRequest(w.id, id)"
               />
 
               <div class="space-y-2">
@@ -479,6 +519,26 @@ onMounted(async () => {
             @click="confirmDelete"
           >
             {{ t_('delete') }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <AlertDialog v-model:open="unlinkAccountDialogOpen">
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Отвязать аккаунт?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Канал «{{ pendingUnlinkAccount?.account.name }}» будет отвязан от бренда. Запланированные публикации в него не пройдут.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel class="cursor-pointer">{{ t_('cancel') }}</AlertDialogCancel>
+          <AlertDialogAction
+            class="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            @click="confirmAccountUnlink"
+          >
+            Отвязать
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

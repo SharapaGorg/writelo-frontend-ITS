@@ -221,6 +221,39 @@ export const useContentProjectStore = defineStore('contentProject', () => {
     }
   }
 
+  async function unlinkAccount(accountId: string): Promise<boolean> {
+    const project = currentProject.value
+    if (!project) return false
+    const idx = project.accounts.findIndex(a => a.id === accountId)
+    if (idx === -1) return false
+
+    if (isDemo.value) {
+      project.accounts.splice(idx, 1)
+      return true
+    }
+
+    const workspaceId = context.currentWorkspaceId.value
+    if (!workspaceId) return false
+
+    // Бэк иногда отдаёт 4xx, но фактически удаляет аккаунт. Поэтому игнорим
+    // сетевую ошибку и определяем успех через рефетч списка: если удалённого
+    // id больше нет — считаем что отвязали.
+    try {
+      await api.deleteSocialAccount(workspaceId, accountId)
+    } catch (e) {
+      console.warn('[contentProjectStore] unlinkAccount: DELETE returned error, will verify via refetch', e)
+    }
+
+    try {
+      const fresh = await api.getSocialAccounts(workspaceId, true)
+      project.accounts = fresh
+      return !fresh.some(a => a.id === accountId)
+    } catch (e) {
+      console.error('[contentProjectStore] unlinkAccount: refetch failed', e)
+      return false
+    }
+  }
+
   async function createTag(name: string, color: string): Promise<ContentTag | null> {
     const project = currentProject.value
     if (!project) return null
@@ -266,5 +299,6 @@ export const useContentProjectStore = defineStore('contentProject', () => {
     createPost,
     deletePost,
     createTag,
+    unlinkAccount,
   }
 })

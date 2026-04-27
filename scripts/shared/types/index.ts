@@ -63,10 +63,7 @@ export enum ApiAliases {
     // Social accounts
     workspaceSocialAccounts = 'workspaces/{workspaceId}/social-accounts',
     workspaceSocialAccount = 'workspaces/{workspaceId}/social-accounts/{socialAccountId}',
-
-    // Telegram channel linking
-    workspaceTelegramLinkStart  = 'workspaces/{workspaceId}/telegram/link/start',
-    workspaceTelegramLinkStatus = 'workspaces/{workspaceId}/telegram/link/status/{code}',
+    workspaceSocialAccountsLink = 'workspaces/{workspaceId}/social-accounts/link',
 
     // Calendar (deferred but keeping endpoints ready)
     workspaceCalendarEvents = 'workspaces/{workspaceId}/calendar/events',
@@ -84,8 +81,6 @@ export enum ApiAliases {
     workspacePost = 'workspaces/{workspaceId}/posts/{postId}',
     workspacePostMedia = 'workspaces/{workspaceId}/posts/{postId}/media',
     workspacePostMediaItem = 'workspaces/{workspaceId}/posts/{postId}/media/{mediaId}',
-    workspacePostsUploadsInit = 'workspaces/{workspaceId}/posts/uploads/init',
-    workspacePostsUploadsFinalize = 'workspaces/{workspaceId}/posts/uploads/finalize',
     workspacePostComments = 'workspaces/{workspaceId}/posts/{postId}/comments',
 
     // Publish — platform-specific (API 23.04)

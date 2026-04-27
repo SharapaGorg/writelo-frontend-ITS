@@ -188,11 +188,12 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     postId.value = id
   }
 
-  const selectAccount = (accountId: string) => {
+  const selectAccount = (accountId: string | null) => {
     selectedAccountId.value = accountId
-    // Also update the draft if it exists
+    // Also update the draft if it exists. Empty string keeps the draft type
+    // (`accountId: string`) intact while signalling "no account picked".
     if (currentDraft.value) {
-      currentDraft.value = { ...currentDraft.value, accountId }
+      currentDraft.value = { ...currentDraft.value, accountId: accountId ?? '' }
     }
   }
 

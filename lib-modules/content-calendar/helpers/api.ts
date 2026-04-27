@@ -1,10 +1,7 @@
 import { ApiController } from '~/scripts/shared/api/controller'
 import { ApiAliases, RequestMethod, buildUrl } from '~/scripts/shared/types'
 import type {
-  InitUploadResponse,
-  InitPostMediaUploadRequest,
-  FinalizePostMediaUploadRequest,
-  FinalizePostMediaUploadResponse,
+  FinalizeUploadResponse,
   UpsertPostMediaRequest,
 } from '~/scripts/shared/types/workspace'
 import type {
@@ -21,8 +18,8 @@ import type {
   PostMediaDto,
   PostMediaType,
   UpsertPostRequest,
-  TelegramLinkStartResponse,
-  TelegramLinkStatusResponse,
+  SocialAccountLinkStartResponse,
+  StartSocialAccountLinkRequest,
   PublishAcceptedResponse,
   PublishReelOptions,
 } from '../types'
@@ -131,9 +128,12 @@ export class ContentCalendarApiController {
   }
 
   // Social accounts
-  async getSocialAccounts(workspaceId: string): Promise<SocialAccount[]> {
+  async getSocialAccounts(workspaceId: string, bustCache = false): Promise<SocialAccount[]> {
     const url = buildUrl(ApiAliases.workspaceSocialAccounts, { workspaceId })
-    const res = await this.api.request(url, RequestMethod.GET) as
+    // bustCache: bypass browser HTTP cache via timestamp query param.
+    // Used by polling flows that need to see backend-side mutations on the same URL.
+    const data = bustCache ? { _t: Date.now() } : {}
+    const res = await this.api.request(url, RequestMethod.GET, data) as
       | { items?: SocialAccountDto[] }
       | SocialAccountDto[]
     const items = Array.isArray(res) ? res : (res.items ?? [])
@@ -161,21 +161,17 @@ export class ContentCalendarApiController {
 
   async deleteSocialAccount(workspaceId: string, socialAccountId: string): Promise<void> {
     const url = buildUrl(ApiAliases.workspaceSocialAccount, { workspaceId, socialAccountId })
-    await this.api.request(url, RequestMethod.DELETE)
+    // `silent: true` — backend may return 4xx but still mutate state; callers must
+    // verify-by-refetch (see contentProjectStore.unlinkAccount) and we don't want
+    // the controller's generic-error toast to fire over their custom UX.
+    await this.api.request(url, RequestMethod.DELETE, {}, false, true)
   }
 
-  // Telegram channel linking
-  startTelegramLink(workspaceId: string): Promise<TelegramLinkStartResponse> {
-    const url = buildUrl(ApiAliases.workspaceTelegramLinkStart, { workspaceId })
-    return this.api.request(url, RequestMethod.POST) as Promise<TelegramLinkStartResponse>
-  }
-
-  getTelegramLinkStatus(
-    workspaceId: string,
-    code: string,
-  ): Promise<TelegramLinkStatusResponse> {
-    const url = buildUrl(ApiAliases.workspaceTelegramLinkStatus, { workspaceId, code })
-    return this.api.request(url, RequestMethod.GET) as Promise<TelegramLinkStatusResponse>
+  // Telegram channel linking — generic /social-accounts/link, platform pinned to 'telegram'
+  startTelegramLink(workspaceId: string): Promise<SocialAccountLinkStartResponse> {
+    const url = buildUrl(ApiAliases.workspaceSocialAccountsLink, { workspaceId })
+    const body: StartSocialAccountLinkRequest = { platform: 'telegram' }
+    return this.api.request(url, RequestMethod.POST, body) as Promise<SocialAccountLinkStartResponse>
   }
 
   // Tags
@@ -277,32 +273,15 @@ export class ContentCalendarApiController {
     return this.api.request(url, RequestMethod.POST, entry.body) as Promise<PublishAcceptedResponse>
   }
 
-  // Post media — separate init/finalize pair (NOT shared uploadFile, per API 23.04)
-
-  initPostMediaUpload(
-    workspaceId: string,
-    request: InitPostMediaUploadRequest,
-  ): Promise<InitUploadResponse> {
-    const url = buildUrl(ApiAliases.workspacePostsUploadsInit, { workspaceId })
-    return this.api.request(url, RequestMethod.POST, request) as Promise<InitUploadResponse>
-  }
-
-  finalizePostMediaUpload(
-    workspaceId: string,
-    request: FinalizePostMediaUploadRequest,
-  ): Promise<FinalizePostMediaUploadResponse> {
-    const url = buildUrl(ApiAliases.workspacePostsUploadsFinalize, { workspaceId })
-    return this.api.request(url, RequestMethod.POST, request) as Promise<FinalizePostMediaUploadResponse>
-  }
-
   /**
-   * Orchestrates init → S3 PUT → finalize. Returns storageObjectId ready to attach via createPostMedia.
+   * Orchestrates init → S3 POST → finalize for post media via the workspace upload pair.
+   * Returns the finalized file (with storageObjectId) ready to attach via createPostMedia.
    */
   async uploadPostMedia(
     workspaceId: string,
     file: File,
-  ): Promise<FinalizePostMediaUploadResponse> {
-    const init = await this.initPostMediaUpload(workspaceId, {
+  ): Promise<FinalizeUploadResponse> {
+    const init = await this.api.initUpload(workspaceId, {
       fileName: file.name,
       contentType: file.type || 'application/octet-stream',
       sizeBytes: file.size,
@@ -319,7 +298,7 @@ export class ContentCalendarApiController {
       throw new Error(`S3 upload failed with status ${s3Res.status}`)
     }
 
-    return this.finalizePostMediaUpload(workspaceId, {
+    return this.api.finalizeUpload(workspaceId, {
       objectId: init.objectId,
       fileName: file.name,
     })
