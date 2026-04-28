@@ -13,7 +13,12 @@ import type { ContentType as EditorContentType, DraftImage } from '~/lib-modules
 import { useContentProjectStore } from '~/lib-modules/content-calendar'
 import type { CalendarPost } from '~/lib-modules/content-calendar'
 import { ApiController } from '~/scripts/shared/api/controller'
-import { useWorkspaceContext, useWorkspaces } from '~/lib-modules/workspaces'
+import {
+  useWorkspaceContext,
+  useWorkspaces,
+  useWorkspacePermissions,
+  NoAccessState,
+} from '~/lib-modules/workspaces'
 
 definePageMeta({
   layout: 'app'
@@ -35,6 +40,9 @@ const {
 
 const projectStore = useContentProjectStore()
 const { currentProjectAccounts } = storeToRefs(projectStore)
+
+const { canManagePosts } = useWorkspacePermissions()
+const { isReady } = useWorkspaceContext()
 
 function toEditorDraftInput(post: CalendarPost) {
   const type: EditorContentType =
@@ -133,7 +141,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ContentEditorLayout>
+  <div v-if="!isReady" class="flex flex-col h-full" />
+  <NoAccessState v-else-if="!canManagePosts" />
+  <ContentEditorLayout v-else>
     <template #left-panel>
       <EditorChatPanel v-if="editorMode === 'chat'" />
       <EditorImagesPanel v-else />
