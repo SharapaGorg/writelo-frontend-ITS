@@ -7,9 +7,19 @@ export interface ImageAddEvent {
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
-import { X, Upload, Sparkles } from 'lucide-vue-next'
+import { X, Upload, Sparkles, Plus, AlertTriangle } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
+import { toastError } from '~/scripts/features/utils/toater'
+
+// Backend rejects files >16 MiB on /uploads/init. We use the server-config value if
+// available, falling back to the same constant so client-side validation matches.
+const FALLBACK_MAX_FILE_SIZE = 16 * 1024 * 1024
+
+function formatBytes(bytes: number): string {
+  const mb = bytes / (1024 * 1024)
+  return `${mb.toFixed(mb < 10 ? 1 : 0)} МБ`
+}
 
 const props = withDefaults(defineProps<{
   images: string[]
@@ -33,6 +43,20 @@ const emit = defineEmits<{
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const dropZoneRef = ref<HTMLElement | null>(null)
 const isDragOver = ref(false)
+
+// Локальная пометка файлов, которые были отвергнуты (сейчас — только по размеру).
+// В draft не попадают, нужны только чтобы показать пользователю, ЧТО именно не прошло.
+interface RejectedFile {
+  id: string
+  name: string
+  size: number
+  reason: string
+}
+const rejectedFiles = ref<RejectedFile[]>([])
+
+function dismissRejected(id: string) {
+  rejectedFiles.value = rejectedFiles.value.filter(r => r.id !== id)
+}
 
 const canAddMore = computed(() => props.images.length < props.maxImages)
 const counterText = computed(() => `${props.images.length}/${props.maxImages}`)
@@ -79,9 +103,23 @@ const isValidFileType = (file: File): boolean => {
   return file.type.startsWith('image/')
 }
 
+const maxFileSize = computed(
+  () => useSettings().getConfig()?.filesConfig?.maxFileSizeBytes ?? FALLBACK_MAX_FILE_SIZE,
+)
+
 const processFile = (file: File) => {
   if (!isValidFileType(file)) return
   if (!canAddMore.value) return
+
+  if (file.size > maxFileSize.value) {
+    const reason = `${formatBytes(file.size)} (лимит ${formatBytes(maxFileSize.value)})`
+    rejectedFiles.value = [
+      ...rejectedFiles.value,
+      { id: `${file.name}-${file.size}-${Date.now()}`, name: file.name, size: file.size, reason },
+    ]
+    toastError(`«${file.name}» — слишком большой: ${reason}`)
+    return
+  }
 
   // Blob URL instead of base64: FullHD image as a data-URL can be multi-MB of
   // reactive string state + forces `<img>` to re-decode full-res on every render.
@@ -180,7 +218,7 @@ watch(() => props.isActive, () => {
       </div>
 
       <!-- Images/Video Grid -->
-      <div v-if="images.length > 0" :class="acceptVideo ? '' : 'grid grid-cols-3 gap-2'">
+      <div v-if="images.length > 0 || rejectedFiles.length > 0" :class="acceptVideo ? '' : 'grid grid-cols-3 gap-2'">
         <div
           v-for="(media, index) in images"
           :key="index"
@@ -209,6 +247,39 @@ watch(() => props.isActive, () => {
             <X class="h-4 w-4" />
           </button>
         </div>
+
+        <!-- Rejected files (size limit etc.) — отрисовываются вместе с сеткой,
+             чтобы пользователь видел, какой файл не пропустился -->
+        <div
+          v-for="rejected in rejectedFiles"
+          :key="rejected.id"
+          class="aspect-square relative flex flex-col items-center justify-center gap-1 rounded-md border-2 border-destructive/60 bg-destructive/10 p-2 text-center"
+          :title="`${rejected.name} — ${rejected.reason}`"
+        >
+          <AlertTriangle class="h-5 w-5 text-destructive shrink-0" />
+          <div class="text-[10px] font-medium text-destructive line-clamp-2 break-all">
+            {{ rejected.name }}
+          </div>
+          <div class="text-[10px] text-destructive/80">{{ rejected.reason }}</div>
+          <button
+            type="button"
+            class="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive/80 text-destructive-foreground hover:bg-destructive transition-colors"
+            @click="dismissRejected(rejected.id)"
+          >
+            <X class="h-3 w-3" />
+          </button>
+        </div>
+
+        <!-- Add-more tile (images only — video is single-file mode) -->
+        <button
+          v-if="!acceptVideo && canAddMore"
+          type="button"
+          class="aspect-square flex flex-col items-center justify-center gap-1 rounded-md border-2 border-dashed border-border text-muted-foreground hover:border-ring hover:text-foreground hover:bg-accent transition-colors"
+          @click="handleFileSelect"
+        >
+          <Plus class="h-5 w-5" />
+          <span class="text-[11px] font-medium">Добавить</span>
+        </button>
       </div>
 
       <!-- Empty state -->

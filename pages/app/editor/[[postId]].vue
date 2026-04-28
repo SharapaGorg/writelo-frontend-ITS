@@ -45,7 +45,7 @@ function toEditorDraftInput(post: CalendarPost) {
   if (post.mediaItems && post.mediaItems.length > 0) {
     images = post.mediaItems
       .map((m): DraftImage | null => {
-        const url = m.asset?.downloadUrl
+        const url = m.asset?.url
         if (!url) return null
         return {
           previewUrl: url,

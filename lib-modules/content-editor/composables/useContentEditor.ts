@@ -138,7 +138,7 @@ export const useContentEditor = () => {
             fileType: img.fileType,
             sortOrder: i,
           })
-          const persistedUrl = attached.asset?.downloadUrl
+          const persistedUrl = attached.asset?.url
           // If the backend already handed us a signed URL, the blob can go; otherwise
           // keep it as the session preview (next reload picks up the persisted URL).
           if (persistedUrl && img.previewUrl.startsWith('blob:')) {
@@ -162,7 +162,7 @@ export const useContentEditor = () => {
             storageObjectId: i.storageObjectId!,
             fileType: i.fileType,
             sortOrder: idx,
-            asset: i.previewUrl.startsWith('http') ? { downloadUrl: i.previewUrl } : null,
+            asset: i.previewUrl.startsWith('http') ? { url: i.previewUrl } : null,
           }))
         const freshImageUrls = nextImages
           .filter(i => i.fileType === 'image')
