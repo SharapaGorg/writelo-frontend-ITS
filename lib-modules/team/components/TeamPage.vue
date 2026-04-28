@@ -24,7 +24,6 @@ const {
   members,
   invites,
   loading,
-  canManageMembers,
   canManageInvites,
   loadAll,
   inviteMember,
@@ -91,13 +90,12 @@ async function onInvite(payload: { email: string; role: 'admin' | 'editor' | 'vi
         <template v-else>
           <MembersSection
             :members="members"
-            :can-manage-members="canManageMembers"
             @update-role="(uid, r) => updateMemberRole(uid, r)"
             @remove="uid => removeMember(uid)"
             @transfer="uid => transferOwnership(uid)"
           />
           <InvitesSection
-            v-if="invites.length || canManageInvites"
+            v-if="canManageInvites"
             :invites="invites"
             :can-manage-invites="canManageInvites"
             @revoke="id => revokeInvite(id)"

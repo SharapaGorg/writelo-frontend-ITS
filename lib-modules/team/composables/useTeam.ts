@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import { useWorkspaceContext, useWorkspacePermissions } from '~/lib-modules/workspaces'
 import { useWorkspaceMembersApi, useWorkspaceInvitesApi } from '../helpers/api'
 import {
   toastInviteSent,
@@ -26,13 +26,15 @@ export function useTeam() {
   const invites = ref<WorkspaceInviteDto[]>([])
   const loading = ref(false)
 
-  const currentRole = computed<WorkspaceRole | null>(
-    () => ctx.currentWorkspace.value?.role ?? null,
+  const permissions = useWorkspacePermissions()
+  const currentRole = permissions.currentRole
+  const canManageInvites = permissions.canManageInvites
+  // canManageMembers означает: «есть какие-то management-affordances для членов
+  // в этом воркспейсе» — admin или owner.
+  const canManageMembers = computed(
+    () => permissions.canManageInvites.value || permissions.canManageAdmins.value,
   )
-  const canManageMembers = computed(() => currentRole.value === 'owner')
-  const canManageInvites = computed(
-    () => currentRole.value === 'owner' || currentRole.value === 'admin',
-  )
+  const canManageAdmins = permissions.canManageAdmins
 
   async function loadAll() {
     let workspaceId: string
@@ -145,6 +147,7 @@ export function useTeam() {
     currentRole,
     canManageMembers,
     canManageInvites,
+    canManageAdmins,
     loadAll,
     inviteMember,
     revokeInvite,

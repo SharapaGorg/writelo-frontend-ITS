@@ -23,12 +23,12 @@ import {
   AlertDialogAction,
 } from '~/components/ui/alert-dialog'
 import { useSettings } from '~/composables/settings'
+import { useWorkspacePermissions } from '~/lib-modules/workspaces'
 import type { WorkspaceMemberDto, WorkspaceRole } from '../../types'
 import TransferOwnershipDialog from '../dialogs/TransferOwnershipDialog.vue'
 
 const props = defineProps<{
   members: WorkspaceMemberDto[]
-  canManageMembers: boolean
 }>()
 
 const emit = defineEmits<{
@@ -39,6 +39,13 @@ const emit = defineEmits<{
 
 const $settings = useSettings()
 const meId = $settings.getUser()?.id ?? null
+
+const {
+  getAssignableRoles,
+  canRemoveMember,
+  canChangeMemberRole,
+  canManageAdmins,
+} = useWorkspacePermissions()
 
 const removeOpen = ref(false)
 const removeTarget = ref<WorkspaceMemberDto | null>(null)
@@ -103,7 +110,7 @@ function initials(name: string | null | undefined): string {
         </span>
 
         <DropdownMenu
-          v-if="canManageMembers && m.userId !== meId && m.role !== 'owner'"
+          v-if="canChangeMemberRole(m) || canRemoveMember(m) || (canManageAdmins && m.userId !== meId && m.role !== 'owner')"
         >
           <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="icon" class="h-8 w-8">
@@ -111,14 +118,14 @@ function initials(name: string | null | undefined): string {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuSub>
+            <DropdownMenuSub v-if="getAssignableRoles(m).length > 0">
               <DropdownMenuSubTrigger>
                 <UserCog class="mr-2 h-4 w-4" />
                 <span>Сменить роль</span>
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
                 <DropdownMenuItem
-                  v-for="r in (['admin', 'editor', 'viewer'] as WorkspaceRole[])"
+                  v-for="r in getAssignableRoles(m)"
                   :key="r"
                   :disabled="r === m.role"
                   @select="emit('updateRole', m.userId, r)"
@@ -127,12 +134,21 @@ function initials(name: string | null | undefined): string {
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
-            <DropdownMenuItem @select="askTransfer(m)">
+            <DropdownMenuItem
+              v-if="canManageAdmins && m.userId !== meId && m.role !== 'owner'"
+              @select="askTransfer(m)"
+            >
               <ArrowRightLeft class="mr-2 h-4 w-4" />
               Передать владение…
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem class="text-destructive" @select="askRemove(m)">
+            <DropdownMenuSeparator
+              v-if="(getAssignableRoles(m).length > 0 || (canManageAdmins && m.userId !== meId && m.role !== 'owner')) && canRemoveMember(m)"
+            />
+            <DropdownMenuItem
+              v-if="canRemoveMember(m)"
+              class="text-destructive"
+              @select="askRemove(m)"
+            >
               <Trash2 class="mr-2 h-4 w-4" />
               Удалить
             </DropdownMenuItem>
