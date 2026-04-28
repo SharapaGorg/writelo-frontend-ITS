@@ -16,12 +16,12 @@ const ROLE_LABELS: Record<WorkspaceRole, string> = {
   viewer: 'Зритель',
 }
 
-const ROLE_ICONS = {
+const ROLE_ICONS: Record<WorkspaceRole, typeof Crown> = {
   owner: Crown,
   admin: ShieldCheck,
   editor: PencilLine,
   viewer: Eye,
-} as const
+}
 
 const meta = computed(() => {
   if (!props.role) return null

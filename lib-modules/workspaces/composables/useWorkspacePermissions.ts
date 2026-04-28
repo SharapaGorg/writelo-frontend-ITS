@@ -32,6 +32,11 @@ export function useWorkspacePermissions() {
     () => ctx.currentWorkspace.value?.role ?? null,
   )
 
+  // `useSettings().getUser()` is typed as `any` upstream — narrow at the
+  // boundary so a future shape drift surfaces as a TS error here.
+  const selfId = (): string | null =>
+    ($settings.getUser() as { id?: string } | null)?.id ?? null
+
   const isAtLeast = isAtLeastFactory(currentRole)
 
   // Content / brand brief — editor and above
@@ -57,10 +62,10 @@ export function useWorkspacePermissions() {
    */
   function getAssignableRoles(member: WorkspaceMemberDto): WorkspaceRole[] {
     const role = currentRole.value
-    const selfId = $settings.getUser()?.id ?? null
+    const me = selfId()
 
     if (role === 'owner') {
-      if (member.userId === selfId) return []
+      if (member.userId === me) return []
       if (member.role === 'owner') return []
       return ['viewer', 'editor', 'admin']
     }
@@ -86,10 +91,10 @@ export function useWorkspacePermissions() {
    */
   function canRemoveMember(member: WorkspaceMemberDto): boolean {
     const role = currentRole.value
-    const selfId = $settings.getUser()?.id ?? null
+    const me = selfId()
 
     if (role === 'owner') {
-      return member.userId !== selfId && member.role !== 'owner'
+      return member.userId !== me && member.role !== 'owner'
     }
     if (role === 'admin') {
       return member.role === 'viewer' || member.role === 'editor'
