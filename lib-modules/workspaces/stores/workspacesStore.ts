@@ -42,14 +42,6 @@ export const useWorkspacesStore = defineStore('workspaces', {
     },
 
     /**
-     * Check if user can edit workspace
-     */
-    canEdit: (state) => (workspaceId: string): boolean => {
-      const workspace = state.workspaces.find(w => w.id === workspaceId)
-      return workspace?.role === 'owner' || workspace?.role === 'admin'
-    },
-
-    /**
      * Per-workspace permission: can the current user edit the brand brief
      * (industry / business description / target audience / tone / etc.)?
      */

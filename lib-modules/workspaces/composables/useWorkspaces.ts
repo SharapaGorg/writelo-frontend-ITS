@@ -65,12 +65,12 @@ export function useWorkspaces() {
     return store.getById(id)
   }
 
-  /**
-   * Check if user can edit workspace
-   */
-  const canEdit = (workspaceId: string) => {
-    return store.canEdit(workspaceId)
-  }
+  const canEditBrandBriefIn = (workspaceId: string) =>
+    store.canEditBrandBriefIn(workspaceId)
+  const canRenameWorkspaceIn = (workspaceId: string) =>
+    store.canRenameWorkspaceIn(workspaceId)
+  const canDeleteWorkspaceIn = (workspaceId: string) =>
+    store.canDeleteWorkspaceIn(workspaceId)
 
   /**
    * Check if user is owner
@@ -102,7 +102,9 @@ export function useWorkspaces() {
     deleteWorkspace,
     selectWorkspace,
     getWorkspaceById,
-    canEdit,
+    canEditBrandBriefIn,
+    canRenameWorkspaceIn,
+    canDeleteWorkspaceIn,
     isOwner,
     clear,
   }

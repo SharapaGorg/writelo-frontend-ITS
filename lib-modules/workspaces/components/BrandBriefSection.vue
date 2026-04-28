@@ -131,18 +131,16 @@ defineExpose({
         <div class="space-y-4 px-5 pb-4 pt-3 border-t border-border">
           <div class="space-y-2">
             <Label :for="`${idPrefix}-industry`">{{ t_('addClient.niche') }}</Label>
-            <div class="flex gap-1.5 flex-wrap">
+            <div v-if="canEdit" class="flex gap-1.5 flex-wrap">
               <button
                 v-for="preset in nichePresets"
                 :key="preset.key"
                 type="button"
-                :disabled="!canEdit"
                 :class="[
                   'px-2.5 py-1 text-xs rounded-full border transition-colors',
                   draft.industry === preset.value
                     ? 'bg-brand/10 border-brand/50 text-brand'
                     : 'bg-background border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/50',
-                  !canEdit && 'opacity-50 cursor-not-allowed',
                 ]"
                 @click="applyNiche(preset.value)"
               >
@@ -150,11 +148,12 @@ defineExpose({
               </button>
             </div>
             <Input
+              v-if="canEdit"
               :id="`${idPrefix}-industry`"
               v-model="draft.industry"
-              :disabled="!canEdit"
               :placeholder="t_('addClient.nichePlaceholder')"
             />
+            <p v-else class="text-sm text-foreground py-1.5 whitespace-pre-wrap">{{ draft.industry || '—' }}</p>
           </div>
 
           <div class="space-y-2">
@@ -162,12 +161,13 @@ defineExpose({
               {{ t_('addClient.description') }}
             </Label>
             <Textarea
+              v-if="canEdit"
               :id="`${idPrefix}-description`"
               v-model="draft.businessDescription"
-              :disabled="!canEdit"
               :rows="3"
               :placeholder="t_('addClient.descriptionPlaceholder')"
             />
+            <p v-else class="text-sm text-foreground py-1.5 whitespace-pre-wrap">{{ draft.businessDescription || '—' }}</p>
           </div>
 
           <div class="space-y-2">
@@ -175,30 +175,29 @@ defineExpose({
               {{ t_('addClient.targetAudience') }}
             </Label>
             <Textarea
+              v-if="canEdit"
               :id="`${idPrefix}-audience`"
               v-model="draft.targetAudience"
-              :disabled="!canEdit"
               :rows="2"
               :placeholder="t_('addClient.targetAudiencePlaceholder')"
             />
+            <p v-else class="text-sm text-foreground py-1.5 whitespace-pre-wrap">{{ draft.targetAudience || '—' }}</p>
           </div>
 
           <div class="space-y-2">
             <Label :for="`${idPrefix}-tone`">
               {{ t_('addClient.communicationStyle') }}
             </Label>
-            <div class="flex gap-1.5 flex-wrap">
+            <div v-if="canEdit" class="flex gap-1.5 flex-wrap">
               <button
                 v-for="preset in stylePresets"
                 :key="preset.key"
                 type="button"
-                :disabled="!canEdit"
                 :class="[
                   'px-2.5 py-1 text-xs rounded-full border transition-colors',
                   draft.toneOfVoice === preset.value
                     ? 'bg-brand/10 border-brand/50 text-brand'
                     : 'bg-background border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground/50',
-                  !canEdit && 'opacity-50 cursor-not-allowed',
                 ]"
                 @click="applyStyle(preset.value)"
               >
@@ -206,22 +205,24 @@ defineExpose({
               </button>
             </div>
             <Textarea
+              v-if="canEdit"
               :id="`${idPrefix}-tone`"
               v-model="draft.toneOfVoice"
-              :disabled="!canEdit"
               :rows="2"
               :placeholder="t_('addClient.communicationStylePlaceholder')"
             />
+            <p v-else class="text-sm text-foreground py-1.5 whitespace-pre-wrap">{{ draft.toneOfVoice || '—' }}</p>
           </div>
 
           <div class="space-y-2">
             <Label :for="`${idPrefix}-stop`">{{ t_('addClient.stopWords') }}</Label>
             <Input
+              v-if="canEdit"
               :id="`${idPrefix}-stop`"
               v-model="draft.stopWords"
-              :disabled="!canEdit"
               :placeholder="t_('addClient.stopWordsPlaceholder')"
             />
+            <p v-else class="text-sm text-foreground py-1.5 whitespace-pre-wrap">{{ draft.stopWords || '—' }}</p>
           </div>
 
           <div class="space-y-2">
@@ -229,12 +230,13 @@ defineExpose({
               {{ t_('addClient.postExamples') }}
             </Label>
             <Textarea
+              v-if="canEdit"
               :id="`${idPrefix}-examples`"
               v-model="draft.examplePosts"
-              :disabled="!canEdit"
               :rows="6"
               :placeholder="t_('addClient.postExamplesPlaceholder')"
             />
+            <p v-else class="text-sm text-foreground py-1.5 whitespace-pre-wrap">{{ draft.examplePosts || '—' }}</p>
           </div>
         </div>
       </div>

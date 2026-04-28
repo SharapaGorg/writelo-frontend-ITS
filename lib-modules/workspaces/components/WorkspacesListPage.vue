@@ -32,7 +32,10 @@ import type { WorkspaceDto } from '../types'
 
 const { t: t_ } = useI18n()
 const { guardAction } = useDemoGuard()
-const { workspaces, loading, initialize, createWorkspace, updateWorkspace, deleteWorkspace, canEdit } =
+const {
+  workspaces, loading, initialize, createWorkspace, updateWorkspace, deleteWorkspace,
+  canEditBrandBriefIn, canRenameWorkspaceIn, canDeleteWorkspaceIn,
+} =
   useWorkspaces()
 const { getLanguage } = useSettings()
 
@@ -438,7 +441,7 @@ onMounted(async () => {
           </AccordionTrigger>
 
           <button
-            v-if="canEdit(w.id)"
+            v-if="canDeleteWorkspaceIn(w.id)"
             type="button"
             class="absolute right-10 top-2.5 flex items-center justify-center h-8 w-8 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50 disabled:pointer-events-none"
             :disabled="deletingId === w.id"
@@ -461,20 +464,22 @@ onMounted(async () => {
 
               <div class="space-y-2">
                 <Label :for="`name-${w.id}`">
-                  {{ t_('addClient.brandName') }} <span class="text-red-500">*</span>
+                  {{ t_('addClient.brandName') }}
+                  <span v-if="canRenameWorkspaceIn(w.id)" class="text-red-500">*</span>
                 </Label>
                 <Input
+                  v-if="canRenameWorkspaceIn(w.id)"
                   :id="`name-${w.id}`"
                   v-model="drafts[w.id].name"
-                  :disabled="!canEdit(w.id)"
                 />
+                <p v-else class="text-sm text-foreground py-1.5">{{ drafts[w.id].name || '—' }}</p>
               </div>
 
               <BrandBriefSection
                 :ref="(el) => { briefRefs[w.id] = el as BriefSectionRef | null }"
                 :id-prefix="w.id"
                 :draft="drafts[w.id]"
-                :can-edit="canEdit(w.id)"
+                :can-edit="canEditBrandBriefIn(w.id)"
               />
 
               <div class="flex items-center justify-end gap-2 pt-2 border-t border-border">
@@ -489,7 +494,11 @@ onMounted(async () => {
                 <Button
                   size="sm"
                   class="gap-2"
-                  :disabled="!canEdit(w.id) || !isDirty(w) || savingId === w.id"
+                  :disabled="
+                    !(canRenameWorkspaceIn(w.id) || canEditBrandBriefIn(w.id))
+                    || !isDirty(w)
+                    || savingId === w.id
+                  "
                   @click="saveDraft(w)"
                 >
                   <Loader2 v-if="savingId === w.id" class="h-4 w-4 animate-spin" />
