@@ -21,6 +21,7 @@ import TelegramPreview from './previews/TelegramPreview.vue'
 import CelebrationEffect from '~/lib-modules/content-editor/components/CelebrationEffect.vue'
 import { usePublicationsStore } from '../stores/publicationsStore'
 import { useContentProjectStore } from '../stores/contentProjectStore'
+import { useWorkspacePermissions } from '~/lib-modules/workspaces'
 import type { CalendarPost, SocialNetwork, PostStatus, ContentTag, SocialAccount } from '../types'
 
 const props = defineProps<{
@@ -36,6 +37,7 @@ const emit = defineEmits<{
 
 const publicationsStore = usePublicationsStore()
 const projectStore = useContentProjectStore()
+const { canManagePosts } = useWorkspacePermissions()
 
 const router = useRouter()
 
@@ -165,8 +167,11 @@ async function handlePublish() {
     </div>
 
     <!-- Action buttons bar -->
-    <div class="px-4 py-2 border-b border-border flex gap-2">
-      <!-- Published + has link → open the live post in a new tab -->
+    <div
+      v-if="canManagePosts || (post.status === 'published' && post.publishedLink)"
+      class="px-4 py-2 border-b border-border flex gap-2"
+    >
+      <!-- Published + has link → open the live post in a new tab (visible to all roles) -->
       <button
         v-if="post.status === 'published' && post.publishedLink"
         class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-brand hover:bg-brand/90 text-brand-foreground text-sm font-medium transition-colors"
@@ -180,9 +185,9 @@ async function handlePublish() {
         Открыть пост
       </button>
 
-      <!-- Draft / ready / etc → open editor -->
+      <!-- Draft / ready / etc → open editor (only for those who can manage posts) -->
       <button
-        v-else-if="post.status !== 'published'"
+        v-else-if="canManagePosts && post.status !== 'published'"
         class="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-brand hover:bg-brand/90 text-brand-foreground text-sm font-medium transition-colors"
         @click="navigateToEditor"
       >
@@ -193,6 +198,7 @@ async function handlePublish() {
         Редактировать
       </button>
       <button
+        v-if="canManagePosts"
         class="flex items-center justify-center p-2 rounded-md bg-secondary hover:bg-destructive text-muted-foreground hover:text-destructive-foreground text-sm transition-colors"
         title="Удалить пост"
         @click="confirmDelete"
@@ -298,8 +304,8 @@ async function handlePublish() {
 
     <!-- Footer with status and publish button -->
     <div class="px-4 py-3 border-t border-border flex items-center gap-2">
-      <!-- Editable status (idea / draft / ready) -->
-      <div v-if="isStatusEditable" class="flex-1 min-w-0">
+      <!-- Editable status (idea / draft / ready) — only when user can manage posts -->
+      <div v-if="isStatusEditable && canManagePosts" class="flex-1 min-w-0">
         <Select
           :model-value="post.status"
           @update:model-value="(v) => updateStatus(v as PostStatus)"
@@ -323,14 +329,14 @@ async function handlePublish() {
         </Select>
       </div>
 
-      <!-- Read-only status (publishing / published / failed) -->
+      <!-- Read-only status (publishing / published / failed, OR when user lacks permission) -->
       <span v-else :class="['text-sm flex-1', statusInfo[post.status].class]">
         {{ statusInfo[post.status].label }}
       </span>
 
       <!-- Publish button when ready -->
       <Button
-        v-if="canPublish"
+        v-if="canPublish && canManagePosts"
         size="sm"
         :disabled="isPublishing"
         @click="showPublishDialog = true"

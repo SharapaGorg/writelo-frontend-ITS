@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { Plus, Trash2, Loader2 } from 'lucide-vue-next'
 import type { SocialAccount, SocialNetwork } from '../types'
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import { useWorkspaceContext, useWorkspacePermissions } from '~/lib-modules/workspaces'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<{
 })
 
 const { currentWorkspaceId } = useWorkspaceContext()
+const { canManageSocialAccounts } = useWorkspacePermissions()
 
 function goToConnect() {
   const id = currentWorkspaceId.value
@@ -149,6 +150,7 @@ function isActive(accountId: string): boolean {
           Нет подключённых аккаунтов
         </p>
         <button
+          v-if="canManageSocialAccounts"
           type="button"
           class="w-full rounded-md border-2 border-dashed border-border hover:border-brand text-muted-foreground hover:text-brand transition-all flex items-center gap-2 p-3 justify-center"
           @click="goToConnect"
@@ -159,7 +161,7 @@ function isActive(accountId: string): boolean {
       </div>
 
       <ContextMenu v-for="account in accounts" :key="account.id">
-        <ContextMenuTrigger as-child>
+        <ContextMenuTrigger as-child :disabled="!canManageSocialAccounts">
       <button
         :class="[
           'w-full rounded-md border-2 transition-all flex items-center gap-3 p-3',
@@ -204,7 +206,7 @@ function isActive(accountId: string): boolean {
       </ContextMenu>
 
       <button
-        v-if="accounts.length > 0"
+        v-if="accounts.length > 0 && canManageSocialAccounts"
         type="button"
         class="w-full rounded-md border-2 border-dashed border-border hover:border-brand text-muted-foreground hover:text-brand transition-all flex items-center justify-center p-3"
         title="Подключить аккаунт"

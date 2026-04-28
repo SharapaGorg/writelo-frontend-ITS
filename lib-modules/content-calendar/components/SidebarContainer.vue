@@ -6,6 +6,9 @@ import NewsSidebar from './NewsSidebar.vue'
 import type { CalendarPost, InfoEvent, ContentTag, NewsItem, TrendItem, SocialAccount } from '../types'
 import { getFunDayForDate } from '../data/funDays'
 import PostCard from './PostCard.vue'
+import { useWorkspacePermissions } from '~/lib-modules/workspaces'
+
+const { canManagePosts } = useWorkspacePermissions()
 
 const props = defineProps<{
   selectedDate: string | null
@@ -154,6 +157,7 @@ const funDay = computed(() =>
           </div>
           <div class="flex items-center gap-2">
             <button
+              v-if="canManagePosts"
               class="w-7 h-7 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground flex items-center justify-center transition-colors"
               title="Создать пост"
               @click="emit('createPost')"
@@ -173,7 +177,7 @@ const funDay = computed(() =>
 
         <div class="flex-1 overflow-y-auto p-3 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
           <div
-            v-if="isCreatingPost"
+            v-if="isCreatingPost && canManagePosts"
             class="mb-3 p-3 rounded-md border border-primary/50 bg-primary/5 space-y-2"
           >
             <label class="text-xs text-muted-foreground">Название поста</label>
