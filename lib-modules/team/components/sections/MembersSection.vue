@@ -44,7 +44,7 @@ const {
   getAssignableRoles,
   canRemoveMember,
   canChangeMemberRole,
-  canManageAdmins,
+  canTransferOwnershipTo,
 } = useWorkspacePermissions()
 
 const removeOpen = ref(false)
@@ -110,7 +110,7 @@ function initials(name: string | null | undefined): string {
         </span>
 
         <DropdownMenu
-          v-if="canChangeMemberRole(m) || canRemoveMember(m) || (canManageAdmins && m.userId !== meId && m.role !== 'owner')"
+          v-if="canChangeMemberRole(m) || canRemoveMember(m) || canTransferOwnershipTo(m)"
         >
           <DropdownMenuTrigger as-child>
             <Button variant="ghost" size="icon" class="h-8 w-8">
@@ -135,14 +135,14 @@ function initials(name: string | null | undefined): string {
               </DropdownMenuSubContent>
             </DropdownMenuSub>
             <DropdownMenuItem
-              v-if="canManageAdmins && m.userId !== meId && m.role !== 'owner'"
+              v-if="canTransferOwnershipTo(m)"
               @select="askTransfer(m)"
             >
               <ArrowRightLeft class="mr-2 h-4 w-4" />
               Передать владение…
             </DropdownMenuItem>
             <DropdownMenuSeparator
-              v-if="(getAssignableRoles(m).length > 0 || (canManageAdmins && m.userId !== meId && m.role !== 'owner')) && canRemoveMember(m)"
+              v-if="(canChangeMemberRole(m) || canTransferOwnershipTo(m)) && canRemoveMember(m)"
             />
             <DropdownMenuItem
               v-if="canRemoveMember(m)"

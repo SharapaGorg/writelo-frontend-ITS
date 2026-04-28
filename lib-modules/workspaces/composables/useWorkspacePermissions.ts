@@ -102,6 +102,15 @@ export function useWorkspacePermissions() {
     return false
   }
 
+  /**
+   * Can the current user transfer ownership to this member? Only owner
+   * can — and only to a non-self, non-owner target.
+   */
+  function canTransferOwnershipTo(member: WorkspaceMemberDto): boolean {
+    if (!canManageAdmins.value) return false
+    return member.userId !== selfId() && member.role !== 'owner'
+  }
+
   return {
     currentRole,
     canManagePosts,
@@ -115,6 +124,7 @@ export function useWorkspacePermissions() {
     getAssignableRoles,
     canChangeMemberRole,
     canRemoveMember,
+    canTransferOwnershipTo,
   }
 }
 

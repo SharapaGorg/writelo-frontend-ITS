@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useWorkspaceContext, useWorkspacePermissions } from '~/lib-modules/workspaces'
 import { useWorkspaceMembersApi, useWorkspaceInvitesApi } from '../helpers/api'
 import {
@@ -29,11 +29,6 @@ export function useTeam() {
   const permissions = useWorkspacePermissions()
   const currentRole = permissions.currentRole
   const canManageInvites = permissions.canManageInvites
-  // canManageMembers означает: «есть какие-то management-affordances для членов
-  // в этом воркспейсе» — admin или owner.
-  const canManageMembers = computed(
-    () => permissions.canManageInvites.value || permissions.canManageAdmins.value,
-  )
   const canManageAdmins = permissions.canManageAdmins
 
   async function loadAll() {
@@ -145,7 +140,6 @@ export function useTeam() {
     invites,
     loading,
     currentRole,
-    canManageMembers,
     canManageInvites,
     canManageAdmins,
     loadAll,

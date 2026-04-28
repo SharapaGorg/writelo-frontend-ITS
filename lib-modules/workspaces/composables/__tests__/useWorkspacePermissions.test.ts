@@ -146,3 +146,28 @@ describe('useWorkspacePermissions — canRemoveMember', () => {
     expect(p.canRemoveMember(makeMember('x', 'viewer'))).toBe(false)
   })
 })
+
+describe('useWorkspacePermissions — canTransferOwnershipTo', () => {
+  it('owner can transfer to non-self non-owner members', () => {
+    setRole('owner', 'me')
+    const p = useWorkspacePermissions()
+    expect(p.canTransferOwnershipTo(makeMember('other', 'admin'))).toBe(true)
+    expect(p.canTransferOwnershipTo(makeMember('other', 'editor'))).toBe(true)
+    expect(p.canTransferOwnershipTo(makeMember('other', 'viewer'))).toBe(true)
+  })
+
+  it('owner cannot transfer to themselves or another owner', () => {
+    setRole('owner', 'me')
+    const p = useWorkspacePermissions()
+    expect(p.canTransferOwnershipTo(makeMember('me', 'owner'))).toBe(false)
+    expect(p.canTransferOwnershipTo(makeMember('other', 'owner'))).toBe(false)
+  })
+
+  it('admin / editor / viewer cannot transfer ownership', () => {
+    for (const role of ['admin', 'editor', 'viewer'] as const) {
+      setRole(role)
+      const p = useWorkspacePermissions()
+      expect(p.canTransferOwnershipTo(makeMember('x', 'editor'))).toBe(false)
+    }
+  })
+})
