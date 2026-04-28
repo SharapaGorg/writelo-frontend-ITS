@@ -19,7 +19,6 @@ import VkPreview from './previews/VkPreview.vue'
 import YouTubePreview from './previews/YouTubePreview.vue'
 import TelegramPreview from './previews/TelegramPreview.vue'
 import CelebrationEffect from '~/lib-modules/content-editor/components/CelebrationEffect.vue'
-import { toastError } from '~/scripts/features/utils/toater'
 import { usePublicationsStore } from '../stores/publicationsStore'
 import { useContentProjectStore } from '../stores/contentProjectStore'
 import type { CalendarPost, SocialNetwork, PostStatus, ContentTag, SocialAccount } from '../types'
@@ -141,9 +140,9 @@ async function handlePublish() {
   try {
     await publicationsStore.publishPost(props.post.id)
     showCelebration.value = true
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : 'Не удалось отправить на публикацию'
-    toastError(msg)
+  } catch {
+    // ApiController уже показал toast с detail; failed-карточка в сайдбаре несёт
+    // ту же информацию и кнопку повтора.
   } finally {
     isPublishing.value = false
   }

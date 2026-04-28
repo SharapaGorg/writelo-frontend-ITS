@@ -1,18 +1,25 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { Loader2, CheckCircle2, XCircle, ExternalLink } from 'lucide-vue-next'
+import { Loader2, CheckCircle2, XCircle, ExternalLink, RefreshCw, X } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { useAppLayout } from '../composables/useAppLayout'
 import { usePublicationsStore } from '~/lib-modules/content-calendar'
 import type { SocialNetwork } from '~/lib-modules/content-calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover'
+import { Button } from '~/components/ui/button'
 
 const router = useRouter()
 const { isCollapsed } = useAppLayout()
-const { publications } = storeToRefs(usePublicationsStore())
+const publicationsStore = usePublicationsStore()
+const { publications } = storeToRefs(publicationsStore)
 
 const hasItems = computed(() => publications.value.length > 0)
+
+// Per-row "is the failure popover open" + per-row retry-in-flight flag.
+const openErrorId = ref<string | null>(null)
+const retryingId = ref<string | null>(null)
 
 function goToEditor(postId: string) {
   router.push(`/app/editor/${postId}`)
@@ -21,6 +28,27 @@ function goToEditor(postId: string) {
 function openPublishedLink(event: MouseEvent, url: string) {
   event.stopPropagation()
   window.open(url, '_blank', 'noopener,noreferrer')
+}
+
+async function retryPublication(pub: { id: string; postId: string }) {
+  if (retryingId.value) return
+  retryingId.value = pub.id
+  // Закрываем popover старой записи: при ошибке повтора создастся новая failed-карточка
+  // (с новым id), которую пользователь откроет клик'ом.
+  openErrorId.value = null
+  try {
+    publicationsStore.removePublication(pub.id)
+    await publicationsStore.publishPost(pub.postId)
+  } catch {
+    // ApiController сам тоастит detail; пользователь увидит новую failed-карточку.
+  } finally {
+    retryingId.value = null
+  }
+}
+
+function dismissPublication(id: string) {
+  openErrorId.value = null
+  publicationsStore.removePublication(id)
 }
 
 // Используем те же пути SVG, что в AccountsSidebar, чтобы не плодить иконки.
@@ -49,49 +77,123 @@ const networkColor: Record<SocialNetwork, string> = {
     </div>
 
     <ul class="flex flex-col gap-1">
-      <li
-        v-for="pub in publications"
-        :key="pub.id"
-        :class="cn(
-          'rounded-md hover:bg-accent transition-colors cursor-pointer overflow-hidden',
-          isCollapsed ? 'flex items-center justify-center p-2' : 'flex items-center gap-2 px-2 py-1.5'
-        )"
-        :title="pub.postTitle"
-        @click="goToEditor(pub.postId)"
-      >
-        <!-- Platform icon (only when expanded) -->
-        <svg
-          v-if="!isCollapsed"
-          :class="cn('h-4 w-4 shrink-0', networkColor[pub.platform])"
-          viewBox="0 0 24 24"
-          fill="currentColor"
+      <template v-for="pub in publications" :key="pub.id">
+        <!-- Failed: clicking opens an error popover with retry. -->
+        <Popover
+          v-if="pub.status === 'failed'"
+          :open="openErrorId === pub.id"
+          @update:open="(v) => openErrorId = v ? pub.id : null"
         >
-          <path :d="networkPath[pub.platform]" />
-        </svg>
+          <PopoverTrigger as-child>
+            <li
+              :class="cn(
+                'rounded-md hover:bg-accent transition-colors cursor-pointer overflow-hidden',
+                isCollapsed ? 'flex items-center justify-center p-2' : 'flex items-center gap-2 px-2 py-1.5',
+                openErrorId === pub.id && 'bg-accent',
+              )"
+              :title="pub.postTitle"
+            >
+              <svg
+                v-if="!isCollapsed"
+                :class="cn('h-4 w-4 shrink-0', networkColor[pub.platform])"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path :d="networkPath[pub.platform]" />
+              </svg>
+              <div v-if="!isCollapsed" class="flex-1 min-w-0">
+                <div class="text-xs font-medium truncate">{{ pub.postTitle }}</div>
+                <div class="text-[10px] text-muted-foreground truncate">{{ pub.accountName }}</div>
+              </div>
+              <XCircle class="h-4 w-4 shrink-0 text-red-600" />
+            </li>
+          </PopoverTrigger>
+          <PopoverContent side="right" align="start" class="w-80 p-3">
+            <div class="flex items-start gap-2">
+              <XCircle class="h-4 w-4 mt-0.5 shrink-0 text-red-600" />
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-medium truncate">{{ pub.postTitle }}</div>
+                <div class="text-xs text-muted-foreground">
+                  {{ pub.accountName }}
+                </div>
+                <div class="mt-2 text-xs text-foreground/90 break-words">
+                  {{ pub.error || 'Публикация не удалась' }}
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 flex items-center justify-between gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                class="h-7 px-2 text-xs"
+                @click="dismissPublication(pub.id)"
+              >
+                <X class="h-3.5 w-3.5 mr-1" />
+                Убрать
+              </Button>
+              <div class="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  class="h-7 px-2 text-xs"
+                  @click="goToEditor(pub.postId)"
+                >
+                  Открыть пост
+                </Button>
+                <Button
+                  size="sm"
+                  class="h-7 px-2 text-xs gap-1"
+                  :disabled="retryingId === pub.id"
+                  @click="retryPublication(pub)"
+                >
+                  <RefreshCw :class="cn('h-3.5 w-3.5', retryingId === pub.id && 'animate-spin')" />
+                  Повторить
+                </Button>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
 
-        <!-- Title + account (only when expanded) -->
-        <div v-if="!isCollapsed" class="flex-1 min-w-0">
-          <div class="text-xs font-medium truncate">{{ pub.postTitle }}</div>
-          <div class="text-[10px] text-muted-foreground truncate">{{ pub.accountName }}</div>
-        </div>
-
-        <!-- Status icon -->
-        <div class="flex items-center gap-1 shrink-0">
-          <Loader2 v-if="pub.status === 'publishing'" class="h-4 w-4 animate-spin text-muted-foreground" />
-          <CheckCircle2 v-else-if="pub.status === 'published'" class="h-4 w-4 text-green-600" />
-          <XCircle v-else-if="pub.status === 'failed'" class="h-4 w-4 text-red-600" />
-
-          <button
-            v-if="pub.publishedLink && !isCollapsed"
-            type="button"
-            class="p-0.5 text-muted-foreground hover:text-foreground"
-            title="Открыть опубликованный пост"
-            @click="openPublishedLink($event, pub.publishedLink)"
+        <!-- Publishing / published: same row, click goes to editor. -->
+        <li
+          v-else
+          :class="cn(
+            'rounded-md hover:bg-accent transition-colors cursor-pointer overflow-hidden',
+            isCollapsed ? 'flex items-center justify-center p-2' : 'flex items-center gap-2 px-2 py-1.5'
+          )"
+          :title="pub.postTitle"
+          @click="goToEditor(pub.postId)"
+        >
+          <svg
+            v-if="!isCollapsed"
+            :class="cn('h-4 w-4 shrink-0', networkColor[pub.platform])"
+            viewBox="0 0 24 24"
+            fill="currentColor"
           >
-            <ExternalLink class="h-3.5 w-3.5" />
-          </button>
-        </div>
-      </li>
+            <path :d="networkPath[pub.platform]" />
+          </svg>
+
+          <div v-if="!isCollapsed" class="flex-1 min-w-0">
+            <div class="text-xs font-medium truncate">{{ pub.postTitle }}</div>
+            <div class="text-[10px] text-muted-foreground truncate">{{ pub.accountName }}</div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <Loader2 v-if="pub.status === 'publishing'" class="h-4 w-4 animate-spin text-muted-foreground" />
+            <CheckCircle2 v-else-if="pub.status === 'published'" class="h-4 w-4 text-green-600" />
+
+            <button
+              v-if="pub.publishedLink && !isCollapsed"
+              type="button"
+              class="p-0.5 text-muted-foreground hover:text-foreground"
+              title="Открыть опубликованный пост"
+              @click="openPublishedLink($event, pub.publishedLink)"
+            >
+              <ExternalLink class="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </li>
+      </template>
     </ul>
   </div>
 </template>

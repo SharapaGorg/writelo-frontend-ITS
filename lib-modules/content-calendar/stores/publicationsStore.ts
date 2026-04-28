@@ -123,7 +123,13 @@ export const usePublicationsStore = defineStore('publications', () => {
       updated = await api.publishPostNow(workspaceId, postId)
     } catch (e) {
       projectStore.updatePostLocal(postId, { status: previousStatus })
-      finalize(publication.id, { status: 'failed', error: 'Не удалось отправить на публикацию' })
+      // ApiController $fetch errors carry RFC-7807 ProblemDetails on `e.data`:
+      // detail/title is the human-readable reason ("Telegram albums can contain
+      // at most 10 media items."); without this the failed card just shows a
+      // generic stub.
+      const data = (e as { data?: { detail?: string; title?: string; message?: string } } | null)?.data
+      const message = data?.detail || data?.title || data?.message || 'Не удалось отправить на публикацию'
+      finalize(publication.id, { status: 'failed', error: message })
       throw e
     }
 

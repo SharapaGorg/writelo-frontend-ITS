@@ -252,9 +252,9 @@ const handlePublish = async () => {
     showCelebration.value = true
     toast.success('Публикуем...', { position: getToasterPosition() })
     router.push('/app/calendar')
-  } catch (e) {
-    const msg = e instanceof Error ? e.message : 'Не удалось отправить на публикацию'
-    toast.error(msg, { position: getToasterPosition() })
+  } catch {
+    // ApiController уже показал toast с detail; failed-карточка в сайдбаре несёт
+    // ту же информацию и кнопку повтора.
   } finally {
     isPublishing.value = false
   }
