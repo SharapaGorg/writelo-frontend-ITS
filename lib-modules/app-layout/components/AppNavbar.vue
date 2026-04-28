@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '~/components/ui/select'
-import { useWorkspaces } from '~/lib-modules/workspaces'
+import { useWorkspaces, RoleBadge, useWorkspacePermissions } from '~/lib-modules/workspaces'
 
 export interface BreadcrumbItem {
   label: string
@@ -24,6 +24,7 @@ const props = withDefaults(
 )
 
 const { workspaces, currentWorkspaceId, selectWorkspace } = useWorkspaces()
+const { currentRole } = useWorkspacePermissions()
 
 const selectedWorkspaceId = computed<string>({
   get: () => currentWorkspaceId.value ?? '',
@@ -73,13 +74,19 @@ const selectedWorkspaceId = computed<string>({
         v-model="selectedWorkspaceId"
       >
         <SelectTrigger
-          class="w-[220px] bg-card border-border"
+          class="w-[260px] bg-card border-border"
         >
-          <SelectValue placeholder="Выберите бренд" />
+          <div class="flex items-center gap-2 min-w-0 w-full">
+            <SelectValue placeholder="Выберите бренд" class="truncate" />
+            <RoleBadge :role="currentRole" class="shrink-0" />
+          </div>
         </SelectTrigger>
         <SelectContent>
           <SelectItem v-for="ws in workspaces" :key="ws.id" :value="ws.id">
-            {{ ws.name }}
+            <span class="flex items-center justify-between gap-2 w-full min-w-0">
+              <span class="truncate">{{ ws.name }}</span>
+              <RoleBadge :role="ws.role" class="shrink-0" />
+            </span>
           </SelectItem>
         </SelectContent>
       </Select>

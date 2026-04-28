@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '~/components/ui/accordion'
-import { useWorkspaceContext, useWorkspaces } from '~/lib-modules/workspaces'
+import { useWorkspaceContext, useWorkspaces, useWorkspacePermissions, NoAccessState } from '~/lib-modules/workspaces'
 import ActivityLogFilters from './ActivityLogFilters.vue'
 import ActivityLogItem from './ActivityLogItem.vue'
 import { useActivityLog } from '../composables/useActivityLog'
@@ -16,6 +16,7 @@ import { groupByDay } from '../helpers/formatting'
 
 const { currentWorkspaceId, currentWorkspace } = useWorkspaceContext()
 const { workspaces, initialize: initializeWorkspaces } = useWorkspaces()
+const { canViewActivityLog } = useWorkspacePermissions()
 const {
   items,
   loading,
@@ -73,7 +74,8 @@ function pluralEvents(n: number): string {
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
+  <NoAccessState v-if="!canViewActivityLog" />
+  <div v-else class="flex flex-col h-full">
     <AppNavbar
       :breadcrumbs="[{ label: 'Журнал' }]"
       :show-workspace-selector="true"

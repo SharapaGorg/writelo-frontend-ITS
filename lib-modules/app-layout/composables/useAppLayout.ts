@@ -1,25 +1,40 @@
 import { ref, computed } from 'vue'
 import { usePlans } from '~/lib-modules/plans'
-import type { SidebarSection, SidebarItem } from '../types'
+import { useWorkspacePermissions } from '~/lib-modules/workspaces'
+import type { SidebarSection, SidebarItem, PermissionFlag } from '../types'
 
 const isCollapsed = ref(false)
 const activeSection = ref<SidebarSection>('calendar')
 
 export function useAppLayout() {
   const { isBusinessPlan } = usePlans()
+  const permissions = useWorkspacePermissions()
 
   const allItems: SidebarItem[] = [
     { id: 'calendar', icon: 'calendar', label: 'Календарь', route: '/app/calendar' },
     { id: 'editor', icon: 'pen-square', label: 'Редактор', route: '/app/editor' },
-    // { id: 'reels-script', icon: 'film', label: 'Сценарий Рилс', route: '/app/reels-script' },
     { id: 'trends', icon: 'trending-up', label: 'Тренды', route: '/app/trends' },
     { id: 'workspaces', icon: 'briefcase', label: 'Бренды', route: '/app/workspaces' },
     { id: 'team', icon: 'users', label: 'Команда', route: '/app/team', requiresBusinessPlan: true },
-    { id: 'activity', icon: 'history', label: 'Журнал', route: '/app/activity', requiresBusinessPlan: true },
+    {
+      id: 'activity',
+      icon: 'history',
+      label: 'Журнал',
+      route: '/app/activity',
+      requiresBusinessPlan: true,
+      requiresPermission: 'canViewActivityLog',
+    },
   ]
 
+  function hasPermission(flag: PermissionFlag): boolean {
+    return permissions[flag].value
+  }
+
   const sidebarItems = computed<SidebarItem[]>(() =>
-    allItems.filter(i => !i.requiresBusinessPlan || isBusinessPlan.value),
+    allItems.filter(i =>
+      (!i.requiresBusinessPlan || isBusinessPlan.value) &&
+      (!i.requiresPermission || hasPermission(i.requiresPermission))
+    ),
   )
 
   const bottomItems: SidebarItem[] = [
