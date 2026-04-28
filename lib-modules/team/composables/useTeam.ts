@@ -29,7 +29,6 @@ export function useTeam() {
   const permissions = useWorkspacePermissions()
   const currentRole = permissions.currentRole
   const canManageInvites = permissions.canManageInvites
-  const canManageAdmins = permissions.canManageAdmins
 
   async function loadAll() {
     let workspaceId: string
@@ -141,7 +140,6 @@ export function useTeam() {
     loading,
     currentRole,
     canManageInvites,
-    canManageAdmins,
     loadAll,
     inviteMember,
     revokeInvite,

@@ -15,6 +15,7 @@ defineProps<{
   accounts: SocialAccount[]
   loading: boolean
   loaded: boolean
+  canManage: boolean
 }>()
 
 const emit = defineEmits<{
@@ -31,7 +32,7 @@ function goToConnect(workspaceId: string) {
     <div class="flex items-center justify-between">
       <Label>Подключённые аккаунты</Label>
       <Button
-        v-if="loaded && accounts.length > 0"
+        v-if="loaded && accounts.length > 0 && canManage"
         variant="ghost"
         size="sm"
         class="gap-1.5 h-7 text-xs"
@@ -82,7 +83,7 @@ function goToConnect(workspaceId: string) {
         <span v-if="a.username" class="text-xs text-muted-foreground truncate max-w-[10rem]">
           {{ a.username }}
         </span>
-        <DropdownMenu>
+        <DropdownMenu v-if="canManage">
           <DropdownMenuTrigger as-child>
             <button
               type="button"
@@ -112,7 +113,7 @@ function goToConnect(workspaceId: string) {
       <p class="text-sm text-muted-foreground">
         У этого бренда пока нет подключённых аккаунтов.
       </p>
-      <Button size="sm" class="gap-1.5" @click="goToConnect(workspaceId)">
+      <Button v-if="canManage" size="sm" class="gap-1.5" @click="goToConnect(workspaceId)">
         <Plus class="h-4 w-4" />
         Подключить аккаунт
       </Button>

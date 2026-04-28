@@ -34,7 +34,7 @@ const { t: t_ } = useI18n()
 const { guardAction } = useDemoGuard()
 const {
   workspaces, loading, initialize, createWorkspace, updateWorkspace, deleteWorkspace,
-  canEditBrandBriefIn, canRenameWorkspaceIn, canDeleteWorkspaceIn,
+  canEditBrandBriefIn, canRenameWorkspaceIn, canManageSocialAccountsIn, canDeleteWorkspaceIn,
 } =
   useWorkspaces()
 const { getLanguage } = useSettings()
@@ -459,6 +459,7 @@ onMounted(async () => {
                 :accounts="accountsByWorkspace[w.id] ?? []"
                 :loading="accountsLoading[w.id] === true"
                 :loaded="accountsLoaded[w.id] === true"
+                :can-manage="canManageSocialAccountsIn(w.id)"
                 @unlink="(id) => onAccountUnlinkRequest(w.id, id)"
               />
 

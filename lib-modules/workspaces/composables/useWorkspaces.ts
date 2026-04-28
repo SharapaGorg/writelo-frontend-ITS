@@ -69,6 +69,8 @@ export function useWorkspaces() {
     store.canEditBrandBriefIn(workspaceId)
   const canRenameWorkspaceIn = (workspaceId: string) =>
     store.canRenameWorkspaceIn(workspaceId)
+  const canManageSocialAccountsIn = (workspaceId: string) =>
+    store.canManageSocialAccountsIn(workspaceId)
   const canDeleteWorkspaceIn = (workspaceId: string) =>
     store.canDeleteWorkspaceIn(workspaceId)
 
@@ -104,6 +106,7 @@ export function useWorkspaces() {
     getWorkspaceById,
     canEditBrandBriefIn,
     canRenameWorkspaceIn,
+    canManageSocialAccountsIn,
     canDeleteWorkspaceIn,
     isOwner,
     clear,

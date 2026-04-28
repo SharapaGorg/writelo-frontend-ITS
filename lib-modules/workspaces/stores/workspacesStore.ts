@@ -61,6 +61,16 @@ export const useWorkspacesStore = defineStore('workspaces', {
     },
 
     /**
+     * Per-workspace permission: can the current user link/unlink social
+     * accounts in the workspace?
+     */
+    canManageSocialAccountsIn: (state) => (workspaceId: string): boolean => {
+      const w = state.workspaces.find(w => w.id === workspaceId)
+      if (!w) return false
+      return w.role === 'admin' || w.role === 'owner'
+    },
+
+    /**
      * Per-workspace permission: can the current user delete the workspace?
      */
     canDeleteWorkspaceIn: (state) => (workspaceId: string): boolean => {

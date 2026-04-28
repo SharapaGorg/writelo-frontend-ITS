@@ -22,7 +22,6 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '~/components/ui/alert-dialog'
-import { useSettings } from '~/composables/settings'
 import { useWorkspacePermissions } from '~/lib-modules/workspaces'
 import type { WorkspaceMemberDto, WorkspaceRole } from '../../types'
 import TransferOwnershipDialog from '../dialogs/TransferOwnershipDialog.vue'
@@ -36,9 +35,6 @@ const emit = defineEmits<{
   (e: 'remove', userId: string): void
   (e: 'transfer', userId: string): void
 }>()
-
-const $settings = useSettings()
-const meId = $settings.getUser()?.id ?? null
 
 const {
   getAssignableRoles,
