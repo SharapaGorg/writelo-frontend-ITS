@@ -66,7 +66,7 @@ export function toCalendarPost(dto: PostListItemDto): CalendarPost {
     .sort((a, b) => Number(a.sortOrder) - Number(b.sortOrder))
   const images = mediaItems
     .filter(m => m.fileType === 'image')
-    .map(m => m.asset?.downloadUrl ?? '')
+    .map(m => m.asset?.url ?? '')
     .filter(Boolean)
   return {
     id: dto.id,
@@ -82,6 +82,7 @@ export function toCalendarPost(dto: PostListItemDto): CalendarPost {
     image: images[0],
     images: images.length > 1 ? images : undefined,
     mediaItems,
+    publishedLink: dto.postLink ?? undefined,
   }
 }
 
@@ -217,6 +218,13 @@ export class ContentCalendarApiController {
   deletePost(workspaceId: string, postId: string): Promise<void> {
     const url = buildUrl(ApiAliases.workspacePost, { workspaceId, postId })
     return this.api.request(url, RequestMethod.DELETE)
+  }
+
+  // Generic immediate-publish — backend dispatches per-platform itself, returns updated post.
+  async publishPostNow(workspaceId: string, postId: string): Promise<CalendarPost> {
+    const url = buildUrl(ApiAliases.workspacePostPublishNow, { workspaceId, postId })
+    const dto = await this.api.request(url, RequestMethod.POST) as PostListItemDto
+    return toCalendarPost(dto)
   }
 
   // Publish dispatcher — routes by platform × mediaType.

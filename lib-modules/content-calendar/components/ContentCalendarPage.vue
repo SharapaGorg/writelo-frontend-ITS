@@ -57,7 +57,6 @@ const {
   prevMonth,
   createPost,
   deletePost,
-  updatePost,
   markNewsAsUsed,
   usedNews,
   markTrendAsUsed,
@@ -112,12 +111,6 @@ async function confirmPostDelete() {
   const ok = await deletePost(id)
   if (!ok) {
     toastError('Не удалось удалить пост. Повтори попытку позже.')
-  }
-}
-
-function handlePostPublish() {
-  if (selectedPostId.value) {
-    updatePost(selectedPostId.value, { status: 'published' })
   }
 }
 
@@ -623,7 +616,6 @@ onUnmounted(() => {
           @submit-create-post="handleSubmitCreatePost"
           @cancel-create-post="handleCancelCreatePost"
           @delete-post="handlePostDelete"
-          @publish-post="handlePostPublish"
         />
       </div>
     </div>

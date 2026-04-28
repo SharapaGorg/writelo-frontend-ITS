@@ -30,7 +30,6 @@ const emit = defineEmits<{
   submitCreatePost: [title: string]
   cancelCreatePost: []
   deletePost: []
-  publishPost: []
 }>()
 
 const newPostTitle = ref('')
@@ -133,7 +132,6 @@ const funDay = computed(() =>
         class="h-full"
         @close="emit('closePost')"
         @delete="emit('deletePost')"
-        @publish="emit('publishPost')"
       />
 
       <!-- Day Detail -->

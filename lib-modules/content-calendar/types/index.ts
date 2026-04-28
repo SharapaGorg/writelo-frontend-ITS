@@ -98,8 +98,9 @@ export interface PostMediaDto {
   thumbnailObjectId?: string | null
   fileType: 'image' | 'video'
   sortOrder: number | string
-  asset?: { downloadUrl?: string } | null
-  thumbnail?: { downloadUrl?: string } | null
+  // SignedAssetDto: { objectId, url, expiresAt } — field is `url`, not `downloadUrl`.
+  asset?: { url?: string } | null
+  thumbnail?: { url?: string } | null
 }
 
 export interface PostListItemDto {
@@ -108,6 +109,7 @@ export interface PostListItemDto {
   title: string | null
   contentText: string
   platformContent: string | null
+  postLink: string | null
   mediaType: PostMediaType
   status: PostStatus
   scheduledAt: string

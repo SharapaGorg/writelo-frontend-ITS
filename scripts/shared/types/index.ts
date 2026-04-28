@@ -82,6 +82,7 @@ export enum ApiAliases {
     workspacePostMedia = 'workspaces/{workspaceId}/posts/{postId}/media',
     workspacePostMediaItem = 'workspaces/{workspaceId}/posts/{postId}/media/{mediaId}',
     workspacePostComments = 'workspaces/{workspaceId}/posts/{postId}/comments',
+    workspacePostPublishNow = 'workspaces/{workspaceId}/posts/{postId}/publish-now',
 
     // Publish — platform-specific (API 23.04)
     workspaceInstagramPublishPost = 'workspaces/{workspaceId}/instagram/{socialAccountId}/posts',

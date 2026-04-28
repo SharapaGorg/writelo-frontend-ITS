@@ -100,14 +100,10 @@ export const usePublicationsStore = defineStore('publications', () => {
 
     const mediaType = contentTypeToMediaType(post.type)
 
-    // Может throw'нуть "не поддерживается" — пробрасываем наверх, карточку не создаём.
-    await api.publishPost(
-      workspaceId,
-      account.id,
-      postId,
-      account.network,
-      mediaType,
-    )
+    // Optimistic: статус и карточка появляются ДО HTTP, иначе при быстром редиректе из
+    // редактора (handlePublish → router.push) sidebar не успевает их отрендерить.
+    const previousStatus = post.status
+    projectStore.updatePostLocal(postId, { status: 'publishing' })
 
     const publication: Publication = {
       id: generateUUID(),
@@ -120,12 +116,23 @@ export const usePublicationsStore = defineStore('publications', () => {
       status: 'publishing',
       startedAt: Date.now(),
     }
-
-    // Новые карточки — в начале массива.
     publications.value = [publication, ...publications.value]
 
-    // Оптимистично: помечаем пост как publishing в общем сторе.
-    projectStore.updatePostLocal(postId, { status: 'publishing' })
+    let updated
+    try {
+      updated = await api.publishPostNow(workspaceId, postId)
+    } catch (e) {
+      projectStore.updatePostLocal(postId, { status: previousStatus })
+      finalize(publication.id, { status: 'failed', error: 'Не удалось отправить на публикацию' })
+      throw e
+    }
+
+    // НЕ синхронизируем status из ответа: бэк может вернуть 'ready', т.к. publishing-job
+    // ещё не стартовал. Поллинг подхватит реальное состояние через 2с. Здесь только
+    // publishedLink, если он уже доступен.
+    if (updated.publishedLink) {
+      projectStore.updatePostLocal(postId, { publishedLink: updated.publishedLink })
+    }
 
     startPolling(publication)
   }

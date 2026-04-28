@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Loader2, Send } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/components/ui/select'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +19,9 @@ import VkPreview from './previews/VkPreview.vue'
 import YouTubePreview from './previews/YouTubePreview.vue'
 import TelegramPreview from './previews/TelegramPreview.vue'
 import CelebrationEffect from '~/lib-modules/content-editor/components/CelebrationEffect.vue'
+import { toastError } from '~/scripts/features/utils/toater'
+import { usePublicationsStore } from '../stores/publicationsStore'
+import { useContentProjectStore } from '../stores/contentProjectStore'
 import type { CalendarPost, SocialNetwork, PostStatus, ContentTag, SocialAccount } from '../types'
 
 const props = defineProps<{
@@ -29,8 +33,10 @@ const props = defineProps<{
 const emit = defineEmits<{
   close: []
   delete: []
-  publish: []
 }>()
+
+const publicationsStore = usePublicationsStore()
+const projectStore = useContentProjectStore()
 
 const router = useRouter()
 
@@ -87,7 +93,25 @@ const statusInfo: Record<PostStatus, { label: string; class: string }> = {
   idea: { label: 'Идея', class: 'text-muted-foreground' },
   draft: { label: 'Черновик', class: 'text-yellow-500' },
   ready: { label: 'Готов к публикации', class: 'text-green-500' },
-  published: { label: 'Опубликован', class: 'text-blue-500' }
+  publishing: { label: 'Публикуется...', class: 'text-blue-500' },
+  published: { label: 'Опубликован', class: 'text-blue-500' },
+  failed: { label: 'Ошибка публикации', class: 'text-destructive' },
+}
+
+// Editable statuses (publishing/published/failed are server-driven, not user-set).
+const editableStatusOptions: { value: PostStatus; label: string; class: string }[] = [
+  { value: 'idea', label: 'Идея', class: 'text-muted-foreground' },
+  { value: 'draft', label: 'Черновик', class: 'text-yellow-500' },
+  { value: 'ready', label: 'Готов к публикации', class: 'text-green-500' },
+]
+
+const isStatusEditable = computed(() =>
+  props.post.status === 'idea' || props.post.status === 'draft' || props.post.status === 'ready',
+)
+
+async function updateStatus(value: PostStatus) {
+  if (value === props.post.status) return
+  await projectStore.updatePost(props.post.id, { status: value })
 }
 
 function navigateToEditor() {
@@ -113,14 +137,16 @@ const canPublish = computed(() => props.post.status === 'ready')
 
 async function handlePublish() {
   isPublishing.value = true
-
-  // TODO: Call actual publish API here
-  await new Promise(resolve => setTimeout(resolve, 500)) // Simulate API call
-
-  emit('publish')
-  isPublishing.value = false
   showPublishDialog.value = false
-  showCelebration.value = true
+  try {
+    await publicationsStore.publishPost(props.post.id)
+    showCelebration.value = true
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Не удалось отправить на публикацию'
+    toastError(msg)
+  } finally {
+    isPublishing.value = false
+  }
 }
 </script>
 
@@ -273,22 +299,33 @@ async function handlePublish() {
 
     <!-- Footer with status and publish button -->
     <div class="px-4 py-3 border-t border-border flex items-center gap-2">
-      <svg v-if="post.status === 'idea'" class="w-4 h-4 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
-      </svg>
-      <svg v-else-if="post.status === 'draft'" class="w-4 h-4 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 3a9 9 0 0 0 0 18V3z" fill="currentColor"/>
-        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
-      </svg>
-      <svg v-else-if="post.status === 'ready'" class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M8 12l2.5 2.5L16 9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <svg v-else-if="post.status === 'published'" class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
-        <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
-      </svg>
-      <span :class="['text-sm flex-1', statusInfo[post.status].class]">
+      <!-- Editable status (idea / draft / ready) -->
+      <div v-if="isStatusEditable" class="flex-1 min-w-0">
+        <Select
+          :model-value="post.status"
+          @update:model-value="(v) => updateStatus(v as PostStatus)"
+        >
+          <SelectTrigger class="h-9">
+            <SelectValue>
+              <span :class="['text-sm', statusInfo[post.status].class]">
+                {{ statusInfo[post.status].label }}
+              </span>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem
+              v-for="opt in editableStatusOptions"
+              :key="opt.value"
+              :value="opt.value"
+            >
+              <span :class="['text-sm', opt.class]">{{ opt.label }}</span>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <!-- Read-only status (publishing / published / failed) -->
+      <span v-else :class="['text-sm flex-1', statusInfo[post.status].class]">
         {{ statusInfo[post.status].label }}
       </span>
 
@@ -296,6 +333,7 @@ async function handlePublish() {
       <Button
         v-if="canPublish"
         size="sm"
+        :disabled="isPublishing"
         @click="showPublishDialog = true"
         class="gap-1.5 bg-green-600 hover:bg-green-700"
       >

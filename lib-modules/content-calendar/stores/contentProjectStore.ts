@@ -145,12 +145,18 @@ export const useContentProjectStore = defineStore('contentProject', () => {
   }
 
   async function updatePost(postId: string, updates: Partial<CalendarPost>) {
+    const project = currentProject.value
+    const existing = project?.posts.find(p => p.id === postId)
     updatePostLocal(postId, updates)
     if (isDemo.value) return
     const workspaceId = context.currentWorkspaceId.value
     if (!workspaceId) return
     try {
-      await api.updatePost(workspaceId, postId, updates)
+      // Backend treats PATCH as full UpsertPostRequest (rejects partial bodies as
+      // "ContentField is required"); merge with the current post so single-field
+      // updates like {status} still send all required fields.
+      const body = existing ? { ...existing, ...updates } : updates
+      await api.updatePost(workspaceId, postId, body)
     } catch (e) {
       console.error('[contentProjectStore] updatePost failed:', e)
     }
