@@ -16,9 +16,12 @@ export enum FeatureType {
     socialAccounts = 'social-accounts',
 }
 
+export type SubscriptionKind = 'personal' | 'business'
+
 export type SubscriptionType = {
     id: number
     title: string
+    type?: SubscriptionKind
     price: number
     duration: string // P3D
     description: string

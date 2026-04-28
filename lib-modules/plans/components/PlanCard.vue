@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Check, Crown, Sparkles, Star } from 'lucide-vue-next'
+import { Check, Crown, Sparkles, Star, Users } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
 import { toastError } from '~/scripts/features/utils/toater'
@@ -17,6 +17,7 @@ const props = defineProps<{
 }>()
 
 const isFree = computed(() => props.plan.price <= 0)
+const isBusiness = computed(() => props.plan.type === 'business')
 const durationLabel = computed(() => formatDuration(props.plan.duration))
 const priceLabel = computed(() => (isFree.value ? '0 ₽' : `${props.plan.price} ₽`))
 const showPopularBadge = computed(() => props.isPopular && !props.isCurrent)
@@ -78,15 +79,24 @@ async function handlePurchase(mode: 'self' | 'gift') {
       Популярный
     </div>
 
-    <div class="flex items-center gap-2">
-      <component
-        :is="isFree ? Sparkles : Crown"
-        :class="cn(
-          'h-5 w-5',
-          isFree ? 'text-muted-foreground' : 'text-amber-600 dark:text-amber-400'
-        )"
-      />
-      <h3 class="text-lg font-semibold truncate">{{ plan.title }}</h3>
+    <div class="flex flex-col gap-1">
+      <div class="flex items-center gap-2">
+        <component
+          :is="isFree ? Sparkles : Crown"
+          :class="cn(
+            'h-5 w-5',
+            isFree ? 'text-muted-foreground' : 'text-amber-600 dark:text-amber-400'
+          )"
+        />
+        <h3 class="text-lg font-semibold truncate">{{ plan.title }}</h3>
+      </div>
+      <div
+        v-if="isBusiness"
+        class="inline-flex items-center gap-1 text-[11px] uppercase tracking-wide font-medium text-brand"
+      >
+        <Users class="h-3 w-3" />
+        Командная версия
+      </div>
     </div>
 
     <div class="flex items-baseline gap-2">
