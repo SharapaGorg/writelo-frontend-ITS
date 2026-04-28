@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { ContentDraft, ContentType, ContentStatus, DraftImage, EditorMode, ReelFrame, EditorChatMessage } from '../types'
 import { generateUUID } from '~/scripts/features/utils'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 
 function revokeBlobUrl(url: string | undefined) {
   if (url && url.startsWith('blob:')) {
@@ -116,7 +117,19 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     currentDraft.value = null
     originalDraft.value = null
     chatMessages.value = []
+    conversationId.value = null
+    postId.value = null
+    selectedAccountId.value = null
   }
+
+  // Reset all editor state when the user switches workspace — drafts /
+  // chat messages / conversation id belong to the previous workspace and
+  // would leak across contexts otherwise. Mirrors the pattern used in
+  // contentProjectStore.
+  const ctx = useWorkspaceContext()
+  watch(() => ctx.currentWorkspaceId.value, (newId, oldId) => {
+    if (oldId && newId !== oldId) clearDraft()
+  })
 
   const markAsSaved = () => {
     if (currentDraft.value) {
