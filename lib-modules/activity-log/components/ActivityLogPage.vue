@@ -14,7 +14,7 @@ import ActivityLogItem from './ActivityLogItem.vue'
 import { useActivityLog } from '../composables/useActivityLog'
 import { groupByDay } from '../helpers/formatting'
 
-const { currentWorkspaceId, currentWorkspace } = useWorkspaceContext()
+const { currentWorkspaceId, currentWorkspace, isReady } = useWorkspaceContext()
 const { workspaces, initialize: initializeWorkspaces } = useWorkspaces()
 const { canViewActivityLog } = useWorkspacePermissions()
 const {
@@ -74,7 +74,8 @@ function pluralEvents(n: number): string {
 </script>
 
 <template>
-  <NoAccessState v-if="!canViewActivityLog" />
+  <div v-if="!isReady" class="flex flex-col h-full" />
+  <NoAccessState v-else-if="!canViewActivityLog" />
   <div v-else class="flex flex-col h-full">
     <AppNavbar
       :breadcrumbs="[{ label: 'Журнал' }]"

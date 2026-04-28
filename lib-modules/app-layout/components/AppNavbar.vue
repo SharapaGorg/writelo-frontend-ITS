@@ -76,10 +76,10 @@ const selectedWorkspaceId = computed<string>({
         <SelectTrigger
           class="w-[260px] bg-card border-border"
         >
-          <div class="flex items-center gap-2 min-w-0 w-full">
+          <span class="flex items-center gap-2 min-w-0 w-full">
             <SelectValue placeholder="Выберите бренд" class="truncate" />
             <RoleBadge :role="currentRole" class="shrink-0" />
-          </div>
+          </span>
         </SelectTrigger>
         <SelectContent>
           <SelectItem v-for="ws in workspaces" :key="ws.id" :value="ws.id">
