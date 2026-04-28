@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ActivityLogItemDto } from '../types'
-import { mapAction } from '../helpers/formatting'
+import { mapAction, entityCaption } from '../helpers/formatting'
 
 const props = defineProps<{ item: ActivityLogItemDto }>()
 
@@ -33,7 +33,10 @@ function timeOf(iso: string): string {
         <span class="text-muted-foreground"> · {{ mapAction(item) }}</span>
       </div>
       <div class="text-xs text-muted-foreground">
-        {{ item.entityType }} · {{ timeOf(item.createdAt) }}
+        <template v-if="entityCaption(item)">
+          {{ entityCaption(item) }} ·
+        </template>
+        {{ timeOf(item.createdAt) }}
       </div>
     </div>
   </div>

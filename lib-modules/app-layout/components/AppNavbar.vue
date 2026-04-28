@@ -82,7 +82,12 @@ const selectedWorkspaceId = computed<string>({
           </span>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem v-for="ws in workspaces" :key="ws.id" :value="ws.id">
+          <SelectItem
+            v-for="ws in workspaces"
+            :key="ws.id"
+            :value="ws.id"
+            class="cursor-pointer"
+          >
             <span class="flex items-center justify-between gap-2 w-full min-w-0">
               <span class="truncate">{{ ws.name }}</span>
               <RoleBadge :role="ws.role" class="shrink-0" />
