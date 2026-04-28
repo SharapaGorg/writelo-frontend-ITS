@@ -8,7 +8,10 @@ export default defineConfig({
     globals: true,
     environment: 'happy-dom',
     setupFiles: ['./tests/setup.ts'],
-    include: ['tests/**/*.{test,spec}.{js,ts,jsx,tsx}'],
+    include: [
+      'tests/**/*.{test,spec}.{js,ts,jsx,tsx}',
+      'lib-modules/**/__tests__/**/*.{test,spec}.{js,ts,jsx,tsx}',
+    ],
     coverage: {
       reporter: ['text', 'json', 'html'],
       exclude: [

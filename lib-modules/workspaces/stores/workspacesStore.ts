@@ -48,6 +48,33 @@ export const useWorkspacesStore = defineStore('workspaces', {
       const workspace = state.workspaces.find(w => w.id === workspaceId)
       return workspace?.role === 'owner' || workspace?.role === 'admin'
     },
+
+    /**
+     * Per-workspace permission: can the current user edit the brand brief
+     * (industry / business description / target audience / tone / etc.)?
+     */
+    canEditBrandBriefIn: (state) => (workspaceId: string): boolean => {
+      const w = state.workspaces.find(w => w.id === workspaceId)
+      if (!w) return false
+      return w.role === 'editor' || w.role === 'admin' || w.role === 'owner'
+    },
+
+    /**
+     * Per-workspace permission: can the current user rename the workspace?
+     */
+    canRenameWorkspaceIn: (state) => (workspaceId: string): boolean => {
+      const w = state.workspaces.find(w => w.id === workspaceId)
+      if (!w) return false
+      return w.role === 'admin' || w.role === 'owner'
+    },
+
+    /**
+     * Per-workspace permission: can the current user delete the workspace?
+     */
+    canDeleteWorkspaceIn: (state) => (workspaceId: string): boolean => {
+      const w = state.workspaces.find(w => w.id === workspaceId)
+      return w?.role === 'owner'
+    },
   },
 
   actions: {
