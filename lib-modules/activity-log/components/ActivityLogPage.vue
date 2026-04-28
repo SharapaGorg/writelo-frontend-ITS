@@ -14,7 +14,7 @@ import ActivityLogItem from './ActivityLogItem.vue'
 import { useActivityLog } from '../composables/useActivityLog'
 import { groupByDay } from '../helpers/formatting'
 
-const { currentWorkspaceId, currentWorkspace, isReady } = useWorkspaceContext()
+const { currentWorkspaceId, currentWorkspace } = useWorkspaceContext()
 const { workspaces, initialize: initializeWorkspaces } = useWorkspaces()
 const { canViewActivityLog } = useWorkspacePermissions()
 const {
@@ -74,8 +74,11 @@ function pluralEvents(n: number): string {
 </script>
 
 <template>
-  <div v-if="!isReady" class="flex flex-col h-full" />
-  <NoAccessState v-else-if="!canViewActivityLog" />
+  <!-- Permission gate: only fires once currentWorkspace has resolved.
+       During the loading window the page renders normally and the inner
+       "Выберите бренд" placeholder shows, so admin/owner never see a
+       flash of NoAccess on hard refresh. -->
+  <NoAccessState v-if="currentWorkspace && !canViewActivityLog" />
   <div v-else class="flex flex-col h-full">
     <AppNavbar
       :breadcrumbs="[{ label: 'Журнал' }]"
