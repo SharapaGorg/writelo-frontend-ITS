@@ -24,6 +24,7 @@ export function useAppLayout() {
       requiresBusinessPlan: true,
       requiresPermission: 'canViewActivityLog',
     },
+    { id: 'assistant', icon: 'sparkles', label: 'Ассистент', route: '/app/assistant' },
   ]
 
   function hasPermission(flag: PermissionFlag): boolean {

@@ -53,6 +53,7 @@ const iconComponents: Record<string, typeof Calendar> = {
   'settings': Settings,
   'users': Users,
   'history': History,
+  'sparkles': Sparkles,
 }
 
 function getIcon(iconName: string) {
