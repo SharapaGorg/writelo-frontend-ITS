@@ -28,8 +28,8 @@
     </div>
 
     <div class="flex items-center gap-x-2 ml-auto" v-if="editing">
-      <Button size="sm" variant="outline" @click="editing = false">Close</Button>
-      <Button size="sm" variant="secondary" @click="saveEditedMessage">Save</Button>
+      <Button size="sm" variant="outline" @click="editing = false">{{ $t('close') }}</Button>
+      <Button size="sm" variant="secondary" @click="saveEditedMessage">{{ $t('save') }}</Button>
     </div>
 
     <MessageBottomBar

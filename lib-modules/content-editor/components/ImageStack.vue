@@ -82,7 +82,7 @@ const getCardStyle = (index: number) => {
           class="flex flex-col items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
         >
           <Plus class="h-8 w-8" />
-          <span class="text-xs">Add photo</span>
+          <span class="text-xs">{{ $t('editor.imageStack.addPhoto') }}</span>
         </button>
       </div>
 
@@ -142,7 +142,7 @@ const getCardStyle = (index: number) => {
         class="gap-1.5"
       >
         <Plus class="h-4 w-4" />
-        Add Photo
+        {{ $t('editor.imageStack.addPhoto') }}
       </Button>
       <span class="text-sm text-muted-foreground">
         {{ counterText }}

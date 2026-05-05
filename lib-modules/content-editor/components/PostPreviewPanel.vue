@@ -149,11 +149,11 @@ const handlePanelFocus = () => {
 
 const isActivePanel = computed(() => activePanel.value === 'right')
 
-// Content type options
-const contentTypes: { value: ContentType; label: string }[] = [
-  { value: 'post', label: 'Post' },
-  { value: 'story', label: 'Story' },
-  { value: 'reel', label: 'Reel' }
+// Content type options (label rendered via i18n in template)
+const contentTypes: { value: ContentType }[] = [
+  { value: 'post' },
+  { value: 'story' },
+  { value: 'reel' }
 ]
 
 // Computed values from draft
@@ -302,7 +302,7 @@ const handlePublish = async () => {
                 : 'text-muted-foreground hover:bg-accent hover:text-foreground'
           )"
         >
-          {{ type.label }}
+          {{ $t(`editor.post.type.${type.value}`) }}
         </button>
       </div>
     </div>
@@ -326,17 +326,17 @@ const handlePublish = async () => {
         <!-- Description (for all types) -->
         <section class="space-y-2">
           <label class="text-sm font-medium text-foreground">
-            {{ isReel ? 'Описание' : 'Description' }}
+            {{ $t('editor.post.description.label') }}
           </label>
           <Textarea
             :model-value="description"
             :disabled="isPublished"
             @update:model-value="updateDescription"
-            :placeholder="isReel ? 'Описание для рилс...' : 'Write a captivating description for your post...'"
+            :placeholder="$t('editor.post.description.placeholder')"
             class="min-h-[260px] max-h-[520px] resize-y overflow-y-auto"
           />
           <p class="text-xs text-muted-foreground">
-            {{ description.length }} / 2200 characters
+            {{ description.length }} / 2200 {{ $t('editor.post.charsSuffix') }}
           </p>
         </section>
       </div>

@@ -13,7 +13,7 @@
       <NuxtImg
           v-if="isImage && imgSrc"
           class="max-w-[200px] h-[100px] rounded-lg overflow-hidden object-cover object-center"
-          alt="attached image preview"
+          :alt="$t('alt.attachedImage')"
           :src="imgSrc"
       />
     </div>

@@ -110,7 +110,7 @@ const sendMessage = async () => {
     } catch (error) {
       console.error('Failed to create conversation:', error)
       setChatMessageError(responseUuid, true)
-      updateChatMessage(responseUuid, 'Failed to create conversation. Please try again.')
+      updateChatMessage(responseUuid, t('editor.chat.errors.createConversation'))
       setChatProcessing(false)
       return
     }
@@ -123,7 +123,7 @@ const sendMessage = async () => {
     detachAll()
   } catch (error: any) {
     console.error('[EditorChat] Error sending message:', error)
-    const errorDetail = error?.data?.detail || 'Failed to process your request. Please try again.'
+    const errorDetail = error?.data?.detail || t('editor.chat.errors.sendMessage')
     updateChatMessage(responseUuid, errorDetail)
     setChatMessageError(responseUuid, true)
     setChatProcessing(false)
@@ -131,7 +131,7 @@ const sendMessage = async () => {
   }
 
   if (!streamResponse) {
-    updateChatMessage(responseUuid, 'Error: Failed to process your request. Please try again.')
+    updateChatMessage(responseUuid, t('editor.chat.errors.streamFailed'))
     setChatMessageError(responseUuid, true)
     setChatProcessing(false)
     return
@@ -308,8 +308,8 @@ onUnmounted(() => {
         class="flex h-full items-center justify-center"
       >
         <div class="text-center text-muted-foreground">
-          <p class="text-sm">Start a conversation to get AI assistance</p>
-          <p class="mt-1 text-xs">Ask for help with your post description, hashtags, or ideas</p>
+          <p class="text-sm">{{ $t('editor.chat.empty.title') }}</p>
+          <p class="mt-1 text-xs">{{ $t('editor.chat.empty.subtitle') }}</p>
         </div>
       </div>
 

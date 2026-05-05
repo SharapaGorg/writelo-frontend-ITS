@@ -47,7 +47,7 @@ const handleRatioClick = (ratio: string) => {
                 height: `${40 * (getRatioValues(ratio)[1] / Math.max(...getRatioValues(ratio)))}px`
               }"
           ></div>
-          <span v-else class="text-xs text-muted-foreground">Auto</span>
+          <span v-else class="text-xs text-muted-foreground">{{ $t('imageGenerator.aspectRatio.auto') }}</span>
         </div>
 
         <span class="text-sm">{{ ratio }}</span>

@@ -398,7 +398,8 @@
       "label": "Instructions"
     },
     "aspectRatio": {
-      "title": "Aspect Ratio"
+      "title": "Aspect Ratio",
+      "auto": "Auto"
     },
     "generate": {
       "button": "Generate Image",
@@ -436,5 +437,90 @@
     "demo": {
       "prompt": "Make the dog a superhero, cape behind the back, motion effect of high speed, grass slightly burned, storm on the river in the background, super realistic graphics"
     }
+  },
+  "editor": {
+    "tabs": {
+      "chat": "Chat",
+      "images": "Images"
+    },
+    "chat": {
+      "empty": {
+        "title": "Start a conversation to get AI assistance",
+        "subtitle": "Ask for help with your post description, hashtags, or ideas"
+      },
+      "errors": {
+        "createConversation": "Failed to create conversation. Please try again.",
+        "sendMessage": "Failed to process your request. Please try again.",
+        "streamFailed": "Error: Failed to process your request. Please try again."
+      }
+    },
+    "post": {
+      "type": {
+        "post": "Post",
+        "story": "Story",
+        "reel": "Reel"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Write a captivating description for your post..."
+      },
+      "charsSuffix": "characters"
+    },
+    "reel": {
+      "title": "Reel Script Editor",
+      "duration": {
+        "placeholder": "Select duration",
+        "options": {
+          "15": "15 seconds",
+          "30": "30 seconds",
+          "45": "45 seconds",
+          "60": "60 seconds (1 min)",
+          "90": "90 seconds (1.5 min)"
+        }
+      },
+      "timeline": "Timeline",
+      "frameContent": "Frame Content",
+      "description": {
+        "label": "Reel Description",
+        "hint": "(caption for the reel)",
+        "placeholder": "Write a captivating description for your reel..."
+      }
+    },
+    "frame": {
+      "atLabel": "Frame at",
+      "secondLabel": "Second",
+      "visualLabel": "Visual",
+      "noVisual": "No visual for this frame",
+      "upload": "Upload",
+      "generate": "Generate",
+      "replace": "Replace",
+      "regenerate": "Regenerate",
+      "remove": "Remove",
+      "description": {
+        "label": "Description",
+        "hint": "(what happens in this second)",
+        "placeholder": "Describe the visual action or scene for this second..."
+      },
+      "voiceover": {
+        "label": "Voiceover / Text",
+        "hint": "(what to say or display)",
+        "placeholder": "Enter the voiceover script or on-screen text for this second..."
+      }
+    },
+    "media": {
+      "header": "Images",
+      "dropHere": "Drop images here",
+      "max": "Maximum images reached",
+      "uploadHint": "Drop images, paste from clipboard,<br>or click to upload",
+      "generate": "Generate"
+    },
+    "imageStack": {
+      "addPhoto": "Add photo"
+    }
+  },
+  "alt": {
+    "attachedImage": "Attached image",
+    "generatedImage": "Generated image",
+    "frameVisual": "Frame visual"
   }
 }

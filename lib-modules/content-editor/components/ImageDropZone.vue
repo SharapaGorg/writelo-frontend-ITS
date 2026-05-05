@@ -169,7 +169,7 @@ watch(() => props.isActive, () => {
     <!-- Header with counter -->
     <div class="flex items-center justify-between">
       <h4 class="text-sm font-medium text-foreground">
-        {{ acceptVideo ? 'Видео' : 'Images' }}
+        {{ acceptVideo ? 'Видео' : $t('editor.media.header') }}
       </h4>
       <span
         v-if="!acceptVideo"
@@ -205,7 +205,7 @@ watch(() => props.isActive, () => {
       >
         <div class="flex flex-col items-center">
           <Upload class="h-10 w-10 text-primary" />
-          <p class="mt-2 text-sm font-medium text-primary">{{ acceptVideo ? 'Перетащите видео сюда' : 'Drop images here' }}</p>
+          <p class="mt-2 text-sm font-medium text-primary">{{ acceptVideo ? 'Перетащите видео сюда' : $t('editor.media.dropHere') }}</p>
         </div>
       </div>
 
@@ -214,7 +214,7 @@ watch(() => props.isActive, () => {
         v-if="isDragOver && !canAddMore"
         class="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-amber-500/10"
       >
-        <p class="text-sm font-medium text-amber-600">Maximum images reached</p>
+        <p class="text-sm font-medium text-amber-600">{{ $t('editor.media.max') }}</p>
       </div>
 
       <!-- Images/Video Grid -->
@@ -293,9 +293,7 @@ watch(() => props.isActive, () => {
           <template v-if="acceptVideo">
             Перетащите видео или нажмите для загрузки
           </template>
-          <template v-else>
-            Drop images, paste from clipboard,<br>or click to upload
-          </template>
+          <span v-else v-html="$t('editor.media.uploadHint')" />
         </p>
       </div>
     </div>
@@ -309,7 +307,7 @@ watch(() => props.isActive, () => {
         class="gap-1.5"
       >
         <Sparkles class="h-4 w-4" />
-        Generate
+        {{ $t('editor.media.generate') }}
       </Button>
     </div>
 

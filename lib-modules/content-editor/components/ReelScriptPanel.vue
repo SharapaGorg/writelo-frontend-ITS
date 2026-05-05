@@ -17,14 +17,8 @@ import type {ReelFrame} from '../types'
 import ReelTimeline from './ReelTimeline.vue'
 import FrameEditor from './FrameEditor.vue'
 
-// Duration options in seconds
-const DURATION_OPTIONS = [
-  {value: 15, label: '15 seconds'},
-  {value: 30, label: '30 seconds'},
-  {value: 45, label: '45 seconds'},
-  {value: 60, label: '60 seconds (1 min)'},
-  {value: 90, label: '90 seconds (1.5 min)'}
-]
+// Duration options in seconds (label rendered via i18n in template)
+const DURATION_OPTIONS = [15, 30, 45, 60, 90]
 
 const {
   currentDraft,
@@ -130,21 +124,21 @@ watch(() => script.value.duration, (newDuration) => {
     <div class="border-b border-border p-4">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-semibold text-foreground">
-          Reel Script Editor
+          {{ $t('editor.reel.title') }}
         </h3>
         <div class="flex items-center gap-2">
           <Clock class="h-4 w-4 text-muted-foreground"/>
           <Select v-model="durationStr">
             <SelectTrigger class="w-[160px] h-9">
-              <SelectValue placeholder="Select duration"/>
+              <SelectValue :placeholder="$t('editor.reel.duration.placeholder')"/>
             </SelectTrigger>
             <SelectContent>
               <SelectItem
-                  v-for="option in DURATION_OPTIONS"
-                  :key="option.value"
-                  :value="String(option.value)"
+                  v-for="seconds in DURATION_OPTIONS"
+                  :key="seconds"
+                  :value="String(seconds)"
               >
-                {{ option.label }}
+                {{ $t(`editor.reel.duration.options.${seconds}`) }}
               </SelectItem>
             </SelectContent>
           </Select>
@@ -158,7 +152,7 @@ watch(() => script.value.duration, (newDuration) => {
         <!-- Timeline section -->
         <div class="space-y-2">
           <h4 class="text-sm font-medium text-foreground">
-            Timeline
+            {{ $t('editor.reel.timeline') }}
           </h4>
           <div class="rounded-md border border-border bg-muted p-4">
             <ReelTimeline
@@ -172,7 +166,7 @@ watch(() => script.value.duration, (newDuration) => {
         <!-- Frame editor section -->
         <div class="space-y-2">
           <h4 class="text-sm font-medium text-foreground">
-            Frame Content
+            {{ $t('editor.reel.frameContent') }}
           </h4>
           <div class="rounded-md border border-border bg-card p-4">
             <FrameEditor
@@ -188,15 +182,15 @@ watch(() => script.value.duration, (newDuration) => {
         <!-- Reel description section -->
         <div class="space-y-2">
           <label class="text-sm font-medium text-foreground">
-            Reel Description
+            {{ $t('editor.reel.description.label') }}
             <span class="ml-1 font-normal text-muted-foreground">
-              (caption for the reel)
+              {{ $t('editor.reel.description.hint') }}
             </span>
           </label>
           <Textarea
               :model-value="description"
               @update:model-value="updateDescription"
-              placeholder="Write a captivating description for your reel..."
+              :placeholder="$t('editor.reel.description.placeholder')"
               class="min-h-[100px] resize-none"
           />
         </div>

@@ -21,7 +21,7 @@
           class="attached-picture"
           v-else
           :src="imgSrc"
-          alt="Attached image"
+          :alt="$t('alt.attachedImage')"
           @click="openPreview"
       />
     </div>

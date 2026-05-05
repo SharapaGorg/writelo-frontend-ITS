@@ -178,7 +178,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
               )"
             >
               <MessageSquare class="h-4 w-4" />
-              Chat
+              {{ $t('editor.tabs.chat') }}
             </button>
             <button
               v-if="canManagePosts"
@@ -191,7 +191,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
               )"
             >
               <Image class="h-4 w-4" />
-              Images
+              {{ $t('editor.tabs.images') }}
             </button>
           </div>
 

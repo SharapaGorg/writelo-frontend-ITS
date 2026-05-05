@@ -74,7 +74,7 @@ onUnmounted(() => {
       <!-- Generated image -->
       <template v-else>
         <div class="generator-output-image__preview" @click="openFullscreen">
-          <img :src="imageUrl" alt="Generated image" class="w-full h-full object-contain cursor-pointer"/>
+          <img :src="imageUrl" :alt="$t('alt.generatedImage')" class="w-full h-full object-contain cursor-pointer"/>
         </div>
       </template>
     </div>
@@ -97,7 +97,7 @@ onUnmounted(() => {
           </button>
           <img
               :src="imageUrl"
-              alt="Generated image"
+              :alt="$t('alt.generatedImage')"
               class="fullscreen-image"
               @click.stop
           />

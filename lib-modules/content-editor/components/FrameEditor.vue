@@ -51,21 +51,21 @@ const removeVisual = () => {
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-2">
         <span class="text-sm font-medium text-foreground">
-          Frame at
+          {{ $t('editor.frame.atLabel') }}
         </span>
         <span class="rounded bg-secondary px-2 py-0.5 font-mono text-sm font-semibold text-foreground">
           {{ formatSecond(second) }}
         </span>
       </div>
       <span class="text-xs text-muted-foreground">
-        Second {{ second }}
+        {{ $t('editor.frame.secondLabel') }} {{ second }}
       </span>
     </div>
 
     <!-- Visual section -->
     <div class="space-y-2">
       <label class="text-sm font-medium text-foreground">
-        Visual
+        {{ $t('editor.frame.visualLabel') }}
       </label>
 
       <!-- Visual preview or placeholder -->
@@ -81,7 +81,7 @@ const removeVisual = () => {
         <template v-if="hasVisual">
           <img
             :src="visualUrl"
-            alt="Frame visual"
+            :alt="$t('alt.frameVisual')"
             class="h-full w-full object-cover"
           />
           <!-- Remove button overlay -->
@@ -100,7 +100,7 @@ const removeVisual = () => {
           <div class="flex h-full flex-col items-center justify-center gap-3 p-4">
             <ImageIcon class="h-8 w-8 text-muted-foreground" />
             <p class="text-sm text-muted-foreground">
-              No visual for this frame
+              {{ $t('editor.frame.noVisual') }}
             </p>
             <div class="flex items-center gap-2">
               <Button
@@ -110,7 +110,7 @@ const removeVisual = () => {
                 @click="emit('uploadVisual')"
               >
                 <Upload class="mr-1.5 h-3.5 w-3.5" />
-                Upload
+                {{ $t('editor.frame.upload') }}
               </Button>
               <Button
                 variant="secondary"
@@ -119,7 +119,7 @@ const removeVisual = () => {
                 @click="emit('generateVisual')"
               >
                 <Sparkles class="mr-1.5 h-3.5 w-3.5" />
-                Generate
+                {{ $t('editor.frame.generate') }}
               </Button>
             </div>
           </div>
@@ -134,7 +134,7 @@ const removeVisual = () => {
           @click="emit('uploadVisual')"
         >
           <Upload class="mr-1.5 h-3.5 w-3.5" />
-          Replace
+          {{ $t('editor.frame.replace') }}
         </Button>
         <Button
           variant="secondary"
@@ -142,7 +142,7 @@ const removeVisual = () => {
           @click="emit('generateVisual')"
         >
           <Sparkles class="mr-1.5 h-3.5 w-3.5" />
-          Regenerate
+          {{ $t('editor.frame.regenerate') }}
         </Button>
         <Button
           variant="ghost"
@@ -151,7 +151,7 @@ const removeVisual = () => {
           @click="removeVisual"
         >
           <Trash2 class="mr-1.5 h-3.5 w-3.5" />
-          Remove
+          {{ $t('editor.frame.remove') }}
         </Button>
       </div>
     </div>
@@ -159,14 +159,14 @@ const removeVisual = () => {
     <!-- Description textarea -->
     <div class="space-y-2">
       <label class="text-sm font-medium text-foreground">
-        Description
+        {{ $t('editor.frame.description.label') }}
         <span class="ml-1 font-normal text-muted-foreground">
-          (what happens in this second)
+          {{ $t('editor.frame.description.hint') }}
         </span>
       </label>
       <Textarea
         v-model="description"
-        placeholder="Describe the visual action or scene for this second..."
+        :placeholder="$t('editor.frame.description.placeholder')"
         class="min-h-[80px] resize-none"
       />
     </div>
@@ -174,14 +174,14 @@ const removeVisual = () => {
     <!-- Voiceover/Text textarea -->
     <div class="space-y-2">
       <label class="text-sm font-medium text-foreground">
-        Voiceover / Text
+        {{ $t('editor.frame.voiceover.label') }}
         <span class="ml-1 font-normal text-muted-foreground">
-          (what to say or display)
+          {{ $t('editor.frame.voiceover.hint') }}
         </span>
       </label>
       <Textarea
         v-model="voiceover"
-        placeholder="Enter the voiceover script or on-screen text for this second..."
+        :placeholder="$t('editor.frame.voiceover.placeholder')"
         class="min-h-[80px] resize-none"
       />
     </div>
