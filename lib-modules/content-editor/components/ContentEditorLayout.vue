@@ -44,8 +44,9 @@ const { canManagePosts } = useWorkspacePermissions()
 
 // viewer (no canManagePosts) sees only the AI chat — force editorMode back to
 // 'chat' if it was left on 'images' from a previous session in another role.
+// Showcase mode bypasses permissions (marketing demo, no real workspace).
 watch(canManagePosts, (allowed) => {
-  if (!allowed && editorMode.value !== 'chat') setEditorMode('chat')
+  if (!allowed && !props.showcaseMode && editorMode.value !== 'chat') setEditorMode('chat')
 }, { immediate: true })
 
 const isLeftActive = computed(() => activePanel.value === 'left')
@@ -181,7 +182,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
               {{ $t('editor.tabs.chat') }}
             </button>
             <button
-              v-if="canManagePosts"
+              v-if="canManagePosts || props.showcaseMode"
               @click="setEditorMode('images')"
               :class="cn(
                 'flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors',
