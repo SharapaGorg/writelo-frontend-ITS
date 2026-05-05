@@ -12,12 +12,6 @@ export interface AssistantMessage {
   error?: boolean
 }
 
-export interface ConversationSummary {
-  id: string
-  title: string | null
-  modifiedAt: string
-}
-
 export type ActionType = 'save_as_idea' | 'open_in_editor'
 
 export interface Action {

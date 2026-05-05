@@ -37,8 +37,16 @@ export class AssistantApiController {
     return this.api.sendWorkspaceMessage(workspaceId, conversationId, text)
   }
 
-  // No backend stop endpoint in v1-28.04 — stop is implemented client-side
+  // No backend stop endpoint in v1-4.05 — stop is implemented client-side
   // by cancelling the SSE reader; backend tears down generation on disconnect.
+
+  renameConversation(
+    workspaceId: string,
+    conversationId: string,
+    title: string,
+  ): Promise<ConversationListItemDto> {
+    return this.api.updateWorkspaceConversation(workspaceId, conversationId, title)
+  }
 
   deleteConversation(workspaceId: string, conversationId: string): Promise<void> {
     return this.api.deleteWorkspaceConversation(workspaceId, conversationId)

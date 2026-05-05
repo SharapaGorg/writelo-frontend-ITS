@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   AttachedFileArea,
   BottomBar,
@@ -11,11 +11,17 @@ import { Textarea } from '~/components/ui/textarea'
 import { PromptImproverWrapper } from '~/components/molecules/PromptImproverWrapper'
 import { isMobile } from '~/scripts/features/utils'
 import { eventBus } from '~/composables/eventBus'
+import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { useAssistantChat } from '../composables/useAssistantChat'
+import { useAssistantStore } from '../stores/assistantStore'
+import AssistantChatSkeleton from './AssistantChatSkeleton.vue'
 import EmptyStateHero from './EmptyStateHero.vue'
 
 const route = useRoute()
-const { messages, isProcessing, send, stop, setActiveConversation } = useAssistantChat()
+const router = useRouter()
+const { currentWorkspace } = useWorkspaceContext()
+const store = useAssistantStore()
+const { messages, isProcessing, isLoadingHistory, send, stop, setActiveConversation } = useAssistantChat()
 
 const ROWS_LIMIT = 7
 const input = ref('')
@@ -87,10 +93,30 @@ function onKeydown(e: KeyboardEvent) {
   }
 }
 
+// Keep active conversation in sync with URL. Tied to currentWorkspace.id so
+// workspace-init race (immediate=true firing before workspace is ready) can't
+// throw out of requireWorkspaceId().
 watch(
-  () => route.query.conv,
-  (id) => {
-    setActiveConversation(typeof id === 'string' ? id : null)
+  [() => route.query.conv, () => currentWorkspace.value?.id],
+  ([convQuery, wid]) => {
+    if (!wid) return
+    const convId = typeof convQuery === 'string' ? convQuery : null
+    setActiveConversation(convId)
+  },
+  { immediate: true },
+)
+
+// One-shot last-active restore: runs only on first mount when workspace becomes
+// available and the URL has no ?conv. Stops itself after firing so that a later
+// "+ Новый чат" click (which clears ?conv) is not undone by the restore.
+const stopRestoreLastActive = watch(
+  () => currentWorkspace.value?.id,
+  (wid) => {
+    if (!wid) return
+    stopRestoreLastActive()
+    if (typeof route.query.conv === 'string') return
+    const lastId = store.getLastActive(wid)
+    if (lastId) router.replace({ query: { ...route.query, conv: lastId } })
   },
   { immediate: true },
 )
@@ -109,9 +135,12 @@ onUnmounted(() => {
     <!-- Messages -->
     <div
       ref="messagesContainer"
-      class="flex-1 overflow-y-auto"
+      class="min-h-0 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent"
     >
-      <template v-if="messages.length === 0">
+      <template v-if="isLoadingHistory && messages.length === 0">
+        <AssistantChatSkeleton />
+      </template>
+      <template v-else-if="messages.length === 0">
         <EmptyStateHero @pick="onPrompt" />
       </template>
       <template v-else>

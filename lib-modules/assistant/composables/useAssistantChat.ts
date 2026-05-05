@@ -3,6 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { generateUUID } from '~/scripts/features/utils'
 import { useAssistantApi } from '../helpers/api'
+import { useAssistantStore } from '../stores/assistantStore'
 import type { AssistantMessage } from '../types'
 
 const messages = ref<AssistantMessage[]>([])
@@ -17,6 +18,7 @@ export function useAssistantChat() {
   const router = useRouter()
   const { requireWorkspaceId } = useWorkspaceContext()
   const api = useAssistantApi()
+  const store = useAssistantStore()
 
   function reset() {
     messages.value = []
@@ -61,10 +63,13 @@ export function useAssistantChat() {
     conversationId.value = convId
     if (!convId) return
 
-    const wid = requireWorkspaceId()
     isLoadingHistory.value = true
     try {
+      const wid = requireWorkspaceId()
+      store.setLastActive(wid, convId)
       const detail = await api.getConversation(wid, convId)
+      // Guard against races: another switch may have happened while we awaited.
+      if (conversationId.value !== convId) return
       messages.value = (detail.messages ?? [])
         .filter(m => !m.isService)
         .map(m => ({
@@ -86,6 +91,18 @@ export function useAssistantChat() {
     if (conversationId.value) return conversationId.value
     const conv = await api.createConversation(workspaceId)
     conversationId.value = conv.id
+    store.upsertConversation(workspaceId, {
+      id: conv.id,
+      workspaceId,
+      title: conv.title ?? '',
+      createdAt: conv.createdAt ?? new Date().toISOString(),
+      modifiedAt: conv.modifiedAt ?? new Date().toISOString(),
+    })
+    // Backend returns "Untitled" placeholder; real title arrives via SSE
+    // (title_generated). Mark as pending so the sidebar shows a skeleton
+    // instead of the literal placeholder.
+    store.markTitlePending(workspaceId, conv.id)
+    store.setLastActive(workspaceId, conv.id)
     router.replace({ query: { ...route.query, conv: conv.id } })
     return conv.id
   }
@@ -146,8 +163,20 @@ export function useAssistantChat() {
         setMessageBackendId(requestId, parsed.messageId)
       } else if (parsed.action === 'response_message_id') {
         setMessageBackendId(responseId, parsed.messageId)
-      } else if (parsed.action === 'set_title') {
-        // Phase 2: bubble up to history store.
+      } else if (
+        parsed.action === 'title_generated' ||
+        parsed.action === 'set_title' ||
+        parsed.action === 'create_conversation'
+      ) {
+        const cid = conversationId.value
+        const title = parsed.title ?? parsed.dt
+        if (cid && title) {
+          store.patchConversation(workspaceId, cid, {
+            title,
+            modifiedAt: new Date().toISOString(),
+          })
+          store.unmarkTitlePending(workspaceId, cid)
+        }
       } else if (parsed.action === 'response_end' || parsed.action === 'finish_response') {
         isProcessing.value = false
         const m = messages.value.find(x => x.id === responseId)
@@ -157,6 +186,18 @@ export function useAssistantChat() {
           setMessageError(responseId)
         }
         isStopping.value = false
+        // Backup: backend may set title after the stream ends (async title worker).
+        // Silent refetch of the list ensures the sidebar reflects whatever the
+        // backend ended up with, even if no set_title/create_conversation event
+        // was emitted for this message. Also clear any stale pending flag —
+        // if the title still hasn't arrived by now, refetched list is canon.
+        const cid = conversationId.value
+        api.listConversations(workspaceId)
+          .then(list => {
+            store.setConversations(workspaceId, list)
+            if (cid) store.unmarkTitlePending(workspaceId, cid)
+          })
+          .catch(() => { /* noop */ })
       }
     }
 
