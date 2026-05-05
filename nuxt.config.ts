@@ -11,8 +11,10 @@ export default defineNuxtConfig({
     // Гибридный рендеринг: prerender для SEO-страниц, SPA для остального
     ssr: true,
     routeRules: {
+        // / is a server-side locale redirector (see server/middleware/locale-redirect.ts).
+        // It must NOT be prerendered — a static index.html would shadow the middleware.
+        '/': {ssr: true},
         // Prerender для SEO (статический HTML при билде + SSR включен явно)
-        '/': {ssr: true, prerender: true},
         '/en': {ssr: true, prerender: true},
         '/ru': {ssr: true, prerender: true},
         // Auth must stay dynamic so public runtime config follows the deployed env.
@@ -133,7 +135,7 @@ export default defineNuxtConfig({
 
     nitro: {
         prerender: {
-            routes: ['/', '/en', '/ru', '/landing', '/start', '/auth'],
+            routes: ['/en', '/ru', '/landing', '/start', '/auth'],
         },
         // Ускоряем билд
         minify: false,

@@ -11,9 +11,15 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     nuxtApp.vueApp.use(i18n)
 
-    // Применяем сохраненный locale ПОСЛЕ гидратации
+    // Применяем сохраненный locale ПОСЛЕ гидратации.
+    // На /ru и /en источник истины — URL: страница сама форсит свою локаль,
+    // localStorage не должен её перебивать (иначе зашёл на /en → текст пере-
+    // ключается на ru через 50мс из-за сохранённой preferred-locale).
     if (typeof window !== 'undefined') {
         nuxtApp.hook('app:mounted', () => {
+            const path = window.location.pathname
+            if (path === '/ru' || path === '/en') return
+
             const savedLocale = localStorage.getItem('preferred-locale')
             if (savedLocale && ['en', 'ru'].includes(savedLocale)) {
                 i18n.global.locale.value = savedLocale

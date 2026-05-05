@@ -1,4 +1,5 @@
 {
+  "500": "Something went wrong",
   "demo": {
     "authModal": {
       "title": "Sign in to continue",
@@ -202,13 +203,12 @@
   "crypto-bot": "Crypto bot",
   "telegram-stars": "Telegram stars",
   "drop-files": "Drag and drop file",
-  "500": "Something went wrong",
   "success-payment": "Successfully paid!",
   "off": "OFF",
   "on": "ON",
   "launch_onboarding": "Launch Onboarding",
   "changes-saved": "Changes saved",
-  "something-went-wrong" : "Something went wrong",
+  "something-went-wrong": "Something went wrong",
   "sub-landing": {
     "month": "month",
     "subscribe": "Purchase",
@@ -522,5 +522,229 @@
     "attachedImage": "Attached image",
     "generatedImage": "Generated image",
     "frameVisual": "Frame visual"
+  },
+  "landingNew": {
+    "seo": {
+      "title": "Writelo — Instagram trend analytics, Reels breakdowns & content calendar for SMM",
+      "description": "A platform for SMM professionals: niche-specific Instagram trend analytics, AI breakdowns of Reels (yours and competitors), brand-tailored news hooks and a content calendar — all in one tool. Free to start.",
+      "ogTitle": "Writelo — Instagram trend analytics & Reels breakdowns",
+      "ogDescription": "Niche Instagram trends, AI Reels breakdowns, brand-tailored news hooks and a content plan — all in one."
+    },
+    "header": {
+      "nav": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "contacts": "Contact"
+      },
+      "cta": "Try it"
+    },
+    "hero": {
+      "label": "WRITELO / N°00",
+      "line1": "Find",
+      "line2": "your content",
+      "line3": "formula",
+      "sub": "Instagram trend analytics, AI breakdowns of competitor and your own reels, brand-tailored news hooks and a content calendar — all in one tool.",
+      "cta": "Try it free",
+      "scrollHint": "What's inside"
+    },
+    "audience": {
+      "label": "N°01 / AUDIENCE",
+      "title": "For people who make a living from this.",
+      "cards": {
+        "freelancer": {
+          "tag": "Reels Maker / Blogger",
+          "title": "Content is your product",
+          "body": "Analyze trends and break down viral reels to know what works — instead of guessing"
+        },
+        "team": {
+          "tag": "SMM Specialist",
+          "title": "Clients, brands, content plan",
+          "body": "Trends, news hooks and a calendar tailored to each brand"
+        },
+        "agency": {
+          "tag": "Team / Business",
+          "title": "One tool for the whole team",
+          "body": "Trend analytics, vertical video breakdowns, brand-tailored news hooks and content calendar — in a shared workspace"
+        }
+      }
+    },
+    "trends": {
+      "label": "N°02 / TRENDS",
+      "titlePre": "Instagram trends. React",
+      "titleAccent": "faster",
+      "titlePost": "than competitors.",
+      "body1": "What's growing in your niche right now — with reach, momentum and links to source reels.",
+      "body2": "Sort, filter, spot the patterns.",
+      "body3": "Trends are picked for your brand — not a generic feed, but what's relevant to your audience.",
+      "previewLabel": "PREVIEW — NICHE: BEAUTY",
+      "liveLabel": "LIVE",
+      "liveNote": "Reels database refreshes every 5 minutes — you're always in the moment"
+    },
+    "calendar": {
+      "label": "N°03 / CALENDAR",
+      "titlePre": "News hooks for your",
+      "titleAccent": "brand.",
+      "titlePost": "Straight into the content plan.",
+      "sub": "AI monitors news from around the world and matches news hooks to your brand. You pick the relevant ones and drag them into the content plan. Google and Twitter give different angles on the agenda — together they make the picture more complete.",
+      "mobileLabel": "DESKTOP ONLY",
+      "mobileNote": "The calendar lives on desktop — open the landing page on a computer to see it in action."
+    },
+    "brief": {
+      "label": "N°04 / BRANDS",
+      "title": "Each brand gets its own workspace.",
+      "body1": "Describe your brand once — style, voice, constraints, references — and never come back to it.",
+      "body2Pre": "AI remembers everything and keeps working on its own: it pulls",
+      "body2Accent1": "news",
+      "body2Mid": "for the brand,",
+      "body2Accent2": "writes",
+      "body2Post": "in the right voice, respects the constraints.",
+      "body3": "No \"universal\" prompts. No copy-pasting the brand brief into every request. Set it up once — it works forever.",
+      "aside": "LIKE PROJECTS IN CHATGPT, BUT FOR SMM"
+    },
+    "reels": {
+      "label": "N°05 / VIDEO",
+      "title": "Video analysis.",
+      "body1": "Drop a link to a short video — YouTube Shorts, TikTok or Instagram Reels — and get a full breakdown: hook, structure, funnel, CTA, what techniques were used and why it worked.",
+      "body2": "Same for your own videos, but deeper. AI walks the clip frame by frame and tells you where attention drops — weak hook, sag in the middle, unclear CTA. Not just Instagram graphs, but a concrete answer: what didn't work, why, and how to fix it.",
+      "previewLabel": "PREVIEW — RECENT ANALYSES"
+    },
+    "editor": {
+      "label": "N°06 / EDITOR",
+      "titleLine1": "Content editor",
+      "titleLine2": "with an AI assistant.",
+      "body1Pre": "The screen is split in two: on the left — AI that knows ",
+      "body1AccentBrand": "your brand",
+      "body1Mid": ", helps you write copy, generate images and search the web. Not sure where to start — pick a ready-made ",
+      "body1AccentTemplate": "template",
+      "body1Post": ": expert post, content plan, product lead-in, etc.",
+      "body2Pre": "On the right — the post and its preview. Switch the ",
+      "body2AccentType": "content type",
+      "body2Mid1": " — post, story, reel — and the interface adapts to the platform. Each post has ",
+      "body2AccentStatus": "its own status",
+      "body2Mid2": ": \"Idea\", \"Draft\", \"Ready\", \"Published\". On the ",
+      "body2AccentCalendar": "calendar",
+      "body2Mid3": " everything is rendered differently, so you can see at a glance what's in progress and what's already gone live — handy ",
+      "body2AccentTeam": "for teams",
+      "body2Post": " and for tracking progress. Set the time and status \"Ready\" — the post will publish itself. Need it now — hit \"Publish\" and it goes out manually.",
+      "placeholder": "EDITOR SCREENSHOT",
+      "mobileNote": "Two-panel editor with AI chat and post preview — view it from a desktop."
+    },
+    "publish": {
+      "label": "INLINE / N°06½",
+      "line1": "AI remembers your brand.",
+      "line2": "No need to explain it again in every request"
+    },
+    "comparison": {
+      "label": "N°07 / VS",
+      "titlePre": "One tool",
+      "titleAccent": "instead of",
+      "titlePost": "three",
+      "brands": {
+        "writelo": "Writelo",
+        "trendsee": "TrendSee",
+        "livedune": "LiveDune",
+        "smmplanner": "SMMplanner"
+      },
+      "groups": {
+        "analysis": "Reels & trend analysis",
+        "creation": "Content creation",
+        "planning": "Planning"
+      },
+      "rows": {
+        "topReels": "Top trending reels with filters",
+        "aiBreakdown": "AI breakdown of reel structure",
+        "diagnostics": "Diagnostics for your own reels",
+        "scenarios": "AI-generated reel scenarios",
+        "brandPosts": "AI-generated posts in brand voice",
+        "brandProfile": "Brand profile",
+        "imageGen": "Image generation",
+        "calendar": "Content calendar",
+        "newsAuto": "Auto-generated brand news hooks in the calendar",
+        "autopost": "Auto-posting to social networks"
+      },
+      "legend": {
+        "yes": "yes",
+        "partial": "partial",
+        "no": "no"
+      }
+    },
+    "pricing": {
+      "label": "N°08 / PRICING",
+      "title": "Pricing.",
+      "free": {
+        "name": "Free",
+        "description": "To try it out.",
+        "price": "0 ₽",
+        "features": {
+          "0": "1 brand",
+          "1": "Instagram trends — 5 requests per day",
+          "2": "News hooks and calendar",
+          "3": "Basic post editor",
+          "4": "AI assistant with brand knowledge base"
+        },
+        "cta": "Get started"
+      },
+      "pro": {
+        "name": "Pro",
+        "description": "For active SMM specialists.",
+        "price": "2,000 ₽",
+        "period": "/mo",
+        "features": {
+          "0": "Up to 10 brands",
+          "1": "Unlimited trend analysis",
+          "2": "News hooks for each brand",
+          "3": "Full editor + cross-posting",
+          "4": "Publish to TG, VK",
+          "5": "Video analysis — YouTube Shorts, TikTok, Reels",
+          "6": "AI assistant with brand knowledge base"
+        },
+        "cta": "Try Pro"
+      },
+      "business": {
+        "name": "Business",
+        "description": "For agencies and teams.",
+        "price": "On request",
+        "features": {
+          "0": "Everything in Pro, no brand limits",
+          "1": "AI limits — 2× higher (per account)",
+          "2": "Team roles and access",
+          "3": "Branding and white-label",
+          "4": "Priority support",
+          "5": "AI assistant with extended knowledge base"
+        },
+        "cta": "Book a demo"
+      }
+    },
+    "finalCta": {
+      "titlePart1": "Viral content has a",
+      "titleAccent": "formula.",
+      "titlePart2": "We give you the",
+      "titleAccent2": "calculator",
+      "sub": "Stop doing the math in your head. Time to play big.",
+      "cta": "Try it free"
+    },
+    "contacts": {
+      "label": "N°09 / CONTACTS",
+      "title": "Contact.",
+      "directLabel": "DIRECT",
+      "socialsLabel": "SOCIAL",
+      "feedback": {
+        "label": "FEEDBACK FORM",
+        "title": "Leave feedback",
+        "placeholder": "Your feedback or suggestion...",
+        "emailPlaceholder": "Email (optional)",
+        "submit": "Send",
+        "success": "Thanks for your feedback!",
+        "charCount": "{count}/600"
+      }
+    },
+    "footer": {
+      "nav": {
+        "pricing": "Pricing",
+        "contacts": "Contact",
+        "login": "Sign in",
+        "start": "Start"
+      }
+    }
   }
 }

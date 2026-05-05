@@ -13,13 +13,13 @@ locale.value = 'ru'
 // /landing is a duplicate of / — canonical points to / so search engines treat them as one.
 useSeoMeta({
   robots: 'index, follow',
-  title: 'Writelo — аналитика трендов Instagram, разбор Reels и контент-календарь для SMM',
+  title: 'Writelo (Райтелло) — аналитика трендов Instagram, разбор Reels и контент-календарь для SMM',
   description:
-    'Платформа для SMM: аналитика трендов Instagram под нишу, ИИ-разбор Reels (своих и конкурентов), инфоповоды под бренд и контент-календарь — в одном инструменте. Бесплатный старт.',
+    'Writelo (Райтелло) — платформа для SMM: аналитика трендов Instagram под нишу, ИИ-разбор Reels, инфоповоды под бренд и контент-календарь. Бесплатный старт.',
   keywords:
     'аналитика Instagram, тренды Reels, разбор Reels, AI разбор рилсов, контент-план SMM, инфоповоды для SMM, аналитика соцсетей, Райтелло, Writelo, нейросеть для SMM',
-  ogTitle: 'Writelo — аналитика трендов Instagram и разбор Reels',
-  ogDescription: 'Тренды Instagram под нишу, ИИ-разбор Reels, инфоповоды под бренд и контент-план — всё в одном.',
+  ogTitle: 'Writelo (Райтелло) — аналитика трендов Instagram и разбор Reels',
+  ogDescription: 'Writelo (Райтелло): тренды Instagram под нишу, ИИ-разбор Reels, инфоповоды под бренд и контент-план — всё в одном.',
   ogImage: '/og-image.svg',
   ogUrl: 'https://writelo.io/',
   ogLocale: 'ru_RU',
@@ -34,13 +34,13 @@ useHead({
     { rel: 'stylesheet', href: GOOGLE_FONTS_HREF },
     { rel: 'alternate', hreflang: 'ru', href: 'https://writelo.io/ru' },
     { rel: 'alternate', hreflang: 'en', href: 'https://writelo.io/en' },
-    { rel: 'alternate', hreflang: 'x-default', href: 'https://writelo.io/' },
-    { rel: 'canonical', href: 'https://writelo.io/' },
+    { rel: 'alternate', hreflang: 'x-default', href: 'https://writelo.io/ru' },
+    { rel: 'canonical', href: 'https://writelo.io/ru' },
   ],
   script: [
     {
       type: 'application/ld+json',
-      innerHTML: JSON.stringify(buildLandingNewSchema('https://writelo.io/')),
+      innerHTML: JSON.stringify(buildLandingNewSchema('https://writelo.io/ru')),
     },
   ],
 })
