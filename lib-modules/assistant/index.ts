@@ -1,3 +1,5 @@
 export { default as AssistantPage } from './components/AssistantPage.vue'
 export * from './types'
 export { useAssistantApi } from './helpers/api'
+export { parseActionsTail, isMarkerLikely } from './helpers/actionsParser'
+export type { ParsedTail } from './helpers/actionsParser'

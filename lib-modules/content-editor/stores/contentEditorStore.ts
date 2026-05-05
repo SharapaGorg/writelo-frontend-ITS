@@ -122,6 +122,11 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     selectedAccountId.value = null
   }
 
+  const clearChat = () => {
+    chatMessages.value = []
+    conversationId.value = null
+  }
+
   // Reset all editor state when the user switches workspace — drafts /
   // chat messages / conversation id belong to the previous workspace and
   // would leak across contexts otherwise. Mirrors the pattern used in
@@ -129,6 +134,15 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
   const ctx = useWorkspaceContext()
   watch(() => ctx.currentWorkspaceId.value, (newId, oldId) => {
     if (oldId && newId !== oldId) clearDraft()
+  })
+
+  // Editor chat is a scratch pad — opening a different post starts a fresh
+  // empty conversation. Toggling between Chat and Images tabs (which keeps
+  // postId) does NOT clear the chat. First-mount transitions (null → id)
+  // are skipped intentionally so the initial open-from-calendar isn't a no-op
+  // wipe.
+  watch(postId, (newId, oldId) => {
+    if (oldId && newId !== oldId) clearChat()
   })
 
   const markAsSaved = () => {
@@ -290,6 +304,7 @@ export const useContentEditorStore = defineStore('contentEditor', () => {
     removeFrame,
     setDuration,
     clearDraft,
+    clearChat,
     markAsSaved,
     addChatMessage,
     updateChatMessage,

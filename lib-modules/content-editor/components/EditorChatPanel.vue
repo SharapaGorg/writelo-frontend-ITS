@@ -3,12 +3,14 @@ import { Textarea } from '~/components/ui/textarea'
 import { useContentEditor } from '../composables/useContentEditor'
 import { BottomBar, AttachedFileArea, Message, Role } from '~/lib-modules/conversations'
 import { PromptImproverWrapper } from '~/components/molecules/PromptImproverWrapper'
+import { Button } from '~/components/ui/button'
+import { Eraser } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
 import { isMobile } from '~/scripts/features/utils'
 import { ApiController } from '~/scripts/shared/api/controller'
 import { eventBus } from '~/composables/eventBus'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import { parseActionsTail, isMarkerLikely } from '~/lib-modules/assistant'
 
 const props = withDefaults(defineProps<{
   showcaseMode?: boolean
@@ -17,8 +19,6 @@ const props = withDefaults(defineProps<{
 })
 
 const { t } = useI18n()
-const route = useRoute()
-const router = useRouter()
 const apiController = new ApiController()
 
 const {
@@ -32,8 +32,17 @@ const {
   updateChatMessageId,
   setChatProcessing,
   setConversationId,
-  getLastMessage
+  getLastMessage,
+  clearChat
 } = useContentEditor()
+
+function stripMarker(uuid: string) {
+  const target = chatMessages.value.find(m => m.id === uuid)
+  if (!target) return
+  if (!isMarkerLikely(target.text)) return
+  const { visibleText } = parseActionsTail(target.text)
+  if (visibleText !== target.text) updateChatMessage(uuid, visibleText)
+}
 
 const messagesContainer = ref<HTMLElement | null>(null)
 const textarea = ref<InstanceType<typeof Textarea> | null>(null)
@@ -96,8 +105,8 @@ const sendMessage = async () => {
       const newConversation = await apiController.createWorkspaceConversation(workspaceId)
       convId = newConversation.id
       setConversationId(convId)
-      // Update URL with chat ID
-      router.replace({ query: { ...route.query, chat: convId } })
+      // Editor chat is a scratch pad — conversation lives on the backend but is
+      // never reflected in the URL, so the chat starts empty on every open.
     } catch (error) {
       console.error('Failed to create conversation:', error)
       setChatMessageError(responseUuid, true)
@@ -133,6 +142,7 @@ const sendMessage = async () => {
     const actions: Record<string, () => void> = {
       text_chunk: () => {
         appendToChatMessage(responseUuid, parsed.dt)
+        stripMarker(responseUuid)
         scrollToBottom()
       },
       request_message_id: () => {
@@ -147,6 +157,7 @@ const sendMessage = async () => {
           appendToChatMessage(responseUuid, parsed.message || '\n**Server is busy**')
           setChatMessageError(responseUuid, true)
         }
+        stripMarker(responseUuid)
         isStoppingGeneration.value = false
         const lastMsg = getLastMessage()
         if (lastMsg) lastMsg.processing = false
@@ -154,6 +165,7 @@ const sendMessage = async () => {
       // Legacy actions for backward compatibility
       process_response: () => {
         appendToChatMessage(responseUuid, parsed.dt)
+        stripMarker(responseUuid)
         scrollToBottom()
       },
       finish_response: () => {
@@ -162,6 +174,7 @@ const sendMessage = async () => {
           appendToChatMessage(responseUuid, parsed.error || '\n**Server is busy**')
           setChatMessageError(responseUuid, true)
         }
+        stripMarker(responseUuid)
         isStoppingGeneration.value = false
         const lastMsg = getLastMessage()
         if (lastMsg) lastMsg.processing = false
@@ -267,6 +280,23 @@ onUnmounted(() => {
 
 <template>
   <div class="flex h-full flex-col">
+    <!-- Header: clear chat -->
+    <div
+      v-if="!props.showcaseMode"
+      class="flex h-9 items-center justify-end border-b border-border px-3"
+    >
+      <Button
+        variant="ghost"
+        size="icon"
+        class="h-7 w-7"
+        title="Очистить чат"
+        :disabled="chatMessages.length === 0 && !conversationId"
+        @click="clearChat"
+      >
+        <Eraser class="h-4 w-4" />
+      </Button>
+    </div>
+
     <!-- Messages area -->
     <div
       ref="messagesContainer"

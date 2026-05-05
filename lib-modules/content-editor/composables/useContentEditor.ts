@@ -252,6 +252,7 @@ export const useContentEditor = () => {
     removeFrame: store.removeFrame,
     setDuration: store.setDuration,
     clearDraft: store.clearDraft,
+    clearChat: store.clearChat,
     addChatMessage: store.addChatMessage,
     updateChatMessage: store.updateChatMessage,
     appendToChatMessage: store.appendToChatMessage,

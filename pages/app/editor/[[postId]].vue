@@ -12,7 +12,6 @@ import {
 import type { ContentType as EditorContentType, DraftImage } from '~/lib-modules/content-editor'
 import { useContentProjectStore } from '~/lib-modules/content-calendar'
 import type { CalendarPost } from '~/lib-modules/content-calendar'
-import { ApiController } from '~/scripts/shared/api/controller'
 import { useWorkspaceContext, useWorkspaces } from '~/lib-modules/workspaces'
 
 definePageMeta({
@@ -21,14 +20,10 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
-const apiController = new ApiController()
 const {
   currentDraft,
   createNewDraft,
   editorMode,
-  conversationId,
-  setConversationId,
-  loadChatMessages,
   loadDraft,
   setPostId
 } = useContentEditor()
@@ -87,7 +82,6 @@ onMounted(async () => {
   }
 
   const postId = route.params.postId as string | undefined
-  const chatId = route.query.chat as string | undefined
 
   if (postId) {
     const { requireWorkspaceId } = useWorkspaceContext()
@@ -107,27 +101,6 @@ onMounted(async () => {
   } else if (!currentDraft.value) {
     const defaultAccountId = currentProjectAccounts.value[0]?.id || ''
     createNewDraft('post', defaultAccountId)
-  }
-
-  // Load existing chat if chat ID in URL
-  if (chatId && chatId !== conversationId.value) {
-    try {
-      const {requireWorkspaceId} = useWorkspaceContext()
-      const conversation = await apiController.getWorkspaceConversation(requireWorkspaceId(), chatId)
-      if (conversation?.messages?.length) {
-        setConversationId(chatId)
-        loadChatMessages(conversation.messages.map(m => ({
-          id: m.id,
-          role: m.role === 'assistant' ? 0 : 1,
-          text: m.text ?? '',
-          createdAt: m.createdAt,
-        })))
-      }
-    } catch (error) {
-      console.error('Failed to load chat:', error)
-      // Remove invalid chat ID from URL
-      router.replace({ query: { ...route.query, chat: undefined } })
-    }
   }
 })
 </script>
