@@ -11,7 +11,15 @@ import {ApiController} from '~/scripts/shared/api/controller'
 import {useI18n} from 'vue-i18n'
 import {useUserController} from '~/composables/user'
 
-const apiController = new ApiController();
+// Lazy-instantiated to avoid the SSR circular import:
+// settings.ts → ApiController → workspaces barrel → useWorkspacePermissions
+// → settings.ts (where ApiController hasn't finished exporting yet).
+// Top-level `new ApiController()` would crash with "ApiController is not a constructor".
+let _apiController: ApiController | null = null
+function apiController(): ApiController {
+    if (!_apiController) _apiController = new ApiController()
+    return _apiController
+}
 
 // Static demo config for guest demo mode
 const DEMO_CONFIG: ConfigType = {
@@ -112,11 +120,11 @@ async function init(locale?: any) {
         return
     }
 
-    const config = await apiController.getConfig()
+    const config = await apiController().getConfig()
     if (!config) return
     state.config = config
 
-    const profile = await apiController.getMe()
+    const profile = await apiController().getMe()
     state.user = profile
     state.subscription = config.subscriptions.find(item => item.id === profile.subscriptionId) || null
     state.role = profile.currentRole
@@ -174,7 +182,7 @@ async function refreshUserData(): Promise<void> {
     const userController = useUserController()
     if (!userController.getToken()) return
 
-    const profile = await apiController.getMe()
+    const profile = await apiController().getMe()
     if (!profile) return
 
     state.user = profile
@@ -225,7 +233,7 @@ async function saveLanguage(language_: string) {
     }
 
     try {
-        await apiController.saveSettings(language_)
+        await apiController().saveSettings(language_)
     } catch (error) {
         // Rollback to previous value on error
         state.language = prevLanguage
