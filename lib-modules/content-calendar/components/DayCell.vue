@@ -212,6 +212,19 @@ const extraCount = computed(() => props.posts.length - 4)
           <circle cx="12" cy="12" r="10"/>
           <path d="M8 12l2.5 2.5L16 9" stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+        <!-- Publishing: spinner -->
+        <svg
+          v-else-if="post.status === 'publishing'"
+          :class="['w-4 h-4 flex-shrink-0 animate-spin', contentTypeColors[post.type]]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          :title="post.title"
+        >
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+        </svg>
         <!-- Published: rocket -->
         <svg
           v-else-if="post.status === 'published'"
@@ -224,6 +237,22 @@ const extraCount = computed(() => props.posts.length - 4)
         >
           <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
           <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+        </svg>
+        <!-- Failed: red alert triangle (Lucide-style) -->
+        <svg
+          v-else-if="post.status === 'failed'"
+          class="w-4 h-4 flex-shrink-0 text-red-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          :title="post.title"
+        >
+          <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/>
+          <path d="M12 9v4"/>
+          <path d="M12 17h.01"/>
         </svg>
         </template>
       </div>

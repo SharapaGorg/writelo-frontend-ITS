@@ -280,6 +280,9 @@ watch(selectedDate, (newDate) => {
   }
 })
 
+// publishing/failed намеренно не выставляются переключателями — они всегда
+// видимы (дефолт activeStatuses содержит все 6 значений). Прятать промежуточные
+// состояния от пользователя нечем мотивировать.
 const statusConfig = [
   { id: 'idea' as const, label: 'Идея', icon: 'idea', color: 'text-muted-foreground' },
   { id: 'draft' as const, label: 'Черновик', icon: 'draft', color: 'text-yellow-500' },

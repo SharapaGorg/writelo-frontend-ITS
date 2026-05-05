@@ -54,22 +54,28 @@ export const usePublicationsStore = defineStore('publications', () => {
         const post = await api.getPost(publication.workspaceId, publication.postId)
         consecutiveErrors = 0
 
-        // Зеркалим в contentProjectStore, чтобы календарная ячейка отражала состояние.
-        projectStore.updatePostLocal(publication.postId, {
-          status: post.status,
-          publishedLink: post.publishedLink,
-        })
-
+        // Зеркалим в contentProjectStore только терминальные статусы. Бэк может
+        // вернуть 'ready' пока publish-job ещё не поднялся (тот же кейс, что в
+        // publishPost ниже) — без этой защиты ячейка успевает мигнуть галочкой
+        // между 'publishing' и 'published'. publishedLink отдельно — он может
+        // появиться раньше финального статуса.
         if (post.status === 'published') {
+          projectStore.updatePostLocal(publication.postId, {
+            status: 'published',
+            publishedLink: post.publishedLink,
+          })
           finalize(publication.id, {
             status: 'published',
             publishedLink: post.publishedLink,
           })
         } else if (post.status === 'failed') {
+          projectStore.updatePostLocal(publication.postId, { status: 'failed' })
           finalize(publication.id, {
             status: 'failed',
             error: 'Публикация не удалась',
           })
+        } else if (post.publishedLink) {
+          projectStore.updatePostLocal(publication.postId, { publishedLink: post.publishedLink })
         }
         // иначе — 'publishing', продолжаем ждать
       } catch (e) {

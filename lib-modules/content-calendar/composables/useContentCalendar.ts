@@ -11,7 +11,7 @@ export function useContentCalendar() {
   const selectedDate = ref<string | null>(null)
   const selectedPostId = ref<string | null>(null)
   const activeAccountIds = ref<string[]>([])
-  const activeStatuses = ref<PostStatus[]>(['idea', 'draft', 'ready', 'published'])
+  const activeStatuses = ref<PostStatus[]>(['idea', 'draft', 'ready', 'publishing', 'published', 'failed'])
   const activeTags = ref<string[]>([])
   // Lazy init on client to avoid SSR/CSR mismatch on month boundary:
   // pre-rendered HTML must not bake in build-time `new Date()`.

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Loader2, Send } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
@@ -146,7 +146,24 @@ async function handlePublish() {
   showPublishDialog.value = false
   try {
     await publicationsStore.publishPost(props.post.id)
-    showCelebration.value = true
+    // publishPost резолвится сразу после accept на бэке — реальный исход прилетает
+    // позже через polling. Конфетти стреляем только когда публикация реально
+    // дошла до 'published'; на 'failed' молча выходим.
+    const pub = publicationsStore.publications.find(
+      p => p.postId === props.post.id && !p.completedAt,
+    )
+    if (!pub) return
+    const stop = watch(
+      () => publicationsStore.publications.find(p => p.id === pub.id)?.status,
+      (status) => {
+        if (status === 'published') {
+          showCelebration.value = true
+          stop()
+        } else if (status === 'failed') {
+          stop()
+        }
+      },
+    )
   } catch {
     // ApiController уже показал toast с detail; failed-карточка в сайдбаре несёт
     // ту же информацию и кнопку повтора.
