@@ -32,23 +32,23 @@ const { elementRef, isVisible } = useScrollReveal()
       </SectionHeader>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-start mb-12 md:mb-16">
-        <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094] max-w-[60ch]">
+        <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#5f5f5f] dark:text-[#a8a094] max-w-[60ch]">
           {{ t('landingNew.editor.body1Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body1AccentBrand') }}</span>{{ t('landingNew.editor.body1Mid') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body1AccentTemplate') }}</span>{{ t('landingNew.editor.body1Post') }}
         </p>
-        <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094] max-w-[60ch]">
+        <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#5f5f5f] dark:text-[#a8a094] max-w-[60ch]">
           {{ t('landingNew.editor.body2Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body2AccentType') }}</span>{{ t('landingNew.editor.body2Mid1') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body2AccentStatus') }}</span>{{ t('landingNew.editor.body2Mid2') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body2AccentCalendar') }}</span>{{ t('landingNew.editor.body2Mid3') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.editor.body2AccentTeam') }}</span>{{ t('landingNew.editor.body2Post') }}
         </p>
       </div>
 
-      <div class="hidden md:block border border-[#ede8de]/20 overflow-hidden">
-        <div class="bg-[#161616] px-4 py-3 flex items-center gap-4 border-b border-[#ede8de]/15">
+      <div class="hidden md:block border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
+        <div class="bg-[#f5f5f5] dark:bg-[#161616] px-4 py-3 flex items-center gap-4 border-b border-[#0a0a0a]/12 dark:border-[#ede8de]/15">
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 rounded-full bg-[#d4683f]/70" />
-            <div class="w-3 h-3 rounded-full bg-[#5a5550]" />
-            <div class="w-3 h-3 rounded-full bg-[#5a5550]" />
+            <div class="w-3 h-3 rounded-full bg-[#c5c5c5] dark:bg-[#5a5550]" />
+            <div class="w-3 h-3 rounded-full bg-[#c5c5c5] dark:bg-[#5a5550]" />
           </div>
           <div class="flex-1 flex justify-center">
-            <div class="lnf-mono text-[12px] text-[#a8a094] bg-[#0a0a0a] px-4 py-1.5 border border-[#ede8de]/10">
+            <div class="lnf-mono text-[12px] text-[#5f5f5f] dark:text-[#a8a094] bg-white dark:bg-[#0a0a0a] px-4 py-1.5 border border-[#0a0a0a]/10 dark:border-[#ede8de]/10">
               writelo.app/editor
             </div>
           </div>
@@ -58,7 +58,7 @@ const { elementRef, isVisible } = useScrollReveal()
           <ClientOnly>
             <EditorShowcaseInner />
             <template #fallback>
-              <div class="h-[700px] flex items-center justify-center text-[#5a5550] lnf-mono text-[11px] uppercase tracking-[0.15em]">
+              <div class="h-[700px] flex items-center justify-center text-[#8a8a8a] dark:text-[#5a5550] lnf-mono text-[11px] uppercase tracking-[0.15em]">
                 Загружаем редактор...
               </div>
             </template>
@@ -66,11 +66,11 @@ const { elementRef, isVisible } = useScrollReveal()
         </div>
       </div>
 
-      <div class="md:hidden border border-[#ede8de]/20 p-8 text-center">
-        <div class="lnf-mono text-[10px] uppercase tracking-[0.1em] text-[#5a5550] mb-4">
+      <div class="md:hidden border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 p-8 text-center">
+        <div class="lnf-mono text-[10px] uppercase tracking-[0.1em] text-[#8a8a8a] dark:text-[#5a5550] mb-4">
           {{ t('landingNew.editor.placeholder') }}
         </div>
-        <p class="lnf-body text-[15px] text-[#a8a094] leading-[1.55]">
+        <p class="lnf-body text-[15px] text-[#5f5f5f] dark:text-[#a8a094] leading-[1.55]">
           {{ t('landingNew.editor.mobileNote') }}
         </p>
       </div>

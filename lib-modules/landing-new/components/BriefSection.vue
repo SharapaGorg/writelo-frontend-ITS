@@ -31,34 +31,34 @@ const draft = reactive({
       />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
         <div class="space-y-6 max-w-[60ch]">
-          <p class="lnf-body text-[16px] md:text-[17px] leading-[1.6] text-[#ede8de]">
+          <p class="lnf-body text-[16px] md:text-[17px] leading-[1.6] text-[#0a0a0a] dark:text-[#ede8de]">
             {{ t('landingNew.brief.body1') }}
           </p>
-          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094]">
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#5f5f5f] dark:text-[#a8a094]">
             {{ t('landingNew.brief.body2Pre') }}
             <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.brief.body2Accent1') }}</span>
             {{ t('landingNew.brief.body2Mid') }}
             <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.brief.body2Accent2') }}</span>
             {{ t('landingNew.brief.body2Post') }}
           </p>
-          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#a8a094]">
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#5f5f5f] dark:text-[#a8a094]">
             {{ t('landingNew.brief.body3') }}
           </p>
-          <p class="lnf-mono text-[11px] uppercase tracking-[0.15em] text-[#5a5550] pt-4">
+          <p class="lnf-mono text-[11px] uppercase tracking-[0.15em] text-[#8a8a8a] dark:text-[#5a5550] pt-4">
             {{ t('landingNew.brief.aside') }}
           </p>
         </div>
 
-        <div class="border border-[#ede8de]/20 overflow-hidden">
-          <div class="bg-[#161616] px-4 py-3 flex items-center gap-4 border-b border-[#ede8de]/15">
+        <div class="border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
+          <div class="bg-[#f5f5f5] dark:bg-[#161616] px-4 py-3 flex items-center gap-4 border-b border-[#0a0a0a]/12 dark:border-[#ede8de]/15">
             <div class="flex items-center gap-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-[#5a5550]" />
-              <div class="w-2.5 h-2.5 rounded-full bg-[#5a5550]" />
-              <div class="w-2.5 h-2.5 rounded-full bg-[#5a5550]" />
+              <div class="w-2.5 h-2.5 rounded-full bg-[#c5c5c5] dark:bg-[#5a5550]" />
+              <div class="w-2.5 h-2.5 rounded-full bg-[#c5c5c5] dark:bg-[#5a5550]" />
+              <div class="w-2.5 h-2.5 rounded-full bg-[#c5c5c5] dark:bg-[#5a5550]" />
             </div>
-            <div class="lnf-mono text-[10px] text-[#5a5550]">writelo.app/brand/brief</div>
+            <div class="lnf-mono text-[10px] text-[#8a8a8a] dark:text-[#5a5550]">writelo.app/brand/brief</div>
           </div>
-          <div class="bg-[#111110] p-4 md:p-5">
+          <div class="bg-[#fafafa] dark:bg-[#111110] p-4 md:p-5">
             <BrandBriefSection
               id-prefix="landing-brief"
               :draft="draft"

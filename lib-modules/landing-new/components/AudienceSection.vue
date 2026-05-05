@@ -44,15 +44,15 @@ const cards = computed(() => [
         <div
           v-for="card in cards"
           :key="card.idx"
-          class="border border-[#ede8de]/30 p-8 md:p-10 flex flex-col"
+          class="border border-[#0a0a0a]/20 dark:border-[#ede8de]/30 p-8 md:p-10 flex flex-col"
         >
-          <div class="lnf-mono font-bold text-[11px] tracking-[0.1em] uppercase text-[#5a5550] mb-6">
+          <div class="lnf-mono font-bold text-[11px] tracking-[0.1em] uppercase text-[#8a8a8a] dark:text-[#5a5550] mb-6">
             {{ card.idx }} — {{ card.tag }}
           </div>
-          <h3 class="lnf-display font-medium text-[22px] md:text-[26px] tracking-[-0.02em] leading-[1.1] text-[#ede8de] mb-4">
+          <h3 class="lnf-display font-medium text-[22px] md:text-[26px] tracking-[-0.02em] leading-[1.1] text-[#0a0a0a] dark:text-[#ede8de] mb-4">
             {{ card.title }}
           </h3>
-          <p class="lnf-body text-[15px] leading-[1.55] text-[#a8a094]">
+          <p class="lnf-body text-[15px] leading-[1.55] text-[#5f5f5f] dark:text-[#a8a094]">
             {{ card.body }}
           </p>
         </div>

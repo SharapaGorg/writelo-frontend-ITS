@@ -18,13 +18,13 @@ const emit = defineEmits<{ cta: [action: PriceCardCtaAction, tier: PriceCardTier
   <div
     :class="[
       'relative flex flex-col p-8 md:p-10 border bg-transparent',
-      highlighted ? 'border-[#d4683f]' : 'border-[#ede8de]/30',
+      highlighted ? 'border-[#d4683f]' : 'border-[#0a0a0a]/20 dark:border-[#ede8de]/30',
     ]"
   >
     <div v-if="highlighted" class="absolute top-0 left-0 right-0 h-1 bg-[#d4683f]" />
 
     <div class="flex items-baseline justify-between mb-3 gap-4">
-      <h3 class="lnf-display font-medium text-[22px] md:text-[26px] tracking-[-0.02em] text-[#ede8de]">
+      <h3 class="lnf-display font-medium text-[22px] md:text-[26px] tracking-[-0.02em] text-[#0a0a0a] dark:text-[#ede8de]">
         {{ name }}
       </h3>
       <div
@@ -35,7 +35,7 @@ const emit = defineEmits<{ cta: [action: PriceCardCtaAction, tier: PriceCardTier
       >
         <span
           v-if="isNumericPrice"
-          class="lnf-display font-bold text-[26px] md:text-[36px] text-[#ede8de] tracking-[-0.02em] leading-none"
+          class="lnf-display font-bold text-[26px] md:text-[36px] text-[#0a0a0a] dark:text-[#ede8de] tracking-[-0.02em] leading-none"
         >
           {{ price }}
         </span>
@@ -45,11 +45,11 @@ const emit = defineEmits<{ cta: [action: PriceCardCtaAction, tier: PriceCardTier
         >
           {{ price }}
         </span>
-        <span v-if="period" class="text-sm text-[#5a5550]">{{ period }}</span>
+        <span v-if="period" class="text-sm text-[#8a8a8a] dark:text-[#5a5550]">{{ period }}</span>
       </div>
     </div>
 
-    <p class="lnf-body text-[14px] md:text-[15px] text-[#a8a094] mb-8 leading-[1.55]">
+    <p class="lnf-body text-[14px] md:text-[15px] text-[#5f5f5f] dark:text-[#a8a094] mb-8 leading-[1.55]">
       {{ description }}
     </p>
 
@@ -57,7 +57,7 @@ const emit = defineEmits<{ cta: [action: PriceCardCtaAction, tier: PriceCardTier
       <li
         v-for="feature in features"
         :key="feature"
-        class="lnf-body flex items-start gap-3 text-[14px] md:text-[15px] text-[#ede8de] leading-[1.5]"
+        class="lnf-body flex items-start gap-3 text-[14px] md:text-[15px] text-[#0a0a0a] dark:text-[#ede8de] leading-[1.5]"
       >
         <Check class="w-4 h-4 mt-0.5 shrink-0 text-[#d4683f]" />
         <span>{{ feature }}</span>

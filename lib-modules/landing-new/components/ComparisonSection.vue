@@ -85,7 +85,7 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
         <table class="w-full min-w-[680px] mx-6 md:mx-0 border-collapse">
           <thead>
             <tr>
-              <th class="sticky left-0 z-20 bg-[#0a0a0a] w-[44%] md:w-auto" />
+              <th class="sticky left-0 z-20 bg-white dark:bg-[#0a0a0a] w-[44%] md:w-auto" />
               <th
                 class="bg-[#d4683f]/[0.07] border-x border-t-[2px] border-[#d4683f] px-3 md:px-4 pt-9 pb-5 text-center align-bottom"
               >
@@ -98,7 +98,7 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
                 :key="brand.key"
                 class="px-3 md:px-4 pt-9 pb-5 text-center align-bottom"
               >
-                <div class="lnf-display font-medium text-[16px] md:text-[18px] tracking-[-0.02em] text-[#a8a094]">
+                <div class="lnf-display font-medium text-[16px] md:text-[18px] tracking-[-0.02em] text-[#5f5f5f] dark:text-[#a8a094]">
                   {{ brand.name }}
                 </div>
               </th>
@@ -109,9 +109,9 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
               <tr>
                 <th
                   scope="rowgroup"
-                  class="sticky left-0 z-10 bg-[#0a0a0a] text-left lnf-mono font-normal uppercase tracking-[0.08em] md:tracking-[0.12em] text-[10px] md:text-[11px] text-[#a8a094] pt-11 md:pt-14 pb-4 pl-1 md:pl-3 align-bottom"
+                  class="sticky left-0 z-10 bg-white dark:bg-[#0a0a0a] text-left lnf-mono font-normal uppercase tracking-[0.08em] md:tracking-[0.12em] text-[10px] md:text-[11px] text-[#5f5f5f] dark:text-[#a8a094] pt-11 md:pt-14 pb-4 pl-1 md:pl-3 align-bottom"
                 >
-                  <span class="text-[#5a5550] mr-2 lnf-mono">{{ String(gi + 1).padStart(2, '0') }}</span>
+                  <span class="text-[#8a8a8a] dark:text-[#5a5550] mr-2 lnf-mono">{{ String(gi + 1).padStart(2, '0') }}</span>
                   <span>{{ group.title }}</span>
                 </th>
                 <td class="bg-[#d4683f]/[0.07] border-x border-[#d4683f] pt-11 md:pt-14 pb-4" />
@@ -122,11 +122,11 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
               <tr
                 v-for="(row, ri) in group.rows"
                 :key="row.label"
-                class="border-t border-[#ede8de]/[0.07]"
+                class="border-t border-[#0a0a0a]/[0.07] dark:border-[#ede8de]/[0.07]"
               >
                 <th
                   scope="row"
-                  class="sticky left-0 z-10 bg-[#0a0a0a] text-left lnf-body font-normal text-[14px] md:text-[15px] leading-[1.4] text-[#ede8de] py-4 pr-3 pl-1 md:pl-3 align-middle"
+                  class="sticky left-0 z-10 bg-white dark:bg-[#0a0a0a] text-left lnf-body font-normal text-[14px] md:text-[15px] leading-[1.4] text-[#0a0a0a] dark:text-[#ede8de] py-4 pr-3 pl-1 md:pl-3 align-middle"
                 >
                   {{ row.label }}
                 </th>
@@ -145,7 +145,7 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
                   />
                   <span
                     v-else
-                    class="block w-3.5 h-px bg-[#5a5550] mx-auto"
+                    class="block w-3.5 h-px bg-[#c5c5c5] dark:bg-[#5a5550] mx-auto"
                   />
                 </td>
                 <td
@@ -164,7 +164,7 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
                   />
                   <span
                     v-else
-                    class="block w-3.5 h-px bg-[#5a5550] mx-auto"
+                    class="block w-3.5 h-px bg-[#c5c5c5] dark:bg-[#5a5550] mx-auto"
                   />
                 </td>
               </tr>
@@ -173,7 +173,7 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
         </table>
       </div>
 
-      <div class="mt-7 md:mt-9 flex flex-wrap items-center justify-end gap-x-7 gap-y-2 lnf-mono text-[10px] uppercase tracking-[0.15em] text-[#a8a094]">
+      <div class="mt-7 md:mt-9 flex flex-wrap items-center justify-end gap-x-7 gap-y-2 lnf-mono text-[10px] uppercase tracking-[0.15em] text-[#5f5f5f] dark:text-[#a8a094]">
         <span class="inline-flex items-center gap-2">
           <Check class="w-3.5 h-3.5 text-[#d4683f]" :stroke-width="2.4" />
           {{ t('landingNew.comparison.legend.yes') }}
@@ -183,7 +183,7 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
           {{ t('landingNew.comparison.legend.partial') }}
         </span>
         <span class="inline-flex items-center gap-2">
-          <span class="w-3 h-px bg-[#5a5550]" />
+          <span class="w-3 h-px bg-[#c5c5c5] dark:bg-[#5a5550]" />
           {{ t('landingNew.comparison.legend.no') }}
         </span>
       </div>

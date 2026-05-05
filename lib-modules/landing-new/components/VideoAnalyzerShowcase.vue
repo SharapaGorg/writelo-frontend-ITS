@@ -88,7 +88,7 @@ const transcription = {
 </script>
 
 <template>
-  <div class="dark flex h-full flex-col overflow-hidden bg-zinc-950 text-zinc-100">
+  <div class="flex h-full flex-col overflow-hidden bg-background text-foreground">
     <div class="flex-1 overflow-y-auto">
       <div class="mx-auto max-w-3xl space-y-5 p-5">
         <!-- Meta header -->

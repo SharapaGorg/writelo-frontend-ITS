@@ -35,23 +35,23 @@ function goToApp() {
 
 <template>
   <div
-    class="landing-new-root h-screen overflow-y-auto overflow-x-hidden bg-[#0a0a0a] text-[#ede8de] scroll-smooth"
+    class="landing-new-root h-screen overflow-y-auto overflow-x-hidden bg-white dark:bg-[#0a0a0a] text-[#0a0a0a] dark:text-[#ede8de] scroll-smooth"
   >
-    <header class="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/85 backdrop-blur-sm border-b border-[#ede8de]/10">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/85 dark:bg-[#0a0a0a]/85 backdrop-blur-sm border-b border-[#0a0a0a]/10 dark:border-[#ede8de]/10">
       <div class="max-w-[1400px] mx-auto px-6 md:px-12">
         <div class="flex items-center justify-between h-16">
-          <a href="#top" class="lnf-display font-bold text-[18px] tracking-[-0.02em] text-[#ede8de]">
+          <a href="#top" class="lnf-display font-bold text-[18px] tracking-[-0.02em] text-[#0a0a0a] dark:text-[#ede8de]">
             Writelo
           </a>
 
           <nav class="hidden md:flex items-center gap-10">
-            <a href="#trends" class="lnf-body text-sm text-[#a8a094] hover:text-[#ede8de] transition-colors">
+            <a href="#trends" class="lnf-body text-sm text-[#5f5f5f] dark:text-[#a8a094] hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.header.nav.features') }}
             </a>
-            <a href="#pricing" class="lnf-body text-sm text-[#a8a094] hover:text-[#ede8de] transition-colors">
+            <a href="#pricing" class="lnf-body text-sm text-[#5f5f5f] dark:text-[#a8a094] hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.header.nav.pricing') }}
             </a>
-            <a href="#contacts" class="lnf-body text-sm text-[#a8a094] hover:text-[#ede8de] transition-colors">
+            <a href="#contacts" class="lnf-body text-sm text-[#5f5f5f] dark:text-[#a8a094] hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.header.nav.contacts') }}
             </a>
           </nav>
@@ -61,7 +61,7 @@ function goToApp() {
               {{ t('landingNew.header.cta') }}
             </PrimaryButton>
             <button
-              class="md:hidden p-2 text-[#ede8de]"
+              class="md:hidden p-2 text-[#0a0a0a] dark:text-[#ede8de]"
               :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
               @click="mobileMenuOpen = !mobileMenuOpen"
             >
@@ -80,15 +80,15 @@ function goToApp() {
         leave-from-class="opacity-100 translate-y-0"
         leave-to-class="opacity-0 -translate-y-2"
       >
-        <div v-if="mobileMenuOpen" class="md:hidden border-t border-[#ede8de]/10 bg-[#0a0a0a]">
+        <div v-if="mobileMenuOpen" class="md:hidden border-t border-[#0a0a0a]/10 dark:border-[#ede8de]/10 bg-white dark:bg-[#0a0a0a]">
           <nav class="px-6 py-6 flex flex-col gap-5">
-            <a href="#trends" class="lnf-body text-[#ede8de]" @click="closeMobile">
+            <a href="#trends" class="lnf-body text-[#0a0a0a] dark:text-[#ede8de]" @click="closeMobile">
               {{ t('landingNew.header.nav.features') }}
             </a>
-            <a href="#pricing" class="lnf-body text-[#ede8de]" @click="closeMobile">
+            <a href="#pricing" class="lnf-body text-[#0a0a0a] dark:text-[#ede8de]" @click="closeMobile">
               {{ t('landingNew.header.nav.pricing') }}
             </a>
-            <a href="#contacts" class="lnf-body text-[#ede8de]" @click="closeMobile">
+            <a href="#contacts" class="lnf-body text-[#0a0a0a] dark:text-[#ede8de]" @click="closeMobile">
               {{ t('landingNew.header.nav.contacts') }}
             </a>
             <PrimaryButton size="sm" class="self-start" @click="goToApp">
@@ -114,27 +114,27 @@ function goToApp() {
       <ContactsSection />
     </main>
 
-    <footer class="border-t border-[#ede8de]/15 py-10">
+    <footer class="border-t border-[#0a0a0a]/15 dark:border-[#ede8de]/15 py-10">
       <div class="max-w-[1200px] mx-auto px-6 md:px-12">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div class="lnf-display font-bold text-[18px] tracking-[-0.02em] text-[#ede8de]">
+          <div class="lnf-display font-bold text-[18px] tracking-[-0.02em] text-[#0a0a0a] dark:text-[#ede8de]">
             Writelo
           </div>
-          <nav class="flex flex-wrap justify-center gap-x-8 gap-y-3 lnf-body text-sm text-[#a8a094]">
-            <a href="#pricing" class="hover:text-[#ede8de] transition-colors">
+          <nav class="flex flex-wrap justify-center gap-x-8 gap-y-3 lnf-body text-sm text-[#5f5f5f] dark:text-[#a8a094]">
+            <a href="#pricing" class="hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.footer.nav.pricing') }}
             </a>
-            <a href="#contacts" class="hover:text-[#ede8de] transition-colors">
+            <a href="#contacts" class="hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.footer.nav.contacts') }}
             </a>
-            <NuxtLink to="/auth" class="hover:text-[#ede8de] transition-colors">
+            <NuxtLink to="/auth" class="hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.footer.nav.login') }}
             </NuxtLink>
-            <NuxtLink to="/start" class="hover:text-[#ede8de] transition-colors">
+            <NuxtLink to="/start" class="hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.footer.nav.start') }}
             </NuxtLink>
           </nav>
-          <div class="lnf-body text-sm text-[#5a5550]">© 2026 Writelo</div>
+          <div class="lnf-body text-sm text-[#8a8a8a] dark:text-[#5a5550]">© 2026 Writelo</div>
         </div>
       </div>
     </footer>
@@ -155,6 +155,10 @@ function goToApp() {
 
 .landing-new-root {
   scrollbar-width: thin;
+  scrollbar-color: rgba(10, 10, 10, 0.18) transparent;
+}
+
+:where(html.dark) .landing-new-root {
   scrollbar-color: rgba(237, 232, 222, 0.12) transparent;
 }
 
@@ -168,12 +172,20 @@ function goToApp() {
 }
 
 .landing-new-root::-webkit-scrollbar-thumb {
-  background-color: rgba(237, 232, 222, 0.12);
+  background-color: rgba(10, 10, 10, 0.18);
   border-radius: 9999px;
   transition: background-color 200ms;
 }
 
 .landing-new-root::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(10, 10, 10, 0.32);
+}
+
+:where(html.dark) .landing-new-root::-webkit-scrollbar-thumb {
+  background-color: rgba(237, 232, 222, 0.12);
+}
+
+:where(html.dark) .landing-new-root::-webkit-scrollbar-thumb:hover {
   background-color: rgba(237, 232, 222, 0.24);
 }
 
