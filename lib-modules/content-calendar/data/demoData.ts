@@ -71,14 +71,14 @@ export const demoProjects: DemoProject[] = [
       },
       {
         id: 'cs-4',
-        title: 'Поздравление с 8 марта',
-        content: 'Милые дамы! Поздравляем вас с Международным женским днём!',
+        title: 'Поздравление с Днём Победы',
+        content: '9 мая — день, который объединяет всех нас. Помним. Гордимся.',
         type: 'post',
         status: 'published',
         accountId: 'coffee-tg-1',
         tags: ['tag-cs-4', 'tag-cs-3'],
-        date: '2026-05-08',
-        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=8+March',
+        date: '2026-05-09',
+        image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Victory+Day',
         publishedLink: 'https://t.me/coffeshop_bodrost/41'
       },
       {
@@ -145,11 +145,11 @@ export const demoProjects: DemoProject[] = [
       }
     ],
     infoEvents: [
-      { id: 'ie-1', title: 'Масленица', date: '2026-05-01', description: 'Прощёное воскресенье' },
-      { id: 'ie-2', title: '8 Марта', date: '2026-05-08', description: 'Международный женский день' },
-      { id: 'ie-3', title: 'День числа Пи', date: '2026-05-14', description: '3.14 — праздник математиков' },
-      { id: 'ie-4', title: 'День счастья', date: '2026-05-20', description: 'Международный день счастья' },
-      { id: 'ie-5', title: 'День театра', date: '2026-05-27', description: 'Международный день театра' },
+      { id: 'ie-1', title: 'Праздник Весны и Труда', date: '2026-05-01', description: '1 мая — выходной, поток в город' },
+      { id: 'ie-2', title: 'День Победы', date: '2026-05-09', description: 'Главный праздник мая' },
+      { id: 'ie-3', title: 'День семьи', date: '2026-05-15', description: 'Международный день семей' },
+      { id: 'ie-4', title: 'День музеев', date: '2026-05-18', description: 'Ночь музеев — повод для коллабов' },
+      { id: 'ie-5', title: 'День славянской письменности', date: '2026-05-24', description: 'День славянской письменности и культуры' },
       { id: 'ie-6', title: 'Пасха', date: '2026-04-12', description: 'Православная Пасха' }
     ],
     news: [
@@ -252,8 +252,9 @@ export const demoProjects: DemoProject[] = [
       }
     ],
     infoEvents: [
-      { id: 'ie-ba-1', title: '8 Марта', date: '2026-05-08', description: 'Международный женский день' },
-      { id: 'ie-ba-2', title: 'День счастья', date: '2026-05-20', description: 'Делаем контент про позитив' }
+      { id: 'ie-ba-1', title: 'Праздник Весны и Труда', date: '2026-05-01', description: 'Майские — пора лайфстайл-контента' },
+      { id: 'ie-ba-2', title: 'День Победы', date: '2026-05-09', description: 'Главный праздник мая' },
+      { id: 'ie-ba-3', title: 'День музеев', date: '2026-05-18', description: 'Ночь музеев — выход в свет' }
     ],
     news: [
       {
@@ -299,7 +300,7 @@ export const demoProjects: DemoProject[] = [
       },
       {
         id: 'es-2',
-        title: 'Распродажа к 8 марта',
+        title: 'Распродажа к 9 мая',
         type: 'post',
         status: 'ready',
         accountId: 'tech-vk-1',
@@ -339,8 +340,9 @@ export const demoProjects: DemoProject[] = [
       }
     ],
     infoEvents: [
-      { id: 'ie-es-1', title: '8 Марта', date: '2026-05-08', description: 'Скидки на подарки' },
-      { id: 'ie-es-2', title: 'День числа Пи', date: '2026-05-14', description: 'Скидка 3.14% для гиков' }
+      { id: 'ie-es-1', title: 'Праздник Весны и Труда', date: '2026-05-01', description: 'Длинные выходные — пик продаж' },
+      { id: 'ie-es-2', title: 'День Победы', date: '2026-05-09', description: 'Скидки и тематические подборки' },
+      { id: 'ie-es-3', title: 'Последний звонок', date: '2026-05-25', description: 'Гаджеты выпускникам' }
     ],
     news: [
       {
