@@ -177,8 +177,10 @@ export const useContentEditor = () => {
       store.markAsSaved()
       toast.success('Сохранено', { position: getToasterPosition() })
     } catch (e) {
+      // ApiController already toasted the backend-supplied message (validation
+      // detail, rate-limit, etc). Adding a generic "Не удалось сохранить" on top
+      // would just duplicate it — leave the user with the specific reason.
       console.error('[useContentEditor] saveDraft failed:', e)
-      toast.error('Не удалось сохранить', { position: getToasterPosition() })
     } finally {
       store.setIsSaving(false)
     }

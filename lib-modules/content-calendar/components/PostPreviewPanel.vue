@@ -112,7 +112,12 @@ const isStatusEditable = computed(() =>
 
 async function updateStatus(value: PostStatus) {
   if (value === props.post.status) return
-  await projectStore.updatePost(props.post.id, { status: value })
+  try {
+    await projectStore.updatePost(props.post.id, { status: value })
+  } catch {
+    // updatePost reverts the optimistic change and ApiController already toasted
+    // the specific reason; nothing for us to add here.
+  }
 }
 
 function navigateToEditor() {

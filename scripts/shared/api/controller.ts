@@ -44,8 +44,28 @@ type ResponseError = {
         detail?: string | null,
         details?: string | null,
         message?: string | null,
-        errorKey?: string | null
+        errorKey?: string | null,
+        // .NET HttpValidationProblemDetails: { FieldName: ["error1", ...] }.
+        // The top-level `detail` is null in this case — the actual messages live here.
+        errors?: Record<string, string[]> | null
     }
+}
+
+// Flatten an ASP.NET validation errors dict into a single human-readable line.
+// Field names from minimal-API binding sometimes come as JSON pointers ("$.title");
+// strip the prefix so the toast doesn't show the literal `$.`.
+function extractValidationMessage(errors: Record<string, string[]> | null | undefined): string | null {
+    if (!errors || typeof errors !== 'object') return null
+    const lines: string[] = []
+    for (const [field, fieldErrors] of Object.entries(errors)) {
+        if (!Array.isArray(fieldErrors)) continue
+        for (const m of fieldErrors) {
+            if (typeof m !== 'string' || !m.trim()) continue
+            const cleaned = field.replace(/^\$\./, '')
+            lines.push(cleaned ? `${cleaned}: ${m}` : m)
+        }
+    }
+    return lines.length ? lines.join('. ') : null
 }
 
 const PUBLIC_PATHS = ['/', '/landing', '/start', '/auth', '/verify-email', '/reset-password', '/forgot-password', '/email-sent'];
@@ -180,8 +200,12 @@ export class ApiController {
                         return;
                     }
 
-                    if (errorData?.detail) {
-                        toastError(errorData.detail);
+                    const streamMessage = errorData?.detail
+                        || errorData?.details
+                        || errorData?.message
+                        || extractValidationMessage(errorData?.errors);
+                    if (streamMessage) {
+                        toastError(streamMessage);
                     }
 
                     throw error;
@@ -211,8 +235,13 @@ export class ApiController {
                 return;
             }
 
-            // Extract error message from server response
-            const serverMessage = e?.data?.detail || e?.data?.details || e?.data?.message;
+            // Extract error message from server response. ValidationProblemDetails
+            // puts field-level messages in `errors` (and leaves `detail` null), so
+            // fall back to that before resorting to the generic toast.
+            const serverMessage = e?.data?.detail
+                || e?.data?.details
+                || e?.data?.message
+                || extractValidationMessage(e?.data?.errors);
 
             // Handle 403 - show server message if available, otherwise show generic forbidden
             if (errorStatus === 403) {
@@ -664,6 +693,18 @@ export class ApiController {
     ): Promise<void> {
         const url = buildUrl(ApiAliases.workspaceConversation, { workspaceId, conversationId })
         return this.request(url, RequestMethod.DELETE)
+    }
+
+    /**
+     * Update conversation title (PATCH). Title max length 64.
+     */
+    async updateWorkspaceConversation(
+        workspaceId: string,
+        conversationId: string,
+        title: string | null
+    ): Promise<ConversationListItemDto> {
+        const url = buildUrl(ApiAliases.workspaceConversation, { workspaceId, conversationId })
+        return this.request(url, RequestMethod.PATCH, { title })
     }
 
     /**

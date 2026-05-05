@@ -255,9 +255,9 @@ async function handleSubmitCreatePost(title: string) {
   if (newPost) {
     isCreatingPost.value = false
     creatingForDate.value = null
-  } else {
-    toastError('Не удалось создать пост. Проверь workspace или повтори позже.')
   }
+  // On failure: keep the form open so the user can edit the title and retry.
+  // ApiController already toasted the backend reason — no generic toast needed.
 }
 
 function handleCancelCreatePost() {

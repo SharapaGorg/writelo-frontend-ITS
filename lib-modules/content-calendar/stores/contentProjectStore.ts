@@ -147,6 +147,14 @@ export const useContentProjectStore = defineStore('contentProject', () => {
   async function updatePost(postId: string, updates: Partial<CalendarPost>) {
     const project = currentProject.value
     const existing = project?.posts.find(p => p.id === postId)
+    // Snapshot the original values for the keys we're about to overwrite so we
+    // can revert if the backend rejects — otherwise the optimistic update would
+    // visually "stick" while the next refetch silently undoes it.
+    const previousValues = existing
+      ? Object.fromEntries(
+          Object.keys(updates).map(k => [k, (existing as Record<string, unknown>)[k]])
+        ) as Partial<CalendarPost>
+      : null
     updatePostLocal(postId, updates)
     if (isDemo.value) return
     const workspaceId = context.currentWorkspaceId.value
@@ -159,6 +167,8 @@ export const useContentProjectStore = defineStore('contentProject', () => {
       await api.updatePost(workspaceId, postId, body)
     } catch (e) {
       console.error('[contentProjectStore] updatePost failed:', e)
+      if (previousValues) updatePostLocal(postId, previousValues)
+      throw e
     }
   }
 
