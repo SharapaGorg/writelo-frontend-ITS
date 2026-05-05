@@ -16,6 +16,7 @@ import {
   Crown,
   Users,
   History,
+  ScanSearch,
 } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
@@ -54,6 +55,7 @@ const iconComponents: Record<string, typeof Calendar> = {
   'users': Users,
   'history': History,
   'sparkles': Sparkles,
+  'scan-search': ScanSearch,
 }
 
 function getIcon(iconName: string) {

@@ -53,6 +53,12 @@ export function useWorkspacePermissions() {
   const canManageAdmins = isAtLeast('owner')
   const canDeleteWorkspace = isAtLeast('owner')
 
+  // Short-video analyses
+  // - read level (drives sidebar visibility + viewing history/details)
+  // - mutate level (drives the run button)
+  const canAnalyzeShortVideos = isAtLeast('viewer', 'editor', 'admin', 'owner')
+  const canRunShortVideoAnalysis = isAtLeast('editor', 'admin', 'owner')
+
   /**
    * Which roles can the current user assign *to* the given member?
    *
@@ -121,6 +127,8 @@ export function useWorkspacePermissions() {
     canManageInvites,
     canManageAdmins,
     canDeleteWorkspace,
+    canAnalyzeShortVideos,
+    canRunShortVideoAnalysis,
     getAssignableRoles,
     canChangeMemberRole,
     canRemoveMember,

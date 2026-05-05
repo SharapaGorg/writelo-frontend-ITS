@@ -105,6 +105,14 @@ export enum ApiAliases {
     // Activity log
     workspaceActivityLog = 'workspaces/{workspaceId}/activity-log',
 
+    // Short-video analyses
+    workspaceShortVideoAnalyses = 'workspaces/{workspaceId}/short-video-analyses',
+    workspaceShortVideoAnalysesRun = 'workspaces/{workspaceId}/short-video-analyses/run',
+    workspaceShortVideoAnalysesHistory = 'workspaces/{workspaceId}/short-video-analyses/history',
+
+    // Workspace usage limits
+    workspaceLimits = 'workspaces/{workspaceId}/limits',
+
     // Dev-only endpoints (available only on staging/local backend)
     devUserSubscription = 'dev/users/{userId}/subscription',
 

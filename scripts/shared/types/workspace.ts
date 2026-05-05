@@ -310,3 +310,17 @@ export interface ActivityLogItemDto {
   payload: unknown | null
   createdAt: string
 }
+
+// Backend can return int32 fields as `number | string` (.NET serialization). Keep
+// the union here so `Number(left)` is the canonical way to read these.
+export interface WorkspaceUsageLimitDto {
+  total: number | string
+  left: number | string
+  resetAt: string | null
+}
+
+export interface WorkspaceLimitsDto {
+  modelRequests: WorkspaceUsageLimitDto
+  searchRequests: WorkspaceUsageLimitDto
+  shortVideoAnalysisRequests: WorkspaceUsageLimitDto
+}

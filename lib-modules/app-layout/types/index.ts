@@ -3,13 +3,18 @@ export type SidebarSection =
   | 'editor'
   | 'reels-script'
   | 'trends'
+  | 'video-analyzer'
   | 'workspaces'
   | 'team'
   | 'activity'
+  | 'assistant'
   | 'profile'
   | 'settings'
 
-export type PermissionFlag = 'canViewActivityLog'
+export type PermissionFlag =
+  | 'canViewActivityLog'
+  | 'canAnalyzeShortVideos'
+  | 'canRunShortVideoAnalysis'
 
 export interface SidebarItem {
   id: SidebarSection
