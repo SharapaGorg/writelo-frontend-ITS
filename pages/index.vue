@@ -7,17 +7,18 @@ definePageMeta({
   auth: false,
 })
 
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 locale.value = 'ru'
 
 useSeoMeta({
   robots: 'index, follow',
-  title: () => t('landingNew.seo.title'),
-  description: () => t('landingNew.seo.description'),
+  title: 'Writelo — аналитика трендов Instagram, разбор Reels и контент-календарь для SMM',
+  description:
+    'Платформа для SMM: аналитика трендов Instagram под нишу, ИИ-разбор Reels (своих и конкурентов), инфоповоды под бренд и контент-календарь — в одном инструменте. Бесплатный старт.',
   keywords:
     'аналитика Instagram, тренды Reels, разбор Reels, AI разбор рилсов, контент-план SMM, инфоповоды для SMM, аналитика соцсетей, Райтелло, Writelo, нейросеть для SMM',
-  ogTitle: () => t('landingNew.seo.ogTitle'),
-  ogDescription: () => t('landingNew.seo.ogDescription'),
+  ogTitle: 'Writelo — аналитика трендов Instagram и разбор Reels',
+  ogDescription: 'Тренды Instagram под нишу, ИИ-разбор Reels, инфоповоды под бренд и контент-план — всё в одном.',
   ogImage: '/og-image.svg',
   ogUrl: 'https://writelo.io/',
   ogLocale: 'ru_RU',
