@@ -3,6 +3,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { generateUUID } from '~/scripts/features/utils'
 import { useAssistantApi } from '../helpers/api'
+import { parseActionsTail, isMarkerLikely } from '../helpers/actionsParser'
 import { useAssistantStore } from '../stores/assistantStore'
 import type { AssistantMessage } from '../types'
 
@@ -44,7 +45,11 @@ export function useAssistantChat() {
     const m = messages.value.find(x => x.id === messageId)
     if (!m) return
     m.text += chunk
-    m.visibleText = m.text
+    if (isMarkerLikely(m.text)) {
+      m.visibleText = parseActionsTail(m.text).visibleText
+    } else {
+      m.visibleText = m.text
+    }
   }
 
   function setMessageError(messageId: string, error = true) {
@@ -180,7 +185,12 @@ export function useAssistantChat() {
       } else if (parsed.action === 'response_end' || parsed.action === 'finish_response') {
         isProcessing.value = false
         const m = messages.value.find(x => x.id === responseId)
-        if (m) m.processing = false
+        if (m) {
+          m.processing = false
+          const { visibleText, actions } = parseActionsTail(m.text)
+          m.visibleText = visibleText
+          if (actions.length > 0) m.actions = actions
+        }
         if (!parsed.success && !isStopping.value) {
           appendChunk(responseId, parsed.message || parsed.error || '\n**Сервер занят**')
           setMessageError(responseId)

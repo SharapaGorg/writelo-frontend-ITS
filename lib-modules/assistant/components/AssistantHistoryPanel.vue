@@ -9,11 +9,12 @@ import { useAssistantHistory } from '../composables/useAssistantHistory'
 import { useAssistantChat } from '../composables/useAssistantChat'
 import { useAssistantStore } from '../stores/assistantStore'
 import AssistantHistoryItem from './AssistantHistoryItem.vue'
+import AssistantHistoryPanelSkeleton from './AssistantHistoryPanelSkeleton.vue'
 
 const route = useRoute()
 const router = useRouter()
 const { currentWorkspace } = useWorkspaceContext()
-const { items, search, setSearch, refresh, rename, remove } = useAssistantHistory()
+const { items, isLoading, search, setSearch, refresh, rename, remove } = useAssistantHistory()
 const { reset } = useAssistantChat()
 const store = useAssistantStore()
 
@@ -71,18 +72,21 @@ function onNew() {
       </div>
     </div>
     <div class="min-h-0 flex-1 space-y-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-      <AssistantHistoryItem
-        v-for="item in items"
-        :key="item.id"
-        :item="item"
-        :active="item.id === activeId"
-        @click="pick(item.id)"
-        @rename="(t) => rename(item.id, t)"
-        @delete="remove(item.id)"
-      />
-      <div v-if="!items.length" class="p-2 text-xs text-muted-foreground">
-        Нет диалогов. Напиши первое сообщение.
-      </div>
+      <AssistantHistoryPanelSkeleton v-if="isLoading && !items.length" />
+      <template v-else>
+        <AssistantHistoryItem
+          v-for="item in items"
+          :key="item.id"
+          :item="item"
+          :active="item.id === activeId"
+          @click="pick(item.id)"
+          @rename="(t) => rename(item.id, t)"
+          @delete="remove(item.id)"
+        />
+        <div v-if="!items.length" class="p-2 text-xs text-muted-foreground">
+          Нет диалогов. Напиши первое сообщение.
+        </div>
+      </template>
     </div>
   </aside>
 </template>

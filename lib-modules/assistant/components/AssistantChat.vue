@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import {
   AttachedFileArea,
   BottomBar,
@@ -13,14 +13,12 @@ import { isMobile } from '~/scripts/features/utils'
 import { eventBus } from '~/composables/eventBus'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { useAssistantChat } from '../composables/useAssistantChat'
-import { useAssistantStore } from '../stores/assistantStore'
+import ActionCard from './ActionCard.vue'
 import AssistantChatSkeleton from './AssistantChatSkeleton.vue'
 import EmptyStateHero from './EmptyStateHero.vue'
 
 const route = useRoute()
-const router = useRouter()
 const { currentWorkspace } = useWorkspaceContext()
-const store = useAssistantStore()
 const { messages, isProcessing, isLoadingHistory, send, stop, setActiveConversation } = useAssistantChat()
 
 const ROWS_LIMIT = 7
@@ -106,21 +104,6 @@ watch(
   { immediate: true },
 )
 
-// One-shot last-active restore: runs only on first mount when workspace becomes
-// available and the URL has no ?conv. Stops itself after firing so that a later
-// "+ Новый чат" click (which clears ?conv) is not undone by the restore.
-const stopRestoreLastActive = watch(
-  () => currentWorkspace.value?.id,
-  (wid) => {
-    if (!wid) return
-    stopRestoreLastActive()
-    if (typeof route.query.conv === 'string') return
-    const lastId = store.getLastActive(wid)
-    if (lastId) router.replace({ query: { ...route.query, conv: lastId } })
-  },
-  { immediate: true },
-)
-
 onMounted(() => {
   eventBus.on('stopGeneration', stop)
 })
@@ -145,17 +128,27 @@ onUnmounted(() => {
       </template>
       <template v-else>
         <div class="mx-auto max-w-[760px] space-y-4 px-4 py-6">
-          <Message
-            v-for="(m, i) in messages"
-            :id="m.id"
-            :key="m.id"
-            :text="m.visibleText ?? m.text"
-            :role="getRoleEnum(m.role)"
-            :created_at="String(m.createdAt)"
-            :processing="m.processing"
-            :error="m.error"
-            :is-last="i === messages.length - 1"
-          />
+          <template v-for="(m, i) in messages" :key="m.id">
+            <Message
+              :id="m.id"
+              :text="m.visibleText ?? m.text"
+              :role="getRoleEnum(m.role)"
+              :created_at="String(m.createdAt)"
+              :processing="m.processing"
+              :error="m.error"
+              :is-last="i === messages.length - 1"
+            />
+            <div
+              v-if="m.role === 'assistant' && m.actions && m.actions.length"
+              class="-mt-2 flex flex-wrap gap-2"
+            >
+              <ActionCard
+                v-for="(a, j) in m.actions"
+                :key="j"
+                :action="a"
+              />
+            </div>
+          </template>
         </div>
       </template>
     </div>
