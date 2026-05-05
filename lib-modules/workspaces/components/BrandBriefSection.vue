@@ -164,8 +164,8 @@ defineExpose({
               v-if="canEdit"
               :id="`${idPrefix}-description`"
               v-model="draft.businessDescription"
-              :rows="3"
               :placeholder="t_('addClient.descriptionPlaceholder')"
+              class="min-h-[180px] resize-y"
             />
             <p v-else class="text-sm text-foreground py-1.5 whitespace-pre-wrap">{{ draft.businessDescription || '—' }}</p>
           </div>

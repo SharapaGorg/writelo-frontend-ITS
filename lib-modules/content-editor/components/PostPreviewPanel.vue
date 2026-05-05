@@ -333,7 +333,7 @@ const handlePublish = async () => {
             :disabled="isPublished"
             @update:model-value="updateDescription"
             :placeholder="isReel ? 'Описание для рилс...' : 'Write a captivating description for your post...'"
-            class="min-h-[120px] resize-none"
+            class="min-h-[260px] max-h-[520px] resize-y overflow-y-auto"
           />
           <p class="text-xs text-muted-foreground">
             {{ description.length }} / 2200 characters

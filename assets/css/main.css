@@ -48,6 +48,24 @@ html, body {
     width: 0 !important;
 }
 
+textarea::-webkit-scrollbar {
+    width: 8px !important;
+}
+textarea::-webkit-scrollbar-track {
+    background: transparent;
+}
+textarea::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.35);
+    border-radius: 4px;
+}
+textarea::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.6);
+}
+textarea::-webkit-scrollbar-corner,
+textarea::-webkit-resizer {
+    background: transparent;
+}
+
 @layer base {
     :root {
         --radius: 0.375rem;
