@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick, provide } from 'vue'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
@@ -34,6 +34,11 @@ const props = withDefaults(defineProps<{
 }>(), {
   showcaseMode: false
 })
+
+// Showcase mode (landing page) has no real workspace, so the role-based
+// permission checks all return false. Children inject this flag to bypass
+// `canManagePosts` etc. and let drag/drop + create stay interactive.
+provide('cc-showcase-mode', computed(() => props.showcaseMode))
 
 const {
   selectedDate,

@@ -44,7 +44,7 @@ export const demoProjects: DemoProject[] = [
         status: 'published',
         accountId: 'coffee-vk-1',
         tags: ['tag-cs-1'],
-        date: '2026-03-15',
+        date: '2026-05-15',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Latte',
         conversationId: 'conv-demo-1',
         publishedLink: 'https://vk.com/wall-123456_789'
@@ -57,7 +57,7 @@ export const demoProjects: DemoProject[] = [
         status: 'draft',
         accountId: 'coffee-ig-1',
         tags: ['tag-cs-3'],
-        date: '2026-03-18',
+        date: '2026-05-18',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Tiramisu'
       },
       {
@@ -67,7 +67,7 @@ export const demoProjects: DemoProject[] = [
         status: 'idea',
         accountId: 'coffee-yt-1',
         tags: ['tag-cs-2'],
-        date: '2026-03-22'
+        date: '2026-05-22'
       },
       {
         id: 'cs-4',
@@ -77,7 +77,7 @@ export const demoProjects: DemoProject[] = [
         status: 'published',
         accountId: 'coffee-tg-1',
         tags: ['tag-cs-4', 'tag-cs-3'],
-        date: '2026-03-08',
+        date: '2026-05-08',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=8+March',
         publishedLink: 'https://t.me/coffeshop_bodrost/41'
       },
@@ -98,7 +98,7 @@ export const demoProjects: DemoProject[] = [
         status: 'published',
         accountId: 'coffee-ig-1',
         tags: ['tag-cs-1'],
-        date: '2026-03-10',
+        date: '2026-05-10',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Coffee+To+Go'
       },
       {
@@ -109,7 +109,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         accountId: 'coffee-ig-1',
         tags: ['tag-cs-4', 'tag-cs-2'],
-        date: '2026-03-12',
+        date: '2026-05-12',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Barista'
       },
       {
@@ -120,7 +120,7 @@ export const demoProjects: DemoProject[] = [
         status: 'draft',
         accountId: 'coffee-tg-1',
         tags: ['tag-cs-2'],
-        date: '2026-03-19'
+        date: '2026-05-19'
       },
       {
         id: 'cs-9',
@@ -130,7 +130,7 @@ export const demoProjects: DemoProject[] = [
         status: 'published',
         accountId: 'coffee-vk-1',
         tags: ['tag-cs-1', 'tag-cs-3'],
-        date: '2026-03-05',
+        date: '2026-05-05',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Morning+Sale',
         publishedLink: 'https://vk.com/wall-123456_785'
       },
@@ -145,11 +145,11 @@ export const demoProjects: DemoProject[] = [
       }
     ],
     infoEvents: [
-      { id: 'ie-1', title: 'Масленица', date: '2026-03-01', description: 'Прощёное воскресенье' },
-      { id: 'ie-2', title: '8 Марта', date: '2026-03-08', description: 'Международный женский день' },
-      { id: 'ie-3', title: 'День числа Пи', date: '2026-03-14', description: '3.14 — праздник математиков' },
-      { id: 'ie-4', title: 'День счастья', date: '2026-03-20', description: 'Международный день счастья' },
-      { id: 'ie-5', title: 'День театра', date: '2026-03-27', description: 'Международный день театра' },
+      { id: 'ie-1', title: 'Масленица', date: '2026-05-01', description: 'Прощёное воскресенье' },
+      { id: 'ie-2', title: '8 Марта', date: '2026-05-08', description: 'Международный женский день' },
+      { id: 'ie-3', title: 'День числа Пи', date: '2026-05-14', description: '3.14 — праздник математиков' },
+      { id: 'ie-4', title: 'День счастья', date: '2026-05-20', description: 'Международный день счастья' },
+      { id: 'ie-5', title: 'День театра', date: '2026-05-27', description: 'Международный день театра' },
       { id: 'ie-6', title: 'Пасха', date: '2026-04-12', description: 'Православная Пасха' }
     ],
     news: [
@@ -158,7 +158,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Цены на кофе выросли на 15%',
         description: 'Мировые цены на кофе достигли максимума за последние 10 лет.',
         source: 'РБК',
-        date: '2026-03-20',
+        date: '2026-05-20',
         url: 'https://rbc.ru/business/coffee-prices-2026'
       },
       {
@@ -166,7 +166,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Тренд: овсяное молоко обогнало миндальное',
         description: 'Продажи овсяного молока в России выросли на 340% за год.',
         source: 'VC.ru',
-        date: '2026-03-18',
+        date: '2026-05-18',
         url: 'https://vc.ru/food/oat-milk-trend'
       }
     ],
@@ -207,7 +207,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         accountId: 'anya-ig-1',
         tags: ['tag-ba-1', 'tag-ba-4'],
-        date: '2026-03-16',
+        date: '2026-05-16',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Morning'
       },
       {
@@ -217,7 +217,7 @@ export const demoProjects: DemoProject[] = [
         status: 'draft',
         accountId: 'anya-ig-1',
         tags: ['tag-ba-2'],
-        date: '2026-03-20'
+        date: '2026-05-20'
       },
       {
         id: 'ba-3',
@@ -226,7 +226,7 @@ export const demoProjects: DemoProject[] = [
         status: 'idea',
         accountId: 'anya-ig-1',
         tags: ['tag-ba-3'],
-        date: '2026-03-25'
+        date: '2026-05-25'
       },
       {
         id: 'ba-4',
@@ -236,7 +236,7 @@ export const demoProjects: DemoProject[] = [
         status: 'published',
         accountId: 'anya-yt-1',
         tags: ['tag-ba-4', 'tag-ba-1'],
-        date: '2026-03-08',
+        date: '2026-05-08',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Wardrobe',
         publishedLink: 'https://youtube.com/watch?v=wardrobe2026'
       },
@@ -247,13 +247,13 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         accountId: 'anya-yt-1',
         tags: ['tag-ba-4', 'tag-ba-1'],
-        date: '2026-03-22',
+        date: '2026-05-22',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Dubai'
       }
     ],
     infoEvents: [
-      { id: 'ie-ba-1', title: '8 Марта', date: '2026-03-08', description: 'Международный женский день' },
-      { id: 'ie-ba-2', title: 'День счастья', date: '2026-03-20', description: 'Делаем контент про позитив' }
+      { id: 'ie-ba-1', title: '8 Марта', date: '2026-05-08', description: 'Международный женский день' },
+      { id: 'ie-ba-2', title: 'День счастья', date: '2026-05-20', description: 'Делаем контент про позитив' }
     ],
     news: [
       {
@@ -261,7 +261,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Instagram тестирует новый алгоритм',
         description: 'Соцсеть начала тестировать AI-алгоритм рекомендаций.',
         source: 'TechCrunch',
-        date: '2026-03-19',
+        date: '2026-05-19',
         url: 'https://techcrunch.com/instagram-algorithm-2026'
       }
     ],
@@ -294,7 +294,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         accountId: 'tech-yt-1',
         tags: ['tag-es-2', 'tag-es-3'],
-        date: '2026-03-14',
+        date: '2026-05-14',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=iPhone'
       },
       {
@@ -304,7 +304,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         accountId: 'tech-vk-1',
         tags: ['tag-es-1', 'tag-es-4'],
-        date: '2026-03-07',
+        date: '2026-05-07',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Sale'
       },
       {
@@ -314,7 +314,7 @@ export const demoProjects: DemoProject[] = [
         status: 'draft',
         accountId: 'tech-vk-1',
         tags: ['tag-es-2', 'tag-es-3'],
-        date: '2026-03-28'
+        date: '2026-05-28'
       },
       {
         id: 'es-4',
@@ -324,7 +324,7 @@ export const demoProjects: DemoProject[] = [
         status: 'ready',
         accountId: 'tech-yt-1',
         tags: ['tag-es-2', 'tag-es-3'],
-        date: '2026-03-10',
+        date: '2026-05-10',
         image: 'https://placehold.co/600x750/1a1a2e/ffffff?text=Comparison'
       },
       {
@@ -334,13 +334,13 @@ export const demoProjects: DemoProject[] = [
         status: 'published',
         accountId: 'tech-tg-1',
         tags: ['tag-es-2'],
-        date: '2026-03-03',
+        date: '2026-05-03',
         publishedLink: 'https://t.me/techstore/234'
       }
     ],
     infoEvents: [
-      { id: 'ie-es-1', title: '8 Марта', date: '2026-03-08', description: 'Скидки на подарки' },
-      { id: 'ie-es-2', title: 'День числа Пи', date: '2026-03-14', description: 'Скидка 3.14% для гиков' }
+      { id: 'ie-es-1', title: '8 Марта', date: '2026-05-08', description: 'Скидки на подарки' },
+      { id: 'ie-es-2', title: 'День числа Пи', date: '2026-05-14', description: 'Скидка 3.14% для гиков' }
     ],
     news: [
       {
@@ -348,7 +348,7 @@ export const demoProjects: DemoProject[] = [
         title: 'Apple представит новые MacBook в апреле',
         description: 'Компания готовит обновление с процессорами M4.',
         source: 'Bloomberg',
-        date: '2026-03-21',
+        date: '2026-05-21',
         url: 'https://bloomberg.com/apple-macbook-m4'
       }
     ],

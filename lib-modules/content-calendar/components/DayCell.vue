@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, inject, type ComputedRef } from 'vue'
 import type { CalendarPost, SocialNetwork, SocialAccount, NewsItem, TrendItem } from '../types'
 import type { ReelItem } from '~/lib-modules/reels-research'
 import { useWorkspacePermissions } from '~/lib-modules/workspaces'
 
 const { canManagePosts } = useWorkspacePermissions()
+const showcaseMode = inject<ComputedRef<boolean> | undefined>('cc-showcase-mode', undefined)
+const canManage = computed(() => canManagePosts.value || showcaseMode?.value === true)
 
 const props = defineProps<{
   date: string
@@ -29,7 +31,7 @@ const isDragOver = ref(false)
 const isHovered = ref(false)
 
 function handleDragOver(e: DragEvent) {
-  if (!canManagePosts.value) return
+  if (!canManage.value) return
   e.preventDefault()
   if (e.dataTransfer) {
     e.dataTransfer.dropEffect = 'copy'
@@ -42,7 +44,7 @@ function handleDragLeave() {
 }
 
 function handleDrop(e: DragEvent) {
-  if (!canManagePosts.value) return
+  if (!canManage.value) return
   e.preventDefault()
   isDragOver.value = false
 
