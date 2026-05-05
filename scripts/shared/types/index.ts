@@ -28,12 +28,12 @@ export enum ApiAliases {
     // Auth endpoints
     authSignup = 'auth/signup/email',
     authSignin = 'auth/signin/email',
-    authGoogle = 'auth/google',
-    authTelegram = 'auth/telegram',
+    authGoogle = 'auth/signin/google',
+    authTelegram = 'auth/signin/telegram',
     authVerify = 'auth/email/verify',
-    authResendVerification = 'auth/resend-verification',
-    authForgotPassword = 'auth/forgot-password',
-    authResetPassword = 'auth/reset-password',
+    authResendVerification = 'auth/email/resend',
+    authForgotPassword = 'auth/password/forgot',
+    authResetPassword = 'auth/password/reset',
 
     // Workspaces
     workspaces = 'workspaces',
