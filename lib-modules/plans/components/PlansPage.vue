@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue'
 import { toast } from 'vue-sonner'
+import { Send } from 'lucide-vue-next'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import AppLoader from '~/components/atoms/AppLoader.vue'
+import { Button } from '~/components/ui/button'
 import { getToasterPosition, toastError } from '~/scripts/features/utils/toater'
 import PlanCard from './PlanCard.vue'
 import { usePlans } from '../composables/usePlans'
@@ -68,6 +70,28 @@ onBeforeUnmount(() => {
           class="rounded-xl border border-dashed bg-muted/30 px-6 py-12 text-center text-sm text-muted-foreground"
         >
           Пока нет доступных тарифов.
+        </div>
+
+        <div
+          class="rounded-xl border border-border bg-muted/30 px-6 py-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5"
+        >
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium">Не уверены, какой тариф выбрать?</div>
+            <p class="text-sm text-muted-foreground mt-1">
+              Напишите мне — объясню что к чему в личном чате или на звонке.
+            </p>
+          </div>
+          <a
+            href="https://t.me/sharapagorg"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="shrink-0"
+          >
+            <Button variant="outline" class="gap-2 w-full sm:w-auto">
+              <Send class="h-4 w-4" />
+              <span>@sharapagorg</span>
+            </Button>
+          </a>
         </div>
       </div>
     </div>

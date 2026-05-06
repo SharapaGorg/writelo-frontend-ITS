@@ -17,6 +17,7 @@ import {
   Users,
   History,
   ScanSearch,
+  Send,
 } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
@@ -218,6 +219,24 @@ function navigate(item: SidebarItem) {
           )"
         >{{ item.label }}</span>
       </Button>
+
+      <a
+        href="https://t.me/sharapagorg"
+        target="_blank"
+        rel="noopener noreferrer"
+        :title="'Написать основателю — @sharapagorg'"
+        :class="cn(
+          'flex items-center gap-3 h-9 px-3 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-accent overflow-hidden transition-colors'
+        )"
+      >
+        <Send class="h-4 w-4 shrink-0" />
+        <span
+          :class="cn(
+            'truncate whitespace-nowrap transition-all duration-300',
+            isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'
+          )"
+        >Написать основателю</span>
+      </a>
     </div>
   </aside>
 </template>
