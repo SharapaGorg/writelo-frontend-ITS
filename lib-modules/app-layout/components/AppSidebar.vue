@@ -227,7 +227,7 @@ function navigate(item: SidebarItem) {
         href="https://t.me/sharapagorg"
         target="_blank"
         rel="noopener noreferrer"
-        :title="'Написать основателю — @sharapagorg'"
+        :title="'Напишите мне 0_^ — @sharapagorg'"
         :class="cn(
           'flex items-center gap-3 h-9 px-3 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-accent overflow-hidden transition-colors'
         )"
@@ -238,7 +238,7 @@ function navigate(item: SidebarItem) {
             'truncate whitespace-nowrap transition-all duration-300',
             isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'
           )"
-        >Написать основателю</span>
+        >Напишите мне 0_^</span>
       </a>
     </div>
   </aside>
