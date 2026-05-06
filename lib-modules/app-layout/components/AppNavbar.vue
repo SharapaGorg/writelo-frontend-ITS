@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { ChevronRight } from 'lucide-vue-next'
+import { ChevronRight, Plus } from 'lucide-vue-next'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from '~/components/ui/select'
+import { Button } from '~/components/ui/button'
 import { useWorkspaces, RoleBadge, useWorkspacePermissions } from '~/lib-modules/workspaces'
+import { usePlans } from '~/lib-modules/plans'
 
 export interface BreadcrumbItem {
   label: string
@@ -25,12 +26,19 @@ const props = withDefaults(
 
 const { workspaces, currentWorkspaceId, selectWorkspace } = useWorkspaces()
 const { currentRole } = useWorkspacePermissions()
+const { isBusinessPlan } = usePlans()
 
 const selectedWorkspaceId = computed<string>({
   get: () => currentWorkspaceId.value ?? '',
   set: (value) => {
     if (value) selectWorkspace(value)
   },
+})
+
+const currentWorkspaceName = computed(() => {
+  const id = currentWorkspaceId.value
+  if (!id) return ''
+  return workspaces.value.find(w => w.id === id)?.name ?? ''
 })
 </script>
 
@@ -77,8 +85,8 @@ const selectedWorkspaceId = computed<string>({
           class="w-[260px] bg-card border-border"
         >
           <span class="flex items-center gap-2 min-w-0 w-full">
-            <SelectValue placeholder="Выберите бренд" class="truncate" />
-            <RoleBadge :role="currentRole" class="shrink-0" />
+            <span class="truncate">{{ currentWorkspaceName || 'Выберите бренд' }}</span>
+            <RoleBadge v-if="isBusinessPlan" :role="currentRole" class="shrink-0" />
           </span>
         </SelectTrigger>
         <SelectContent>
@@ -90,11 +98,24 @@ const selectedWorkspaceId = computed<string>({
           >
             <span class="flex items-center justify-between gap-2 w-full min-w-0">
               <span class="truncate">{{ ws.name }}</span>
-              <RoleBadge :role="ws.role" class="shrink-0" />
+              <RoleBadge v-if="isBusinessPlan" :role="ws.role" class="shrink-0" />
             </span>
           </SelectItem>
         </SelectContent>
       </Select>
+      <NuxtLink
+        v-else-if="props.showWorkspaceSelector"
+        to="/app/workspaces"
+        class="inline-flex"
+      >
+        <Button
+          variant="default"
+          class="h-9 gap-2 bg-brand text-brand-foreground hover:bg-brand/90"
+        >
+          <Plus class="h-4 w-4" />
+          Создать бренд
+        </Button>
+      </NuxtLink>
     </div>
 
     <!-- Right-side actions -->
