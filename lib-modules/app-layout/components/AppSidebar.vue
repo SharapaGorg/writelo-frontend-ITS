@@ -27,6 +27,7 @@ import { useUserController } from '~/composables/user'
 import { useSettings } from '~/composables/settings'
 import { usePlans } from '~/lib-modules/plans'
 import PublicationsPanel from './PublicationsPanel.vue'
+import LimitsPanel from './LimitsPanel.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -196,6 +197,8 @@ function navigate(item: SidebarItem) {
         </div>
       </div>
     </button>
+
+    <LimitsPanel />
 
     <PublicationsPanel />
 

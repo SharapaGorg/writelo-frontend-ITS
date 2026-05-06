@@ -5,6 +5,7 @@ import type {
   CreateWorkspaceRequest,
   UpdateWorkspaceRequest,
   PagedResponse,
+  WorkspaceLimitsDto,
 } from '~/scripts/shared/types/workspace'
 
 /**
@@ -40,6 +41,12 @@ export class WorkspacesApiController {
   deleteWorkspace(workspaceId: string): Promise<void> {
     const url = buildUrl('{workspaceId}', { workspaceId })
     return this.api.request(`${ApiAliases.workspaces}/${url}`, RequestMethod.DELETE)
+  }
+
+  getLimits(workspaceId: string): Promise<WorkspaceLimitsDto> {
+    const path = buildUrl(ApiAliases.workspaceLimits, { workspaceId })
+    // Cache-bust: workspace-scoped GETs aren't cache-controlled.
+    return this.api.request(path, RequestMethod.GET, { _t: Date.now() })
   }
 }
 

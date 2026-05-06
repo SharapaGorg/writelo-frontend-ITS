@@ -8,6 +8,7 @@
 export { useWorkspaceContext } from './composables/useWorkspaceContext'
 export { useWorkspaces } from './composables/useWorkspaces'
 export { useWorkspacePermissions } from './composables/useWorkspacePermissions'
+export { useWorkspaceLimits } from './composables/useWorkspaceLimits'
 export type { WorkspaceContextReturn } from './composables/useWorkspaceContext'
 export type { WorkspacePermissions } from './composables/useWorkspacePermissions'
 

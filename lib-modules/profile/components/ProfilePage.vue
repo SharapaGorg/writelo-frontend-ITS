@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dialog'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import TariffPlanZone from './TariffPlanZone.vue'
+import UsageLimitsZone from './UsageLimitsZone.vue'
 import GiftsSection from './GiftsSection.vue'
 import EditAccountZone from './EditAccountZone.vue'
 import ConnectionsZone from './ConnectionsZone.vue'
@@ -97,8 +98,11 @@ async function handleLogout() {
           </Button>
         </section>
 
-        <!-- Tariff — full width on every breakpoint -->
-        <TariffPlanZone />
+        <!-- Tariff + usage — split on lg+, stacked below -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TariffPlanZone />
+          <UsageLimitsZone />
+        </div>
 
         <!-- Two-column grid on lg+, single column below -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
