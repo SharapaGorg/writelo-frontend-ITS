@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, inject, type ComputedRef } from 'vue'
+import { ref, computed } from 'vue'
 import type { CalendarPost, SocialNetwork, SocialAccount, NewsItem, TrendItem } from '../types'
 import type { ReelItem } from '~/lib-modules/reels-research'
-import { useWorkspacePermissions } from '~/lib-modules/workspaces'
-
-const { canManagePosts } = useWorkspacePermissions()
-const showcaseMode = inject<ComputedRef<boolean> | undefined>('cc-showcase-mode', undefined)
-const canManage = computed(() => canManagePosts.value || showcaseMode?.value === true)
 
 const props = defineProps<{
   date: string
@@ -31,7 +26,6 @@ const isDragOver = ref(false)
 const isHovered = ref(false)
 
 function handleDragOver(e: DragEvent) {
-  if (!canManage.value) return
   e.preventDefault()
   if (e.dataTransfer) {
     e.dataTransfer.dropEffect = 'copy'
@@ -44,7 +38,6 @@ function handleDragLeave() {
 }
 
 function handleDrop(e: DragEvent) {
-  if (!canManage.value) return
   e.preventDefault()
   isDragOver.value = false
 
@@ -117,7 +110,7 @@ const extraCount = computed(() => props.posts.length - 4)
   >
     <!-- Add post button (absolute, top-left corner) -->
     <button
-      v-if="isCurrentMonth && canManagePosts"
+      v-if="isCurrentMonth"
       :class="[
         'absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground flex items-center justify-center transition-all z-10',
         isHovered ? 'opacity-100' : 'opacity-0'

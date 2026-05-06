@@ -2,9 +2,6 @@
 import PostCard from './PostCard.vue'
 import type { CalendarPost, InfoEvent, ContentTag, SocialAccount } from '../types'
 import { getFunDayForDate } from '../data/funDays'
-import { useWorkspacePermissions } from '~/lib-modules/workspaces'
-
-const { canManagePosts } = useWorkspacePermissions()
 
 const props = defineProps<{
   date: string
@@ -45,7 +42,6 @@ const funDay = computed(() => getFunDayForDate(props.date))
       </div>
       <div class="flex items-center gap-2">
         <button
-          v-if="canManagePosts"
           class="w-7 h-7 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground flex items-center justify-center transition-colors"
           @click="emit('createPost')"
           title="Создать пост"

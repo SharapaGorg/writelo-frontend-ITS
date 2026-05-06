@@ -32,18 +32,14 @@ describe('useWorkspacePermissions — flag matrix', () => {
   it('viewer: only read', () => {
     setRole('viewer')
     const p = useWorkspacePermissions()
-    expect(p.canManagePosts.value).toBe(false)
-    expect(p.canEditBrandBrief.value).toBe(false)
     expect(p.canViewActivityLog.value).toBe(false)
     expect(p.canManageInvites.value).toBe(false)
     expect(p.canDeleteWorkspace.value).toBe(false)
   })
 
-  it('editor: content + brand brief, no team/log/settings', () => {
+  it('editor: no team/log/settings', () => {
     setRole('editor')
     const p = useWorkspacePermissions()
-    expect(p.canManagePosts.value).toBe(true)
-    expect(p.canEditBrandBrief.value).toBe(true)
     expect(p.canRenameWorkspace.value).toBe(false)
     expect(p.canViewActivityLog.value).toBe(false)
     expect(p.canManageInvites.value).toBe(false)
@@ -52,7 +48,6 @@ describe('useWorkspacePermissions — flag matrix', () => {
   it('admin: full except owner-only', () => {
     setRole('admin')
     const p = useWorkspacePermissions()
-    expect(p.canManagePosts.value).toBe(true)
     expect(p.canRenameWorkspace.value).toBe(true)
     expect(p.canManageInvites.value).toBe(true)
     expect(p.canViewActivityLog.value).toBe(true)
@@ -70,8 +65,8 @@ describe('useWorkspacePermissions — flag matrix', () => {
   it('null role: nothing', () => {
     setRole(null)
     const p = useWorkspacePermissions()
-    expect(p.canManagePosts.value).toBe(false)
     expect(p.canViewActivityLog.value).toBe(false)
+    expect(p.canManageInvites.value).toBe(false)
   })
 })
 

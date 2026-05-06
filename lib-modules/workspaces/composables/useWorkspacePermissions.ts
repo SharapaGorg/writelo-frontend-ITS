@@ -16,7 +16,7 @@ function isAtLeastFactory(roleRef: ComputedRef<WorkspaceRole | null>) {
  * Central source of truth for permissions in the *current* workspace.
  *
  * Reads the role from `useWorkspaceContext().currentWorkspace`. Returns a
- * bag of computed booleans (`canManagePosts`, `canRenameWorkspace`, …) plus
+ * bag of computed booleans (`canRenameWorkspace`, `canManageInvites`, …) plus
  * member-level helpers (`getAssignableRoles`, `canChangeMemberRole`,
  * `canRemoveMember`).
  *
@@ -38,10 +38,6 @@ export function useWorkspacePermissions() {
     ($settings.getUser() as { id?: string } | null)?.id ?? null
 
   const isAtLeast = isAtLeastFactory(currentRole)
-
-  // Content / brand brief — editor and above
-  const canManagePosts = isAtLeast('editor', 'admin', 'owner')
-  const canEditBrandBrief = isAtLeast('editor', 'admin', 'owner')
 
   // Workspace settings / team — admin and above
   const canRenameWorkspace = isAtLeast('admin', 'owner')
@@ -113,8 +109,6 @@ export function useWorkspacePermissions() {
 
   return {
     currentRole,
-    canManagePosts,
-    canEditBrandBrief,
     canRenameWorkspace,
     canManageSocialAccounts,
     canViewActivityLog,
