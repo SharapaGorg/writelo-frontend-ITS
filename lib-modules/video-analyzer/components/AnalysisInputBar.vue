@@ -8,10 +8,6 @@ import { cn } from '~/lib-modules/utils'
 import { useVideoAnalyzer } from '../composables/useVideoAnalyzer'
 import { useAnalysisLimits } from '../composables/useAnalysisLimits'
 
-const props = defineProps<{
-  canRun?: boolean
-}>()
-
 const url = ref('')
 const router = useRouter()
 
@@ -33,7 +29,6 @@ const isValidUrl = computed(() => {
 })
 
 const isDisabled = computed(() => {
-  if (props.canRun === false) return true
   if (analyzer.isSubmitting.value) return true
   if (limits.isLoaded.value && limits.isExhausted.value) return true
   return !isValidUrl.value
@@ -78,7 +73,7 @@ async function onSubmit() {
           type="url"
           placeholder="Вставь ссылку на YouTube Shorts, TikTok или Instagram Reels"
           class="h-11 pl-9"
-          :disabled="canRun === false || analyzer.isSubmitting.value"
+          :disabled="analyzer.isSubmitting.value"
           @keydown.enter.prevent="onSubmit"
         />
       </div>
@@ -109,10 +104,6 @@ async function onSubmit() {
         <AlertCircle class="h-3 w-3" />
         Перейти к тарифам<span v-if="resetText"> · обновится {{ resetText }}</span>
       </button>
-      <p
-        v-else-if="canRun === false"
-        class="text-xs text-muted-foreground sm:text-right"
-      >Только владелец, админ или редактор могут запускать анализ.</p>
     </div>
   </div>
 </template>

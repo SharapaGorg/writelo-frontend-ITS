@@ -13,8 +13,6 @@ export type SidebarSection =
 
 export type PermissionFlag =
   | 'canViewActivityLog'
-  | 'canAnalyzeShortVideos'
-  | 'canRunShortVideoAnalysis'
 
 export interface SidebarItem {
   id: SidebarSection
