@@ -14,13 +14,7 @@ export function useAppLayout() {
     { id: 'calendar', icon: 'calendar', label: 'Календарь', route: '/app/calendar' },
     { id: 'editor', icon: 'pen-square', label: 'Редактор', route: '/app/editor' },
     { id: 'trends', icon: 'trending-up', label: 'Тренды', route: '/app/trends' },
-    {
-      id: 'video-analyzer',
-      icon: 'scan-search',
-      label: 'Анализ видео',
-      route: '/app/video-analyzer',
-      requiresPermission: 'canAnalyzeShortVideos',
-    },
+    { id: 'video-analyzer', icon: 'scan-search', label: 'Анализ видео', route: '/app/video-analyzer' },
     { id: 'workspaces', icon: 'briefcase', label: 'Бренды', route: '/app/workspaces' },
     { id: 'team', icon: 'users', label: 'Команда', route: '/app/team', requiresBusinessPlan: true },
     {
