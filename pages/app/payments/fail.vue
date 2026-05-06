@@ -2,7 +2,7 @@
 import { PaymentResultPage } from '~/lib-modules/plans'
 
 definePageMeta({
-  layout: 'app'
+  layout: false
 })
 </script>
 

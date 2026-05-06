@@ -50,7 +50,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex h-full w-full items-center justify-center px-4 py-8">
+  <div class="flex min-h-screen w-full items-center justify-center px-4 py-8">
     <div class="flex w-full max-w-md flex-col items-center gap-5 text-center">
       <component
         :is="isSuccess ? CheckCircle2 : XCircle"
