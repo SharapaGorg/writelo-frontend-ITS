@@ -332,7 +332,7 @@ export class ApiController {
         return this.request(ApiAliases.config);
     }
 
-    async getUserGifts(offset: number, limit: number): Promise<UserGift[]> {
+    async getUserGifts(offset: number, limit: number): Promise<PagedResponse<UserGift>> {
         return this.request(ApiAliases.meGifts, RequestMethod.GET, {offset, limit});
     }
 

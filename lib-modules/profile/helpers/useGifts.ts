@@ -40,12 +40,19 @@ export const useGifts = () => {
             let offset = 0;
             while (true) {
                 const response = await $api.getUserGifts(offset, PAGE_SIZE);
-                const page = Array.isArray(response) ? response : [];
+                // Backend returns PagedResponseOfGiftDto: { items, total, offset, limit, hasMore }.
+                // Tolerate a bare array too, in case an older backend is hit.
+                const page: UserGift[] = Array.isArray(response)
+                    ? response
+                    : Array.isArray((response as any)?.items) ? (response as any).items : [];
+                const hasMore = Array.isArray(response)
+                    ? page.length >= PAGE_SIZE
+                    : !!(response as any)?.hasMore;
                 if (page.length) {
                     gifts.value = [...gifts.value, ...page];
                     offset += page.length;
                 }
-                if (page.length < PAGE_SIZE) break;
+                if (!hasMore || page.length === 0) break;
             }
         } catch (e) {
             console.warn('[useGifts] failed to fetch gifts', e);
