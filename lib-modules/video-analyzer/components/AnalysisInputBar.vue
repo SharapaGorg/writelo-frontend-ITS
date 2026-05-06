@@ -34,11 +34,18 @@ const isDisabled = computed(() => {
   return !isValidUrl.value
 })
 
-const limitsChipClass = computed(() => {
-  if (!limits.isLoaded.value) return 'border-border bg-muted/40 text-muted-foreground'
-  if (limits.left.value === 0) return 'border-rose-300 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950/30 dark:text-rose-200'
-  if (limits.left.value <= 3) return 'border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-200'
-  return 'border-border bg-muted/40 text-muted-foreground'
+const limitsTextClass = computed(() => {
+  if (!limits.isLoaded.value) return 'text-muted-foreground'
+  if (limits.left.value === 0) return 'text-rose-600 dark:text-rose-300'
+  if (limits.left.value <= 3) return 'text-amber-700 dark:text-amber-300'
+  return 'text-muted-foreground'
+})
+
+const limitsDotClass = computed(() => {
+  if (!limits.isLoaded.value) return 'bg-muted-foreground/40'
+  if (limits.left.value === 0) return 'bg-rose-500'
+  if (limits.left.value <= 3) return 'bg-amber-500'
+  return 'bg-emerald-500'
 })
 
 const resetText = computed(() => {
@@ -64,8 +71,8 @@ async function onSubmit() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center">
-    <div class="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center">
       <div class="relative flex-1">
         <ScanSearch class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
@@ -87,8 +94,9 @@ async function onSubmit() {
       </Button>
     </div>
 
-    <div class="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
-      <span :class="cn('inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium', limitsChipClass)">
+    <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 text-xs">
+      <span :class="cn('inline-flex items-center gap-1.5', limitsTextClass)">
+        <span :class="cn('h-1.5 w-1.5 rounded-full', limitsDotClass)" />
         <span v-if="!limits.isLoaded.value">Загрузка лимита…</span>
         <template v-else>
           <span v-if="limits.left.value === 0">Лимит исчерпан</span>
@@ -98,7 +106,7 @@ async function onSubmit() {
       <button
         v-if="limits.isLoaded.value && limits.isExhausted.value"
         type="button"
-        class="inline-flex items-center gap-1 text-xs text-brand hover:underline"
+        class="inline-flex items-center gap-1 text-brand hover:underline"
         @click="router.push('/app/plans')"
       >
         <AlertCircle class="h-3 w-3" />
