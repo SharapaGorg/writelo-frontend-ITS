@@ -59,7 +59,7 @@ export interface UserDto {
   emailVerified: boolean
   hasPassword: boolean
   pendingEmail: string | null
-  oAuthProviders: number[] // OAuthProvider enum values
+  oAuthProviders: string[] // OAuthProvider enum values ('telegram' | 'google' | 'yandex')
   currentRole: number
   language: string
   searchEnabled: boolean

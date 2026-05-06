@@ -39,9 +39,9 @@ export type AuthTelegramLink = void
 
 // OAuth provider enum (matches backend values)
 export enum OAuthProvider {
-    Telegram = 0,
-    Google = 1,
-    Yandex = 2
+    Telegram = 'telegram',
+    Google = 'google',
+    Yandex = 'yandex'
 }
 
 // Yandex signin returns auth session with user
