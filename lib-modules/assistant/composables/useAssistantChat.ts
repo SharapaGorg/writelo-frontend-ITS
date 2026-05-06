@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import { useWorkspaceContext, useWorkspaceLimits } from '~/lib-modules/workspaces'
 import { generateUUID } from '~/scripts/features/utils'
 import { useAssistantApi } from '../helpers/api'
 import { parseActionsTail, isMarkerLikely } from '../helpers/actionsParser'
@@ -20,6 +20,7 @@ export function useAssistantChat() {
   const { requireWorkspaceId } = useWorkspaceContext()
   const api = useAssistantApi()
   const store = useAssistantStore()
+  const limits = useWorkspaceLimits()
 
   function reset() {
     messages.value = []
@@ -242,6 +243,7 @@ export function useAssistantChat() {
       isProcessing.value = false
       const m = messages.value.find(x => x.id === responseId)
       if (m) m.processing = false
+      limits.refresh().catch(() => { /* noop */ })
     }
   }
 

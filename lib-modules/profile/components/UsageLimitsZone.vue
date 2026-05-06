@@ -63,6 +63,25 @@ function leftPercent(left: number, total: number): number {
   return Math.min(100, Math.max(0, Math.round((left / total) * 100)))
 }
 
+const overallPercent = computed<number>(() => {
+  const ratios = rows.value
+    .filter(r => r.total > 0)
+    .map(r => r.left / r.total)
+  if (ratios.length === 0) return 0
+  const avg = ratios.reduce((a, b) => a + b, 0) / ratios.length
+  return Math.min(100, Math.max(0, Math.round(avg * 100)))
+})
+
+const moodComment = computed<string>(() => {
+  const p = overallPercent.value
+  if (p === 0) return 'лимит исчерпан до обновления'
+  if (p >= 80) return 'пора за работу!'
+  if (p >= 40) return 'хорошая работа!'
+  return 'вы прямо в ударе!'
+})
+
+const hasAnyLimit = computed<boolean>(() => rows.value.some(r => r.total > 0))
+
 const resetAtText = computed(() => {
   const at =
     wl.modelRequests.value?.resetAt ||
@@ -89,6 +108,7 @@ const resetAtText = computed(() => {
     <template #content>
       <!-- Skeleton: same row geometry so height doesn't shift on data arrival. -->
       <div v-if="!wl.isLoaded.value" class="flex flex-col gap-5">
+        <div class="h-4 w-72 max-w-full rounded bg-muted animate-pulse" />
         <div v-for="n in 3" :key="n" class="flex flex-col gap-1.5">
           <div class="flex items-center justify-between gap-3">
             <span class="flex items-center gap-2 min-w-0">
@@ -103,6 +123,11 @@ const resetAtText = computed(() => {
       </div>
 
       <div v-else class="flex flex-col gap-5">
+        <p v-if="hasAnyLimit" class="text-sm text-muted-foreground">
+          У вас осталось ещё
+          <span class="font-medium text-foreground tabular-nums">{{ overallPercent }}%</span>
+          лимитов — {{ moodComment }}
+        </p>
         <div
           v-for="row in rows"
           :key="row.key"

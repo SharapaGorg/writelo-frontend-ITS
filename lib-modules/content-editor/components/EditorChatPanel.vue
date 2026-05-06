@@ -9,7 +9,7 @@ import { useI18n } from 'vue-i18n'
 import { isMobile } from '~/scripts/features/utils'
 import { ApiController } from '~/scripts/shared/api/controller'
 import { eventBus } from '~/composables/eventBus'
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import { useWorkspaceContext, useWorkspaceLimits } from '~/lib-modules/workspaces'
 import { parseActionsTail, isMarkerLikely } from '~/lib-modules/assistant'
 
 const props = withDefaults(defineProps<{
@@ -35,6 +35,8 @@ const {
   getLastMessage,
   clearChat
 } = useContentEditor()
+
+const wl = useWorkspaceLimits()
 
 function stripMarker(uuid: string) {
   const target = chatMessages.value.find(m => m.id === uuid)
@@ -188,27 +190,31 @@ const sendMessage = async () => {
   const decoder = new TextDecoder()
   let buffer = ''
 
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-
-    buffer += decoder.decode(value, { stream: true })
-
+  try {
     while (true) {
-      const lineEnd = buffer.indexOf('\n')
-      if (lineEnd === -1) break
+      const { done, value } = await reader.read()
+      if (done) break
 
-      const line = buffer.slice(0, lineEnd).trim()
-      buffer = buffer.slice(lineEnd + 1)
+      buffer += decoder.decode(value, { stream: true })
 
-      if (line.startsWith('data: ')) {
-        try {
-          processStreamData(JSON.parse(line.slice(6)))
-        } catch (e) {
-          // Ignore invalid JSON
+      while (true) {
+        const lineEnd = buffer.indexOf('\n')
+        if (lineEnd === -1) break
+
+        const line = buffer.slice(0, lineEnd).trim()
+        buffer = buffer.slice(lineEnd + 1)
+
+        if (line.startsWith('data: ')) {
+          try {
+            processStreamData(JSON.parse(line.slice(6)))
+          } catch (e) {
+            // Ignore invalid JSON
+          }
         }
       }
     }
+  } finally {
+    wl.refresh().catch(() => { /* noop */ })
   }
 }
 
