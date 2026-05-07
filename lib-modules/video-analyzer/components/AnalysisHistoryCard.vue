@@ -17,7 +17,12 @@ const ytId = computed(() =>
     : null,
 )
 
-const ytThumb = computed(() => (ytId.value ? youtubeThumbnailUrl(ytId.value) : null))
+// Backend signed asset > YouTube canonical thumb > nothing.
+const previewSrc = computed(() => {
+  if (props.item.previewImage?.url) return props.item.previewImage.url
+  if (ytId.value) return youtubeThumbnailUrl(ytId.value)
+  return null
+})
 
 const platformBgClass = computed(() => {
   switch (props.item.platform) {
@@ -50,6 +55,8 @@ const displayUrl = computed(() => {
   }
 })
 
+const primaryText = computed(() => props.item.title?.trim() || displayUrl.value)
+
 const isClickable = computed(() => Boolean(props.item.shortVideoAnalysisId))
 </script>
 
@@ -63,9 +70,9 @@ const isClickable = computed(() => Boolean(props.item.shortVideoAnalysisId))
   >
     <div :class="cn('relative flex h-36 w-full items-center justify-center overflow-hidden', platformBgClass)">
       <img
-        v-if="ytThumb && item.status !== 'failed'"
-        :src="ytThumb"
-        :alt="item.originalUrl"
+        v-if="previewSrc && item.status !== 'failed'"
+        :src="previewSrc"
+        :alt="item.title ?? item.originalUrl"
         class="h-full w-full object-cover"
         loading="lazy"
       />
@@ -87,7 +94,7 @@ const isClickable = computed(() => Boolean(props.item.shortVideoAnalysisId))
 
     <div class="flex flex-1 flex-col gap-2 p-3">
       <div class="flex items-start justify-between gap-2">
-        <p class="line-clamp-2 break-all text-sm font-medium">{{ displayUrl }}</p>
+        <p class="line-clamp-2 break-all text-sm font-medium">{{ primaryText }}</p>
         <AnalysisStatusBadge :status="item.status" />
       </div>
       <div class="mt-auto flex items-center gap-1 text-xs text-muted-foreground">

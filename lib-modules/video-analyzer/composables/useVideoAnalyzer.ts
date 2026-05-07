@@ -118,7 +118,10 @@ export function useVideoAnalyzer() {
     activeReader = reader
     const decoder = new TextDecoder()
     let buffer = ''
-    let endPayload: { success: boolean; errorCode?: string; message?: string } | null = null
+    // Public API: response_end.message is now localized display text, not a
+    // machine code. For stable error logic, fall back to historyItem.errorCode
+    // after refetch.
+    let endPayload: { success: boolean; message: string | null } | null = null
 
     try {
       while (true) {
@@ -136,7 +139,6 @@ export function useVideoAnalyzer() {
             if (parsed.action === 'response_end') {
               endPayload = {
                 success: !!parsed.success,
-                errorCode: parsed.errorCode ?? parsed.error ?? null,
                 message: parsed.message ?? null,
               }
             }
@@ -158,7 +160,10 @@ export function useVideoAnalyzer() {
     limits.refresh().catch(() => { /* noop */ })
 
     if (!endPayload || endPayload.success === false) {
-      const msg = humanizeAnalysisError(endPayload?.errorCode, endPayload?.message)
+      // Prefer SSE message (already localized). Fall back to the freshly
+      // refetched history row, which carries a stable errorCode.
+      const item = store.getHistory(wid).find(i => i.originalUrl === url || i.normalizedUrl === url)
+      const msg = humanizeAnalysisError(item?.errorCode, endPayload?.message ?? item?.errorMessage)
       toastError(msg)
       return null
     }
