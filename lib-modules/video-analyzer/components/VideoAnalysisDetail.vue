@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, computed, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import {
   ArrowLeft,
   ExternalLink,
@@ -11,6 +11,7 @@ import {
   Gift,
   Lightbulb,
   ListOrdered,
+  Gauge,
 } from 'lucide-vue-next'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { Button } from '~/components/ui/button'
@@ -24,25 +25,39 @@ import FunnelSection from './sections/FunnelSection.vue'
 import TagsSection from './sections/TagsSection.vue'
 import ImprovementsSection from './sections/ImprovementsSection.vue'
 import TranscriptionSection from './sections/TranscriptionSection.vue'
+import AxesSection from './sections/AxesSection.vue'
+import ViralDriversSection from './sections/ViralDriversSection.vue'
 import { useVideoAnalyzer } from '../composables/useVideoAnalyzer'
 import { useVideoAnalyzerStore } from '../stores/videoAnalyzerStore'
 import { humanizeAnalysisError } from '../helpers/humanizeError'
 import {
   isTranscriptionShape,
+  isTranscriptionShapeV2,
   isFunnelShape,
+  isFunnelShapeV2,
   isImprovementsShape,
+  isImprovementsShapeV2,
   isStructureShape,
+  isStructureShapeV2,
+  isAxesShape,
+  isViralDriversArray,
   orderedStructureSteps,
 } from '../helpers/sectionShape'
+import { computeReelScore, LEVEL_TONES, scoreToLevel } from '../helpers/aggregation'
+import { V2_MOCK_DETAIL, V2_MOCK_HISTORY_ITEM } from '../helpers/v2MockFixture'
 import type {
   ShortVideoAnalysisHistoryItemDto,
+  ShortVideoAnalysisDto,
   ImprovementsShape,
+  AxisLevel,
+  AxesShape,
 } from '../types'
 
 const props = defineProps<{
   analysisId: string
 }>()
 
+const route = useRoute()
 const router = useRouter()
 const { workspaces, initialize: initializeWorkspaces } = useWorkspaces()
 const { currentWorkspaceId } = useWorkspaceContext()
@@ -54,9 +69,20 @@ const loading = ref(true)
 const stopPoll = ref<(() => void) | null>(null)
 const retrying = ref(false)
 
-const detail = computed(() => store.getDetail(props.analysisId))
+// Dev-only override: `?mock=v2` swaps the detail for a hand-crafted v2
+// fixture so designers can see the new layout before the backend ships it.
+// The real network calls are skipped — see ensureLoaded() below. Gated by
+// `import.meta.env.DEV` so a stray `?mock=v2` in prod has no effect (Vite
+// inlines the flag at build time → dead-code-elim drops the branch).
+const mockMode = computed(() => import.meta.env.DEV && route.query.mock === 'v2')
+
+const detail = computed(() => {
+  if (mockMode.value) return V2_MOCK_DETAIL
+  return store.getDetail(props.analysisId)
+})
 
 const historyItem = computed<ShortVideoAnalysisHistoryItemDto | null>(() => {
+  if (mockMode.value) return V2_MOCK_HISTORY_ITEM
   if (!currentWorkspaceId.value) return null
   return store.findHistoryByAnalysisId(currentWorkspaceId.value, props.analysisId)
 })
@@ -85,12 +111,44 @@ const errorText = computed(() =>
   humanizeAnalysisError(historyItem.value?.errorCode, historyItem.value?.errorMessage),
 )
 
+// Backend field-name uncertainty: the v2 schema isn't yet in v1-4.05.json.
+// Try the camelCase DTO field first; fall back to the snake_case shape
+// straight from the analyzer JSON. Both paths are safe to call on a v1 dto.
+function pickField<T>(d: ShortVideoAnalysisDto | null, ...keys: string[]): T | null {
+  if (!d) return null
+  for (const key of keys) {
+    const value = (d as unknown as Record<string, unknown>)[key]
+    if (value !== undefined && value !== null) return value as T
+  }
+  return null
+}
+
+const axesValue = computed(() => pickField<unknown>(detail.value ?? null, 'axes'))
+const viralDriversValue = computed(() =>
+  pickField<unknown>(detail.value ?? null, 'viralDrivers', 'viral_drivers'),
+)
+const viralitySummary = computed(() =>
+  pickField<string>(detail.value ?? null, 'viralitySummary', 'viralitySummaryRu', 'virality_summary_ru'),
+)
+
+const hasAxes = computed(() => isAxesShape(axesValue.value))
+const hasViral = computed(
+  () => isViralDriversArray(viralDriversValue.value) || !!(viralitySummary.value && viralitySummary.value.trim()),
+)
+
+// Reel Score chip (v2 only).
+const reelScore = computed(() => {
+  if (!hasAxes.value) return null
+  return computeReelScore(axesValue.value as AxesShape)
+})
+
 interface Stat {
   key: string
   icon: typeof Languages
   label: string
   value: string
-  tone?: 'brand' | 'success' | 'muted'
+  tone?: 'brand' | 'success' | 'muted' | 'reel'
+  reelLevel?: AxisLevel | null
 }
 
 const stats = computed<Stat[]>(() => {
@@ -98,37 +156,52 @@ const stats = computed<Stat[]>(() => {
   if (!d) return []
   const out: Stat[] = []
 
-  const tx = isTranscriptionShape(d.transcription) ? d.transcription : null
-  if (tx?.language) {
+  // Reel Score (v2): show first, it's the headline number.
+  if (reelScore.value && reelScore.value.overall !== null) {
     out.push({
-      key: 'lang',
-      icon: Languages,
-      label: 'Язык',
-      value: tx.language.toUpperCase(),
+      key: 'reel',
+      icon: Gauge,
+      label: 'Reel Score',
+      value: `${reelScore.value.overall} / 100${reelScore.value.capped ? ' (cap)' : ''}`,
+      tone: 'reel',
+      reelLevel: scoreToLevel(reelScore.value.overall),
     })
   }
 
-  if (isFunnelShape(d.funnel)) {
-    if (d.funnel.lead_magnet === true) {
-      out.push({ key: 'lm', icon: Gift, label: 'Лид-магнит', value: 'есть', tone: 'success' })
-    } else if (d.funnel.lead_magnet === false) {
-      out.push({ key: 'lm', icon: Gift, label: 'Лид-магнит', value: 'нет', tone: 'muted' })
-    }
+  // Language: works for both v1 and v2 transcriptions.
+  let lang: string | undefined
+  if (isTranscriptionShapeV2(d.transcription)) lang = d.transcription.source_language ?? undefined
+  else if (isTranscriptionShape(d.transcription)) lang = d.transcription.language ?? undefined
+  if (lang) {
+    out.push({ key: 'lang', icon: Languages, label: 'Язык', value: lang.toUpperCase() })
   }
 
+  // Lead magnet: shape-agnostic boolean.
+  const funnel = d.funnel
+  let leadMagnet: boolean | null | undefined
+  if (isFunnelShapeV2(funnel)) leadMagnet = funnel.lead_magnet
+  else if (isFunnelShape(funnel)) leadMagnet = funnel.lead_magnet
+  if (leadMagnet === true) {
+    out.push({ key: 'lm', icon: Gift, label: 'Лид-магнит', value: 'есть', tone: 'success' })
+  } else if (leadMagnet === false) {
+    out.push({ key: 'lm', icon: Gift, label: 'Лид-магнит', value: 'нет', tone: 'muted' })
+  }
+
+  // Step count (only meaningful for v1; v2 is always 3 by spec).
   if (isStructureShape(d.structure)) {
     const count = orderedStructureSteps(d.structure).length
     if (count > 0) {
-      out.push({
-        key: 'steps',
-        icon: ListOrdered,
-        label: 'Шагов',
-        value: String(count),
-      })
+      out.push({ key: 'steps', icon: ListOrdered, label: 'Шагов', value: String(count) })
     }
+  } else if (isStructureShapeV2(d.structure)) {
+    out.push({ key: 'steps', icon: ListOrdered, label: 'Блоков', value: String(d.structure.length) })
   }
 
-  if (isImprovementsShape(d.improvements)) {
+  // Improvements count: v1 sums grouped lists, v2 is the array length.
+  let impCount = 0
+  if (isImprovementsShapeV2(d.improvements)) {
+    impCount = d.improvements.length
+  } else if (isImprovementsShape(d.improvements)) {
     const keys: (keyof ImprovementsShape)[] = [
       'quick_fixes_ru',
       'caption_ideas_ru',
@@ -137,23 +210,27 @@ const stats = computed<Stat[]>(() => {
       'structure_improvements_ru',
     ]
     const imp = d.improvements as ImprovementsShape
-    const total = keys.reduce((sum, k) => sum + (imp[k]?.length ?? 0), 0)
-    if (total > 0) {
-      out.push({
-        key: 'imp',
-        icon: Lightbulb,
-        label: 'Идей улучшений',
-        value: String(total),
-        tone: 'brand',
-      })
-    }
+    impCount = keys.reduce((sum, k) => sum + (imp[k]?.length ?? 0), 0)
+  }
+  if (impCount > 0) {
+    out.push({
+      key: 'imp',
+      icon: Lightbulb,
+      label: 'Идей улучшений',
+      value: String(impCount),
+      tone: 'brand',
+    })
   }
 
   return out
 })
 
-function statClass(tone: Stat['tone']): string {
-  switch (tone) {
+function statClass(s: Stat): string {
+  if (s.tone === 'reel' && s.reelLevel) {
+    const t = LEVEL_TONES[s.reelLevel]
+    return `${t.bg} ${t.text}`
+  }
+  switch (s.tone) {
     case 'brand': return 'bg-brand/10 text-brand'
     case 'success': return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200'
     case 'muted': return 'bg-muted text-muted-foreground'
@@ -165,6 +242,8 @@ async function ensureLoaded() {
   loading.value = true
   notFound.value = false
   try {
+    // Mock mode: skip network, render fixture immediately.
+    if (mockMode.value) return
     if (!currentWorkspaceId.value) return
     // Always have history before deciding what to do.
     if (analyzer.history.value.length === 0) {
@@ -244,6 +323,22 @@ onUnmounted(() => {
           <ArrowLeft class="h-3.5 w-3.5" />
           Назад к списку
         </Button>
+
+        <div
+          v-if="mockMode"
+          class="flex flex-wrap items-center justify-between gap-2 rounded-md border border-dashed border-brand/40 bg-brand/5 px-3 py-2 text-xs text-brand"
+        >
+          <span class="font-medium">
+            Mock-режим: показан пример v2-ответа. Реальный анализ сюда не подгружается.
+          </span>
+          <Button
+            variant="ghost"
+            class="h-6 px-2 text-xs text-brand hover:bg-brand/10 hover:text-brand"
+            @click="router.push('/app/video-analyzer')"
+          >
+            Выйти из мока
+          </Button>
+        </div>
 
         <!-- Loading -->
         <div v-if="loading" class="flex items-center gap-2 text-sm text-muted-foreground">
@@ -337,7 +432,7 @@ onUnmounted(() => {
                 :key="s.key"
                 :class="[
                   'inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium',
-                  statClass(s.tone),
+                  statClass(s),
                 ]"
               >
                 <component :is="s.icon" class="h-3.5 w-3.5" />
@@ -347,6 +442,16 @@ onUnmounted(() => {
             </div>
 
             <SummarySection :value="detail.summary" />
+            <AxesSection
+              v-if="hasAxes"
+              :value="axesValue"
+              :improvements="detail.improvements"
+            />
+            <ViralDriversSection
+              v-if="hasViral"
+              :drivers="viralDriversValue"
+              :summary="viralitySummary"
+            />
             <HooksSection :value="detail.hooks" />
             <StructureSection :value="detail.structure" />
             <FunnelSection :value="detail.funnel" />

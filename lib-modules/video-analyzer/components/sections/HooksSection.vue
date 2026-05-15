@@ -1,26 +1,40 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { Type, MessageCircle, Eye } from 'lucide-vue-next'
+import { Type, MessageCircle, Eye, Globe } from 'lucide-vue-next'
 import RawJsonViewer from '../RawJsonViewer.vue'
-import { isHooksShape } from '../../helpers/sectionShape'
-import type { HooksShape } from '../../types'
+import { isHooksShape, isHooksShapeV2 } from '../../helpers/sectionShape'
+import type { HooksShape, HooksShapeV2 } from '../../types'
 
 const props = defineProps<{
   value: unknown
 }>()
 
-const shape = computed<HooksShape | null>(() =>
-  isHooksShape(props.value) ? props.value : null,
-)
+interface Card {
+  key: string
+  label: string
+  icon: typeof Type
+  text: string | null | undefined
+}
 
-const cards = computed(() => {
-  const s = shape.value
-  if (!s) return []
-  return [
-    { key: 'text', label: 'Текстовый хук', icon: Type, text: s.text_hook_ru },
-    { key: 'phrase', label: 'Произнесённая фраза', icon: MessageCircle, text: s.hook_phrase_ru },
-    { key: 'visual', label: 'Визуальный хук', icon: Eye, text: s.visual_hook_ru },
-  ].filter(c => c.text && c.text.trim())
+const cards = computed<Card[]>(() => {
+  if (isHooksShapeV2(props.value)) {
+    const s = props.value as HooksShapeV2
+    return [
+      { key: 'text', label: 'Текстовый хук', icon: Type, text: s.text_hook_ru },
+      { key: 'spoken', label: 'Произнесённая фраза', icon: MessageCircle, text: s.spoken_hook_ru },
+      { key: 'spoken_original', label: 'Оригинал произнесённой', icon: Globe, text: s.spoken_hook_original },
+      { key: 'visual', label: 'Визуальный хук', icon: Eye, text: s.visual_hook_ru },
+    ].filter(c => c.text && c.text.trim())
+  }
+  if (isHooksShape(props.value)) {
+    const s = props.value as HooksShape
+    return [
+      { key: 'text', label: 'Текстовый хук', icon: Type, text: s.text_hook_ru },
+      { key: 'phrase', label: 'Произнесённая фраза', icon: MessageCircle, text: s.hook_phrase_ru },
+      { key: 'visual', label: 'Визуальный хук', icon: Eye, text: s.visual_hook_ru },
+    ].filter(c => c.text && c.text.trim())
+  }
+  return []
 })
 </script>
 
@@ -28,7 +42,7 @@ const cards = computed(() => {
   <section class="space-y-3">
     <h3 class="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Хуки</h3>
 
-    <div v-if="cards.length" class="grid grid-cols-1 gap-2 md:grid-cols-3">
+    <div v-if="cards.length" class="grid grid-cols-1 gap-2 md:grid-cols-2 xl:grid-cols-3">
       <div
         v-for="c in cards"
         :key="c.key"

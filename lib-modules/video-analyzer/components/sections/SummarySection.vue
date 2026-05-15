@@ -1,25 +1,36 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import RawJsonViewer from '../RawJsonViewer.vue'
-import { isSummaryShape } from '../../helpers/sectionShape'
-import type { SummaryShape } from '../../types'
+import { isSummaryShape, isSummaryShapeV2 } from '../../helpers/sectionShape'
+import type { SummaryShape, SummaryShapeV2 } from '../../types'
 
 const props = defineProps<{
   value: unknown
 }>()
 
-const shape = computed<SummaryShape | null>(() =>
-  isSummaryShape(props.value) ? props.value : null,
-)
+interface Row {
+  label: string
+  text: string | null | undefined
+}
 
-const rows = computed(() => {
-  const s = shape.value
-  if (!s) return []
-  return [
-    { label: 'Тема', text: s.video_topic_ru },
-    { label: 'Суть', text: s.essence_ru },
-    { label: 'Описание', text: s.video_description_ru },
-  ].filter(r => r.text && r.text.trim())
+const rows = computed<Row[]>(() => {
+  if (isSummaryShapeV2(props.value)) {
+    const s = props.value as SummaryShapeV2
+    return [
+      { label: 'Тема', text: s.topic_ru },
+      { label: 'Суть', text: s.essence_ru },
+      { label: 'Что на экране', text: s.short_description_ru },
+    ].filter(r => r.text && r.text.trim())
+  }
+  if (isSummaryShape(props.value)) {
+    const s = props.value as SummaryShape
+    return [
+      { label: 'Тема', text: s.video_topic_ru },
+      { label: 'Суть', text: s.essence_ru },
+      { label: 'Описание', text: s.video_description_ru },
+    ].filter(r => r.text && r.text.trim())
+  }
+  return []
 })
 </script>
 

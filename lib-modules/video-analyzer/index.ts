@@ -12,7 +12,23 @@ export { default as FunnelSection } from './components/sections/FunnelSection.vu
 export { default as TagsSection } from './components/sections/TagsSection.vue'
 export { default as ImprovementsSection } from './components/sections/ImprovementsSection.vue'
 export { default as TranscriptionSection } from './components/sections/TranscriptionSection.vue'
+export { default as AxesSection } from './components/sections/AxesSection.vue'
+export { default as ViralDriversSection } from './components/sections/ViralDriversSection.vue'
 export { default as PlatformIcon } from './components/PlatformIcon.vue'
+
+export {
+  computeReelScore,
+  computePillarScore,
+  scoreToLevel,
+  levelCounts,
+  AXIS_LABELS,
+  LEVEL_LABELS,
+  LEVEL_TONES,
+  PILLAR_DEFS,
+  BOTTLENECK_AXES,
+  BOTTLENECK_THRESHOLD,
+  BOTTLENECK_CAP,
+} from './helpers/aggregation'
 
 export { useVideoAnalyzer } from './composables/useVideoAnalyzer'
 export { useAnalysisLimits } from './composables/useAnalysisLimits'

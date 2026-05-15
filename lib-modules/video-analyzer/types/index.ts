@@ -70,6 +70,10 @@ export interface ShortVideoAnalysisDto {
   hooks: unknown | null
   funnel: unknown | null
   improvements: unknown | null
+  // v2-only blocks. Older analyses keep these as null.
+  axes: unknown | null
+  viralDrivers: unknown | null
+  viralitySummary: string | null
   diagnostics: string | null
 }
 
@@ -219,4 +223,126 @@ export interface TranscriptionShape {
   language?: ShortVideoLanguage | string
   // Backend sometimes serialises `null` as the literal string "null".
   unclear_parts?: string | null
+}
+
+// === v2 section shapes ===
+
+export type AnalyzerSchemaVersion = 'v1' | 'v2'
+
+export interface SummaryShapeV2 {
+  topic_ru?: string | null
+  essence_ru?: string | null
+  short_description_ru?: string | null
+}
+
+export interface HooksShapeV2 {
+  spoken_hook_ru?: string | null
+  spoken_hook_original?: string | null
+  visual_hook_ru?: string | null
+  text_hook_ru?: string | null
+}
+
+export interface StructureStepV2 {
+  label?: string | null
+  step_ru?: string | null
+}
+
+// v2 returns structure as a flat 3-item array (hook / main / ending).
+export type StructureShapeV2 = StructureStepV2[]
+
+export interface FunnelShapeV2 {
+  cta_voice_ru?: string | null
+  cta_visual_ru?: string | null
+  traffic_destination?: ShortVideoTrafficDestination | string | null
+  lead_magnet?: boolean | null
+}
+
+export interface TranscriptionShapeV2 {
+  speech?: string | null
+  source_language?: string | null
+  on_screen_text?: string | null
+  on_screen_text_original?: string | null
+  unclear_parts?: string | null
+}
+
+// 12 content axes. Each axis is independent, score is 1..100 inside its level
+// range (poor 1-39 / average 40-59 / good 60-79 / excellent 80-100), or null
+// when the axis is not applicable for this video.
+
+export type AxisLevel = 'poor' | 'average' | 'good' | 'excellent'
+
+export type AxisKey =
+  | 'hook'
+  | 'retention'
+  | 'storytelling'
+  | 'structure'
+  | 'save_worthiness'
+  | 'comment_trigger'
+  | 'loop'
+  | 'persona'
+  | 'voice'
+  | 'aesthetic'
+  | 'production'
+  | 'cta'
+
+export interface AxisDto {
+  score: number | null
+  level: AxisLevel | null
+  analysis_ru?: string
+}
+
+export type AxesShape = Partial<Record<AxisKey, AxisDto>>
+
+// Viral drivers (1-3, sorted strongest first).
+
+export type ViralDriverKey =
+  | 'curiosity_gap'
+  | 'pattern_interrupt'
+  | 'identity_relatability'
+  | 'emotional_spike'
+  | 'utility_save_worthy'
+  | 'social_currency'
+  | 'controversy_hot_take'
+  | 'production_novelty'
+  | 'loop_rewatch'
+
+export interface ViralDriverDto {
+  driver: ViralDriverKey | string
+  driver_evidence_ru?: string | null
+}
+
+// v2 improvements are flat, axis-tied, with priority + expected gain.
+
+export type ImprovementPriority = 'high' | 'medium' | 'low'
+
+export interface ImprovementItemV2 {
+  axis: AxisKey | string
+  current_score?: number | null
+  current_level?: AxisLevel | null
+  expected_gain_ru?: string | null
+  priority: ImprovementPriority | string
+  action_ru: string
+}
+
+export type ImprovementsShapeV2 = ImprovementItemV2[]
+
+// Pillar aggregation (frontend-computed).
+
+export type PillarKey =
+  | 'content_pull'
+  | 'engagement_triggers'
+  | 'author_and_craft'
+  | 'funnel'
+
+export interface PillarScore {
+  key: PillarKey
+  score: number | null  // null when all axes in this pillar are N/A
+  weight: number        // weight used in the overall Reel Score
+  axes: AxisKey[]       // axes that contribute (after null filtering)
+}
+
+export interface ReelScoreResult {
+  overall: number | null
+  capped: boolean
+  pillars: PillarScore[]
 }
