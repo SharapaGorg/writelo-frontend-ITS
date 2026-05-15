@@ -1,73 +1,152 @@
 <script setup lang="ts">
-import { useReelsResearchStore } from '../stores/reelsResearchStore'
-import type { ReelsFilters } from '../types'
+import { computed } from 'vue'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '~/components/ui/select'
+  ChevronDown,
+  Rocket,
+  Calendar,
+  Eye,
+  Heart,
+  MessageCircle,
+  Send,
+  Search,
+  Check,
+} from 'lucide-vue-next'
+import { useReelsResearchStore } from '../stores/reelsResearchStore'
+import { Input } from '~/components/ui/input'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '~/components/ui/dropdown-menu'
+import { cn } from '~/lib-modules/utils'
 
 const store = useReelsResearchStore()
 
-const categories: { value: ReelsFilters['category']; label: string }[] = [
-  { value: 'all', label: 'Все' },
-  { value: 'trending', label: 'Трендовые' },
-  { value: 'educational', label: 'Обучающие' },
-  { value: 'entertainment', label: 'Развлекательные' },
-  { value: 'lifestyle', label: 'Лайфстайл' },
-  { value: 'business', label: 'Бизнес' }
+const sortOptions = [
+  { value: 'viral' as const, label: 'Самые вирусные', icon: Rocket, iconClass: 'text-orange-500' },
+  { value: 'newest' as const, label: 'Сначала новые', icon: Calendar, iconClass: 'text-emerald-600' },
+  { value: 'views' as const, label: 'Больше просмотров', icon: Eye, iconClass: 'text-blue-500' },
+  { value: 'likes' as const, label: 'Больше лайков', icon: Heart, iconClass: 'text-rose-500' },
+  { value: 'comments' as const, label: 'Больше комментариев', icon: MessageCircle, iconClass: 'text-amber-600' },
+  { value: 'reposts' as const, label: 'Больше репостов', icon: Send, iconClass: 'text-sky-500' },
 ]
 
-const sortOptions: { value: ReelsFilters['sortBy']; label: string }[] = [
-  { value: 'views', label: 'Просмотры' },
-  { value: 'likes', label: 'Лайки' },
-  { value: 'comments', label: 'Комментарии' }
+const durationOptions = [
+  { value: 'all' as const, label: 'Любая длительность' },
+  { value: 'short' as const, label: 'До 15 сек' },
+  { value: 'medium' as const, label: '15–30 сек' },
+  { value: 'long' as const, label: '30–60 сек' },
+  { value: 'xlong' as const, label: 'Больше 60 сек' },
 ]
 
-function handleCategoryChange(category: ReelsFilters['category']) {
-  store.setCategory(category)
-}
+const languageOptions = [
+  { value: 'all', label: 'Все языки' },
+  { value: 'ru', label: 'Русский' },
+  { value: 'en', label: 'Английский' },
+  { value: 'es', label: 'Испанский' },
+]
 
+const activeSort = computed(() =>
+  sortOptions.find(o => o.value === store.filters.sortBy) ?? sortOptions[0]
+)
+const activeDuration = computed(() =>
+  durationOptions.find(o => o.value === store.filters.duration) ?? durationOptions[0]
+)
+const activeLanguage = computed(() =>
+  languageOptions.find(o => o.value === store.filters.language) ?? languageOptions[0]
+)
+
+const durationTriggerLabel = computed(() =>
+  store.filters.duration === 'all' ? 'Длительность' : activeDuration.value.label
+)
+const languageTriggerLabel = computed(() =>
+  store.filters.language === 'all' ? 'Язык' : activeLanguage.value.label
+)
+
+const searchModel = computed({
+  get: () => store.filters.search,
+  set: (v: string | number) => store.setSearch(String(v))
+})
+
+const triggerClass =
+  'group flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-medium text-foreground ' +
+  'hover:bg-accent transition-colors data-[state=open]:bg-accent ' +
+  'data-[state=open]:ring-1 data-[state=open]:ring-ring outline-none'
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center justify-between gap-4 px-6 py-3 border-b border-border bg-card">
-    <!-- Category buttons -->
-    <div class="flex flex-wrap items-center gap-2">
-      <button
-        v-for="category in categories"
-        :key="category.value"
-        :class="[
-          'px-3 py-1.5 text-sm rounded-full transition-all',
-          store.filters.category === category.value
-            ? 'bg-primary text-primary-foreground'
-            : 'bg-secondary text-muted-foreground hover:bg-accent hover:text-foreground'
-        ]"
-        @click="handleCategoryChange(category.value)"
-      >
-        {{ category.label }}
-      </button>
+  <div class="flex flex-wrap items-center gap-3">
+    <!-- Search -->
+    <div class="relative flex-1 min-w-[220px] max-w-sm">
+      <Search class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+      <Input
+        v-model="searchModel"
+        placeholder="Поиск по описанию или автору"
+        class="pl-8"
+      />
     </div>
 
-    <!-- Sort dropdown -->
-    <div class="flex items-center gap-2">
-      <span class="text-sm text-muted-foreground">Сортировка:</span>
-      <Select :model-value="store.filters.sortBy" @update:model-value="(v) => store.setSortBy(v as ReelsFilters['sortBy'])">
-        <SelectTrigger class="w-[140px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem
-            v-for="option in sortOptions"
-            :key="option.value"
-            :value="option.value"
-          >
-            {{ option.label }}
-          </SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+    <!-- Sort -->
+    <DropdownMenu>
+      <DropdownMenuTrigger as-child>
+        <button type="button" :class="triggerClass">
+          <component :is="activeSort.icon" :class="cn('size-4', activeSort.iconClass)" />
+          <span>{{ activeSort.label }}</span>
+          <ChevronDown class="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" class="w-56">
+        <DropdownMenuItem
+          v-for="option in sortOptions"
+          :key="option.value"
+          @select="store.setSortBy(option.value)"
+        >
+          <component :is="option.icon" :class="cn('size-4', option.iconClass)" />
+          <span>{{ option.label }}</span>
+          <Check v-if="store.filters.sortBy === option.value" class="size-4 ml-auto text-muted-foreground" />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
+    <!-- Duration -->
+    <DropdownMenu>
+      <DropdownMenuTrigger as-child>
+        <button type="button" :class="triggerClass">
+          <span>{{ durationTriggerLabel }}</span>
+          <ChevronDown class="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" class="w-48">
+        <DropdownMenuItem
+          v-for="option in durationOptions"
+          :key="option.value"
+          @select="store.setDuration(option.value)"
+        >
+          <span>{{ option.label }}</span>
+          <Check v-if="store.filters.duration === option.value" class="size-4 ml-auto text-muted-foreground" />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
+    <!-- Language -->
+    <DropdownMenu>
+      <DropdownMenuTrigger as-child>
+        <button type="button" :class="triggerClass">
+          <span>{{ languageTriggerLabel }}</span>
+          <ChevronDown class="size-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" class="w-44">
+        <DropdownMenuItem
+          v-for="option in languageOptions"
+          :key="option.value"
+          @select="store.setLanguage(option.value)"
+        >
+          <span>{{ option.label }}</span>
+          <Check v-if="store.filters.language === option.value" class="size-4 ml-auto text-muted-foreground" />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   </div>
 </template>

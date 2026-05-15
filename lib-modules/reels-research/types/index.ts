@@ -10,10 +10,19 @@ export interface ReelItem {
   views: number
   likes: number
   comments: number
-  category: ReelCategory
+  reposts: number
+  createdAt: string
+  duration: number
+  language: string
+  category?: ReelCategory
 }
 
+export type ReelSortBy = 'viral' | 'newest' | 'views' | 'likes' | 'comments' | 'reposts'
+export type ReelDurationBucket = 'all' | 'short' | 'medium' | 'long' | 'xlong'
+
 export interface ReelsFilters {
-  category: ReelCategory | 'all'
-  sortBy: 'views' | 'likes' | 'comments'
+  sortBy: ReelSortBy
+  duration: ReelDurationBucket
+  language: string
+  search: string
 }
