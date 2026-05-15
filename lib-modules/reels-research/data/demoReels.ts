@@ -1,12 +1,13 @@
 import type { ReelItem } from '../types'
 
-// Thumbnails — picsum.photos with stable seeds (deterministic but visually varied).
-// Avatars — pravatar.cc (random faces by seed). Both are public placeholder services.
+// Видео-источники — Pexels (free, no attribution required, CDN videos.pexels.com).
+// Аватары — pravatar.cc. Превьюшки/постер генерится HTML5-видеоплеером из первого кадра,
+// но как fallback держим picsum-картинку.
 export const demoReels: ReelItem[] = [
-  // === TRENDING (3 reels, views: 1.8M - 3.2M) ===
   {
     id: 'reel-1',
-    url: 'https://instagram.com/reel/ABC123',
+    url: 'https://www.pexels.com/video/a-footage-of-an-extreme-ride-in-an-amusement-park-9153299/',
+    videoUrl: 'https://videos.pexels.com/video-files/9153299/9153299-hd_720_1280_30fps.mp4',
     author: '@viral_content',
     authorAvatar: 'https://i.pravatar.cc/80?u=viral_content',
     description: 'POV: когда наконец понял как работает алгоритм Instagram',
@@ -22,7 +23,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-2',
-    url: 'https://instagram.com/reel/DEF456',
+    url: 'https://www.pexels.com/video/man-and-woman-engaged-in-wall-climbing-activity-7591541/',
+    videoUrl: 'https://videos.pexels.com/video-files/7591541/7591541-hd_1080_1920_25fps.mp4',
     author: '@trendwatch_ru',
     authorAvatar: 'https://i.pravatar.cc/80?u=trendwatch_ru',
     description: 'Этот тренд взорвал интернет за 24 часа. Повторяем?',
@@ -38,7 +40,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-3',
-    url: 'https://instagram.com/reel/GHI789',
+    url: 'https://www.pexels.com/video/tallest-tower-in-the-city-5354697/',
+    videoUrl: 'https://videos.pexels.com/video-files/5354697/5354697-hd_1080_1920_24fps.mp4',
     author: '@hype_master',
     authorAvatar: 'https://i.pravatar.cc/80?u=hype_master',
     description: 'Почему все сейчас снимают именно так? Разбираем главный тренд недели',
@@ -53,10 +56,10 @@ export const demoReels: ReelItem[] = [
     category: 'trending'
   },
 
-  // === EDUCATIONAL (3 reels, views: 450K - 890K) ===
   {
     id: 'reel-4',
-    url: 'https://instagram.com/reel/JKL012',
+    url: 'https://www.pexels.com/video/person-plating-food-7008578/',
+    videoUrl: 'https://videos.pexels.com/video-files/7008578/7008578-hd_1080_1920_25fps.mp4',
     author: '@smm_pro',
     authorAvatar: 'https://i.pravatar.cc/80?u=smm_pro',
     description: '5 ошибок в Reels, которые убивают охваты. Сохраняй!',
@@ -72,7 +75,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-5',
-    url: 'https://instagram.com/reel/MNO345',
+    url: 'https://www.pexels.com/video/close-up-view-of-a-person-painting-on-canvas-5008996/',
+    videoUrl: 'https://videos.pexels.com/video-files/5008996/5008996-hd_1080_1920_25fps.mp4',
     author: '@content_academy',
     authorAvatar: 'https://i.pravatar.cc/80?u=content_academy',
     description: 'Как я набрал 100К подписчиков за 3 месяца. Пошаговый разбор стратегии',
@@ -88,7 +92,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-6',
-    url: 'https://instagram.com/reel/PQR678',
+    url: 'https://www.pexels.com/video/an-empty-narrow-hallway-of-a-building-7251759/',
+    videoUrl: 'https://videos.pexels.com/video-files/7251759/7251759-hd_1080_1920_25fps.mp4',
     author: '@digital_mentor',
     authorAvatar: 'https://i.pravatar.cc/80?u=digital_mentor',
     description: 'Нейросети для контента: топ-5 инструментов, которые сэкономят тебе часы',
@@ -103,10 +108,10 @@ export const demoReels: ReelItem[] = [
     category: 'educational'
   },
 
-  // === ENTERTAINMENT (3 reels, views: 980K - 2.1M) ===
   {
     id: 'reel-7',
-    url: 'https://instagram.com/reel/STU901',
+    url: 'https://www.pexels.com/video/close-up-video-of-vegan-pancakes-7015430/',
+    videoUrl: 'https://videos.pexels.com/video-files/7015430/7015430-hd_1080_1920_25fps.mp4',
     author: '@comedy_rus',
     authorAvatar: 'https://i.pravatar.cc/80?u=comedy_rus',
     description: 'Типичное утро контент-мейкера. Узнал себя?',
@@ -122,7 +127,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-8',
-    url: 'https://instagram.com/reel/VWX234',
+    url: 'https://www.pexels.com/video/a-cat-is-looking-out-the-window-20000940/',
+    videoUrl: 'https://videos.pexels.com/video-files/20000940/20000940-hd_1080_1920_30fps.mp4',
     author: '@meme_factory',
     authorAvatar: 'https://i.pravatar.cc/80?u=meme_factory',
     description: 'SMM-щики поймут. Когда клиент просит "сделать вирусный контент"',
@@ -138,7 +144,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-9',
-    url: 'https://instagram.com/reel/YZA567',
+    url: 'https://www.pexels.com/video/skateboards-placed-in-shopping-cart-6951237/',
+    videoUrl: 'https://videos.pexels.com/video-files/6951237/6951237-hd_1080_1920_25fps.mp4',
     author: '@fun_content',
     authorAvatar: 'https://i.pravatar.cc/80?u=fun_content',
     description: 'Ожидание vs Реальность: съемка Reels дома',
@@ -153,10 +160,10 @@ export const demoReels: ReelItem[] = [
     category: 'entertainment'
   },
 
-  // === LIFESTYLE (3 reels, views: 560K - 920K) ===
   {
     id: 'reel-10',
-    url: 'https://instagram.com/reel/BCD890',
+    url: 'https://www.pexels.com/video/woman-holding-a-paper-cup-7570153/',
+    videoUrl: 'https://videos.pexels.com/video-files/7570153/7570153-hd_1080_1920_30fps.mp4',
     author: '@life_balance',
     authorAvatar: 'https://i.pravatar.cc/80?u=life_balance',
     description: 'Мой утренний ритуал продуктивности. 5:00 подъем изменил все',
@@ -172,7 +179,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-11',
-    url: 'https://instagram.com/reel/EFG123',
+    url: 'https://www.pexels.com/video/woman-holding-a-white-ceramic-cup-9032883/',
+    videoUrl: 'https://videos.pexels.com/video-files/9032883/9032883-hd_1080_1920_24fps.mp4',
     author: '@aesthetic_daily',
     authorAvatar: 'https://i.pravatar.cc/80?u=aesthetic_daily',
     description: 'Эстетика рабочего места фрилансера. Как организовать пространство для творчества',
@@ -188,7 +196,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-12',
-    url: 'https://instagram.com/reel/HIJ456',
+    url: 'https://www.pexels.com/video/pan-shot-showcasing-pasta-ingredients-6286084/',
+    videoUrl: 'https://videos.pexels.com/video-files/6286084/6286084-hd_1080_1920_25fps.mp4',
     author: '@creator_life',
     authorAvatar: 'https://i.pravatar.cc/80?u=creator_life',
     description: 'День из жизни контент-криейтора. От идеи до публикации за 12 часов',
@@ -203,10 +212,10 @@ export const demoReels: ReelItem[] = [
     category: 'lifestyle'
   },
 
-  // === BUSINESS (3 reels, views: 340K - 680K) ===
   {
     id: 'reel-13',
-    url: 'https://instagram.com/reel/KLM789',
+    url: 'https://www.pexels.com/video/man-cooking-a-large-piece-of-meat-on-a-grill-16357234/',
+    videoUrl: 'https://videos.pexels.com/video-files/16357234/16357234-hd_1080_1920_30fps.mp4',
     author: '@business_tips',
     authorAvatar: 'https://i.pravatar.cc/80?u=business_tips',
     description: 'Как я монетизирую блог с 10К подписчиков. Реальные цифры',
@@ -222,7 +231,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-14',
-    url: 'https://instagram.com/reel/NOP012',
+    url: 'https://www.pexels.com/video/chef-slicing-a-cucumber-8625857/',
+    videoUrl: 'https://videos.pexels.com/video-files/8625857/8625857-hd_1080_1920_25fps.mp4',
     author: '@startup_ru',
     authorAvatar: 'https://i.pravatar.cc/80?u=startup_ru',
     description: '3 способа найти первых клиентов через Instagram. Работает в 2024',
@@ -238,7 +248,8 @@ export const demoReels: ReelItem[] = [
   },
   {
     id: 'reel-15',
-    url: 'https://instagram.com/reel/QRS345',
+    url: 'https://www.pexels.com/video/putting-salsa-on-top-of-mexican-tacos-8448314/',
+    videoUrl: 'https://videos.pexels.com/video-files/8448314/8448314-hd_1080_1920_24fps.mp4',
     author: '@marketing_guru',
     authorAvatar: 'https://i.pravatar.cc/80?u=marketing_guru',
     description: 'Личный бренд vs Продуктовый аккаунт: что выбрать для старта бизнеса',

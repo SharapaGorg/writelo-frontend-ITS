@@ -14,9 +14,23 @@ const emit = defineEmits<{
 }>()
 
 const cardRef = ref<HTMLElement | null>(null)
+const videoRef = ref<HTMLVideoElement | null>(null)
 const isDragging = ref(false)
 let ghostElement: HTMLElement | null = null
 let lastHoveredCell: Element | null = null
+
+function playVideo() {
+  const v = videoRef.value
+  if (!v || isDragging.value) return
+  v.play().catch(() => { /* autoplay race or removed from DOM */ })
+}
+
+function pauseVideo() {
+  const v = videoRef.value
+  if (!v) return
+  v.pause()
+  v.currentTime = 0
+}
 
 function formatNumber(n: number): string {
   if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
@@ -40,8 +54,18 @@ function openReel() {
 function createGhost() {
   if (!cardRef.value) return
 
-  // Create ghost element
   ghostElement = cardRef.value.cloneNode(true) as HTMLElement
+
+  // Replace any <video> children with an <img> built from their poster — keeps
+  // the ghost lightweight and avoids browser quirks around cloned media elements
+  // that intermittently swallowed pointer events and broke the drag flow.
+  ghostElement.querySelectorAll('video').forEach((v) => {
+    const img = document.createElement('img')
+    img.src = v.getAttribute('poster') ?? ''
+    img.className = v.className
+    v.replaceWith(img)
+  })
+
   ghostElement.style.position = 'fixed'
   ghostElement.style.width = `${cardRef.value.offsetWidth}px`
   ghostElement.style.height = `${cardRef.value.offsetHeight}px`
@@ -54,7 +78,6 @@ function createGhost() {
 
   document.body.appendChild(ghostElement)
 
-  // Prevent text selection during drag
   document.body.style.userSelect = 'none'
 }
 
@@ -109,9 +132,12 @@ onMounted(() => {
     listeners: {
       start(event) {
         isDragging.value = true
+        // Open the drop-target panel BEFORE any DOM work — ghost/clone failures
+        // shouldn't be able to swallow the drag-start signal.
+        emit('dragStart', props.reel)
+        pauseVideo()
         createGhost()
         moveGhost(event.clientX, event.clientY)
-        emit('dragStart', props.reel)
       },
       move(event) {
         moveGhost(event.clientX, event.clientY)
@@ -145,10 +171,24 @@ onUnmounted(() => {
     class="group cursor-grab rounded-md border border-border bg-card overflow-hidden transition-all hover:border-foreground/30 hover:shadow-lg touch-none"
     :class="{ 'cursor-grabbing': isDragging }"
     @click="openReel"
+    @mouseenter="playVideo"
+    @mouseleave="pauseVideo"
   >
     <!-- Thumbnail -->
     <div class="relative aspect-[4/5] overflow-hidden bg-muted">
+      <video
+        v-if="reel.videoUrl"
+        ref="videoRef"
+        :src="`${reel.videoUrl}#t=0.5`"
+        :poster="reel.thumbnail"
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 pointer-events-none"
+      />
       <img
+        v-else
         :src="reel.thumbnail"
         :alt="reel.description"
         loading="lazy"
@@ -172,8 +212,11 @@ onUnmounted(() => {
         {{ formatDuration(reel.duration) }}
       </div>
 
-      <!-- Hover overlay with play icon -->
-      <div class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+      <!-- Hover play hint — shown only for image-only cards (no inline video) -->
+      <div
+        v-if="!reel.videoUrl"
+        class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+      >
         <div class="w-12 h-12 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
           <svg class="w-6 h-6 text-foreground ml-0.5" viewBox="0 0 24 24" fill="currentColor">
             <path d="M8 5v14l11-7z" />

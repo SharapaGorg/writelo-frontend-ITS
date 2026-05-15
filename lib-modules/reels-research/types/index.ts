@@ -7,6 +7,7 @@ export interface ReelItem {
   authorAvatar?: string
   description: string
   thumbnail: string
+  videoUrl?: string
   views: number
   likes: number
   comments: number
