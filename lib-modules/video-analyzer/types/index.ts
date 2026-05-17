@@ -71,9 +71,12 @@ export interface ShortVideoAnalysisDto {
   funnel: unknown | null
   improvements: unknown | null
   // v2-only blocks. Older analyses keep these as null.
-  axes: unknown | null
-  viralDrivers: unknown | null
-  viralitySummary: string | null
+  // Backend wire keys are snake_case (`content_axes`, `viral_drivers`,
+  // `virality_summary_ru`) — readers go through `pickField` and tolerate
+  // either casing.
+  contentAxes?: unknown | null
+  viralDrivers?: unknown | null
+  viralitySummary?: string | null
   diagnostics: string | null
 }
 
@@ -287,7 +290,9 @@ export type AxisKey =
 
 export interface AxisDto {
   score: number | null
-  level: AxisLevel | null
+  // Backend wire name is `category` (snake-case raw JSON blob); the value
+  // is the same AxisLevel enum used by improvements' `current_level`.
+  category: AxisLevel | null
   analysis_ru?: string
 }
 

@@ -190,8 +190,11 @@ const AXIS_LEVELS: ReadonlyArray<AxisLevel> = ['poor', 'average', 'good', 'excel
 function isAxisDto(v: unknown): v is AxisDto {
   if (!isObject(v)) return false
   const scoreOk = v.score === null || (typeof v.score === 'number' && v.score >= 1 && v.score <= 100)
-  const levelOk = v.level === null || (typeof v.level === 'string' && AXIS_LEVELS.includes(v.level as AxisLevel))
-  return scoreOk && levelOk
+  // Backend uses `category`; accept legacy `level` for cached older payloads.
+  const cat = (v as Record<string, unknown>).category ?? (v as Record<string, unknown>).level
+  const catOk = cat === null || cat === undefined
+    || (typeof cat === 'string' && AXIS_LEVELS.includes(cat as AxisLevel))
+  return scoreOk && catOk
 }
 
 export function isAxesShape(v: unknown): v is AxesShape {

@@ -157,7 +157,9 @@ function rowFromAxis(key: AxisKey, dto: AxisDto | undefined): AxisRow {
       score: null, level: null, analysis, tone: null, applicable: false,
     }
   }
-  const level = (dto.level ?? scoreToLevel(dto.score)) as AxisLevel
+  // Wire field is `category`; fall back to legacy `level` for older cached analyses.
+  const dtoAny = dto as AxisDto & { level?: AxisLevel | null }
+  const level = (dto.category ?? dtoAny.level ?? scoreToLevel(dto.score)) as AxisLevel
   return {
     key, label: AXIS_LABELS[key],
     score: dto.score, level, analysis, tone: LEVEL_TONES[level], applicable: true,

@@ -6,12 +6,16 @@ import type { ShortVideoAnalysisDto } from '../types'
 
 export const V2_MOCK_ANALYSIS_ID = 'mock-v2'
 
+// Mirror the real wire format from CHANGES.md: snake_case for the new v2
+// blobs (`content_axes`, `viral_drivers`, `virality_summary_ru`,
+// `analyzer_version`) and per-axis `category`. The defensive `pickField`
+// readers in VideoAnalysisDetail.vue handle either casing, but the mock
+// must mirror the real shape so `?mock=v2` exercises the same code path.
 export const V2_MOCK_DETAIL: ShortVideoAnalysisDto & {
-  // The extra v2 fields aren't always in the camelCase DTO yet — declare
-  // them locally so TS doesn't complain about the snake_case mirrors used
-  // by the detail page's defensive accessor.
+  content_axes?: unknown
   viral_drivers?: unknown
   virality_summary_ru?: string
+  analyzer_version?: number
 } = {
   id: V2_MOCK_ANALYSIS_ID,
   socialVideoEntryId: 'mock-entry',
@@ -22,6 +26,7 @@ export const V2_MOCK_DETAIL: ShortVideoAnalysisDto & {
   previewObjectId: null,
   previewImage: null,
   analyzerVersion: 2,
+  analyzer_version: 2,
   model: 'mock',
   status: 'completed',
   analyzedAt: new Date().toISOString(),
@@ -119,82 +124,82 @@ export const V2_MOCK_DETAIL: ShortVideoAnalysisDto & {
     },
   ],
 
-  axes: {
+  content_axes: {
     hook: {
       score: 52,
-      level: 'average',
+      category: 'average',
       analysis_ru:
         'Текстовый крючок «3 ошибки, которые крадут твой подход» хорош, но первый кадр (лицо тренера в нейтральной мимике) визуально слабый. Спасает быстрая речь и стоп-кадр на 1-й секунде.',
     },
     retention: {
       score: 62,
-      level: 'good',
+      category: 'good',
       analysis_ru:
         'Три открытые петли по числу ошибок плюс паттерн-интерапт через зум каждые 2–3 секунды. Лёгкое провисание около 14-й секунды между ошибкой №2 и №3.',
     },
     storytelling: {
       score: 55,
-      level: 'average',
+      category: 'average',
       analysis_ru:
         'Структура «было плохо → вот три причины → сохрани» считывается, но без личного payoff. Фраза «я сам долго залипал» висит без визуального подтверждения.',
     },
     structure: {
       score: 71,
-      level: 'good',
+      category: 'good',
       analysis_ru:
         'Чёткое деление 0–3 / 3–22 / 22–28 сек, концовка не обрывается. Тело уложено в три равных блока — читается как чек-лист.',
     },
     save_worthiness: {
       score: 78,
-      level: 'good',
+      category: 'good',
       analysis_ru:
         'Конкретный чек-лист из трёх проверяемых пунктов + прямой призыв «сохрани». Высокая референсная ценность для целевой аудитории.',
     },
     comment_trigger: {
       score: 41,
-      level: 'average',
+      category: 'average',
       analysis_ru:
         'Нет прямого вопроса к зрителю, нет поляризации. Возможны редкие комментарии «спасибо», но мощного триггера к спору или диалогу нет.',
     },
     loop: {
       score: 35,
-      level: 'poor',
+      category: 'poor',
       analysis_ru:
         'Финальный кадр (стрелка + закладка на нейтральном фоне) не стыкуется с первым кадром (лицо тренера). Re-watch не закладывается.',
     },
     persona: {
       score: 68,
-      level: 'good',
+      category: 'good',
       analysis_ru:
         'Узнаваемая манера: прямое «ты», конкретные числа, отсылка к личному опыту. Стиль речи последовательный, легко идентифицируется как «тренер-фактчекер».',
     },
     voice: {
       score: 74,
-      level: 'good',
+      category: 'good',
       analysis_ru:
         'Темп быстрый, артикуляция чистая, паузы расставлены под зумы. Эмоциональная амплитуда узкая, но соответствует экспертной подаче.',
     },
     aesthetic: {
       score: 64,
-      level: 'good',
+      category: 'good',
       analysis_ru:
         'Спокойная палитра зала, контрастный белый текст крупным шрифтом, читается со смартфона без зума. Стиль не вирусный, но опрятный.',
     },
     production: {
       score: 81,
-      level: 'excellent',
+      category: 'excellent',
       analysis_ru:
         'Фокус и экспозиция стабильны, звук без шума, синхрон точный. Размер текста безопасный для всех ориентаций.',
     },
     cta: {
       score: 38,
-      level: 'poor',
+      category: 'poor',
       analysis_ru:
         'Призыв ограничен «сохрани». Нет фразы про подписку, нет визуального триггера на профиль. Воронка работает только на сохранения.',
     },
   },
 
-  viralDrivers: [
+  viral_drivers: [
     {
       driver: 'utility_save_worthy',
       driver_evidence_ru:
@@ -212,7 +217,7 @@ export const V2_MOCK_DETAIL: ShortVideoAnalysisDto & {
     },
   ],
 
-  viralitySummary:
+  virality_summary_ru:
     'Ролик попадает по utility-маршруту: целевая аудитория сохранит ради чек-листа. Узнаваемость и открытая петля поддержат среднее досматривание, но потолок виральности упирается в слабый CTA на подписку и неработающий loop — поэтому скорее «хорошо разойдётся в нише», чем «залетит в общий рекомендации».',
 
   diagnostics:

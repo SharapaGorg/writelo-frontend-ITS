@@ -123,12 +123,17 @@ function pickField<T>(d: ShortVideoAnalysisDto | null, ...keys: string[]): T | n
   return null
 }
 
-const axesValue = computed(() => pickField<unknown>(detail.value ?? null, 'axes'))
+const axesValue = computed(() =>
+  pickField<unknown>(detail.value ?? null, 'contentAxes', 'content_axes', 'axes'),
+)
 const viralDriversValue = computed(() =>
   pickField<unknown>(detail.value ?? null, 'viralDrivers', 'viral_drivers'),
 )
 const viralitySummary = computed(() =>
   pickField<string>(detail.value ?? null, 'viralitySummary', 'viralitySummaryRu', 'virality_summary_ru'),
+)
+const analyzerVersion = computed(() =>
+  pickField<number | string>(detail.value ?? null, 'analyzerVersion', 'analyzer_version'),
 )
 
 const hasAxes = computed(() => isAxesShape(axesValue.value))
@@ -379,9 +384,9 @@ onUnmounted(() => {
                   <AnalysisStatusBadge v-if="status" :status="status" />
                   <span v-if="analyzedAtHuman">· {{ analyzedAtHuman }}</span>
                   <span
-                    v-if="detail?.analyzerVersion"
+                    v-if="analyzerVersion"
                     class="rounded bg-muted px-1.5 py-0.5 text-[11px] font-mono"
-                  >v{{ detail.analyzerVersion }}</span>
+                  >v{{ analyzerVersion }}</span>
                 </div>
               </div>
             </div>

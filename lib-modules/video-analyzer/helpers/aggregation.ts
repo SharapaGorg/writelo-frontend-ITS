@@ -190,7 +190,9 @@ export function levelCounts(axes: AxesShape): Record<AxisLevel, number> {
   for (const key of Object.keys(axes) as AxisKey[]) {
     const axis = axes[key]
     if (!axis || axis.score === null || axis.score === undefined) continue
-    const level = axis.level ?? scoreToLevel(axis.score)
+    // Accept either `category` (current wire) or legacy `level` from cached payloads.
+    const cat = (axis as { category?: AxisLevel | null; level?: AxisLevel | null })
+    const level = cat.category ?? cat.level ?? scoreToLevel(axis.score)
     if (level) out[level]++
   }
   return out
