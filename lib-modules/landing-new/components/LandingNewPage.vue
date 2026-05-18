@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { Menu, X } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
+import { cn } from '~/lib-modules/utils'
 import HeroSection from './HeroSection.vue'
 import AudienceSection from './AudienceSection.vue'
 import TrendsSection from './TrendsSection.vue'
@@ -17,7 +18,7 @@ import ContactsSection from './ContactsSection.vue'
 import PrimaryButton from './PrimaryButton.vue'
 import { Routes } from '~/scripts/shared/types'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const router = useRouter()
 const { $trackGoal } = useNuxtApp()
 const mobileMenuOpen = ref(false)
@@ -31,6 +32,13 @@ function goToApp() {
   router.push(Routes.app)
   closeMobile()
 }
+
+function switchLang(code: 'ru' | 'en') {
+  closeMobile()
+  if (locale.value === code) return
+  $trackGoal('language_switch', { from: locale.value, to: code })
+  navigateTo(`/${code}`)
+}
 </script>
 
 <template>
@@ -39,12 +47,12 @@ function goToApp() {
   >
     <header class="fixed top-0 left-0 right-0 z-50 bg-white/85 dark:bg-[#0a0a0a]/85 backdrop-blur-sm border-b border-[#0a0a0a]/10 dark:border-[#ede8de]/10">
       <div class="max-w-[1400px] mx-auto px-6 md:px-12">
-        <div class="flex items-center justify-between h-16">
-          <a href="#top" class="lnf-display font-bold text-[18px] tracking-[-0.02em] text-[#0a0a0a] dark:text-[#ede8de]">
+        <div class="grid grid-cols-[1fr_auto_1fr] items-center h-16">
+          <a href="#top" class="lnf-display font-bold text-[18px] tracking-[-0.02em] text-[#0a0a0a] dark:text-[#ede8de] justify-self-start">
             Writelo
           </a>
 
-          <nav class="hidden md:flex items-center gap-10">
+          <nav class="hidden md:flex items-center gap-10 justify-self-center">
             <a href="#trends" class="lnf-body text-sm text-[#5f5f5f] dark:text-[#a8a094] hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.header.nav.features') }}
             </a>
@@ -56,7 +64,36 @@ function goToApp() {
             </a>
           </nav>
 
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 justify-self-end">
+            <div class="hidden md:flex items-center gap-1.5 lnf-mono text-[12px] tracking-[0.04em] mr-2" role="group" aria-label="Language">
+              <button
+                type="button"
+                :class="cn(
+                  'px-1.5 py-1 uppercase transition-colors',
+                  locale === 'ru'
+                    ? 'text-[#0a0a0a] dark:text-[#ede8de] font-bold'
+                    : 'text-[#8a8a8a] dark:text-[#7a7268] hover:text-[#0a0a0a] dark:hover:text-[#ede8de]',
+                )"
+                :aria-pressed="locale === 'ru'"
+                @click="switchLang('ru')"
+              >
+                RU
+              </button>
+              <span class="text-[#c4c4c4] dark:text-[#3a3530]">/</span>
+              <button
+                type="button"
+                :class="cn(
+                  'px-1.5 py-1 uppercase transition-colors',
+                  locale === 'en'
+                    ? 'text-[#0a0a0a] dark:text-[#ede8de] font-bold'
+                    : 'text-[#8a8a8a] dark:text-[#7a7268] hover:text-[#0a0a0a] dark:hover:text-[#ede8de]',
+                )"
+                :aria-pressed="locale === 'en'"
+                @click="switchLang('en')"
+              >
+                EN
+              </button>
+            </div>
             <PrimaryButton size="sm" class="hidden md:inline-flex" @click="goToApp">
               {{ t('landingNew.header.cta') }}
             </PrimaryButton>
@@ -91,6 +128,35 @@ function goToApp() {
             <a href="#contacts" class="lnf-body text-[#0a0a0a] dark:text-[#ede8de]" @click="closeMobile">
               {{ t('landingNew.header.nav.contacts') }}
             </a>
+            <div class="flex items-center gap-1.5 lnf-mono text-[12px] tracking-[0.04em] pt-2" role="group" aria-label="Language">
+              <button
+                type="button"
+                :class="cn(
+                  'px-1.5 py-1 uppercase transition-colors',
+                  locale === 'ru'
+                    ? 'text-[#0a0a0a] dark:text-[#ede8de] font-bold'
+                    : 'text-[#8a8a8a] dark:text-[#7a7268]',
+                )"
+                :aria-pressed="locale === 'ru'"
+                @click="switchLang('ru')"
+              >
+                RU
+              </button>
+              <span class="text-[#c4c4c4] dark:text-[#3a3530]">/</span>
+              <button
+                type="button"
+                :class="cn(
+                  'px-1.5 py-1 uppercase transition-colors',
+                  locale === 'en'
+                    ? 'text-[#0a0a0a] dark:text-[#ede8de] font-bold'
+                    : 'text-[#8a8a8a] dark:text-[#7a7268]',
+                )"
+                :aria-pressed="locale === 'en'"
+                @click="switchLang('en')"
+              >
+                EN
+              </button>
+            </div>
             <PrimaryButton size="sm" class="self-start" @click="goToApp">
               {{ t('landingNew.header.cta') }}
             </PrimaryButton>
@@ -132,6 +198,15 @@ function goToApp() {
             </NuxtLink>
             <NuxtLink to="/start" class="hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
               {{ t('landingNew.footer.nav.start') }}
+            </NuxtLink>
+            <NuxtLink to="/privacy" class="hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
+              {{ t('landingNew.footer.nav.privacy') }}
+            </NuxtLink>
+            <NuxtLink to="/terms" class="hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
+              {{ t('landingNew.footer.nav.terms') }}
+            </NuxtLink>
+            <NuxtLink to="/data-deletion" class="hover:text-[#0a0a0a] dark:hover:text-[#ede8de] transition-colors">
+              {{ t('landingNew.footer.nav.dataDeletion') }}
             </NuxtLink>
           </nav>
           <div class="lnf-body text-sm text-[#8a8a8a] dark:text-[#5a5550]">© 2026 Writelo</div>
