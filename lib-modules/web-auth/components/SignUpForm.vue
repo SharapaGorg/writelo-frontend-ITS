@@ -58,10 +58,17 @@
       </div>
 
       <div class="space-y-2">
-        <div class="flex items-center space-x-2">
-          <Checkbox id="terms" v-model="acceptTerms" v-bind="acceptTermsAttrs"/>
-          <Label for="terms" class="text-sm">
-            {{ t('signup.accept_terms') }}
+        <div class="flex items-start space-x-2">
+          <Checkbox id="terms" v-model="acceptTerms" v-bind="acceptTermsAttrs" class="mt-0.5"/>
+          <Label for="terms" class="text-sm leading-snug">
+            {{ t('signup.accept_intro') }}
+            <NuxtLink to="/terms" target="_blank" class="underline hover:text-foreground">
+              {{ t('signup.accept_terms_link') }}
+            </NuxtLink>
+            {{ t('signup.accept_and') }}
+            <NuxtLink to="/privacy" target="_blank" class="underline hover:text-foreground">
+              {{ t('signup.accept_privacy_link') }}
+            </NuxtLink>
           </Label>
         </div>
         <FormError :error="errors.acceptTerms ? globalT(errors.acceptTerms) : undefined"/>

@@ -66,6 +66,43 @@ textarea::-webkit-resizer {
     background: transparent;
 }
 
+/* Standalone document pages (privacy / terms / data-deletion) — give them a visible scrollbar */
+.legal-doc-root {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(10, 10, 10, 0.18) transparent;
+}
+
+:where(html.dark) .legal-doc-root {
+    scrollbar-color: rgba(237, 232, 222, 0.16) transparent;
+}
+
+.legal-doc-root::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+}
+
+.legal-doc-root::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.legal-doc-root::-webkit-scrollbar-thumb {
+    background-color: rgba(10, 10, 10, 0.18);
+    border-radius: 9999px;
+    transition: background-color 200ms;
+}
+
+.legal-doc-root::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(10, 10, 10, 0.32);
+}
+
+:where(html.dark) .legal-doc-root::-webkit-scrollbar-thumb {
+    background-color: rgba(237, 232, 222, 0.16);
+}
+
+:where(html.dark) .legal-doc-root::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(237, 232, 222, 0.32);
+}
+
 @layer base {
     :root {
         --radius: 0.375rem;

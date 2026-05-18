@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { Loader2, ExternalLink, AlertCircle } from 'lucide-vue-next'
+import { Loader2, ExternalLink, AlertCircle, ShieldCheck } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { useContentCalendarApi } from '../helpers/api'
 import type { SocialNetwork } from '../types'
@@ -15,7 +15,7 @@ const api = useContentCalendarApi()
 const POLL_INTERVAL_MS = 3000
 const TIMEOUT_SEC = 120
 
-type FlowState = 'starting' | 'waiting' | 'timed_out' | 'error'
+type FlowState = 'disclosure' | 'starting' | 'waiting' | 'timed_out' | 'error'
 
 interface PlatformCopy {
   openButton: string
@@ -30,7 +30,7 @@ const COPY: Record<SocialNetwork, PlatformCopy> = {
     waitingHint: 'Откройте бота и нажмите Start.',
   },
   instagram: {
-    openButton: 'Авторизоваться в Instagram',
+    openButton: 'Продолжить через Instagram',
     openButtonClass: 'bg-gradient-to-br from-purple-500 to-pink-500 hover:opacity-90 text-white',
     waitingHint: 'Завершите авторизацию во вкладке Instagram.',
   },
@@ -46,9 +46,17 @@ const COPY: Record<SocialNetwork, PlatformCopy> = {
   },
 }
 
+const INSTAGRAM_PERMISSIONS = [
+  'профиль и список ваших бизнес-аккаунтов',
+  'публикация постов, Reels и сторис от вашего имени',
+  'чтение метрик и инсайтов опубликованных материалов',
+  'управление комментариями и сообщениями (если вы используете эти функции)',
+]
+
 const copy = computed<PlatformCopy>(() => COPY[props.platform])
 
-const state = ref<FlowState>('starting')
+const initialState: FlowState = props.platform === 'instagram' ? 'disclosure' : 'starting'
+const state = ref<FlowState>(initialState)
 const linkUrl = ref<string | null>(null)
 const errorText = ref<string | null>(null)
 const remainingSec = ref(TIMEOUT_SEC)
@@ -157,14 +165,55 @@ async function manualCheck() {
   }
 }
 
-onMounted(start)
+onMounted(() => {
+  if (initialState === 'starting') start()
+})
 onBeforeUnmount(stopTimers)
 </script>
 
 <template>
   <div class="py-2 space-y-4">
+    <template v-if="state === 'disclosure' && platform === 'instagram'">
+      <div class="rounded-md border border-border bg-muted/30 p-4 space-y-3 text-sm">
+        <div class="flex items-start gap-2">
+          <ShieldCheck class="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+          <div class="space-y-2">
+            <p class="font-medium text-foreground">
+              Что мы запросим у Instagram
+            </p>
+            <p class="text-muted-foreground text-xs leading-relaxed">
+              Вы перейдёте на страницу Facebook, где увидите полный список разрешений. Мы получим доступ только к тому, что вы подтвердите:
+            </p>
+            <ul class="text-xs text-muted-foreground list-disc pl-5 space-y-1">
+              <li v-for="p in INSTAGRAM_PERMISSIONS" :key="p">{{ p }}</li>
+            </ul>
+            <p class="text-xs text-muted-foreground leading-relaxed pt-1">
+              Мы используем эти данные только для функций сервиса. Не продаём, не используем для рекламы. Подробнее —
+              <NuxtLink to="/privacy" target="_blank" class="underline hover:text-foreground">
+                политика конфиденциальности
+              </NuxtLink>
+              и
+              <NuxtLink to="/terms" target="_blank" class="underline hover:text-foreground">
+                условия использования
+              </NuxtLink>.
+            </p>
+          </div>
+        </div>
+      </div>
+      <button
+        type="button"
+        :class="[
+          'w-full inline-flex items-center justify-center gap-2 rounded-md font-semibold px-4 py-2.5 transition',
+          copy.openButtonClass,
+        ]"
+        @click="start"
+      >
+        {{ copy.openButton }}
+      </button>
+    </template>
+
     <div
-      v-if="state === 'starting'"
+      v-else-if="state === 'starting'"
       class="py-6 flex items-center justify-center gap-2 text-sm text-muted-foreground"
     >
       <Loader2 class="h-4 w-4 animate-spin" />
