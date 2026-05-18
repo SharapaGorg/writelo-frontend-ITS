@@ -168,10 +168,13 @@ export class ContentCalendarApiController {
     await this.api.request(url, RequestMethod.DELETE, {}, false, true)
   }
 
-  // Telegram channel linking — generic /social-accounts/link, platform pinned to 'telegram'
-  startTelegramLink(workspaceId: string): Promise<SocialAccountLinkStartResponse> {
+  // Generic social account linking (TG bot deep-link, IG Business Login OAuth, ...).
+  startSocialAccountLink(
+    workspaceId: string,
+    platform: SocialNetwork,
+  ): Promise<SocialAccountLinkStartResponse> {
     const url = buildUrl(ApiAliases.workspaceSocialAccountsLink, { workspaceId })
-    const body: StartSocialAccountLinkRequest = { platform: 'telegram' }
+    const body: StartSocialAccountLinkRequest = { platform }
     return this.api.request(url, RequestMethod.POST, body) as Promise<SocialAccountLinkStartResponse>
   }
 

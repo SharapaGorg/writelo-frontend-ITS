@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '~/components/ui/dialog'
-import TelegramLinkFlow from '~/lib-modules/content-calendar/components/TelegramLinkFlow.vue'
+import SocialAccountLinkFlow from '~/lib-modules/content-calendar/components/SocialAccountLinkFlow.vue'
 import { AppNavbar, type BreadcrumbItem } from '~/lib-modules/app-layout'
 import { useWorkspaces } from '../composables/useWorkspaces'
 import { useWorkspacesApi } from '../helpers/api'
@@ -56,7 +56,7 @@ const platforms: PlatformOption[] = [
     name: 'Instagram',
     description: 'Бизнес-аккаунты',
     badgeClass: 'bg-gradient-to-br from-purple-500 to-pink-500',
-    available: false,
+    available: true,
   },
   {
     id: 'youtube',
@@ -79,7 +79,8 @@ function openPlatform(id: SocialNetwork) {
 }
 
 async function onChannelLinked(_socialAccountId: string) {
-  toast.success('Канал привязан', { position: getToasterPosition() })
+  const label = selectedPlatform.value?.id === 'instagram' ? 'Аккаунт привязан' : 'Канал привязан'
+  toast.success(label, { position: getToasterPosition() })
   dialogOpen.value = false
   // Принудительный рефетч в стор: дефолтный watcher на смене workspaceId
   // молчит, когда воркспейс не сменился (или когда в проекте уже есть данные),
@@ -179,14 +180,21 @@ onMounted(async () => {
           <DialogDescription v-if="selectedPlatform?.id === 'telegram'">
             Авторизуйтесь через Telegram, чтобы связать канал с брендом.
           </DialogDescription>
+          <DialogDescription v-else-if="selectedPlatform?.id === 'instagram'">
+            Авторизуйтесь через Instagram Business Login, чтобы привязать бизнес-аккаунт.
+          </DialogDescription>
           <DialogDescription v-else>
             Интеграция с этой платформой появится в ближайших обновлениях.
           </DialogDescription>
         </DialogHeader>
 
-        <TelegramLinkFlow
-          v-if="selectedPlatform?.id === 'telegram' && workspaceId"
+        <SocialAccountLinkFlow
+          v-if="
+            workspaceId &&
+            (selectedPlatform?.id === 'telegram' || selectedPlatform?.id === 'instagram')
+          "
           :workspace-id="workspaceId"
+          :platform="selectedPlatform.id"
           @linked="onChannelLinked"
         />
         <div v-else class="py-6 flex items-center justify-center text-sm text-muted-foreground gap-2">
