@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
@@ -34,6 +35,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   showcaseMode: false
 })
+
+const { t } = useI18n()
 
 const {
   selectedDate,
@@ -81,9 +84,9 @@ async function confirmUnlink() {
   const ok = await projectStore.unlinkAccount(acc.id)
   pendingUnlink.value = null
   if (ok) {
-    toast.success('Аккаунт отвязан', { position: getToasterPosition() })
+    toast.success(t('calendarPage.toasts.accountUnlinked'), { position: getToasterPosition() })
   } else {
-    toast.error('Не получилось отвязать аккаунт', { position: getToasterPosition() })
+    toast.error(t('calendarPage.toasts.accountUnlinkFailed'), { position: getToasterPosition() })
   }
 }
 
@@ -110,7 +113,7 @@ async function confirmPostDelete() {
   selectPost(null)
   const ok = await deletePost(id)
   if (!ok) {
-    toastError('Не удалось удалить пост. Повтори попытку позже.')
+    toastError(t('calendarPage.toasts.postDeleteFailed'))
   }
 }
 
@@ -170,7 +173,7 @@ async function createPostFromNews(date: string, news: NewsItem, accountId: strin
   }
   if (news.url) {
     content += content ? '\n\n' : ''
-    content += `Источник: ${news.source}\n${news.url}`
+    content += t('calendarPage.newsSource', { source: news.source, url: news.url })
   }
 
   const newPost = await createPost({
@@ -218,7 +221,7 @@ const creatingForDate = ref<string | null>(null)
 function handleCreatePost(date: string) {
   const userController = useUserController()
   if (!userController.isAuthenticated()) {
-    toastError('Войдите в аккаунт, чтобы создавать посты')
+    toastError(t('calendarPage.toasts.loginToCreate'))
     return
   }
 
@@ -235,7 +238,7 @@ async function handleSubmitCreatePost(title: string) {
 
   const defaultAccountId = (currentProject.value?.accounts ?? [])[0]?.id || ''
   if (!defaultAccountId) {
-    toastError('Сначала подключите соц. аккаунт к этому workspace')
+    toastError(t('calendarPage.toasts.connectAccountFirst'))
     return
   }
 
@@ -278,12 +281,12 @@ watch(selectedDate, (newDate) => {
 // publishing/failed намеренно не выставляются переключателями — они всегда
 // видимы (дефолт activeStatuses содержит все 6 значений). Прятать промежуточные
 // состояния от пользователя нечем мотивировать.
-const statusConfig = [
-  { id: 'idea' as const, label: 'Идея', icon: 'idea', color: 'text-muted-foreground' },
-  { id: 'draft' as const, label: 'Черновик', icon: 'draft', color: 'text-yellow-500' },
-  { id: 'ready' as const, label: 'Готов', icon: 'ready', color: 'text-green-500' },
-  { id: 'published' as const, label: 'Опубликован', icon: 'published', color: 'text-blue-500' }
-]
+const statusConfig = computed(() => [
+  { id: 'idea' as const, label: t('calendarPage.statuses.idea'), icon: 'idea', color: 'text-muted-foreground' },
+  { id: 'draft' as const, label: t('calendarPage.statuses.draft'), icon: 'draft', color: 'text-yellow-500' },
+  { id: 'ready' as const, label: t('calendarPage.statuses.ready'), icon: 'ready', color: 'text-green-500' },
+  { id: 'published' as const, label: t('calendarPage.statuses.published'), icon: 'published', color: 'text-blue-500' }
+])
 
 // Tag combobox state
 const tagSearch = ref('')
@@ -423,14 +426,14 @@ onUnmounted(() => {
     props.showcaseMode ? 'h-[700px]' : 'h-screen'
   ]">
     <AppNavbar
-      :breadcrumbs="[{ label: 'Календарь' }]"
+      :breadcrumbs="[{ label: t('calendarPage.breadcrumb') }]"
       :show-workspace-selector="!props.showcaseMode"
     />
     <div class="flex items-center justify-between px-4 py-2 border-b border-border">
       <div class="flex items-center gap-6">
         <!-- Status filter -->
         <div class="flex items-center gap-2">
-          <span class="text-sm text-muted-foreground">Статус:</span>
+          <span class="text-sm text-muted-foreground">{{ t('calendarPage.statusLabel') }}</span>
           <button
             v-for="status in statusConfig"
             :key="status.id"
@@ -469,25 +472,25 @@ onUnmounted(() => {
       <div class="flex items-center gap-4 text-sm text-muted-foreground">
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-full bg-blue-500" />
-          <span>Пост</span>
+          <span>{{ t('calendarPage.contentTypes.post') }}</span>
         </div>
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-full bg-purple-500" />
-          <span>Сторис</span>
+          <span>{{ t('calendarPage.contentTypes.story') }}</span>
         </div>
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-full bg-pink-500" />
-          <span>Рилс</span>
+          <span>{{ t('calendarPage.contentTypes.reel') }}</span>
         </div>
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-          <span>Статья</span>
+          <span>{{ t('calendarPage.contentTypes.article') }}</span>
         </div>
       </div>
     </div>
     <!-- Tag filter -->
     <div class="flex items-center gap-2 px-4 py-2 border-b border-border bg-muted/30">
-      <span class="text-sm text-muted-foreground">Теги:</span>
+      <span class="text-sm text-muted-foreground">{{ t('calendarPage.tagsLabel') }}</span>
 
       <!-- Selected tags -->
       <div class="flex items-center gap-1 flex-wrap">
@@ -508,7 +511,7 @@ onUnmounted(() => {
           class="px-3 py-1 text-xs rounded-full border border-border bg-muted text-muted-foreground hover:text-foreground hover:border-border flex items-center gap-1"
           @click="openTagDropdown"
         >
-          <span>+ Добавить тег</span>
+          <span>{{ t('calendarPage.addTag') }}</span>
         </button>
 
         <!-- Dropdown -->
@@ -521,7 +524,7 @@ onUnmounted(() => {
               ref="tagInputRef"
               v-model="tagSearch"
               type="text"
-              placeholder="Поиск тегов..."
+              :placeholder="t('calendarPage.searchTags')"
               class="w-full px-2 py-1 text-sm bg-muted border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring"
               @keydown.escape="closeTagDropdown"
             />
@@ -543,7 +546,7 @@ onUnmounted(() => {
               <span v-if="activeTags.includes(tag.id)" class="ml-auto text-green-400">✓</span>
             </button>
             <div v-if="filteredTags.length === 0" class="px-3 py-2 text-sm text-muted-foreground">
-              Ничего не найдено
+              {{ t('calendarPage.noTagsFound') }}
             </div>
           </div>
         </div>
@@ -557,7 +560,7 @@ onUnmounted(() => {
       />
 
       <span v-if="activeTags.length === 0" class="text-xs text-muted-foreground">
-        (все)
+        {{ t('calendarPage.tagsAll') }}
       </span>
     </div>
     <div class="flex-1 flex min-h-0">
@@ -627,9 +630,9 @@ onUnmounted(() => {
     <Dialog :open="showAccountSelectDialog" @update:open="(v) => !v && cancelAccountSelect()">
       <DialogContent class="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Выберите аккаунт</DialogTitle>
+          <DialogTitle>{{ t('calendarPage.accountDialog.title') }}</DialogTitle>
           <DialogDescription>
-            В какой аккаунт добавить идею?
+            {{ t('calendarPage.accountDialog.description') }}
           </DialogDescription>
         </DialogHeader>
         <div class="grid gap-2 py-4">
@@ -666,18 +669,18 @@ onUnmounted(() => {
     <AlertDialog v-model:open="unlinkDialogOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Отвязать аккаунт?</AlertDialogTitle>
+          <AlertDialogTitle>{{ t('calendarPage.unlinkDialog.title') }}</AlertDialogTitle>
           <AlertDialogDescription>
-            Канал «{{ pendingUnlink?.name }}» будет отвязан от бренда. Запланированные публикации в него не пройдут.
+            {{ t('calendarPage.unlinkDialog.description', { name: pendingUnlink?.name ?? '' }) }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel class="cursor-pointer">Отмена</AlertDialogCancel>
+          <AlertDialogCancel class="cursor-pointer">{{ t('calendarPage.unlinkDialog.cancel') }}</AlertDialogCancel>
           <AlertDialogAction
             class="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
             @click="confirmUnlink"
           >
-            Отвязать
+            {{ t('calendarPage.unlinkDialog.confirm') }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -686,18 +689,18 @@ onUnmounted(() => {
     <AlertDialog v-model:open="deletePostDialogOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Удалить пост?</AlertDialogTitle>
+          <AlertDialogTitle>{{ t('calendarPage.deletePostDialog.title') }}</AlertDialogTitle>
           <AlertDialogDescription>
-            Пост «{{ pendingDeletePost?.title || 'без названия' }}» будет удалён без возможности восстановления.
+            {{ t('calendarPage.deletePostDialog.description', { title: pendingDeletePost?.title || t('calendarPage.deletePostDialog.untitled') }) }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel class="cursor-pointer">Отмена</AlertDialogCancel>
+          <AlertDialogCancel class="cursor-pointer">{{ t('calendarPage.deletePostDialog.cancel') }}</AlertDialogCancel>
           <AlertDialogAction
             class="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
             @click="confirmPostDelete"
           >
-            Удалить
+            {{ t('calendarPage.deletePostDialog.confirm') }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

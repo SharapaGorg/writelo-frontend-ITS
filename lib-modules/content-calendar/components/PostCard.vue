@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { CalendarPost, SocialNetwork, SocialAccount, PostStatus, ContentType, ContentTag } from '../types'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   post: CalendarPost
@@ -25,21 +28,21 @@ const typeStyles: Record<ContentType, string> = {
   article: 'bg-emerald-500/20 border-emerald-500'
 }
 
-const typeLabels: Record<ContentType, string> = {
-  post: 'Пост',
-  story: 'Сторис',
-  reels: 'Рилс',
-  article: 'Статья'
-}
+const typeLabels = computed<Record<ContentType, string>>(() => ({
+  post: t('calendarPage.postCard.types.post'),
+  story: t('calendarPage.postCard.types.story'),
+  reels: t('calendarPage.postCard.types.reels'),
+  article: t('calendarPage.postCard.types.article')
+}))
 
-const statusLabels: Record<PostStatus, { class: string; label: string }> = {
-  idea: { class: 'text-muted-foreground', label: 'Идея' },
-  draft: { class: 'text-yellow-500', label: 'Черновик' },
-  ready: { class: 'text-green-500', label: 'Готов' },
-  publishing: { class: 'text-blue-500', label: 'Публикуется' },
-  published: { class: 'text-blue-500', label: 'Опубликован' },
-  failed: { class: 'text-red-500', label: 'Ошибка' }
-}
+const statusLabels = computed<Record<PostStatus, { class: string; label: string }>>(() => ({
+  idea: { class: 'text-muted-foreground', label: t('calendarPage.postCard.statuses.idea') },
+  draft: { class: 'text-yellow-500', label: t('calendarPage.postCard.statuses.draft') },
+  ready: { class: 'text-green-500', label: t('calendarPage.postCard.statuses.ready') },
+  publishing: { class: 'text-blue-500', label: t('calendarPage.postCard.statuses.publishing') },
+  published: { class: 'text-blue-500', label: t('calendarPage.postCard.statuses.published') },
+  failed: { class: 'text-red-500', label: t('calendarPage.postCard.statuses.failed') }
+}))
 
 
 // Get tag objects for this post

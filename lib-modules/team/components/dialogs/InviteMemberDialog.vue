@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
@@ -26,6 +27,8 @@ const emit = defineEmits<{
   (e: 'submit', payload: { email: string; role: WorkspaceInviteRole }): void
 }>()
 
+const { t } = useI18n()
+
 const email = ref('')
 const role = ref<WorkspaceInviteRole>('editor')
 const submitting = ref(false)
@@ -49,7 +52,7 @@ function isEmail(s: string): boolean {
 function onSubmit() {
   errorMsg.value = ''
   if (!isEmail(email.value)) {
-    errorMsg.value = 'Некорректный email'
+    errorMsg.value = t('teamPage.inviteDialog.emailInvalid')
     return
   }
   submitting.value = true
@@ -64,9 +67,9 @@ function onSubmit() {
   <Dialog :open="open" @update:open="(v: boolean) => emit('update:open', v)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Пригласить участника</DialogTitle>
+        <DialogTitle>{{ t('teamPage.inviteDialog.title') }}</DialogTitle>
         <DialogDescription>
-          Отправим письмо со ссылкой-приглашением. Срок действия — 14 дней.
+          {{ t('teamPage.inviteDialog.description') }}
         </DialogDescription>
       </DialogHeader>
       <div class="space-y-4">
@@ -82,20 +85,20 @@ function onSubmit() {
           <p v-if="errorMsg" class="text-xs text-destructive">{{ errorMsg }}</p>
         </div>
         <div class="space-y-2">
-          <Label>Роль</Label>
+          <Label>{{ t('teamPage.inviteDialog.roleLabel') }}</Label>
           <Select v-model="role">
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="admin">Администратор</SelectItem>
-              <SelectItem value="editor">Редактор</SelectItem>
-              <SelectItem value="viewer">Зритель</SelectItem>
+              <SelectItem value="admin">{{ t('team.roles.admin') }}</SelectItem>
+              <SelectItem value="editor">{{ t('team.roles.editor') }}</SelectItem>
+              <SelectItem value="viewer">{{ t('team.roles.viewer') }}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
       <DialogFooter>
-        <Button variant="outline" @click="emit('update:open', false)">Отмена</Button>
-        <Button :disabled="submitting" @click="onSubmit">Отправить</Button>
+        <Button variant="outline" @click="emit('update:open', false)">{{ t('teamPage.inviteDialog.cancel') }}</Button>
+        <Button :disabled="submitting" @click="onSubmit">{{ t('teamPage.inviteDialog.submit') }}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>

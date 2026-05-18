@@ -1,4 +1,5 @@
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useWorkspaceContext, useWorkspacePermissions } from '~/lib-modules/workspaces'
 import { useWorkspaceMembersApi, useWorkspaceInvitesApi } from '../helpers/api'
 import {
@@ -21,6 +22,7 @@ export function useTeam() {
   const ctx = useWorkspaceContext()
   const membersApi = useWorkspaceMembersApi()
   const invitesApi = useWorkspaceInvitesApi()
+  const { t } = useI18n()
 
   const members = ref<WorkspaceMemberDto[]>([])
   const invites = ref<WorkspaceInviteDto[]>([])
@@ -57,12 +59,12 @@ export function useTeam() {
     const workspaceId = ctx.requireWorkspaceId()
     try {
       await invitesApi.createInvite(workspaceId, { email, role })
-      toastInviteSent(email)
+      toastInviteSent(t, email)
       await refetchInvites(workspaceId)
       return true
     } catch (e: any) {
       if (e?.status === 409 || e?.statusCode === 409) {
-        toastInviteDuplicate()
+        toastInviteDuplicate(t)
       }
       // 400 / 401 / 5xx тосты делает controller-уровень (не silent).
       return false
@@ -74,12 +76,12 @@ export function useTeam() {
     try {
       await invitesApi.revokeInvite(workspaceId, inviteId)
     } catch (e: any) {
-      if (e?.status === 403 || e?.statusCode === 403) toastForbiddenLocal()
+      if (e?.status === 403 || e?.statusCode === 403) toastForbiddenLocal(t)
     } finally {
       const before = invites.value.find(i => i.id === inviteId)
       await refetchInvites(workspaceId)
       const after = invites.value.find(i => i.id === inviteId)
-      if (before && !after) toastInviteRevoked()
+      if (before && !after) toastInviteRevoked(t)
     }
   }
 
@@ -88,12 +90,12 @@ export function useTeam() {
     try {
       await membersApi.updateMemberRole(workspaceId, userId, role)
     } catch (e: any) {
-      if (e?.status === 403 || e?.statusCode === 403) toastForbiddenLocal()
+      if (e?.status === 403 || e?.statusCode === 403) toastForbiddenLocal(t)
     } finally {
       const before = members.value.find(m => m.userId === userId)?.role
       await refetchMembers(workspaceId)
       const after = members.value.find(m => m.userId === userId)?.role
-      if (before !== after && after === role) toastRoleChanged()
+      if (before !== after && after === role) toastRoleChanged(t)
     }
   }
 
@@ -102,12 +104,12 @@ export function useTeam() {
     try {
       await membersApi.removeMember(workspaceId, userId)
     } catch (e: any) {
-      if (e?.status === 403 || e?.statusCode === 403) toastForbiddenLocal()
+      if (e?.status === 403 || e?.statusCode === 403) toastForbiddenLocal(t)
     } finally {
       const before = members.value.find(m => m.userId === userId)
       await refetchMembers(workspaceId)
       const after = members.value.find(m => m.userId === userId)
-      if (before && !after) toastMemberRemoved()
+      if (before && !after) toastMemberRemoved(t)
     }
   }
 
@@ -116,11 +118,11 @@ export function useTeam() {
     try {
       await membersApi.updateMemberRole(workspaceId, userId, 'owner')
     } catch (e: any) {
-      if (e?.status === 403 || e?.statusCode === 403) toastForbiddenLocal()
+      if (e?.status === 403 || e?.statusCode === 403) toastForbiddenLocal(t)
     } finally {
       await refetchMembers(workspaceId)
       const newOwner = members.value.find(m => m.userId === userId)
-      if (newOwner?.role === 'owner') toastOwnershipTransferred()
+      if (newOwner?.role === 'owner') toastOwnershipTransferred(t)
     }
   }
 

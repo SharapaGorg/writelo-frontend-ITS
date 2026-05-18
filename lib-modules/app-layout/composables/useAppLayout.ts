@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { usePlans } from '~/lib-modules/plans'
 import { useWorkspacePermissions } from '~/lib-modules/workspaces'
 import type { SidebarSection, SidebarItem, PermissionFlag } from '../types'
@@ -9,40 +10,41 @@ const activeSection = ref<SidebarSection>('calendar')
 export function useAppLayout() {
   const { isBusinessPlan } = usePlans()
   const permissions = useWorkspacePermissions()
+  const { t } = useI18n()
 
-  const allItems: SidebarItem[] = [
-    { id: 'calendar', icon: 'calendar', label: 'Календарь', route: '/app/calendar' },
-    { id: 'editor', icon: 'pen-square', label: 'Редактор', route: '/app/editor' },
-    { id: 'trends', icon: 'trending-up', label: 'Тренды', route: '/app/trends' },
-    { id: 'video-analyzer', icon: 'scan-search', label: 'Анализ видео', route: '/app/video-analyzer' },
-    { id: 'workspaces', icon: 'briefcase', label: 'Бренды', route: '/app/workspaces' },
-    { id: 'team', icon: 'users', label: 'Команда', route: '/app/team', requiresBusinessPlan: true },
+  const allItems = computed<SidebarItem[]>(() => [
+    { id: 'calendar', icon: 'calendar', label: t('sidebar.items.calendar'), route: '/app/calendar' },
+    { id: 'editor', icon: 'pen-square', label: t('sidebar.items.editor'), route: '/app/editor' },
+    { id: 'trends', icon: 'trending-up', label: t('sidebar.items.trends'), route: '/app/trends' },
+    { id: 'video-analyzer', icon: 'scan-search', label: t('sidebar.items.videoAnalyzer'), route: '/app/video-analyzer' },
+    { id: 'workspaces', icon: 'briefcase', label: t('sidebar.items.workspaces'), route: '/app/workspaces' },
+    { id: 'team', icon: 'users', label: t('sidebar.items.team'), route: '/app/team', requiresBusinessPlan: true },
     {
       id: 'activity',
       icon: 'history',
-      label: 'Журнал',
+      label: t('sidebar.items.activity'),
       route: '/app/activity',
       requiresBusinessPlan: true,
       requiresPermission: 'canViewActivityLog',
     },
-    { id: 'assistant', icon: 'sparkles', label: 'Ассистент', route: '/app/assistant' },
-  ]
+    { id: 'assistant', icon: 'sparkles', label: t('sidebar.items.assistant'), route: '/app/assistant' },
+  ])
 
   function hasPermission(flag: PermissionFlag): boolean {
     return permissions[flag].value
   }
 
   const sidebarItems = computed<SidebarItem[]>(() =>
-    allItems.filter(i =>
+    allItems.value.filter(i =>
       (!i.requiresBusinessPlan || isBusinessPlan.value) &&
       (!i.requiresPermission || hasPermission(i.requiresPermission))
     ),
   )
 
-  const bottomItems: SidebarItem[] = [
-    { id: 'profile', icon: 'user', label: 'Профиль', route: '/app/profile' },
-    { id: 'settings', icon: 'settings', label: 'Настройки', route: '/app/settings' },
-  ]
+  const bottomItems = computed<SidebarItem[]>(() => [
+    { id: 'profile', icon: 'user', label: t('sidebar.items.profile'), route: '/app/profile' },
+    { id: 'settings', icon: 'settings', label: t('sidebar.items.settings'), route: '/app/settings' },
+  ])
 
   function toggleSidebar() {
     isCollapsed.value = !isCollapsed.value

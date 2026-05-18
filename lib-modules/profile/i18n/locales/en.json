@@ -113,6 +113,23 @@
       "header": "Connected accounts",
       "description": "Sign in using third-party services"
     },
+    "usageLimits": {
+      "header": "Usage limits",
+      "rows": {
+        "model": "Model requests",
+        "search": "Web search",
+        "video": "Short video analysis"
+      },
+      "mood": {
+        "empty": "limit exhausted until reset",
+        "low": "time to get to work!",
+        "mid": "good work!",
+        "high": "you're on fire!"
+      },
+      "summaryPrefix": "You still have",
+      "summarySuffix": "of your limits —",
+      "resetsAt": "Resets"
+    },
     "dangerZone": {
       "header": "Danger Zone",
       "logout": "Log out",

@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { Loader2, Plus, MoreVertical, Trash2 } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Label } from '~/components/ui/label'
+
+const { t } = useI18n()
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +33,7 @@ function goToConnect(workspaceId: string) {
 <template>
   <div class="space-y-2 pb-4 border-b border-border">
     <div class="flex items-center justify-between">
-      <Label>Подключённые аккаунты</Label>
+      <Label>{{ t('brandAccounts.header') }}</Label>
       <Button
         v-if="loaded && accounts.length > 0 && canManage"
         variant="ghost"
@@ -39,7 +42,7 @@ function goToConnect(workspaceId: string) {
         @click="goToConnect(workspaceId)"
       >
         <Plus class="h-3.5 w-3.5" />
-        Добавить
+        {{ t('brandAccounts.add') }}
       </Button>
     </div>
 
@@ -48,7 +51,7 @@ function goToConnect(workspaceId: string) {
       class="flex items-center gap-2 py-3 text-sm text-muted-foreground"
     >
       <Loader2 class="h-4 w-4 animate-spin" />
-      Загружаем аккаунты...
+      {{ t('brandAccounts.loading') }}
     </div>
 
     <div v-else-if="accounts.length > 0" class="flex flex-wrap gap-2">
@@ -88,7 +91,7 @@ function goToConnect(workspaceId: string) {
             <button
               type="button"
               class="ml-1 rounded p-0.5 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Действия с аккаунтом"
+              :aria-label="t('brandAccounts.actions')"
             >
               <MoreVertical class="h-3.5 w-3.5" />
             </button>
@@ -99,7 +102,7 @@ function goToConnect(workspaceId: string) {
               @click="emit('unlink', a.id)"
             >
               <Trash2 class="mr-2 h-4 w-4" />
-              Отвязать
+              {{ t('brandAccounts.unlink') }}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -111,11 +114,11 @@ function goToConnect(workspaceId: string) {
       class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-3 px-3 rounded-md border border-dashed border-border bg-muted/20"
     >
       <p class="text-sm text-muted-foreground">
-        У этого бренда пока нет подключённых аккаунтов.
+        {{ t('brandAccounts.empty') }}
       </p>
       <Button v-if="canManage" size="sm" class="gap-1.5" @click="goToConnect(workspaceId)">
         <Plus class="h-4 w-4" />
-        Подключить аккаунт
+        {{ t('brandAccounts.connect') }}
       </Button>
     </div>
   </div>

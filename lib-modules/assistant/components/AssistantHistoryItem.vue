@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import {
@@ -35,6 +36,8 @@ const emit = defineEmits<{
   (e: 'delete'): void
 }>()
 
+const { t } = useI18n()
+
 const renameOpen = ref(false)
 const deleteOpen = ref(false)
 const renameTitle = ref('')
@@ -64,9 +67,9 @@ function startRename() {
 }
 
 function confirmRename() {
-  const t = renameTitle.value.trim()
-  if (t && t !== (props.item.title ?? '')) {
-    emit('rename', t.slice(0, 64))
+  const tt = renameTitle.value.trim()
+  if (tt && tt !== (props.item.title ?? '')) {
+    emit('rename', tt.slice(0, 64))
   }
   renameOpen.value = false
 }
@@ -85,7 +88,7 @@ function confirmDelete() {
     )"
     @click="emit('click')"
   >
-    <span v-if="!titlePending" class="flex-1 truncate">{{ item.title || 'Без названия' }}</span>
+    <span v-if="!titlePending" class="flex-1 truncate">{{ item.title || t('assistantPage.untitled') }}</span>
     <span v-else class="title-skeleton flex-1"></span>
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
@@ -100,10 +103,10 @@ function confirmDelete() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem @click="startRename">
-          <Pencil class="mr-2 h-4 w-4" /> Переименовать
+          <Pencil class="mr-2 h-4 w-4" /> {{ t('assistantPage.rename') }}
         </DropdownMenuItem>
         <DropdownMenuItem class="text-destructive focus:text-destructive" @click="deleteOpen = true">
-          <Trash2 class="mr-2 h-4 w-4" /> Удалить
+          <Trash2 class="mr-2 h-4 w-4" /> {{ t('assistantPage.delete') }}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -112,18 +115,18 @@ function confirmDelete() {
   <AlertDialog v-model:open="renameOpen">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Переименовать диалог</AlertDialogTitle>
+        <AlertDialogTitle>{{ t('assistantPage.renameDialog.title') }}</AlertDialogTitle>
       </AlertDialogHeader>
       <Input
         ref="renameInput"
         v-model="renameTitle"
         :maxlength="64"
-        placeholder="Название"
+        :placeholder="t('assistantPage.renameDialog.placeholder')"
         @keydown.enter="confirmRename"
       />
       <AlertDialogFooter>
-        <AlertDialogCancel>Отмена</AlertDialogCancel>
-        <AlertDialogAction @click="confirmRename">Сохранить</AlertDialogAction>
+        <AlertDialogCancel>{{ t('assistantPage.renameDialog.cancel') }}</AlertDialogCancel>
+        <AlertDialogAction @click="confirmRename">{{ t('assistantPage.renameDialog.save') }}</AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>
@@ -131,18 +134,18 @@ function confirmDelete() {
   <AlertDialog v-model:open="deleteOpen">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Удалить диалог?</AlertDialogTitle>
+        <AlertDialogTitle>{{ t('assistantPage.deleteDialog.title') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          Действие нельзя отменить. История этого диалога будет утеряна.
+          {{ t('assistantPage.deleteDialog.description') }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>Отмена</AlertDialogCancel>
+        <AlertDialogCancel>{{ t('assistantPage.deleteDialog.cancel') }}</AlertDialogCancel>
         <AlertDialogAction
           class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           @click="confirmDelete"
         >
-          Удалить
+          {{ t('assistantPage.deleteDialog.confirm') }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

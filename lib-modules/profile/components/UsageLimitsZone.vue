@@ -2,11 +2,13 @@
 import { computed, watch } from 'vue'
 import { Sparkles, Globe, Film, RefreshCw } from 'lucide-vue-next'
 import { useWorkspaceContext, useWorkspaceLimits } from '~/lib-modules/workspaces'
+import { useProfileI18n } from '../composables/useProfileI18n'
 import ProfilePageBlock from './ProfilePageBlock.vue'
 import { cn } from '~/lib-modules/utils'
 
 const { currentWorkspaceId } = useWorkspaceContext()
 const wl = useWorkspaceLimits()
+const { t, locale } = useProfileI18n()
 
 watch(
   currentWorkspaceId,
@@ -31,7 +33,7 @@ function asNum(v: number | string | undefined | null): number {
 const rows = computed<Row[]>(() => [
   {
     key: 'model',
-    label: 'Запросы к модели',
+    label: t('usageLimits.rows.model'),
     icon: Sparkles,
     bar: 'bg-brand',
     text: 'text-brand',
@@ -40,7 +42,7 @@ const rows = computed<Row[]>(() => [
   },
   {
     key: 'search',
-    label: 'Поиск в интернете',
+    label: t('usageLimits.rows.search'),
     icon: Globe,
     bar: 'bg-sky-500',
     text: 'text-sky-600 dark:text-sky-400',
@@ -49,7 +51,7 @@ const rows = computed<Row[]>(() => [
   },
   {
     key: 'video',
-    label: 'Анализ коротких видео',
+    label: t('usageLimits.rows.video'),
     icon: Film,
     bar: 'bg-violet-500',
     text: 'text-violet-600 dark:text-violet-400',
@@ -74,10 +76,10 @@ const overallPercent = computed<number>(() => {
 
 const moodComment = computed<string>(() => {
   const p = overallPercent.value
-  if (p === 0) return 'лимит исчерпан до обновления'
-  if (p >= 80) return 'пора за работу!'
-  if (p >= 40) return 'хорошая работа!'
-  return 'вы прямо в ударе!'
+  if (p === 0) return t('usageLimits.mood.empty')
+  if (p >= 80) return t('usageLimits.mood.low')
+  if (p >= 40) return t('usageLimits.mood.mid')
+  return t('usageLimits.mood.high')
 })
 
 const hasAnyLimit = computed<boolean>(() => rows.value.some(r => r.total > 0))
@@ -90,7 +92,8 @@ const resetAtText = computed(() => {
     null
   if (!at) return ''
   try {
-    return new Date(at).toLocaleString('ru-RU', {
+    const localeTag = locale.value === 'en' ? 'en-US' : 'ru-RU'
+    return new Date(at).toLocaleString(localeTag, {
       day: 'numeric',
       month: 'long',
       hour: '2-digit',
@@ -104,7 +107,7 @@ const resetAtText = computed(() => {
 
 <template>
   <ProfilePageBlock>
-    <template #header>Лимиты использования</template>
+    <template #header>{{ t('usageLimits.header') }}</template>
     <template #content>
       <!-- Skeleton: same row geometry so height doesn't shift on data arrival. -->
       <div v-if="!wl.isLoaded.value" class="flex flex-col gap-5">
@@ -124,9 +127,9 @@ const resetAtText = computed(() => {
 
       <div v-else class="flex flex-col gap-5">
         <p v-if="hasAnyLimit" class="text-sm text-muted-foreground">
-          У вас осталось ещё
+          {{ t('usageLimits.summaryPrefix') }}
           <span class="font-medium text-foreground tabular-nums">{{ overallPercent }}%</span>
-          лимитов — {{ moodComment }}
+          {{ t('usageLimits.summarySuffix') }} {{ moodComment }}
         </p>
         <div
           v-for="row in rows"
@@ -161,7 +164,7 @@ const resetAtText = computed(() => {
           class="flex items-center gap-1.5 pt-1 text-xs text-muted-foreground"
         >
           <RefreshCw class="h-3 w-3" />
-          Обновится {{ resetAtText }}
+          {{ t('usageLimits.resetsAt') }} {{ resetAtText }}
         </div>
       </div>
     </template>

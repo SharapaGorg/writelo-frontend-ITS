@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Save, Loader2, Send } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
@@ -53,6 +54,7 @@ const {
 const router = useRouter()
 const publicationsStore = usePublicationsStore()
 const projectStore = useContentProjectStore()
+const { t } = useI18n()
 
 // Published posts are view-only. Look up the canonical post in the project store
 // so we can show the live published link (which the editor's own ContentDraft drops).
@@ -80,7 +82,7 @@ const fallbackCapabilities: Record<SocialNetwork, ContentType[]> = {
 }
 
 const networkNames: Record<SocialNetwork, string> = {
-  vk: 'ВКонтакте',
+  vk: 'VK',
   instagram: 'Instagram',
   telegram: 'Telegram',
   youtube: 'YouTube',
@@ -115,7 +117,7 @@ const publishDisabledReason = computed<string | undefined>(() => {
   if (isPlatformSupported.value) return undefined
   const net = currentAccount.value.network
   const label = networkNames[net]
-  return `Публикация в ${label} скоро появится`
+  return t('contentEditor.publishComingSoon', { network: label })
 })
 
 function isContentTypeAvailable(type: ContentType): boolean {
@@ -126,7 +128,7 @@ function isContentTypeAvailable(type: ContentType): boolean {
 function getDisabledTooltip(type: ContentType): string | undefined {
   if (isContentTypeAvailable(type)) return undefined
   if (!currentNetwork.value) return undefined
-  return `Недоступно в ${networkNames[currentNetwork.value]}`
+  return t('contentEditor.notAvailableIn', { network: networkNames[currentNetwork.value] })
 }
 
 // Auto-switch to an available content type when the account's capabilities change
@@ -165,18 +167,18 @@ const scheduledDate = computed(() => currentDraft.value?.scheduledDate ?? null)
 const status = computed(() => currentDraft.value?.status ?? 'idea')
 
 // Status options with colors (published is not selectable - it's set through calendar publish flow)
-const statusOptions: { value: ContentStatus; label: string; color: string }[] = [
-  { value: 'idea', label: 'Идея', color: 'text-muted-foreground' },
-  { value: 'draft', label: 'Черновик', color: 'text-yellow-500' },
-  { value: 'ready', label: 'Готово', color: 'text-green-500' }
-]
+const statusOptions = computed<{ value: ContentStatus; label: string; color: string }[]>(() => [
+  { value: 'idea', label: t('contentEditor.statuses.idea'), color: 'text-muted-foreground' },
+  { value: 'draft', label: t('contentEditor.statuses.draft'), color: 'text-yellow-500' },
+  { value: 'ready', label: t('contentEditor.statuses.ready'), color: 'text-green-500' }
+])
 
 // Get current status option for display
 const currentStatusOption = computed(() => {
   if (isPublished.value) {
-    return { value: 'published' as ContentStatus, label: 'Опубликовано', color: 'text-blue-500' }
+    return { value: 'published' as ContentStatus, label: t('contentEditor.statuses.published'), color: 'text-blue-500' }
   }
-  return statusOptions.find(o => o.value === status.value) || statusOptions[0]
+  return statusOptions.value.find(o => o.value === status.value) || statusOptions.value[0]
 })
 
 // Check if post is published (status cannot be changed)
@@ -220,7 +222,7 @@ const handleAddImage = (event: { url: string; file: File }) => {
 const handleSave = async () => {
   if (props.showcaseMode) {
     // Showcase: no auth, no API. Pretend it worked so the UX feels real.
-    toast.success('Сохранено', { position: getToasterPosition() })
+    toast.success(t('contentEditor.savedToast'), { position: getToasterPosition() })
     return
   }
   await saveDraft()
@@ -237,20 +239,20 @@ const handlePublish = async () => {
   if (props.showcaseMode) {
     showPublishDialog.value = false
     showCelebration.value = true
-    toast.success('Публикуем...', { position: getToasterPosition() })
+    toast.success(t('contentEditor.publishingToast'), { position: getToasterPosition() })
     return
   }
   isPublishing.value = true
   try {
     await saveDraft()
     const effectivePostId = postId.value
-    if (!effectivePostId) throw new Error('Пост не сохранён')
+    if (!effectivePostId) throw new Error(t('contentEditor.notSavedError'))
 
     await publicationsStore.publishPost(effectivePostId)
 
     showPublishDialog.value = false
     showCelebration.value = true
-    toast.success('Публикуем...', { position: getToasterPosition() })
+    toast.success(t('contentEditor.publishingToast'), { position: getToasterPosition() })
     router.push('/app/calendar')
   } catch {
     // ApiController уже показал toast с detail; failed-карточка в сайдбаре несёт
@@ -272,7 +274,7 @@ const handlePublish = async () => {
         <circle cx="12" cy="12" r="10" fill="currentColor" fill-opacity="0.15"/>
         <path d="M8 12l2.5 2.5L16 9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <span class="flex-1">Пост опубликован — редактирование закрыто</span>
+      <span class="flex-1">{{ t('contentEditor.publishedBanner') }}</span>
       <a
         v-if="publishedLink"
         :href="publishedLink"
@@ -280,7 +282,7 @@ const handlePublish = async () => {
         rel="noopener noreferrer"
         class="inline-flex items-center gap-1 text-xs font-medium underline decoration-dotted hover:no-underline"
       >
-        Открыть <ExternalLink class="h-3 w-3" />
+        {{ t('contentEditor.openPublished') }} <ExternalLink class="h-3 w-3" />
       </a>
     </div>
 
@@ -418,7 +420,7 @@ const handlePublish = async () => {
       >
         <Loader2 v-if="isSaving" class="h-4 w-4 animate-spin" />
         <Save v-else class="h-4 w-4" />
-        Сохранить
+        {{ t('contentEditor.save') }}
       </Button>
 
       <!-- Publish button (only when status is 'ready') -->
@@ -430,7 +432,7 @@ const handlePublish = async () => {
         class="w-full gap-2 bg-green-600 hover:bg-green-700 disabled:bg-green-600/50 disabled:hover:bg-green-600/50"
       >
         <Send class="h-4 w-4" />
-        Опубликовать
+        {{ t('contentEditor.publish') }}
       </Button>
     </div>
 
@@ -438,20 +440,20 @@ const handlePublish = async () => {
     <AlertDialog :open="showPublishDialog" @update:open="showPublishDialog = $event">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Опубликовать пост?</AlertDialogTitle>
+          <AlertDialogTitle>{{ t('contentEditor.publishDialog.title') }}</AlertDialogTitle>
           <AlertDialogDescription>
-            Пост будет опубликован в выбранной социальной сети. Это действие нельзя отменить.
+            {{ t('contentEditor.publishDialog.description') }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel :disabled="isPublishing">Отмена</AlertDialogCancel>
+          <AlertDialogCancel :disabled="isPublishing">{{ t('contentEditor.publishDialog.cancel') }}</AlertDialogCancel>
           <AlertDialogAction
             @click="handlePublish"
             :disabled="isPublishing"
             class="bg-green-600 hover:bg-green-700"
           >
             <Loader2 v-if="isPublishing" class="h-4 w-4 animate-spin mr-2" />
-            Опубликовать
+            {{ t('contentEditor.publishDialog.confirm') }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

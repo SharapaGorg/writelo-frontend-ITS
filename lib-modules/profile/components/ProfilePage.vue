@@ -22,7 +22,7 @@ import { isInTelegramApp } from '~/scripts/features/utils'
 import { useDemoMode, useDemoGuard } from '~/lib-modules/demo-mode'
 import { useProfileI18n } from '../composables/useProfileI18n'
 
-const { t } = useProfileI18n()
+const { t, globalT } = useProfileI18n()
 const { isGuestDemo } = useDemoMode()
 const { guardAction } = useDemoGuard()
 const $settings = useSettings()
@@ -65,7 +65,7 @@ async function handleLogout() {
 
 <template>
   <div class="flex flex-col h-full">
-    <AppNavbar :breadcrumbs="[{ label: 'Профиль' }]" />
+    <AppNavbar :breadcrumbs="[{ label: globalT('sidebar.items.profile') }]" />
 
     <div class="flex-1 overflow-y-auto">
       <div class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 flex flex-col gap-6">

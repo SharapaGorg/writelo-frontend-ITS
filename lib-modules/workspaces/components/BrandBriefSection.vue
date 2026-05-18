@@ -44,9 +44,9 @@ const filledCount = computed(() =>
 )
 
 const statusLabel = computed(() => {
-  if (filledCount.value === 0) return 'Заполните, чтобы ИИ писал в стиле бренда'
-  if (filledCount.value === total.value) return 'Бриф заполнен полностью'
-  return `Заполнено ${filledCount.value} из ${total.value}`
+  if (filledCount.value === 0) return t_('brandBrief.fillHint')
+  if (filledCount.value === total.value) return t_('brandBrief.complete')
+  return t_('brandBrief.partial', { filled: filledCount.value, total: total.value })
 })
 
 function applyNiche(value: string) {
@@ -89,12 +89,12 @@ defineExpose({
 
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2">
-          <span class="font-medium">Бриф для ИИ</span>
+          <span class="font-medium">{{ t_('brandBrief.title') }}</span>
           <span
             v-if="filledCount === total"
             class="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded bg-brand/15 text-brand"
           >
-            полный
+            {{ t_('brandBrief.fullLabel') }}
           </span>
         </div>
         <div class="text-xs text-muted-foreground truncate">{{ statusLabel }}</div>

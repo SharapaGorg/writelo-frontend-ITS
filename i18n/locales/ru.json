@@ -658,7 +658,10 @@
         "pricing": "Тарифы",
         "contacts": "Контакты",
         "login": "Войти",
-        "start": "Старт"
+        "start": "Старт",
+        "privacy": "Конфиденциальность",
+        "terms": "Условия",
+        "dataDeletion": "Удаление данных"
       }
     }
   },
@@ -746,5 +749,561 @@
     "attachedImage": "Прикреплённое изображение",
     "generatedImage": "Сгенерированное изображение",
     "frameVisual": "Визуал кадра"
+  },
+  "languageNames": {
+    "ru": "Русский",
+    "en": "English"
+  },
+  "sidebar": {
+    "login": "Войти в аккаунт",
+    "unauthBanner": "Сейчас вы не авторизованы — часть функций недоступна",
+    "freePlanFallback": "Бесплатный",
+    "freePlanLabel": "Бесплатный тариф",
+    "teamPlanLabel": "Командная версия",
+    "openPlans": "Открыть тарифы →",
+    "contactMe": "Напишите мне 0_^",
+    "contactMeTooltip": "Напишите мне 0_^ — @sharapagorg",
+    "items": {
+      "calendar": "Календарь",
+      "editor": "Редактор",
+      "trends": "Тренды",
+      "videoAnalyzer": "Анализ видео",
+      "workspaces": "Бренды",
+      "team": "Команда",
+      "activity": "Журнал",
+      "assistant": "Ассистент",
+      "profile": "Профиль",
+      "settings": "Настройки"
+    },
+    "publications": {
+      "header": "Публикации",
+      "fallbackError": "Публикация не удалась",
+      "dismiss": "Убрать",
+      "openPost": "Открыть пост",
+      "retry": "Повторить",
+      "openPublishedTitle": "Открыть опубликованный пост"
+    },
+    "limits": {
+      "model": "Запросы к модели",
+      "search": "Поиск в интернете"
+    }
+  },
+  "navbar": {
+    "selectBrand": "Выберите бренд",
+    "createBrand": "Создать бренд"
+  },
+  "noAccess": {
+    "title": "Нет доступа",
+    "description": "У вашей роли нет прав для этого раздела. Если думаете, что это ошибка — напишите владельцу воркспейса.",
+    "back": "Назад к календарю"
+  },
+  "team": {
+    "toasts": {
+      "inviteSent": "Приглашение отправлено: {email}",
+      "inviteRevoked": "Приглашение отозвано",
+      "memberRemoved": "Участник удалён",
+      "roleChanged": "Роль обновлена",
+      "ownershipTransferred": "Владение передано",
+      "inviteDuplicate": "Этот email уже приглашён или участник",
+      "inviteAccepted": "Приглашение принято",
+      "inviteDeclined": "Приглашение отклонено",
+      "forbidden": "Недостаточно прав"
+    },
+    "roles": {
+      "admin": "Администратор",
+      "editor": "Редактор",
+      "viewer": "Зритель"
+    },
+    "invite": {
+      "loading": "Загрузка…",
+      "notFoundTitle": "Приглашение не найдено",
+      "notFoundDesc": "Ссылка устарела или повреждена.",
+      "toHome": "На главную",
+      "toApp": "В приложение",
+      "title": "Приглашение в «{name}»",
+      "description": "{name} приглашает вас как",
+      "expiresAt": "Срок действия: {date}",
+      "decline": "Отклонить",
+      "accept": "Принять",
+      "statusText": {
+        "accepted": "Вы уже приняли это приглашение.",
+        "expired": "Срок действия приглашения истёк.",
+        "revoked": "Приглашение было отозвано."
+      }
+    }
+  },
+  "plansPage": {
+    "breadcrumb": "Тарифы",
+    "title": "Тарифы",
+    "subtitle": "Сравните доступные планы и выберите подходящий.",
+    "empty": "Пока нет доступных тарифов.",
+    "unsureTitle": "Не уверены, какой тариф выбрать?",
+    "unsureSub": "Напишите мне — объясню что к чему в личном чате или на звонке.",
+    "toasts": {
+      "subscribed": "Подписка активирована",
+      "paymentFailed": "Оплата не прошла"
+    }
+  },
+  "assistant": {
+    "errors": {
+      "selectBrand": "Сначала выбери бренд в верхней панели.",
+      "createConversation": "Не удалось создать диалог. Попробуй ещё раз.",
+      "sendMessage": "Не удалось отправить сообщение.",
+      "serverBusy": "\n**Сервер занят**"
+    }
+  },
+  "videoAnalyzer": {
+    "breadcrumb": "Анализ видео",
+    "breadcrumbDetail": "Анализ",
+    "backToList": "Назад к списку",
+    "returnToList": "Вернуться к списку",
+    "loadingDetail": "Загружаем анализ…",
+    "notFoundTitle": "Анализ не найден",
+    "notFoundDesc": "Возможно, он был удалён или принадлежит другому бренду.",
+    "processingTitle": "Анализ в процессе",
+    "processingDesc": "Обычно занимает 30–90 секунд. Можешь оставить вкладку открытой — результат появится здесь автоматически.",
+    "failedTitle": "Не удалось выполнить анализ",
+    "retry": "Попробовать снова",
+    "mockBadge": "Mock-режим: показан пример v2-ответа. Реальный анализ сюда не подгружается.",
+    "exitMock": "Выйти из мока",
+    "mockV2Cta": "Открыть v2-превью (моковые данные)",
+    "input": {
+      "placeholder": "Вставь ссылку на YouTube Shorts, TikTok или Instagram Reels",
+      "analyze": "Анализировать",
+      "limitsLoading": "Загрузка лимита…",
+      "limitExhausted": "Лимит исчерпан",
+      "leftCountOne": "Осталось {n} анализ",
+      "leftCountFew": "Осталось {n} анализа",
+      "leftCountMany": "Осталось {n} анализов",
+      "goToPlans": "Перейти к тарифам",
+      "resetsAt": " · обновится {date}"
+    },
+    "grid": {
+      "emptyTitle": "Здесь будут анализы видео",
+      "emptyDesc": "Вставь ссылку на короткое видео — мы сделаем транскрипцию, разберём структуру, выделим хуки и подскажем, что улучшить.",
+      "refreshing": "Обновляем список…"
+    },
+    "statuses": {
+      "processing": "В процессе",
+      "completed": "Готово",
+      "failed": "Ошибка"
+    },
+    "history": {
+      "failedToAnalyze": "Не удалось проанализировать"
+    },
+    "summary": {
+      "header": "Краткое описание",
+      "rows": {
+        "topic": "Тема",
+        "essence": "Суть",
+        "screen": "Что на экране",
+        "description": "Описание"
+      }
+    },
+    "errors": {
+      "notAllowed": "У вашей роли нет прав запускать анализ.",
+      "limitReached": "Лимит анализов исчерпан.",
+      "unavailable": "Сервис анализа временно недоступен. Попробуйте позже.",
+      "failed": "Анализатор не справился с этим видео. Попробуйте другую ссылку.",
+      "unsupportedUrl": "Ссылка не поддерживается. Доступны YouTube Shorts, TikTok, Instagram Reels.",
+      "tooLong": "Видео слишком длинное для анализа.",
+      "importFailed": "Не удалось импортировать видео. Проверьте, что оно публичное.",
+      "downloadFailed": "Не удалось скачать видео. Попробуйте позже.",
+      "previewFailed": "Не удалось получить превью видео.",
+      "missingVideo": "Видео не найдено по этой ссылке.",
+      "generic": "Не удалось выполнить анализ."
+    }
+  },
+  "activityLog": {
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "system": "Система",
+    "breadcrumb": "Журнал",
+    "wsSubtitle": "История действий в этом бренде.",
+    "selectBrand": "Выберите бренд в селекторе сверху",
+    "forbidden": "Журнал доступен только владельцу или администратору воркспейса.",
+    "noRecords": "Записей нет",
+    "loadMore": "Загрузить ещё",
+    "loading": "Загрузка…",
+    "events": {
+      "one": "событие",
+      "few": "события",
+      "many": "событий"
+    },
+    "entities": {
+      "post": "пост",
+      "post_media": "медиа поста",
+      "conversation": "диалог",
+      "message": "сообщение",
+      "workspace": "воркспейс",
+      "workspace_member": "участник",
+      "member": "участник",
+      "workspace_invite": "приглашение",
+      "invite": "приглашение",
+      "social_account": "соц-аккаунт",
+      "account": "аккаунт",
+      "tag": "тег",
+      "image": "картинка",
+      "draft": "черновик",
+      "brand_brief": "бриф"
+    },
+    "verbs": {
+      "create": "создал",
+      "update": "изменил",
+      "delete": "удалил",
+      "remove": "убрал",
+      "archive": "архивировал",
+      "invite": "пригласил",
+      "revoke": "отозвал",
+      "accept": "принял",
+      "expire": "истёк",
+      "join": "вступил",
+      "leave": "покинул",
+      "link": "привязал",
+      "unlink": "отвязал",
+      "connect": "подключил",
+      "disconnect": "отключил",
+      "publish": "опубликовал",
+      "schedule": "запланировал",
+      "unpublish": "снял с публикации",
+      "upload": "загрузил",
+      "generate": "сгенерил",
+      "rename": "переименовал",
+      "transfer": "передал",
+      "publishScheduled": "запланировал публикацию",
+      "changeRole": "сменил роль",
+      "transferOwnership": "передал владение",
+      "addMedia": "добавил медиа",
+      "removeMedia": "удалил медиа",
+      "uploadMedia": "загрузил медиа",
+      "upsertMedia": "обновил медиа",
+      "resend": "переотправил",
+      "send": "отправил",
+      "cancel": "отменил",
+      "reschedule": "перенёс"
+    },
+    "roles": {
+      "owner": "владелец",
+      "admin": "админ",
+      "editor": "редактор",
+      "viewer": "зритель"
+    },
+    "payload": {
+      "asRole": "как {role}"
+    }
+  },
+  "rolesNames": {
+    "owner": "Владелец",
+    "admin": "Админ",
+    "editor": "Редактор",
+    "viewer": "Зритель"
+  },
+  "devTools": {
+    "header": "Dev tools",
+    "devOnly": "(только в dev-режиме)",
+    "grantBusiness": "Выдать себе бизнес-тариф",
+    "granted": "Бизнес-тариф выдан"
+  },
+  "workspacesPage": {
+    "breadcrumb": "Бренды",
+    "createBrand": "Создать бренд",
+    "loading": "Загрузка...",
+    "empty": "У вас ещё нет ни одного бренда.",
+    "createFirst": "Создать первый бренд",
+    "newBrand": "Новый бренд",
+    "create": "Создать",
+    "deleteDialog": {
+      "title": "Удалить бренд?",
+      "description": "Это действие необратимо. Все данные бренда будут удалены без возможности восстановления."
+    },
+    "unlinkDialog": {
+      "title": "Отвязать аккаунт?",
+      "description": "Канал «{name}» будет отвязан от бренда. Запланированные публикации в него не пройдут.",
+      "confirm": "Отвязать"
+    },
+    "toasts": {
+      "nameRequired": "Название бренда обязательно",
+      "createFailed": "Не удалось создать бренд",
+      "briefSaveFailed": "Бренд создан, но бриф не сохранился",
+      "updateFailed": "Не удалось сохранить изменения",
+      "accountUnlinked": "Аккаунт отвязан",
+      "accountUnlinkFailed": "Не получилось отвязать аккаунт"
+    }
+  },
+  "connectAccount": {
+    "channelsAndChats": "Каналы и чаты",
+    "vkName": "ВКонтакте",
+    "groupsAndPages": "Группы и страницы",
+    "businessAccounts": "Бизнес-аккаунты",
+    "channels": "Каналы",
+    "accountLinked": "Аккаунт привязан",
+    "channelLinked": "Канал привязан",
+    "brands": "Бренды",
+    "addSocial": "Добавить соц. сети",
+    "pickPlatform": "Выберите платформу, чтобы добавить аккаунт к бренду.",
+    "soon": "Скоро",
+    "connectWith": "Подключить {platform}",
+    "telegramAuth": "Авторизуйтесь через Telegram, чтобы связать канал с брендом.",
+    "instagramAuth": "Авторизуйтесь через Instagram Business Login, чтобы привязать бизнес-аккаунт.",
+    "comingSoonDesc": "Интеграция с этой платформой появится в ближайших обновлениях.",
+    "comingSoonNote": "Скоро будет доступно"
+  },
+  "brandAccounts": {
+    "header": "Подключённые аккаунты",
+    "add": "Добавить",
+    "loading": "Загружаем аккаунты...",
+    "actions": "Действия с аккаунтом",
+    "unlink": "Отвязать",
+    "empty": "У этого бренда пока нет подключённых аккаунтов.",
+    "connect": "Подключить аккаунт"
+  },
+  "brandBrief": {
+    "title": "Бриф для ИИ",
+    "fillHint": "Заполните, чтобы ИИ писал в стиле бренда",
+    "complete": "Бриф заполнен полностью",
+    "partial": "Заполнено {filled} из {total}",
+    "fullLabel": "полный"
+  },
+  "teamPage": {
+    "breadcrumb": "Команда",
+    "inviteShort": "Пригласить",
+    "subtitle": "Участники и приглашения этого бренда.",
+    "selectBrand": "Выберите бренд в селекторе сверху",
+    "loading": "Загрузка…",
+    "invites": {
+      "title": "Приглашения",
+      "empty": "Активных приглашений нет",
+      "expired": "истёк",
+      "expiresInOne": "истекает через {days} день",
+      "expiresInFew": "истекает через {days} дня",
+      "expiresInMany": "истекает через {days} дней",
+      "revoke": "Отозвать",
+      "revokeDialog": {
+        "title": "Отозвать приглашение?",
+        "description": "«{email}» больше не сможет принять это приглашение.",
+        "cancel": "Отмена",
+        "confirm": "Отозвать"
+      }
+    },
+    "members": {
+      "title": "Участники",
+      "changeRole": "Сменить роль",
+      "transferOwnership": "Передать владение…",
+      "remove": "Удалить",
+      "removeDialog": {
+        "title": "Удалить участника?",
+        "description": "«{name}» потеряет доступ к воркспейсу.",
+        "cancel": "Отмена",
+        "confirm": "Удалить"
+      }
+    },
+    "inviteDialog": {
+      "title": "Пригласить участника",
+      "description": "Отправим письмо со ссылкой-приглашением. Срок действия — 14 дней.",
+      "emailInvalid": "Некорректный email",
+      "roleLabel": "Роль",
+      "cancel": "Отмена",
+      "submit": "Отправить"
+    },
+    "transferDialog": {
+      "title": "Передать владение?",
+      "description1": "«{name}» станет владельцем воркспейса. Вы потеряете права владельца —",
+      "description2": "вероятнее всего, останетесь администратором (точное поведение определяется бэком).",
+      "description3": "Действие необратимо без обратной передачи нового владельца.",
+      "confirmLabel": "Введите email нового владельца, чтобы подтвердить",
+      "cancel": "Отмена",
+      "confirm": "Передать владение"
+    }
+  },
+  "assistantPage": {
+    "breadcrumb": "Ассистент",
+    "messagePlaceholder": "Напиши сообщение...",
+    "newChat": "Новый чат",
+    "searchPlaceholder": "Поиск...",
+    "emptyHistory": "Нет диалогов. Напиши первое сообщение.",
+    "untitled": "Без названия",
+    "rename": "Переименовать",
+    "delete": "Удалить",
+    "renameDialog": {
+      "title": "Переименовать диалог",
+      "placeholder": "Название",
+      "cancel": "Отмена",
+      "save": "Сохранить"
+    },
+    "deleteDialog": {
+      "title": "Удалить диалог?",
+      "description": "Действие нельзя отменить. История этого диалога будет утеряна.",
+      "cancel": "Отмена",
+      "confirm": "Удалить"
+    },
+    "actionCard": {
+      "saveFailed": "Не удалось сохранить идею",
+      "saved": "Идея сохранена: {title}",
+      "connectAccount": "Сначала подключите соц. аккаунт к этому workspace",
+      "toEditor": "В редактор",
+      "savedLabel": "Сохранено: {title}"
+    },
+    "empty": {
+      "title": "Чем поможет?",
+      "description": "Спроси про идеи постов, тренды, или просто поговори про свой бренд",
+      "suggestions": {
+        "reelIdeas": "Дай 5 идей для рилса в нише бьюти",
+        "trends": "Что сейчас в трендах у инфлюенсеров",
+        "hook": "Напиши хук для поста про новый продукт",
+        "brandAnalysis": "Анализ моего бренда: с чего начать"
+      }
+    }
+  },
+  "contentEditor": {
+    "newPost": "Новый пост",
+    "calendarCrumb": "Календарь",
+    "publishedBanner": "Пост опубликован — редактирование закрыто",
+    "openPublished": "Открыть",
+    "publishComingSoon": "Публикация в {network} скоро появится",
+    "notAvailableIn": "Недоступно в {network}",
+    "save": "Сохранить",
+    "publish": "Опубликовать",
+    "savedToast": "Сохранено",
+    "publishingToast": "Публикуем...",
+    "notSavedError": "Пост не сохранён",
+    "accountUnlinked": "Аккаунт отвязан",
+    "accountUnlinkFailed": "Не получилось отвязать аккаунт",
+    "statuses": {
+      "idea": "Идея",
+      "draft": "Черновик",
+      "ready": "Готово",
+      "published": "Опубликовано"
+    },
+    "unlinkDialog": {
+      "title": "Отвязать аккаунт?",
+      "description": "Канал «{name}» будет отвязан от бренда. Запланированные публикации в него не пройдут.",
+      "cancel": "Отмена",
+      "confirm": "Отвязать"
+    },
+    "publishDialog": {
+      "title": "Опубликовать пост?",
+      "description": "Пост будет опубликован в выбранной социальной сети. Это действие нельзя отменить.",
+      "cancel": "Отмена",
+      "confirm": "Опубликовать"
+    }
+  },
+  "calendarPage": {
+    "breadcrumb": "Календарь",
+    "statusLabel": "Статус:",
+    "statuses": {
+      "idea": "Идея",
+      "draft": "Черновик",
+      "ready": "Готов",
+      "published": "Опубликован"
+    },
+    "contentTypes": {
+      "post": "Пост",
+      "story": "Сторис",
+      "reel": "Рилс",
+      "article": "Статья"
+    },
+    "tagsLabel": "Теги:",
+    "tagsAll": "(все)",
+    "addTag": "+ Добавить тег",
+    "searchTags": "Поиск тегов...",
+    "noTagsFound": "Ничего не найдено",
+    "accountDialog": {
+      "title": "Выберите аккаунт",
+      "description": "В какой аккаунт добавить идею?"
+    },
+    "unlinkDialog": {
+      "title": "Отвязать аккаунт?",
+      "description": "Канал «{name}» будет отвязан от бренда. Запланированные публикации в него не пройдут.",
+      "cancel": "Отмена",
+      "confirm": "Отвязать"
+    },
+    "deletePostDialog": {
+      "title": "Удалить пост?",
+      "description": "Пост «{title}» будет удалён без возможности восстановления.",
+      "untitled": "без названия",
+      "cancel": "Отмена",
+      "confirm": "Удалить"
+    },
+    "newsSource": "Источник: {source}\n{url}",
+    "toasts": {
+      "accountUnlinked": "Аккаунт отвязан",
+      "accountUnlinkFailed": "Не получилось отвязать аккаунт",
+      "postDeleteFailed": "Не удалось удалить пост. Повтори попытку позже.",
+      "loginToCreate": "Войдите в аккаунт, чтобы создавать посты",
+      "connectAccountFirst": "Сначала подключите соц. аккаунт к этому workspace"
+    },
+    "accountsSidebar": {
+      "header": "Аккаунты",
+      "loading": "Загрузка…",
+      "empty": "Нет подключённых аккаунтов",
+      "connect": "Подключить",
+      "connectTooltip": "Подключить аккаунт",
+      "unlink": "Отвязать"
+    },
+    "newsSidebar": {
+      "header": "Актуальное",
+      "hint": "Перетащите в календарь для создания идеи",
+      "empty": "Нет данных для отображения"
+    },
+    "sidebarTabs": {
+      "post": "Пост",
+      "day": "День",
+      "news": "Новости"
+    },
+    "newPost": {
+      "label": "Название поста",
+      "placeholder": "Введите название...",
+      "cancel": "Отмена",
+      "create": "Создать"
+    },
+    "noPostsForDate": "Нет постов на эту дату",
+    "createPostTooltip": "Создать пост",
+    "postCard": {
+      "types": {
+        "post": "Пост",
+        "story": "Сторис",
+        "reels": "Рилс",
+        "article": "Статья"
+      },
+      "statuses": {
+        "idea": "Идея",
+        "draft": "Черновик",
+        "ready": "Готов",
+        "publishing": "Публикуется",
+        "published": "Опубликован",
+        "failed": "Ошибка"
+      }
+    },
+    "postPreview": {
+      "openPost": "Открыть пост",
+      "edit": "Редактировать",
+      "deleteTooltip": "Удалить пост",
+      "publishedLinkLabel": "Ссылка на публикацию",
+      "open": "Открыть",
+      "atTime": "в {time}",
+      "publish": "Опубликовать",
+      "statuses": {
+        "idea": "Идея",
+        "draft": "Черновик",
+        "ready": "Готов к публикации",
+        "publishing": "Публикуется...",
+        "published": "Опубликован",
+        "failed": "Ошибка публикации"
+      },
+      "publishDialog": {
+        "title": "Опубликовать пост?",
+        "description": "Пост будет опубликован в выбранной социальной сети. Это действие нельзя отменить.",
+        "cancel": "Отмена",
+        "confirm": "Опубликовать"
+      }
+    }
+  },
+  "activityLogFilters": {
+    "user": "Участник",
+    "all": "Все",
+    "from": "С",
+    "to": "По",
+    "notSet": "Не задано",
+    "reset": "Сбросить"
   }
 }

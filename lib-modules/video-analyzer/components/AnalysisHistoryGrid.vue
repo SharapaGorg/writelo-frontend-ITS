@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Loader2, ScanSearch } from 'lucide-vue-next'
 import AnalysisHistoryCard from './AnalysisHistoryCard.vue'
 import type { ShortVideoAnalysisHistoryItemDto } from '../types'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   items: ShortVideoAnalysisHistoryItemDto[]
@@ -36,10 +39,9 @@ const showEmpty = computed(() => !props.isLoading && props.items.length === 0)
       <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
         <ScanSearch class="h-6 w-6 text-muted-foreground" />
       </div>
-      <h3 class="mb-1 text-lg font-semibold">Здесь будут анализы видео</h3>
+      <h3 class="mb-1 text-lg font-semibold">{{ t('videoAnalyzer.grid.emptyTitle') }}</h3>
       <p class="max-w-md text-sm text-muted-foreground">
-        Вставь ссылку на короткое видео — мы сделаем транскрипцию, разберём
-        структуру, выделим хуки и подскажем, что улучшить.
+        {{ t('videoAnalyzer.grid.emptyDesc') }}
       </p>
     </div>
 
@@ -59,7 +61,7 @@ const showEmpty = computed(() => !props.isLoading && props.items.length === 0)
       class="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground"
     >
       <Loader2 class="h-3 w-3 animate-spin" />
-      Обновляем список…
+      {{ t('videoAnalyzer.grid.refreshing') }}
     </div>
   </div>
 </template>

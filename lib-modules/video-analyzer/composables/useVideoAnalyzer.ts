@@ -1,4 +1,5 @@
 import { ref, computed, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { toastError } from '~/scripts/features/utils/toater'
 import { useVideoAnalyzerApi } from '../helpers/api'
@@ -14,6 +15,7 @@ export function useVideoAnalyzer() {
   const api = useVideoAnalyzerApi()
   const store = useVideoAnalyzerStore()
   const limits = useAnalysisLimits()
+  const { t } = useI18n()
 
   const history = computed(() => {
     try {
@@ -163,7 +165,7 @@ export function useVideoAnalyzer() {
       // Prefer SSE message (already localized). Fall back to the freshly
       // refetched history row, which carries a stable errorCode.
       const item = store.getHistory(wid).find(i => i.originalUrl === url || i.normalizedUrl === url)
-      const msg = humanizeAnalysisError(item?.errorCode, endPayload?.message ?? item?.errorMessage)
+      const msg = humanizeAnalysisError(t, item?.errorCode, endPayload?.message ?? item?.errorMessage)
       toastError(msg)
       return null
     }

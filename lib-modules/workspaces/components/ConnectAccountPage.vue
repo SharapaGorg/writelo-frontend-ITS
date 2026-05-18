@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Loader2 } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
@@ -20,6 +21,7 @@ import type { SocialNetwork } from '~/lib-modules/content-calendar/types'
 import { getToasterPosition } from '~/scripts/features/utils/toater'
 
 const route = useRoute()
+const { t } = useI18n()
 
 const workspaceId = computed(() => String(route.query.workspaceId ?? ''))
 const workspace = ref<WorkspaceDto | null>(null)
@@ -36,41 +38,41 @@ interface PlatformOption {
   available: boolean
 }
 
-const platforms: PlatformOption[] = [
+const platforms = computed<PlatformOption[]>(() => [
   {
     id: 'telegram',
     name: 'Telegram',
-    description: 'Каналы и чаты',
+    description: t('connectAccount.channelsAndChats'),
     badgeClass: 'bg-sky-500',
     available: true,
   },
   {
     id: 'vk',
-    name: 'ВКонтакте',
-    description: 'Группы и страницы',
+    name: t('connectAccount.vkName'),
+    description: t('connectAccount.groupsAndPages'),
     badgeClass: 'bg-blue-600',
     available: false,
   },
   {
     id: 'instagram',
     name: 'Instagram',
-    description: 'Бизнес-аккаунты',
+    description: t('connectAccount.businessAccounts'),
     badgeClass: 'bg-gradient-to-br from-purple-500 to-pink-500',
     available: true,
   },
   {
     id: 'youtube',
     name: 'YouTube',
-    description: 'Каналы',
+    description: t('connectAccount.channels'),
     badgeClass: 'bg-red-600',
     available: false,
   },
-]
+])
 
 const dialogOpen = ref(false)
 const selectedPlatformId = ref<SocialNetwork | null>(null)
 const selectedPlatform = computed(() =>
-  platforms.find((p) => p.id === selectedPlatformId.value) ?? null,
+  platforms.value.find((p) => p.id === selectedPlatformId.value) ?? null,
 )
 
 function openPlatform(id: SocialNetwork) {
@@ -79,7 +81,9 @@ function openPlatform(id: SocialNetwork) {
 }
 
 async function onChannelLinked(_socialAccountId: string) {
-  const label = selectedPlatform.value?.id === 'instagram' ? 'Аккаунт привязан' : 'Канал привязан'
+  const label = selectedPlatform.value?.id === 'instagram'
+    ? t('connectAccount.accountLinked')
+    : t('connectAccount.channelLinked')
   toast.success(label, { position: getToasterPosition() })
   dialogOpen.value = false
   // Принудительный рефетч в стор: дефолтный watcher на смене workspaceId
@@ -93,9 +97,9 @@ async function onChannelLinked(_socialAccountId: string) {
 }
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
-  { label: 'Бренды', to: '/app/workspaces' },
+  { label: t('connectAccount.brands'), to: '/app/workspaces' },
   { label: workspace.value?.name ?? '…' },
-  { label: 'Добавить соц. сети' },
+  { label: t('connectAccount.addSocial') },
 ])
 
 onMounted(async () => {
@@ -125,7 +129,7 @@ onMounted(async () => {
     <div class="flex-1 overflow-y-auto px-6 py-6">
       <div class="mx-auto max-w-2xl">
         <p class="text-sm text-muted-foreground mb-4">
-          Выберите платформу, чтобы добавить аккаунт к бренду.
+          {{ t('connectAccount.pickPlatform') }}
         </p>
         <div class="grid gap-3 sm:grid-cols-2">
           <button
@@ -161,7 +165,7 @@ onMounted(async () => {
                   v-if="!p.available"
                   class="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
                 >
-                  Скоро
+                  {{ t('connectAccount.soon') }}
                 </span>
               </div>
               <div class="text-sm text-muted-foreground">{{ p.description }}</div>
@@ -175,16 +179,16 @@ onMounted(async () => {
       <DialogContent class="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            Подключить {{ selectedPlatform?.name ?? '' }}
+            {{ t('connectAccount.connectWith', { platform: selectedPlatform?.name ?? '' }) }}
           </DialogTitle>
           <DialogDescription v-if="selectedPlatform?.id === 'telegram'">
-            Авторизуйтесь через Telegram, чтобы связать канал с брендом.
+            {{ t('connectAccount.telegramAuth') }}
           </DialogDescription>
           <DialogDescription v-else-if="selectedPlatform?.id === 'instagram'">
-            Авторизуйтесь через Instagram Business Login, чтобы привязать бизнес-аккаунт.
+            {{ t('connectAccount.instagramAuth') }}
           </DialogDescription>
           <DialogDescription v-else>
-            Интеграция с этой платформой появится в ближайших обновлениях.
+            {{ t('connectAccount.comingSoonDesc') }}
           </DialogDescription>
         </DialogHeader>
 
@@ -199,7 +203,7 @@ onMounted(async () => {
         />
         <div v-else class="py-6 flex items-center justify-center text-sm text-muted-foreground gap-2">
           <Loader2 class="h-4 w-4 animate-spin" />
-          Скоро будет доступно
+          {{ t('connectAccount.comingSoonNote') }}
         </div>
       </DialogContent>
     </Dialog>

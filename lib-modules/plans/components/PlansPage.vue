@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { Send } from 'lucide-vue-next'
 import { AppNavbar } from '~/lib-modules/app-layout'
@@ -10,6 +11,7 @@ import PlanCard from './PlanCard.vue'
 import { usePlans } from '../composables/usePlans'
 
 const { plans, loaded, isCurrentPlan, isPopularPlan } = usePlans()
+const { t } = useI18n()
 
 async function handlePaymentMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return
@@ -22,9 +24,9 @@ async function handlePaymentMessage(event: MessageEvent) {
     } catch (e) {
       console.error('refreshUserData after payment failed', e)
     }
-    toast.success('Подписка активирована', { position: getToasterPosition() })
+    toast.success(t('plansPage.toasts.subscribed'), { position: getToasterPosition() })
   } else if (data.status === 'fail') {
-    toastError('Оплата не прошла')
+    toastError(t('plansPage.toasts.paymentFailed'))
   }
 }
 
@@ -39,14 +41,14 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="flex flex-col h-full">
-    <AppNavbar :breadcrumbs="[{ label: 'Тарифы' }]" />
+    <AppNavbar :breadcrumbs="[{ label: t('plansPage.breadcrumb') }]" />
 
     <div class="flex-1 overflow-y-auto">
       <div class="max-w-6xl mx-auto w-full px-4 sm:px-6 py-8 flex flex-col gap-8">
         <header class="flex flex-col gap-2">
-          <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight">Тарифы</h1>
+          <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight">{{ t('plansPage.title') }}</h1>
           <p class="text-sm text-muted-foreground max-w-2xl">
-            Сравните доступные планы и выберите подходящий.
+            {{ t('plansPage.subtitle') }}
           </p>
         </header>
 
@@ -69,16 +71,16 @@ onBeforeUnmount(() => {
           v-else
           class="rounded-xl border border-dashed bg-muted/30 px-6 py-12 text-center text-sm text-muted-foreground"
         >
-          Пока нет доступных тарифов.
+          {{ t('plansPage.empty') }}
         </div>
 
         <div
           class="rounded-xl border border-border bg-muted/30 px-6 py-5 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5"
         >
           <div class="flex-1 min-w-0">
-            <div class="text-sm font-medium">Не уверены, какой тариф выбрать?</div>
+            <div class="text-sm font-medium">{{ t('plansPage.unsureTitle') }}</div>
             <p class="text-sm text-muted-foreground mt-1">
-              Напишите мне — объясню что к чему в личном чате или на звонке.
+              {{ t('plansPage.unsureSub') }}
             </p>
           </div>
           <a

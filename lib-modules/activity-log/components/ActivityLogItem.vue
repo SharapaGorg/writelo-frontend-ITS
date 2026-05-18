@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { ActivityLogItemDto } from '../types'
 import { mapAction, entityCaption } from '../helpers/formatting'
 
 const props = defineProps<{ item: ActivityLogItemDto }>()
+const { t, locale } = useI18n()
 
-const actorName = computed(() => props.item.actor?.name ?? 'Система')
+const actorName = computed(() => props.item.actor?.name ?? t('activityLog.system'))
 
 function initials(name: string | null | undefined): string {
   if (!name) return '?'
@@ -18,7 +20,8 @@ function initials(name: string | null | undefined): string {
 }
 
 function timeOf(iso: string): string {
-  return new Date(iso).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+  const localeTag = locale.value === 'en' ? 'en-US' : 'ru-RU'
+  return new Date(iso).toLocaleTimeString(localeTag, { hour: '2-digit', minute: '2-digit' })
 }
 </script>
 
@@ -30,11 +33,11 @@ function timeOf(iso: string): string {
     <div class="min-w-0 flex-1">
       <div class="text-sm">
         <span class="font-medium">{{ actorName }}</span>
-        <span class="text-muted-foreground"> · {{ mapAction(item) }}</span>
+        <span class="text-muted-foreground"> · {{ mapAction(t, item) }}</span>
       </div>
       <div class="text-xs text-muted-foreground">
-        <template v-if="entityCaption(item)">
-          {{ entityCaption(item) }} ·
+        <template v-if="entityCaption(t, item)">
+          {{ entityCaption(t, item) }} ·
         </template>
         {{ timeOf(item.createdAt) }}
       </div>

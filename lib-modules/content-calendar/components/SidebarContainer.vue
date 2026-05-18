@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Loader2 } from 'lucide-vue-next'
 import PostPreviewPanel from './PostPreviewPanel.vue'
 import NewsSidebar from './NewsSidebar.vue'
+
+const { t, locale } = useI18n()
 import type { CalendarPost, InfoEvent, ContentTag, NewsItem, TrendItem, SocialAccount } from '../types'
 import { getFunDayForDate } from '../data/funDays'
 import PostCard from './PostCard.vue'
@@ -66,7 +69,7 @@ const showTabs = computed(() =>
 )
 
 const contextTabLabel = computed(() =>
-  props.selectedPost ? 'Пост' : 'День'
+  props.selectedPost ? t('calendarPage.sidebarTabs.post') : t('calendarPage.sidebarTabs.day')
 )
 
 watch([() => props.selectedDate, () => props.selectedPost], ([newDate, newPost], [oldDate, oldPost]) => {
@@ -81,7 +84,8 @@ watch([() => props.selectedDate, () => props.selectedPost], ([newDate, newPost],
 const formattedDate = computed(() => {
   if (!props.selectedDate) return ''
   const d = new Date(props.selectedDate)
-  return d.toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' })
+  const tag = locale.value === 'en' ? 'en-US' : 'ru-RU'
+  return d.toLocaleDateString(tag, { day: 'numeric', month: 'long', year: 'numeric' })
 })
 
 const funDay = computed(() =>
@@ -117,7 +121,7 @@ const funDay = computed(() =>
         ]"
         @click="activeTab = 'news'"
       >
-        Новости
+        {{ t('calendarPage.sidebarTabs.news') }}
       </button>
     </div>
 
@@ -155,7 +159,7 @@ const funDay = computed(() =>
           <div class="flex items-center gap-2">
             <button
               class="w-7 h-7 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground flex items-center justify-center transition-colors"
-              title="Создать пост"
+              :title="t('calendarPage.createPostTooltip')"
               @click="emit('createPost')"
             >
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
@@ -176,12 +180,12 @@ const funDay = computed(() =>
             v-if="isCreatingPost"
             class="mb-3 p-3 rounded-md border border-primary/50 bg-primary/5 space-y-2"
           >
-            <label class="text-xs text-muted-foreground">Название поста</label>
+            <label class="text-xs text-muted-foreground">{{ t('calendarPage.newPost.label') }}</label>
             <input
               ref="newPostInput"
               v-model="newPostTitle"
               type="text"
-              placeholder="Введите название..."
+              :placeholder="t('calendarPage.newPost.placeholder')"
               :disabled="isSubmittingPost"
               class="w-full px-3 py-2 text-sm rounded-md bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60 disabled:cursor-not-allowed"
               @keydown.enter.prevent="submitNewPost"
@@ -193,7 +197,7 @@ const funDay = computed(() =>
                 :disabled="isSubmittingPost"
                 @click="cancelNewPost"
               >
-                Отмена
+                {{ t('calendarPage.newPost.cancel') }}
               </button>
               <button
                 class="px-3 py-1.5 text-xs rounded-md bg-brand hover:bg-brand/90 disabled:bg-brand/40 disabled:cursor-not-allowed text-brand-foreground transition-colors flex items-center gap-1.5"
@@ -201,7 +205,7 @@ const funDay = computed(() =>
                 @click="submitNewPost"
               >
                 <Loader2 v-if="isSubmittingPost" class="w-3 h-3 animate-spin" />
-                Создать
+                {{ t('calendarPage.newPost.create') }}
               </button>
             </div>
           </div>
@@ -233,7 +237,7 @@ const funDay = computed(() =>
             />
           </div>
           <div v-else-if="infoEvents.length === 0" class="text-center py-8 text-muted-foreground text-sm">
-            Нет постов на эту дату
+            {{ t('calendarPage.noPostsForDate') }}
           </div>
         </div>
       </div>

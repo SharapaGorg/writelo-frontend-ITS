@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
@@ -13,24 +14,25 @@ const props = defineProps<{ token: string }>()
 const router = useRouter()
 const userController = useUserController()
 const api = useWorkspaceInvitesApi()
+const { t } = useI18n()
 
 const loading = ref(true)
 const error = ref(false)
 const preview = ref<WorkspaceInvitePreviewDto | null>(null)
 const acting = ref(false)
 
-const ROLE_LABEL: Record<WorkspaceInviteRole, string> = {
-  admin: 'Администратор',
-  editor: 'Редактор',
-  viewer: 'Зритель',
-}
+const roleLabel = computed<Record<WorkspaceInviteRole, string>>(() => ({
+  admin: t('team.roles.admin'),
+  editor: t('team.roles.editor'),
+  viewer: t('team.roles.viewer'),
+}))
 
-const STATUS_TEXT: Record<WorkspaceInviteStatus, string> = {
+const statusText = computed<Record<WorkspaceInviteStatus, string>>(() => ({
   pending: '',
-  accepted: 'Вы уже приняли это приглашение.',
-  expired: 'Срок действия приглашения истёк.',
-  revoked: 'Приглашение было отозвано.',
-}
+  accepted: t('team.invite.statusText.accepted'),
+  expired: t('team.invite.statusText.expired'),
+  revoked: t('team.invite.statusText.revoked'),
+}))
 
 onMounted(async () => {
   try {
@@ -54,7 +56,7 @@ async function onAccept() {
   acting.value = true
   try {
     await api.acceptInvite(props.token)
-    toastInviteAccepted()
+    toastInviteAccepted(t)
     router.push('/app/workspaces')
   } finally {
     acting.value = false
@@ -69,7 +71,7 @@ async function onDecline() {
   acting.value = true
   try {
     await api.declineInvite(props.token)
-    toastInviteDeclined()
+    toastInviteDeclined(t)
     router.push('/')
   } finally {
     acting.value = false
@@ -81,17 +83,17 @@ async function onDecline() {
   <div class="min-h-screen flex items-center justify-center p-4">
     <Card class="w-full max-w-md">
       <template v-if="loading">
-        <CardContent class="py-12 text-center text-muted-foreground">Загрузка…</CardContent>
+        <CardContent class="py-12 text-center text-muted-foreground">{{ t('team.invite.loading') }}</CardContent>
       </template>
 
       <template v-else-if="error || !preview">
         <CardHeader>
-          <CardTitle>Приглашение не найдено</CardTitle>
-          <CardDescription>Ссылка устарела или повреждена.</CardDescription>
+          <CardTitle>{{ t('team.invite.notFoundTitle') }}</CardTitle>
+          <CardDescription>{{ t('team.invite.notFoundDesc') }}</CardDescription>
         </CardHeader>
         <CardFooter>
           <Button as-child variant="outline">
-            <NuxtLink to="/">На главную</NuxtLink>
+            <NuxtLink to="/">{{ t('team.invite.toHome') }}</NuxtLink>
           </Button>
         </CardFooter>
       </template>
@@ -99,29 +101,29 @@ async function onDecline() {
       <template v-else-if="preview.status !== 'pending'">
         <CardHeader>
           <CardTitle>{{ preview.workspaceName }}</CardTitle>
-          <CardDescription>{{ STATUS_TEXT[preview.status] }}</CardDescription>
+          <CardDescription>{{ statusText[preview.status] }}</CardDescription>
         </CardHeader>
         <CardFooter>
           <Button as-child variant="outline">
-            <NuxtLink to="/app">В приложение</NuxtLink>
+            <NuxtLink to="/app">{{ t('team.invite.toApp') }}</NuxtLink>
           </Button>
         </CardFooter>
       </template>
 
       <template v-else>
         <CardHeader>
-          <CardTitle>Приглашение в «{{ preview.workspaceName }}»</CardTitle>
+          <CardTitle>{{ t('team.invite.title', { name: preview.workspaceName }) }}</CardTitle>
           <CardDescription>
-            {{ preview.invitedBy.name }} приглашает вас как
-            <strong>{{ ROLE_LABEL[preview.role] }}</strong>.
+            {{ t('team.invite.description', { name: preview.invitedBy.name }) }}
+            <strong>{{ roleLabel[preview.role] }}</strong>.
           </CardDescription>
         </CardHeader>
         <CardContent class="text-xs text-muted-foreground">
-          Срок действия: {{ new Date(preview.expiresAt).toLocaleDateString() }}
+          {{ t('team.invite.expiresAt', { date: new Date(preview.expiresAt).toLocaleDateString() }) }}
         </CardContent>
         <CardFooter class="flex gap-2 justify-end">
-          <Button variant="outline" :disabled="acting" @click="onDecline">Отклонить</Button>
-          <Button :disabled="acting" @click="onAccept">Принять</Button>
+          <Button variant="outline" :disabled="acting" @click="onDecline">{{ t('team.invite.decline') }}</Button>
+          <Button :disabled="acting" @click="onAccept">{{ t('team.invite.accept') }}</Button>
         </CardFooter>
       </template>
     </Card>

@@ -19,6 +19,7 @@ import {
   ScanSearch,
   Send,
 } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
 import { useAppLayout } from '../composables/useAppLayout'
@@ -42,7 +43,8 @@ const isFreePlan = computed(() => {
   const sub = subscription.value
   return !sub || sub.price === 0
 })
-const planTitle = computed(() => subscription.value?.title ?? 'Бесплатный')
+const { t } = useI18n()
+const planTitle = computed(() => subscription.value?.title ?? t('sidebar.freePlanFallback'))
 
 const { isBusinessPlan } = usePlans()
 
@@ -144,7 +146,7 @@ function navigate(item: SidebarItem) {
             'truncate whitespace-nowrap transition-all duration-300',
             isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'
           )"
-        >Войти в аккаунт</span>
+        >{{ t('sidebar.login') }}</span>
       </Button>
       <div
         :class="cn(
@@ -153,7 +155,7 @@ function navigate(item: SidebarItem) {
         )"
       >
         <p class="px-2 text-xs text-muted-foreground leading-snug">
-          Сейчас вы не авторизованы — часть функций недоступна
+          {{ t('sidebar.unauthBanner') }}
         </p>
       </div>
     </div>
@@ -184,16 +186,16 @@ function navigate(item: SidebarItem) {
         )"
       >
         <div class="text-xs font-medium truncate whitespace-nowrap">
-          {{ isFreePlan ? 'Бесплатный тариф' : planTitle }}
+          {{ isFreePlan ? t('sidebar.freePlanLabel') : planTitle }}
         </div>
         <div
           v-if="isBusinessPlan"
           class="text-[11px] text-muted-foreground truncate whitespace-nowrap"
         >
-          Командная версия
+          {{ t('sidebar.teamPlanLabel') }}
         </div>
         <div v-if="isFreePlan" class="text-[11px] text-muted-foreground truncate whitespace-nowrap">
-          Открыть тарифы →
+          {{ t('sidebar.openPlans') }}
         </div>
       </div>
     </button>
@@ -227,7 +229,7 @@ function navigate(item: SidebarItem) {
         href="https://t.me/sharapagorg"
         target="_blank"
         rel="noopener noreferrer"
-        :title="'Напишите мне 0_^ — @sharapagorg'"
+        :title="t('sidebar.contactMeTooltip')"
         :class="cn(
           'flex items-center gap-3 h-9 px-3 rounded-md text-xs text-muted-foreground hover:text-foreground hover:bg-accent overflow-hidden transition-colors'
         )"
@@ -238,7 +240,7 @@ function navigate(item: SidebarItem) {
             'truncate whitespace-nowrap transition-all duration-300',
             isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[200px] opacity-100'
           )"
-        >Напишите мне 0_^</span>
+        >{{ t('sidebar.contactMe') }}</span>
       </a>
     </div>
   </aside>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { Loader2, CheckCircle2, XCircle, ExternalLink, RefreshCw, X } from 'lucide-vue-next'
@@ -11,6 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover
 import { Button } from '~/components/ui/button'
 
 const router = useRouter()
+const { t } = useI18n()
 const { isCollapsed } = useAppLayout()
 const publicationsStore = usePublicationsStore()
 const { publications } = storeToRefs(publicationsStore)
@@ -73,7 +75,7 @@ const networkColor: Record<SocialNetwork, string> = {
       v-if="!isCollapsed"
       class="px-1 pb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
     >
-      Публикации
+      {{ t('sidebar.publications.header') }}
     </div>
 
     <ul class="flex flex-col gap-1">
@@ -117,7 +119,7 @@ const networkColor: Record<SocialNetwork, string> = {
                   {{ pub.accountName }}
                 </div>
                 <div class="mt-2 text-xs text-foreground/90 break-words">
-                  {{ pub.error || 'Публикация не удалась' }}
+                  {{ pub.error || t('sidebar.publications.fallbackError') }}
                 </div>
               </div>
             </div>
@@ -129,7 +131,7 @@ const networkColor: Record<SocialNetwork, string> = {
                 @click="dismissPublication(pub.id)"
               >
                 <X class="h-3.5 w-3.5 mr-1" />
-                Убрать
+                {{ t('sidebar.publications.dismiss') }}
               </Button>
               <div class="flex items-center gap-2">
                 <Button
@@ -138,7 +140,7 @@ const networkColor: Record<SocialNetwork, string> = {
                   class="h-7 px-2 text-xs"
                   @click="goToEditor(pub.postId)"
                 >
-                  Открыть пост
+                  {{ t('sidebar.publications.openPost') }}
                 </Button>
                 <Button
                   size="sm"
@@ -147,7 +149,7 @@ const networkColor: Record<SocialNetwork, string> = {
                   @click="retryPublication(pub)"
                 >
                   <RefreshCw :class="cn('h-3.5 w-3.5', retryingId === pub.id && 'animate-spin')" />
-                  Повторить
+                  {{ t('sidebar.publications.retry') }}
                 </Button>
               </div>
             </div>
@@ -186,7 +188,7 @@ const networkColor: Record<SocialNetwork, string> = {
               v-if="pub.publishedLink && !isCollapsed"
               type="button"
               class="p-0.5 text-muted-foreground hover:text-foreground"
-              title="Открыть опубликованный пост"
+              :title="t('sidebar.publications.openPublishedTitle')"
               @click="openPublishedLink($event, pub.publishedLink)"
             >
               <ExternalLink class="h-3.5 w-3.5" />

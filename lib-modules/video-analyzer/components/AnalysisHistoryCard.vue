@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { AlertTriangle, Clock } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import AnalysisStatusBadge from './AnalysisStatusBadge.vue'
@@ -10,6 +11,8 @@ import type { ShortVideoAnalysisHistoryItemDto } from '../types'
 const props = defineProps<{
   item: ShortVideoAnalysisHistoryItemDto
 }>()
+
+const { t } = useI18n()
 
 const ytId = computed(() =>
   props.item.platform === 'youtube'
@@ -23,6 +26,34 @@ const previewSrc = computed(() => {
   if (ytId.value) return youtubeThumbnailUrl(ytId.value)
   return null
 })
+
+const imgLoaded = ref(false)
+const imgErrored = ref(false)
+const imgRef = ref<HTMLImageElement | null>(null)
+
+// Cached images often don't fire @load — check .complete after the new src is in DOM.
+function syncCachedState() {
+  const el = imgRef.value
+  if (!el) return
+  if (el.complete && el.naturalWidth > 0) imgLoaded.value = true
+}
+
+onMounted(syncCachedState)
+
+watch(previewSrc, async () => {
+  imgLoaded.value = false
+  imgErrored.value = false
+  await Promise.resolve()
+  syncCachedState()
+})
+
+const showImage = computed(() =>
+  Boolean(previewSrc.value) && props.item.status !== 'failed' && !imgErrored.value,
+)
+const showSkeleton = computed(() => showImage.value && !imgLoaded.value)
+const showPlatformFallback = computed(() =>
+  props.item.status !== 'failed' && (!previewSrc.value || imgErrored.value),
+)
 
 const platformBgClass = computed(() => {
   switch (props.item.platform) {
@@ -69,22 +100,36 @@ const isClickable = computed(() => Boolean(props.item.shortVideoAnalysisId))
     )"
   >
     <div :class="cn('relative flex h-36 w-full items-center justify-center overflow-hidden', platformBgClass)">
+      <div
+        v-if="showSkeleton"
+        class="absolute inset-0 animate-pulse bg-muted"
+        aria-hidden="true"
+      />
       <img
-        v-if="previewSrc && item.status !== 'failed'"
-        :src="previewSrc"
+        v-if="showImage"
+        ref="imgRef"
+        :src="previewSrc!"
         :alt="item.title ?? item.originalUrl"
-        class="h-full w-full object-cover"
+        :class="cn(
+          'relative h-full w-full object-cover transition-opacity duration-200',
+          imgLoaded ? 'opacity-100' : 'opacity-0',
+        )"
         loading="lazy"
+        @load="imgLoaded = true"
+        @error="imgErrored = true"
       />
       <PlatformIcon
-        v-else-if="item.status !== 'failed'"
+        v-else-if="showPlatformFallback"
         :platform="item.platform"
         size="xl"
         tinted
       />
-      <div v-else class="flex flex-col items-center gap-1 text-rose-500/80 dark:text-rose-300/80">
+      <div
+        v-else-if="item.status === 'failed'"
+        class="flex flex-col items-center gap-1 text-rose-500/80 dark:text-rose-300/80"
+      >
         <AlertTriangle class="h-10 w-10" />
-        <span class="text-xs font-medium">Не удалось проанализировать</span>
+        <span class="text-xs font-medium">{{ t('videoAnalyzer.history.failedToAnalyze') }}</span>
       </div>
 
       <div class="absolute left-2 top-2 inline-flex items-center gap-1 rounded-md bg-background/90 px-1.5 py-0.5 text-[11px] font-medium text-foreground backdrop-blur">

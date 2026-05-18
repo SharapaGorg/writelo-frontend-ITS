@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Sparkles, Globe } from 'lucide-vue-next'
 import { useWorkspaceContext, useWorkspaceLimits } from '~/lib-modules/workspaces'
 import { useUserController } from '~/composables/user'
@@ -10,6 +11,7 @@ const { isCollapsed } = useAppLayout()
 const { currentWorkspaceId } = useWorkspaceContext()
 const userController = useUserController()
 const isAuthenticated = computed(() => userController.isAuthenticated())
+const { t } = useI18n()
 
 const wl = useWorkspaceLimits()
 
@@ -38,7 +40,7 @@ interface Row {
 const rows = computed<Row[]>(() => [
   {
     key: 'model',
-    label: 'Запросы к модели',
+    label: t('sidebar.limits.model'),
     icon: Sparkles,
     bar: 'bg-brand',
     text: 'text-brand',
@@ -47,7 +49,7 @@ const rows = computed<Row[]>(() => [
   },
   {
     key: 'search',
-    label: 'Поиск в интернете',
+    label: t('sidebar.limits.search'),
     icon: Globe,
     bar: 'bg-sky-500',
     text: 'text-sky-600 dark:text-sky-400',

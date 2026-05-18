@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, watchEffect } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Button } from '~/components/ui/button'
+
+const { t } = useI18n()
 import {
   Select,
   SelectTrigger,
@@ -77,11 +80,11 @@ const toValue = computed(() => isoToPicker(props.filters.to))
 <template>
   <div class="flex items-end gap-3 flex-wrap">
     <div class="space-y-1 min-w-[200px]">
-      <Label class="text-xs">Участник</Label>
+      <Label class="text-xs">{{ t('activityLogFilters.user') }}</Label>
       <Select :model-value="filters.userId ?? '__all__'" @update:model-value="onUser">
         <SelectTrigger><SelectValue /></SelectTrigger>
         <SelectContent>
-          <SelectItem value="__all__">Все</SelectItem>
+          <SelectItem value="__all__">{{ t('activityLogFilters.all') }}</SelectItem>
           <SelectItem v-for="m in members" :key="m.userId" :value="m.userId">
             {{ m.name }}
           </SelectItem>
@@ -89,25 +92,25 @@ const toValue = computed(() => isoToPicker(props.filters.to))
       </Select>
     </div>
     <div class="space-y-1 min-w-[180px]">
-      <Label class="text-xs">С</Label>
+      <Label class="text-xs">{{ t('activityLogFilters.from') }}</Label>
       <DateTimePicker
         :model-value="fromValue"
         :show-presets="false"
-        placeholder="Не задано"
+        :placeholder="t('activityLogFilters.notSet')"
         @update:model-value="onFrom"
       />
     </div>
     <div class="space-y-1 min-w-[180px]">
-      <Label class="text-xs">По</Label>
+      <Label class="text-xs">{{ t('activityLogFilters.to') }}</Label>
       <DateTimePicker
         :model-value="toValue"
         :show-presets="false"
-        placeholder="Не задано"
+        :placeholder="t('activityLogFilters.notSet')"
         @update:model-value="onTo"
       />
     </div>
     <Button v-if="isActive" variant="ghost" size="sm" @click="emit('reset')">
-      Сбросить
+      {{ t('activityLogFilters.reset') }}
     </Button>
   </div>
 </template>

@@ -35,24 +35,28 @@ const PRIORITY_META: Record<ImprovementPriority, {
   icon: typeof AlertTriangle
   chip: string
   border: string
+  surface: string
 }> = {
   high: {
     label: 'Высокий приоритет',
     icon: AlertTriangle,
-    chip: 'bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-200',
-    border: 'border-rose-300/70 dark:border-rose-900/60',
+    chip: 'bg-destructive text-destructive-foreground',
+    border: 'border-destructive/60 dark:border-destructive/70',
+    surface: 'bg-destructive/[0.04] dark:bg-destructive/[0.12]',
   },
   medium: {
     label: 'Средний приоритет',
     icon: TrendingUp,
-    chip: 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-200',
-    border: 'border-amber-300/70 dark:border-amber-900/60',
+    chip: 'bg-amber-100 text-amber-900 dark:bg-amber-950/40 dark:text-amber-200',
+    border: 'border-amber-300/60 dark:border-amber-900/50',
+    surface: 'bg-card',
   },
   low: {
     label: 'Низкий приоритет',
     icon: Sparkles,
     chip: 'bg-muted text-muted-foreground',
     border: 'border-border',
+    surface: 'bg-card',
   },
 }
 
@@ -112,8 +116,9 @@ const v2Empty = computed(() => Array.isArray(v2Items.value) && v2Items.value.len
         v-for="(item, i) in v2Items"
         :key="i"
         :class="cn(
-          'space-y-2 rounded-lg border bg-card p-4',
+          'space-y-2 rounded-lg border p-4',
           priorityMeta(item.priority).border,
+          priorityMeta(item.priority).surface,
         )"
       >
         <div class="flex flex-wrap items-center gap-2 text-xs">

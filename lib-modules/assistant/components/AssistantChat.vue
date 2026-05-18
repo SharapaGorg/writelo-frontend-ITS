@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+
+const { t } = useI18n()
 import {
   AttachedFileArea,
   BottomBar,
@@ -172,7 +175,7 @@ onUnmounted(() => {
             :rows="rows"
             :disabled="isProcessing"
             class="min-h-[40px] resize-none border-none bg-transparent p-0 shadow-none focus-visible:ring-0"
-            placeholder="Напиши сообщение..."
+            :placeholder="t('assistantPage.messagePlaceholder')"
             @keydown="onKeydown"
           />
         </PromptImproverWrapper>

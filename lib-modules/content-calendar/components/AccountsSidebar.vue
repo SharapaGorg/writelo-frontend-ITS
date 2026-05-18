@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Plus, Trash2, Loader2 } from 'lucide-vue-next'
 import type { SocialAccount, SocialNetwork } from '../types'
 import { useWorkspaceContext, useWorkspacePermissions } from '~/lib-modules/workspaces'
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<{
 
 const { currentWorkspaceId } = useWorkspaceContext()
 const { canManageSocialAccounts } = useWorkspacePermissions()
+const { t } = useI18n()
 
 function goToConnect() {
   const id = currentWorkspaceId.value
@@ -129,7 +131,7 @@ function isActive(accountId: string): boolean {
   >
     <div class="px-3 py-3 border-b border-border">
       <span class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-        Аккаунты
+        {{ t('calendarPage.accountsSidebar.header') }}
       </span>
     </div>
 
@@ -139,7 +141,7 @@ function isActive(accountId: string): boolean {
         class="flex items-center justify-center gap-2 px-2 py-6 text-xs text-muted-foreground"
       >
         <Loader2 class="h-4 w-4 animate-spin" />
-        Загрузка…
+        {{ t('calendarPage.accountsSidebar.loading') }}
       </div>
 
       <div
@@ -147,7 +149,7 @@ function isActive(accountId: string): boolean {
         class="flex flex-col items-center text-center gap-3 px-2 py-6"
       >
         <p class="text-xs text-muted-foreground leading-relaxed">
-          Нет подключённых аккаунтов
+          {{ t('calendarPage.accountsSidebar.empty') }}
         </p>
         <button
           v-if="canManageSocialAccounts"
@@ -156,7 +158,7 @@ function isActive(accountId: string): boolean {
           @click="goToConnect"
         >
           <Plus class="w-4 h-4" />
-          <span class="text-sm font-medium">Подключить</span>
+          <span class="text-sm font-medium">{{ t('calendarPage.accountsSidebar.connect') }}</span>
         </button>
       </div>
 
@@ -200,7 +202,7 @@ function isActive(accountId: string): boolean {
             @click="emit('unlink', account.id)"
           >
             <Trash2 class="mr-2 h-4 w-4" />
-            Отвязать
+            {{ t('calendarPage.accountsSidebar.unlink') }}
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
@@ -209,7 +211,7 @@ function isActive(accountId: string): boolean {
         v-if="accounts.length > 0 && canManageSocialAccounts"
         type="button"
         class="w-full rounded-md border-2 border-dashed border-border hover:border-brand text-muted-foreground hover:text-brand transition-all flex items-center justify-center p-3"
-        title="Подключить аккаунт"
+        :title="t('calendarPage.accountsSidebar.connectTooltip')"
         @click="goToConnect"
       >
         <Plus class="w-5 h-5" />

@@ -1,4 +1,5 @@
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { useWorkspaceContext, useWorkspaceLimits } from '~/lib-modules/workspaces'
 import { generateUUID } from '~/scripts/features/utils'
@@ -21,6 +22,7 @@ export function useAssistantChat() {
   const api = useAssistantApi()
   const store = useAssistantStore()
   const limits = useWorkspaceLimits()
+  const { t } = useI18n()
 
   function reset() {
     messages.value = []
@@ -121,7 +123,7 @@ export function useAssistantChat() {
     try {
       workspaceId = requireWorkspaceId()
     } catch (e) {
-      const errId = addMessage('assistant', 'Сначала выбери бренд в верхней панели.')
+      const errId = addMessage('assistant', t('assistant.errors.selectBrand'))
       const m = messages.value.find(x => x.id === errId)
       if (m) m.processing = false
       setMessageError(errId)
@@ -138,7 +140,7 @@ export function useAssistantChat() {
       setMessageError(responseId)
       const m = messages.value.find(x => x.id === responseId)
       if (m) {
-        m.text = 'Не удалось создать диалог. Попробуй ещё раз.'
+        m.text = t('assistant.errors.createConversation')
         m.visibleText = m.text
         m.processing = false
       }
@@ -150,7 +152,7 @@ export function useAssistantChat() {
     try {
       stream = await api.sendMessage(workspaceId, convId, trimmed)
     } catch (e: any) {
-      const detail = e?.data?.detail || 'Не удалось отправить сообщение.'
+      const detail = e?.data?.detail || t('assistant.errors.sendMessage')
       setMessageError(responseId)
       const m = messages.value.find(x => x.id === responseId)
       if (m) {
@@ -193,7 +195,7 @@ export function useAssistantChat() {
           if (actions.length > 0) m.actions = actions
         }
         if (!parsed.success && !isStopping.value) {
-          appendChunk(responseId, parsed.message || parsed.error || '\n**Сервер занят**')
+          appendChunk(responseId, parsed.message || parsed.error || t('assistant.errors.serverBusy'))
           setMessageError(responseId)
         }
         isStopping.value = false

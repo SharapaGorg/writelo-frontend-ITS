@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import interact from 'interactjs'
 import { MessageSquare, Image } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
@@ -26,6 +27,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   showcaseMode: false
 })
+
+const { t } = useI18n()
 
 const {
   currentDraft,
@@ -63,9 +66,9 @@ async function confirmUnlink() {
   const ok = await projectStore.unlinkAccount(acc.id)
   pendingUnlink.value = null
   if (ok) {
-    toast.success('Аккаунт отвязан', { position: getToasterPosition() })
+    toast.success(t('contentEditor.accountUnlinked'), { position: getToasterPosition() })
   } else {
-    toast.error('Не получилось отвязать аккаунт', { position: getToasterPosition() })
+    toast.error(t('contentEditor.accountUnlinkFailed'), { position: getToasterPosition() })
   }
 }
 
@@ -115,11 +118,11 @@ const headerTitle = computed(() => {
   if (isEditMode.value && currentDraft.value?.title) {
     return currentDraft.value.title
   }
-  return 'Новый пост'
+  return t('contentEditor.newPost')
 })
 
 const breadcrumbs = computed<BreadcrumbItem[]>(() => [
-  { label: 'Календарь', to: '/app/calendar' },
+  { label: t('contentEditor.calendarCrumb'), to: '/app/calendar' },
   { label: headerTitle.value },
 ])
 </script>
@@ -219,18 +222,18 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     <AlertDialog v-model:open="unlinkDialogOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Отвязать аккаунт?</AlertDialogTitle>
+          <AlertDialogTitle>{{ t('contentEditor.unlinkDialog.title') }}</AlertDialogTitle>
           <AlertDialogDescription>
-            Канал «{{ pendingUnlink?.name }}» будет отвязан от бренда. Запланированные публикации в него не пройдут.
+            {{ t('contentEditor.unlinkDialog.description', { name: pendingUnlink?.name ?? '' }) }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel class="cursor-pointer">Отмена</AlertDialogCancel>
+          <AlertDialogCancel class="cursor-pointer">{{ t('contentEditor.unlinkDialog.cancel') }}</AlertDialogCancel>
           <AlertDialogAction
             class="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
             @click="confirmUnlink"
           >
-            Отвязать
+            {{ t('contentEditor.unlinkDialog.confirm') }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

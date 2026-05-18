@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
+
+const { t } = useI18n()
 import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
 import { Search, Plus } from 'lucide-vue-next'
@@ -59,13 +62,13 @@ function onNew() {
   <aside class="hidden w-[260px] flex-col border-l border-border lg:flex">
     <div class="space-y-2 border-b border-border p-2">
       <Button class="w-full justify-start" variant="outline" size="sm" @click="onNew">
-        <Plus class="mr-2 h-4 w-4" /> Новый чат
+        <Plus class="mr-2 h-4 w-4" /> {{ t('assistantPage.newChat') }}
       </Button>
       <div class="relative">
         <Search class="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           :model-value="search"
-          placeholder="Поиск..."
+          :placeholder="t('assistantPage.searchPlaceholder')"
           class="h-8 pl-8 text-sm"
           @update:model-value="setSearch(String($event))"
         />
@@ -84,7 +87,7 @@ function onNew() {
           @delete="remove(item.id)"
         />
         <div v-if="!items.length" class="p-2 text-xs text-muted-foreground">
-          Нет диалогов. Напиши первое сообщение.
+          {{ t('assistantPage.emptyHistory') }}
         </div>
       </template>
     </div>

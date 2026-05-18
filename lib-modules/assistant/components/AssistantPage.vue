@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { useWorkspaces } from '~/lib-modules/workspaces'
 import AssistantChat from './AssistantChat.vue'
 import AssistantHistoryPanel from './AssistantHistoryPanel.vue'
 
 const { workspaces, initialize: initializeWorkspaces } = useWorkspaces()
+const { t } = useI18n()
 
 onMounted(async () => {
   if (workspaces.value.length === 0) await initializeWorkspaces()
@@ -15,7 +17,7 @@ onMounted(async () => {
 <template>
   <div class="flex h-full flex-col">
     <AppNavbar
-      :breadcrumbs="[{ label: 'Ассистент' }]"
+      :breadcrumbs="[{ label: t('assistantPage.breadcrumb') }]"
       :show-workspace-selector="true"
     />
 

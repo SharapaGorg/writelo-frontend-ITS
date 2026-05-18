@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import PostCard from './PostCard.vue'
 import type { CalendarPost, InfoEvent, ContentTag, SocialAccount } from '../types'
 import { getFunDayForDate } from '../data/funDays'
+
+const { t, locale } = useI18n()
 
 const props = defineProps<{
   date: string
@@ -19,7 +22,8 @@ const emit = defineEmits<{
 
 const formattedDate = computed(() => {
   const d = new Date(props.date)
-  return d.toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' })
+  const tag = locale.value === 'en' ? 'en-US' : 'ru-RU'
+  return d.toLocaleDateString(tag, { day: 'numeric', month: 'long', year: 'numeric' })
 })
 
 const funDay = computed(() => getFunDayForDate(props.date))
@@ -44,7 +48,7 @@ const funDay = computed(() => getFunDayForDate(props.date))
         <button
           class="w-7 h-7 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground flex items-center justify-center transition-colors"
           @click="emit('createPost')"
-          title="Создать пост"
+          :title="t('calendarPage.createPostTooltip')"
         >
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
             <path d="M12 5v14M5 12h14" />
@@ -83,7 +87,7 @@ const funDay = computed(() => getFunDayForDate(props.date))
         />
       </div>
       <div v-else-if="infoEvents.length === 0" class="text-center py-8 text-muted-foreground">
-        Нет постов на эту дату
+        {{ t('calendarPage.noPostsForDate') }}
       </div>
     </div>
   </div>

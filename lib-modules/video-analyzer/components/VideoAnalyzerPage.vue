@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Sparkles } from 'lucide-vue-next'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { Button } from '~/components/ui/button'
@@ -9,6 +10,7 @@ import AnalysisHistoryGrid from './AnalysisHistoryGrid.vue'
 import { useVideoAnalyzer } from '../composables/useVideoAnalyzer'
 import { useAnalysisLimits } from '../composables/useAnalysisLimits'
 
+const { t } = useI18n()
 const { workspaces, initialize: initializeWorkspaces } = useWorkspaces()
 const { currentWorkspaceId } = useWorkspaceContext()
 
@@ -38,7 +40,7 @@ watch(currentWorkspaceId, (id) => {
 <template>
   <div class="flex h-full flex-col">
     <AppNavbar
-      :breadcrumbs="[{ label: 'Анализ видео' }]"
+      :breadcrumbs="[{ label: t('videoAnalyzer.breadcrumb') }]"
       :show-workspace-selector="true"
     />
 
@@ -56,7 +58,7 @@ watch(currentWorkspaceId, (id) => {
             class="gap-1.5 border-dashed border-brand/40 text-brand hover:bg-brand/10 hover:text-brand"
           >
             <Sparkles class="h-3.5 w-3.5" />
-            Открыть v2-превью (моковые данные)
+            {{ t('videoAnalyzer.mockV2Cta') }}
           </Button>
         </NuxtLink>
 

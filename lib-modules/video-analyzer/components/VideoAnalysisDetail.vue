@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import {
   ArrowLeft,
@@ -59,6 +60,7 @@ const props = defineProps<{
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const { workspaces, initialize: initializeWorkspaces } = useWorkspaces()
 const { currentWorkspaceId } = useWorkspaceContext()
 const analyzer = useVideoAnalyzer()
@@ -108,7 +110,7 @@ const analyzedAtHuman = computed(() => {
 })
 
 const errorText = computed(() =>
-  humanizeAnalysisError(historyItem.value?.errorCode, historyItem.value?.errorMessage),
+  humanizeAnalysisError(t, historyItem.value?.errorCode, historyItem.value?.errorMessage),
 )
 
 // Backend field-name uncertainty: the v2 schema isn't yet in v1-4.05.json.
@@ -312,8 +314,8 @@ onUnmounted(() => {
   <div class="flex h-full flex-col">
     <AppNavbar
       :breadcrumbs="[
-        { label: 'Анализ видео', to: '/app/video-analyzer' },
-        { label: 'Анализ' },
+        { label: t('videoAnalyzer.breadcrumb'), to: '/app/video-analyzer' },
+        { label: t('videoAnalyzer.breadcrumbDetail') },
       ]"
       :show-workspace-selector="true"
     />
@@ -326,7 +328,7 @@ onUnmounted(() => {
           @click="router.push('/app/video-analyzer')"
         >
           <ArrowLeft class="h-3.5 w-3.5" />
-          Назад к списку
+          {{ t('videoAnalyzer.backToList') }}
         </Button>
 
         <div
@@ -334,21 +336,21 @@ onUnmounted(() => {
           class="flex flex-wrap items-center justify-between gap-2 rounded-md border border-dashed border-brand/40 bg-brand/5 px-3 py-2 text-xs text-brand"
         >
           <span class="font-medium">
-            Mock-режим: показан пример v2-ответа. Реальный анализ сюда не подгружается.
+            {{ t('videoAnalyzer.mockBadge') }}
           </span>
           <Button
             variant="ghost"
             class="h-6 px-2 text-xs text-brand hover:bg-brand/10 hover:text-brand"
             @click="router.push('/app/video-analyzer')"
           >
-            Выйти из мока
+            {{ t('videoAnalyzer.exitMock') }}
           </Button>
         </div>
 
         <!-- Loading -->
         <div v-if="loading" class="flex items-center gap-2 text-sm text-muted-foreground">
           <Loader2 class="h-4 w-4 animate-spin" />
-          Загружаем анализ…
+          {{ t('videoAnalyzer.loadingDetail') }}
         </div>
 
         <!-- Not found -->
@@ -356,12 +358,12 @@ onUnmounted(() => {
           v-else-if="notFound"
           class="rounded-lg border border-dashed border-border bg-card/50 p-8 text-center"
         >
-          <h2 class="mb-1 text-lg font-semibold">Анализ не найден</h2>
+          <h2 class="mb-1 text-lg font-semibold">{{ t('videoAnalyzer.notFoundTitle') }}</h2>
           <p class="mb-4 text-sm text-muted-foreground">
-            Возможно, он был удалён или принадлежит другому бренду.
+            {{ t('videoAnalyzer.notFoundDesc') }}
           </p>
           <Button variant="outline" @click="router.push('/app/video-analyzer')">
-            Вернуться к списку
+            {{ t('videoAnalyzer.returnToList') }}
           </Button>
         </div>
 
@@ -399,10 +401,9 @@ onUnmounted(() => {
           >
             <Loader2 class="h-8 w-8 animate-spin text-brand" />
             <div>
-              <p class="font-medium">Анализ в процессе</p>
+              <p class="font-medium">{{ t('videoAnalyzer.processingTitle') }}</p>
               <p class="text-sm text-muted-foreground">
-                Обычно занимает 30–90 секунд. Можешь оставить вкладку открытой —
-                результат появится здесь автоматически.
+                {{ t('videoAnalyzer.processingDesc') }}
               </p>
             </div>
           </div>
@@ -415,7 +416,7 @@ onUnmounted(() => {
             <div class="flex items-start gap-3">
               <AlertTriangle class="h-5 w-5 shrink-0 text-rose-500" />
               <div class="flex-1">
-                <h3 class="font-semibold text-rose-900 dark:text-rose-100">Не удалось выполнить анализ</h3>
+                <h3 class="font-semibold text-rose-900 dark:text-rose-100">{{ t('videoAnalyzer.failedTitle') }}</h3>
                 <p class="mt-1 text-sm text-rose-800 dark:text-rose-200">{{ errorText }}</p>
               </div>
             </div>
@@ -425,7 +426,7 @@ onUnmounted(() => {
               @click="retry"
             >
               <RefreshCw :class="['mr-1 h-4 w-4', retrying && 'animate-spin']" />
-              Попробовать снова
+              {{ t('videoAnalyzer.retry') }}
             </Button>
           </div>
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Crown, ShieldCheck, PencilLine, Eye } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import type { WorkspaceRole } from '../types'
@@ -9,12 +10,7 @@ const props = defineProps<{
   class?: string
 }>()
 
-const ROLE_LABELS: Record<WorkspaceRole, string> = {
-  owner: 'Владелец',
-  admin: 'Админ',
-  editor: 'Редактор',
-  viewer: 'Зритель',
-}
+const { t } = useI18n()
 
 const ROLE_ICONS: Record<WorkspaceRole, typeof Crown> = {
   owner: Crown,
@@ -26,7 +22,7 @@ const ROLE_ICONS: Record<WorkspaceRole, typeof Crown> = {
 const meta = computed(() => {
   if (!props.role) return null
   return {
-    label: ROLE_LABELS[props.role],
+    label: t(`rolesNames.${props.role}`),
     icon: ROLE_ICONS[props.role],
   }
 })

@@ -129,7 +129,7 @@ async function createFromPending() {
   if (!d) return
   const name = d.name.trim()
   if (!name) {
-    toastError('Название бренда обязательно')
+    toastError(t_('workspacesPage.toasts.nameRequired'))
     return
   }
 
@@ -143,7 +143,7 @@ async function createFromPending() {
         contentLanguage: getLanguage() ?? 'ru',
       })
       if (!created) {
-        toastError('Не удалось создать бренд')
+        toastError(t_('workspacesPage.toasts.createFailed'))
         return
       }
 
@@ -159,7 +159,7 @@ async function createFromPending() {
           examplePosts: d.examplePosts.trim() || null,
         })
         if (updated) final = updated
-        else toastError('Бренд создан, но бриф не сохранился')
+        else toastError(t_('workspacesPage.toasts.briefSaveFailed'))
       }
 
       // Force-seed the draft from the post-PATCH workspace: the deep watcher
@@ -171,7 +171,7 @@ async function createFromPending() {
       toastChangesSavedSuccess(t_)
     } catch (e) {
       console.error('[WorkspacesListPage] create failed:', e)
-      toastError('Не удалось создать бренд')
+      toastError(t_('workspacesPage.toasts.createFailed'))
     } finally {
       isCreating.value = false
     }
@@ -220,7 +220,7 @@ async function saveDraft(w: WorkspaceDto) {
   const d = drafts[w.id]
   if (!d) return
   if (!d.name.trim()) {
-    toastError('Название бренда обязательно')
+    toastError(t_('workspacesPage.toasts.nameRequired'))
     return
   }
 
@@ -243,7 +243,7 @@ async function saveDraft(w: WorkspaceDto) {
       }
     } catch (e) {
       console.error('[WorkspacesListPage] save failed:', e)
-      toastError('Не удалось сохранить изменения')
+      toastError(t_('workspacesPage.toasts.updateFailed'))
     } finally {
       savingId.value = null
     }
@@ -301,9 +301,9 @@ async function confirmAccountUnlink() {
     const fresh = await calendarApi.getSocialAccounts(p.workspaceId, true)
     accountsByWorkspace[p.workspaceId] = fresh
     if (!fresh.some(a => a.id === p.account.id)) {
-      toast.success('Аккаунт отвязан', { position: getToasterPosition() })
+      toast.success(t_('workspacesPage.toasts.accountUnlinked'), { position: getToasterPosition() })
     } else {
-      toast.error('Не получилось отвязать аккаунт', { position: getToasterPosition() })
+      toast.error(t_('workspacesPage.toasts.accountUnlinkFailed'), { position: getToasterPosition() })
     }
   } catch (e) {
     console.error('[WorkspacesListPage] refetch after unlink failed:', e)
@@ -330,11 +330,11 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col h-full">
-    <AppNavbar :breadcrumbs="[{ label: 'Бренды' }]">
+    <AppNavbar :breadcrumbs="[{ label: t_('workspacesPage.breadcrumb') }]">
       <template #actions>
         <Button size="sm" @click="openCreate" class="gap-2">
           <Plus class="h-3.5 w-3.5" />
-          Создать бренд
+          {{ t_('workspacesPage.createBrand') }}
         </Button>
       </template>
     </AppNavbar>
@@ -342,17 +342,17 @@ onMounted(async () => {
     <div class="flex-1 overflow-y-auto px-6 py-4">
       <div v-if="loading && workspaces.length === 0 && !pendingDraft" class="flex items-center justify-center py-16 text-muted-foreground">
         <Loader2 class="h-5 w-5 animate-spin mr-2" />
-        Загрузка...
+        {{ t_('workspacesPage.loading') }}
       </div>
 
       <div
         v-else-if="workspaces.length === 0 && !pendingDraft"
         class="flex flex-col items-center justify-center py-16 text-center text-muted-foreground"
       >
-        <p class="mb-4">У вас ещё нет ни одного бренда.</p>
+        <p class="mb-4">{{ t_('workspacesPage.empty') }}</p>
         <Button @click="openCreate" class="gap-2">
           <Plus class="h-4 w-4" />
-          Создать первый бренд
+          {{ t_('workspacesPage.createFirst') }}
         </Button>
       </div>
 
@@ -367,7 +367,7 @@ onMounted(async () => {
             <span class="flex items-center justify-center h-6 w-6 rounded-md bg-brand/10 text-brand">
               <Plus class="h-3.5 w-3.5" />
             </span>
-            <span class="text-sm font-medium">Новый бренд</span>
+            <span class="text-sm font-medium">{{ t_('workspacesPage.newBrand') }}</span>
           </div>
           <div class="space-y-4 pt-4">
             <div class="space-y-2">
@@ -404,7 +404,7 @@ onMounted(async () => {
               >
                 <Loader2 v-if="isCreating" class="h-4 w-4 animate-spin" />
                 <Check v-else class="h-4 w-4" />
-                Создать
+                {{ t_('workspacesPage.create') }}
               </Button>
             </div>
           </div>
@@ -517,9 +517,9 @@ onMounted(async () => {
     <AlertDialog v-model:open="deleteDialogOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Удалить бренд?</AlertDialogTitle>
+          <AlertDialogTitle>{{ t_('workspacesPage.deleteDialog.title') }}</AlertDialogTitle>
           <AlertDialogDescription>
-            Это действие необратимо. Все данные бренда будут удалены без возможности восстановления.
+            {{ t_('workspacesPage.deleteDialog.description') }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -537,9 +537,9 @@ onMounted(async () => {
     <AlertDialog v-model:open="unlinkAccountDialogOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Отвязать аккаунт?</AlertDialogTitle>
+          <AlertDialogTitle>{{ t_('workspacesPage.unlinkDialog.title') }}</AlertDialogTitle>
           <AlertDialogDescription>
-            Канал «{{ pendingUnlinkAccount?.account.name }}» будет отвязан от бренда. Запланированные публикации в него не пройдут.
+            {{ t_('workspacesPage.unlinkDialog.description', { name: pendingUnlinkAccount?.account.name ?? '' }) }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -548,7 +548,7 @@ onMounted(async () => {
             class="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
             @click="confirmAccountUnlink"
           >
-            Отвязать
+            {{ t_('workspacesPage.unlinkDialog.confirm') }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

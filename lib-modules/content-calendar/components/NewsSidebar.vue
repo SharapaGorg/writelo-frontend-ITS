@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import NewsCard from './NewsCard.vue'
 import TrendCard from './TrendCard.vue'
 import type { NewsItem, TrendItem } from '../types'
+
+const { t } = useI18n()
 
 type SourceType = 'google' | 'twitter'
 
@@ -71,7 +74,7 @@ const displayItems = computed<DisplayItem[]>(() => {
   <aside class="w-full h-full bg-card flex flex-col overflow-hidden">
     <!-- Header with source filters -->
     <div class="px-4 py-3 border-b border-border">
-      <h3 class="text-sm font-medium text-foreground mb-2">Актуальное</h3>
+      <h3 class="text-sm font-medium text-foreground mb-2">{{ t('calendarPage.newsSidebar.header') }}</h3>
 
       <!-- Source filter chips -->
       <div class="flex gap-2">
@@ -111,7 +114,7 @@ const displayItems = computed<DisplayItem[]>(() => {
         </button>
       </div>
 
-      <p class="text-xs text-muted-foreground mt-2">Перетащите в календарь для создания идеи</p>
+      <p class="text-xs text-muted-foreground mt-2">{{ t('calendarPage.newsSidebar.hint') }}</p>
     </div>
 
     <!-- Combined items list -->
@@ -131,7 +134,7 @@ const displayItems = computed<DisplayItem[]>(() => {
 
       <!-- Empty state -->
       <div v-if="displayItems.length === 0" class="text-center py-8 text-muted-foreground">
-        <p class="text-sm">Нет данных для отображения</p>
+        <p class="text-sm">{{ t('calendarPage.newsSidebar.empty') }}</p>
       </div>
     </div>
   </aside>

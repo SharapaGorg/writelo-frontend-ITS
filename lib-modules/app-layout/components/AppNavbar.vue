@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { ChevronRight, Plus } from 'lucide-vue-next'
 import {
   Select,
@@ -27,6 +28,7 @@ const props = withDefaults(
 const { workspaces, currentWorkspaceId, selectWorkspace } = useWorkspaces()
 const { currentRole } = useWorkspacePermissions()
 const { isBusinessPlan } = usePlans()
+const { t } = useI18n()
 
 const selectedWorkspaceId = computed<string>({
   get: () => currentWorkspaceId.value ?? '',
@@ -85,7 +87,7 @@ const currentWorkspaceName = computed(() => {
           class="w-[260px] bg-card border-border"
         >
           <span class="flex items-center gap-2 min-w-0 w-full">
-            <span class="truncate">{{ currentWorkspaceName || 'Выберите бренд' }}</span>
+            <span class="truncate">{{ currentWorkspaceName || t('navbar.selectBrand') }}</span>
             <RoleBadge v-if="isBusinessPlan" :role="currentRole" class="shrink-0" />
           </span>
         </SelectTrigger>
@@ -113,7 +115,7 @@ const currentWorkspaceName = computed(() => {
           class="h-9 gap-2 bg-brand text-brand-foreground hover:bg-brand/90"
         >
           <Plus class="h-4 w-4" />
-          Создать бренд
+          {{ t('navbar.createBrand') }}
         </Button>
       </NuxtLink>
     </div>

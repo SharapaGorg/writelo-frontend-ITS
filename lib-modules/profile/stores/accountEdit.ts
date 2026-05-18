@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import {ApiController} from '~/scripts/shared/api/controller';
 import {useDemoGuard} from '~/lib-modules/demo-mode';
+import {useProfileI18n} from '../composables/useProfileI18n';
 
 // Режимы редактирования
 export enum EditMode {
@@ -18,6 +19,7 @@ export const useAccountEditStore = defineStore('accountEdit', () => {
     const $settings = useSettings();
     const apiController = new ApiController();
     const {guardAction} = useDemoGuard();
+    const {t} = useProfileI18n();
 
     // Инициализация с данными пользователя
     const user = computed(() => $settings.getUser());
@@ -136,36 +138,36 @@ export const useAccountEditStore = defineStore('accountEdit', () => {
         switch (currentEditMode.value) {
             case EditMode.NAME:
                 if (fullName.value.trim().length < 2) {
-                    validationErrors.value.fullName = 'Имя должно содержать минимум 2 символа';
+                    validationErrors.value.fullName = t('editAccount.validation.nameMinLength');
                 }
                 break;
 
             case EditMode.EMAIL:
                 if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-                    validationErrors.value.email = 'Некорректный формат email';
+                    validationErrors.value.email = t('editAccount.validation.emailInvalid');
                 }
                 if (email.value === originalEmail.value) {
-                    validationErrors.value.email = 'Email не изменился';
+                    validationErrors.value.email = t('editAccount.validation.emailUnchanged');
                 }
                 // Проверяем пароль только для отправки кода
                 if (!isCodeSent.value && !currentPassword.value) {
-                    validationErrors.value.currentPassword = 'Введите текущий пароль для подтверждения';
+                    validationErrors.value.currentPassword = t('editAccount.validation.passwordRequired');
                 }
                 // Проверяем код только если пользователь начал его вводить
                 if (isCodeSent.value && touchedFields.value.has('verificationCode') && verificationCode.value.length < 4) {
-                    validationErrors.value.verificationCode = 'Код должен содержать минимум 4 символа';
+                    validationErrors.value.verificationCode = t('editAccount.validation.codeMinLength');
                 }
                 break;
 
             case EditMode.PASSWORD:
                 if (!currentPassword.value) {
-                    validationErrors.value.currentPassword = 'Введите текущий пароль';
+                    validationErrors.value.currentPassword = t('editAccount.validation.currentPasswordRequired');
                 }
                 if (newPassword.value.length < 8) {
-                    validationErrors.value.newPassword = 'Новый пароль должен содержать минимум 8 символов';
+                    validationErrors.value.newPassword = t('editAccount.validation.newPasswordMinLength');
                 }
                 if (newPassword.value !== confirmPassword.value) {
-                    validationErrors.value.confirmPassword = 'Пароли не совпадают';
+                    validationErrors.value.confirmPassword = t('editAccount.validation.passwordMismatch');
                 }
                 break;
         }

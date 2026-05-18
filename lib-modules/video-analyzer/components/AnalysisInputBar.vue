@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { ScanSearch, Loader2, AlertCircle } from 'lucide-vue-next'
+
+const { t, locale } = useI18n()
 import { Input } from '~/components/ui/input'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
@@ -53,11 +56,22 @@ const resetText = computed(() => {
   if (!at) return ''
   try {
     const d = new Date(at)
-    return d.toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
+    const tag = locale.value === 'en' ? 'en-US' : 'ru-RU'
+    return d.toLocaleString(tag, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
   } catch {
     return ''
   }
 })
+
+function leftKey(n: number): string {
+  if (locale.value === 'en') return n === 1 ? 'videoAnalyzer.input.leftCountOne' : 'videoAnalyzer.input.leftCountMany'
+  // Russian pluralization
+  const mod10 = n % 10
+  const mod100 = n % 100
+  if (mod10 === 1 && mod100 !== 11) return 'videoAnalyzer.input.leftCountOne'
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'videoAnalyzer.input.leftCountFew'
+  return 'videoAnalyzer.input.leftCountMany'
+}
 
 async function onSubmit() {
   if (isDisabled.value) return
@@ -78,7 +92,7 @@ async function onSubmit() {
         <Input
           v-model="url"
           type="url"
-          placeholder="Вставь ссылку на YouTube Shorts, TikTok или Instagram Reels"
+          :placeholder="t('videoAnalyzer.input.placeholder')"
           class="h-11 pl-9"
           :disabled="analyzer.isSubmitting.value"
           @keydown.enter.prevent="onSubmit"
@@ -90,17 +104,17 @@ async function onSubmit() {
         @click="onSubmit"
       >
         <Loader2 v-if="analyzer.isSubmitting.value" class="mr-1 h-4 w-4 animate-spin" />
-        Анализировать
+        {{ t('videoAnalyzer.input.analyze') }}
       </Button>
     </div>
 
     <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-1 text-xs">
       <span :class="cn('inline-flex items-center gap-1.5', limitsTextClass)">
         <span :class="cn('h-1.5 w-1.5 rounded-full', limitsDotClass)" />
-        <span v-if="!limits.isLoaded.value">Загрузка лимита…</span>
+        <span v-if="!limits.isLoaded.value">{{ t('videoAnalyzer.input.limitsLoading') }}</span>
         <template v-else>
-          <span v-if="limits.left.value === 0">Лимит исчерпан</span>
-          <span v-else>Осталось {{ limits.left.value }} анализов</span>
+          <span v-if="limits.left.value === 0">{{ t('videoAnalyzer.input.limitExhausted') }}</span>
+          <span v-else>{{ t(leftKey(limits.left.value), { n: limits.left.value }) }}</span>
         </template>
       </span>
       <button
@@ -110,7 +124,7 @@ async function onSubmit() {
         @click="router.push('/app/plans')"
       >
         <AlertCircle class="h-3 w-3" />
-        Перейти к тарифам<span v-if="resetText"> · обновится {{ resetText }}</span>
+        {{ t('videoAnalyzer.input.goToPlans') }}<span v-if="resetText">{{ t('videoAnalyzer.input.resetsAt', { date: resetText }) }}</span>
       </button>
     </div>
   </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Trash2, ChevronDown, UserCog, ArrowRightLeft } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import {
@@ -36,6 +37,8 @@ const emit = defineEmits<{
   (e: 'transfer', userId: string): void
 }>()
 
+const { t } = useI18n()
+
 const {
   getAssignableRoles,
   canRemoveMember,
@@ -67,12 +70,12 @@ function confirmTransfer() {
   transferTarget.value = null
 }
 
-const ROLE_LABEL: Record<WorkspaceRole, string> = {
-  owner: 'Владелец',
-  admin: 'Администратор',
-  editor: 'Редактор',
-  viewer: 'Зритель',
-}
+const roleLabel = computed<Record<WorkspaceRole, string>>(() => ({
+  owner: t('rolesNames.owner'),
+  admin: t('team.roles.admin'),
+  editor: t('team.roles.editor'),
+  viewer: t('team.roles.viewer'),
+}))
 
 function initials(name: string | null | undefined): string {
   if (!name) return '?'
@@ -87,7 +90,7 @@ function initials(name: string | null | undefined): string {
 
 <template>
   <section class="space-y-2">
-    <h2 class="text-sm font-medium text-muted-foreground">Участники</h2>
+    <h2 class="text-sm font-medium text-muted-foreground">{{ t('teamPage.members.title') }}</h2>
     <div class="rounded-md border bg-card divide-y">
       <div
         v-for="m in members"
@@ -102,7 +105,7 @@ function initials(name: string | null | undefined): string {
           <div class="text-xs text-muted-foreground truncate">{{ m.email ?? '—' }}</div>
         </div>
         <span class="text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground whitespace-nowrap">
-          {{ ROLE_LABEL[m.role] }}
+          {{ roleLabel[m.role] }}
         </span>
 
         <DropdownMenu
@@ -117,7 +120,7 @@ function initials(name: string | null | undefined): string {
             <DropdownMenuSub v-if="getAssignableRoles(m).length > 0">
               <DropdownMenuSubTrigger>
                 <UserCog class="mr-2 h-4 w-4" />
-                <span>Сменить роль</span>
+                <span>{{ t('teamPage.members.changeRole') }}</span>
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
                 <DropdownMenuItem
@@ -126,7 +129,7 @@ function initials(name: string | null | undefined): string {
                   :disabled="r === m.role"
                   @select="emit('updateRole', m.userId, r)"
                 >
-                  {{ ROLE_LABEL[r] }}
+                  {{ roleLabel[r] }}
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
@@ -135,7 +138,7 @@ function initials(name: string | null | undefined): string {
               @select="askTransfer(m)"
             >
               <ArrowRightLeft class="mr-2 h-4 w-4" />
-              Передать владение…
+              {{ t('teamPage.members.transferOwnership') }}
             </DropdownMenuItem>
             <DropdownMenuSeparator
               v-if="(canChangeMemberRole(m) || canTransferOwnershipTo(m)) && canRemoveMember(m)"
@@ -146,7 +149,7 @@ function initials(name: string | null | undefined): string {
               @select="askRemove(m)"
             >
               <Trash2 class="mr-2 h-4 w-4" />
-              Удалить
+              {{ t('teamPage.members.remove') }}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -156,15 +159,15 @@ function initials(name: string | null | undefined): string {
     <AlertDialog v-model:open="removeOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Удалить участника?</AlertDialogTitle>
+          <AlertDialogTitle>{{ t('teamPage.members.removeDialog.title') }}</AlertDialogTitle>
           <AlertDialogDescription>
-            «{{ removeTarget?.name }}» потеряет доступ к воркспейсу.
+            {{ t('teamPage.members.removeDialog.description', { name: removeTarget?.name ?? '' }) }}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Отмена</AlertDialogCancel>
+          <AlertDialogCancel>{{ t('teamPage.members.removeDialog.cancel') }}</AlertDialogCancel>
           <AlertDialogAction class="bg-destructive text-destructive-foreground" @click="confirmRemove">
-            Удалить
+            {{ t('teamPage.members.removeDialog.confirm') }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

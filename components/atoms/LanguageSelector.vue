@@ -4,8 +4,8 @@
       <SelectValue/>
     </SelectTrigger>
     <SelectContent>
-      <SelectItem value="ru">Русский</SelectItem>
-      <SelectItem value="en">English</SelectItem>
+      <SelectItem value="ru">{{ t('languageNames.ru') }}</SelectItem>
+      <SelectItem value="en">{{ t('languageNames.en') }}</SelectItem>
     </SelectContent>
   </Select>
 </template>
@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/select'
 import {useI18n} from 'vue-i18n'
 
-const {locale} = useI18n({ useScope: 'global' })
+const {locale, t} = useI18n({ useScope: 'global' })
 const route = useRoute()
 const { $trackGoal } = useNuxtApp()
 

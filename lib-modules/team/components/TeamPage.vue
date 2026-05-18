@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, watch, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Plus } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { AppNavbar } from '~/lib-modules/app-layout'
+
+const { t } = useI18n()
 import { useWorkspaceContext, useWorkspaces } from '~/lib-modules/workspaces'
 import MembersSection from './sections/MembersSection.vue'
 import InvitesSection from './sections/InvitesSection.vue'
@@ -56,12 +59,12 @@ async function onInvite(payload: { email: string; role: 'admin' | 'editor' | 'vi
 <template>
   <div class="flex flex-col h-full">
     <AppNavbar
-      :breadcrumbs="[{ label: 'Команда' }]"
+      :breadcrumbs="[{ label: t('teamPage.breadcrumb') }]"
       :show-workspace-selector="true"
     >
       <template #actions>
         <Button v-if="currentWorkspaceId && canManageInvites" @click="inviteOpen = true">
-          <Plus class="h-4 w-4 mr-2" /> Пригласить
+          <Plus class="h-4 w-4 mr-2" /> {{ t('teamPage.inviteShort') }}
         </Button>
       </template>
     </AppNavbar>
@@ -70,21 +73,21 @@ async function onInvite(payload: { email: string; role: 'admin' | 'editor' | 'vi
       <div class="p-6 max-w-3xl mx-auto space-y-6">
         <header v-if="workspaceName">
           <h1 class="text-xl font-semibold">{{ workspaceName }}</h1>
-          <p class="text-sm text-muted-foreground">Участники и приглашения этого бренда.</p>
+          <p class="text-sm text-muted-foreground">{{ t('teamPage.subtitle') }}</p>
         </header>
 
         <div
           v-if="!currentWorkspaceId"
           class="rounded-md border bg-card p-6 text-center text-sm text-muted-foreground"
         >
-          Выберите бренд в селекторе сверху
+          {{ t('teamPage.selectBrand') }}
         </div>
 
         <div
           v-else-if="loading && !members.length"
           class="rounded-md border bg-card p-6 text-center text-sm text-muted-foreground"
         >
-          Загрузка…
+          {{ t('teamPage.loading') }}
         </div>
 
         <template v-else>

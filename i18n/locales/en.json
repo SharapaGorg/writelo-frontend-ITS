@@ -523,6 +523,562 @@
     "generatedImage": "Generated image",
     "frameVisual": "Frame visual"
   },
+  "languageNames": {
+    "ru": "Russian",
+    "en": "English"
+  },
+  "sidebar": {
+    "login": "Sign in",
+    "unauthBanner": "You're not signed in — some features are unavailable",
+    "freePlanFallback": "Free",
+    "freePlanLabel": "Free plan",
+    "teamPlanLabel": "Team edition",
+    "openPlans": "Open pricing →",
+    "contactMe": "Message me 0_^",
+    "contactMeTooltip": "Message me 0_^ — @sharapagorg",
+    "items": {
+      "calendar": "Calendar",
+      "editor": "Editor",
+      "trends": "Trends",
+      "videoAnalyzer": "Video analysis",
+      "workspaces": "Brands",
+      "team": "Team",
+      "activity": "Activity log",
+      "assistant": "Assistant",
+      "profile": "Profile",
+      "settings": "Settings"
+    },
+    "publications": {
+      "header": "Publications",
+      "fallbackError": "Publication failed",
+      "dismiss": "Dismiss",
+      "openPost": "Open post",
+      "retry": "Retry",
+      "openPublishedTitle": "Open published post"
+    },
+    "limits": {
+      "model": "Model requests",
+      "search": "Web search"
+    }
+  },
+  "navbar": {
+    "selectBrand": "Select a brand",
+    "createBrand": "Create brand"
+  },
+  "noAccess": {
+    "title": "No access",
+    "description": "Your role doesn't have access to this section. If you think this is a mistake — contact the workspace owner.",
+    "back": "Back to calendar"
+  },
+  "team": {
+    "toasts": {
+      "inviteSent": "Invitation sent: {email}",
+      "inviteRevoked": "Invitation revoked",
+      "memberRemoved": "Member removed",
+      "roleChanged": "Role updated",
+      "ownershipTransferred": "Ownership transferred",
+      "inviteDuplicate": "This email is already invited or a member",
+      "inviteAccepted": "Invitation accepted",
+      "inviteDeclined": "Invitation declined",
+      "forbidden": "Insufficient permissions"
+    },
+    "roles": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    },
+    "invite": {
+      "loading": "Loading…",
+      "notFoundTitle": "Invitation not found",
+      "notFoundDesc": "The link is expired or invalid.",
+      "toHome": "Go home",
+      "toApp": "Open app",
+      "title": "Invitation to «{name}»",
+      "description": "{name} invites you as",
+      "expiresAt": "Expires: {date}",
+      "decline": "Decline",
+      "accept": "Accept",
+      "statusText": {
+        "accepted": "You have already accepted this invitation.",
+        "expired": "This invitation has expired.",
+        "revoked": "This invitation has been revoked."
+      }
+    }
+  },
+  "plansPage": {
+    "breadcrumb": "Pricing",
+    "title": "Pricing",
+    "subtitle": "Compare available plans and pick the one that fits.",
+    "empty": "No plans available yet.",
+    "unsureTitle": "Not sure which plan to pick?",
+    "unsureSub": "Drop me a line — I'll walk you through it in a chat or a call.",
+    "toasts": {
+      "subscribed": "Subscription activated",
+      "paymentFailed": "Payment failed"
+    }
+  },
+  "assistant": {
+    "errors": {
+      "selectBrand": "Pick a brand from the top panel first.",
+      "createConversation": "Failed to create conversation. Please try again.",
+      "sendMessage": "Failed to send message.",
+      "serverBusy": "\n**Server is busy**"
+    }
+  },
+  "videoAnalyzer": {
+    "breadcrumb": "Video analysis",
+    "breadcrumbDetail": "Analysis",
+    "backToList": "Back to list",
+    "returnToList": "Return to list",
+    "loadingDetail": "Loading analysis…",
+    "notFoundTitle": "Analysis not found",
+    "notFoundDesc": "It may have been deleted or belongs to another brand.",
+    "processingTitle": "Analysis in progress",
+    "processingDesc": "Usually takes 30–90 seconds. You can leave the tab open — the result will appear here automatically.",
+    "failedTitle": "Couldn't run the analysis",
+    "retry": "Try again",
+    "mockBadge": "Mock mode: showing a v2 sample response. The real analysis is not loaded here.",
+    "exitMock": "Exit mock",
+    "mockV2Cta": "Open v2 preview (mock data)",
+    "input": {
+      "placeholder": "Paste a link to YouTube Shorts, TikTok or Instagram Reels",
+      "analyze": "Analyze",
+      "limitsLoading": "Loading limit…",
+      "limitExhausted": "Limit reached",
+      "leftCountOne": "{n} analysis left",
+      "leftCountFew": "{n} analyses left",
+      "leftCountMany": "{n} analyses left",
+      "goToPlans": "Go to pricing",
+      "resetsAt": " · resets {date}"
+    },
+    "grid": {
+      "emptyTitle": "Your video analyses will live here",
+      "emptyDesc": "Paste a link to a short video — we'll transcribe it, break down the structure, pick out the hooks, and suggest improvements.",
+      "refreshing": "Refreshing list…"
+    },
+    "statuses": {
+      "processing": "Processing",
+      "completed": "Done",
+      "failed": "Failed"
+    },
+    "history": {
+      "failedToAnalyze": "Failed to analyze"
+    },
+    "summary": {
+      "header": "Summary",
+      "rows": {
+        "topic": "Topic",
+        "essence": "Essence",
+        "screen": "On screen",
+        "description": "Description"
+      }
+    },
+    "errors": {
+      "notAllowed": "Your role doesn't have permission to run analysis.",
+      "limitReached": "Analysis limit reached.",
+      "unavailable": "Analysis service is temporarily unavailable. Try again later.",
+      "failed": "Analyzer couldn't process this video. Try a different link.",
+      "unsupportedUrl": "Link not supported. Use YouTube Shorts, TikTok or Instagram Reels.",
+      "tooLong": "Video is too long to analyze.",
+      "importFailed": "Failed to import video. Make sure it's public.",
+      "downloadFailed": "Failed to download video. Try again later.",
+      "previewFailed": "Failed to fetch video preview.",
+      "missingVideo": "No video found at this link.",
+      "generic": "Couldn't run the analysis."
+    }
+  },
+  "activityLog": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "system": "System",
+    "breadcrumb": "Activity log",
+    "wsSubtitle": "Activity history for this brand.",
+    "selectBrand": "Pick a brand in the top selector",
+    "forbidden": "Activity log is only available to workspace owners and admins.",
+    "noRecords": "No records yet",
+    "loadMore": "Load more",
+    "loading": "Loading…",
+    "events": {
+      "one": "event",
+      "few": "events",
+      "many": "events"
+    },
+    "entities": {
+      "post": "post",
+      "post_media": "post media",
+      "conversation": "conversation",
+      "message": "message",
+      "workspace": "workspace",
+      "workspace_member": "member",
+      "member": "member",
+      "workspace_invite": "invite",
+      "invite": "invite",
+      "social_account": "social account",
+      "account": "account",
+      "tag": "tag",
+      "image": "image",
+      "draft": "draft",
+      "brand_brief": "brand brief"
+    },
+    "verbs": {
+      "create": "created",
+      "update": "updated",
+      "delete": "deleted",
+      "remove": "removed",
+      "archive": "archived",
+      "invite": "invited",
+      "revoke": "revoked",
+      "accept": "accepted",
+      "expire": "expired",
+      "join": "joined",
+      "leave": "left",
+      "link": "linked",
+      "unlink": "unlinked",
+      "connect": "connected",
+      "disconnect": "disconnected",
+      "publish": "published",
+      "schedule": "scheduled",
+      "unpublish": "unpublished",
+      "upload": "uploaded",
+      "generate": "generated",
+      "rename": "renamed",
+      "transfer": "transferred",
+      "publishScheduled": "scheduled publication for",
+      "changeRole": "changed role of",
+      "transferOwnership": "transferred ownership of",
+      "addMedia": "added media to",
+      "removeMedia": "removed media from",
+      "uploadMedia": "uploaded media to",
+      "upsertMedia": "updated media on",
+      "resend": "resent",
+      "send": "sent",
+      "cancel": "cancelled",
+      "reschedule": "rescheduled"
+    },
+    "roles": {
+      "owner": "owner",
+      "admin": "admin",
+      "editor": "editor",
+      "viewer": "viewer"
+    },
+    "payload": {
+      "asRole": "as {role}"
+    }
+  },
+  "rolesNames": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "editor": "Editor",
+    "viewer": "Viewer"
+  },
+  "devTools": {
+    "header": "Dev tools",
+    "devOnly": "(dev only)",
+    "grantBusiness": "Grant myself a business plan",
+    "granted": "Business plan granted"
+  },
+  "workspacesPage": {
+    "breadcrumb": "Brands",
+    "createBrand": "Create brand",
+    "loading": "Loading...",
+    "empty": "You don't have any brands yet.",
+    "createFirst": "Create first brand",
+    "newBrand": "New brand",
+    "create": "Create",
+    "deleteDialog": {
+      "title": "Delete brand?",
+      "description": "This action is irreversible. All brand data will be permanently deleted."
+    },
+    "unlinkDialog": {
+      "title": "Unlink account?",
+      "description": "Channel «{name}» will be unlinked from the brand. Scheduled posts to it won't go through.",
+      "confirm": "Unlink"
+    },
+    "toasts": {
+      "nameRequired": "Brand name is required",
+      "createFailed": "Failed to create brand",
+      "briefSaveFailed": "Brand created but the brief wasn't saved",
+      "updateFailed": "Failed to save changes",
+      "accountUnlinked": "Account unlinked",
+      "accountUnlinkFailed": "Failed to unlink account"
+    }
+  },
+  "connectAccount": {
+    "channelsAndChats": "Channels and chats",
+    "vkName": "VK",
+    "groupsAndPages": "Groups and pages",
+    "businessAccounts": "Business accounts",
+    "channels": "Channels",
+    "accountLinked": "Account linked",
+    "channelLinked": "Channel linked",
+    "brands": "Brands",
+    "addSocial": "Add socials",
+    "pickPlatform": "Pick a platform to add an account to the brand.",
+    "soon": "Soon",
+    "connectWith": "Connect {platform}",
+    "telegramAuth": "Sign in with Telegram to link a channel to the brand.",
+    "instagramAuth": "Sign in with Instagram Business Login to link a business account.",
+    "comingSoonDesc": "Integration with this platform is coming in future updates.",
+    "comingSoonNote": "Coming soon"
+  },
+  "brandAccounts": {
+    "header": "Connected accounts",
+    "add": "Add",
+    "loading": "Loading accounts...",
+    "actions": "Account actions",
+    "unlink": "Unlink",
+    "empty": "This brand has no connected accounts yet.",
+    "connect": "Connect account"
+  },
+  "brandBrief": {
+    "title": "AI brief",
+    "fillHint": "Fill in so AI writes in the brand voice",
+    "complete": "Brief is fully filled",
+    "partial": "Filled {filled} of {total}",
+    "fullLabel": "complete"
+  },
+  "teamPage": {
+    "breadcrumb": "Team",
+    "inviteShort": "Invite",
+    "subtitle": "Members and invites for this brand.",
+    "selectBrand": "Pick a brand in the top selector",
+    "loading": "Loading…",
+    "invites": {
+      "title": "Invitations",
+      "empty": "No active invitations",
+      "expired": "expired",
+      "expiresInOne": "expires in {days} day",
+      "expiresInFew": "expires in {days} days",
+      "expiresInMany": "expires in {days} days",
+      "revoke": "Revoke",
+      "revokeDialog": {
+        "title": "Revoke invitation?",
+        "description": "«{email}» will no longer be able to accept this invitation.",
+        "cancel": "Cancel",
+        "confirm": "Revoke"
+      }
+    },
+    "members": {
+      "title": "Members",
+      "changeRole": "Change role",
+      "transferOwnership": "Transfer ownership…",
+      "remove": "Remove",
+      "removeDialog": {
+        "title": "Remove member?",
+        "description": "«{name}» will lose access to the workspace.",
+        "cancel": "Cancel",
+        "confirm": "Remove"
+      }
+    },
+    "inviteDialog": {
+      "title": "Invite a member",
+      "description": "We'll send an email with an invite link. Valid for 14 days.",
+      "emailInvalid": "Invalid email",
+      "roleLabel": "Role",
+      "cancel": "Cancel",
+      "submit": "Send"
+    },
+    "transferDialog": {
+      "title": "Transfer ownership?",
+      "description1": "«{name}» will become the workspace owner. You will lose owner permissions —",
+      "description2": "most likely you'll remain admin (exact behavior is determined by the backend).",
+      "description3": "This action is irreversible unless the new owner transfers ownership back.",
+      "confirmLabel": "Type the new owner's email to confirm",
+      "cancel": "Cancel",
+      "confirm": "Transfer ownership"
+    }
+  },
+  "assistantPage": {
+    "breadcrumb": "Assistant",
+    "messagePlaceholder": "Write a message...",
+    "newChat": "New chat",
+    "searchPlaceholder": "Search...",
+    "emptyHistory": "No conversations. Write your first message.",
+    "untitled": "Untitled",
+    "rename": "Rename",
+    "delete": "Delete",
+    "renameDialog": {
+      "title": "Rename conversation",
+      "placeholder": "Title",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "deleteDialog": {
+      "title": "Delete conversation?",
+      "description": "This cannot be undone. The history of this conversation will be lost.",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "actionCard": {
+      "saveFailed": "Failed to save idea",
+      "saved": "Idea saved: {title}",
+      "connectAccount": "Connect a social account to this workspace first",
+      "toEditor": "To editor",
+      "savedLabel": "Saved: {title}"
+    },
+    "empty": {
+      "title": "What can it do?",
+      "description": "Ask for post ideas, trends, or just talk about your brand",
+      "suggestions": {
+        "reelIdeas": "Give me 5 reel ideas for the beauty niche",
+        "trends": "What's trending with influencers right now",
+        "hook": "Write a hook for a post about a new product",
+        "brandAnalysis": "Analyze my brand: where to start"
+      }
+    }
+  },
+  "contentEditor": {
+    "newPost": "New post",
+    "calendarCrumb": "Calendar",
+    "publishedBanner": "Post published — editing is closed",
+    "openPublished": "Open",
+    "publishComingSoon": "Publishing to {network} is coming soon",
+    "notAvailableIn": "Not available on {network}",
+    "save": "Save",
+    "publish": "Publish",
+    "savedToast": "Saved",
+    "publishingToast": "Publishing...",
+    "notSavedError": "Post not saved",
+    "accountUnlinked": "Account unlinked",
+    "accountUnlinkFailed": "Failed to unlink account",
+    "statuses": {
+      "idea": "Idea",
+      "draft": "Draft",
+      "ready": "Ready",
+      "published": "Published"
+    },
+    "unlinkDialog": {
+      "title": "Unlink account?",
+      "description": "Channel «{name}» will be unlinked from the brand. Scheduled posts to it won't go through.",
+      "cancel": "Cancel",
+      "confirm": "Unlink"
+    },
+    "publishDialog": {
+      "title": "Publish post?",
+      "description": "The post will be published to the selected social network. This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Publish"
+    }
+  },
+  "calendarPage": {
+    "breadcrumb": "Calendar",
+    "statusLabel": "Status:",
+    "statuses": {
+      "idea": "Idea",
+      "draft": "Draft",
+      "ready": "Ready",
+      "published": "Published"
+    },
+    "contentTypes": {
+      "post": "Post",
+      "story": "Story",
+      "reel": "Reel",
+      "article": "Article"
+    },
+    "tagsLabel": "Tags:",
+    "tagsAll": "(all)",
+    "addTag": "+ Add tag",
+    "searchTags": "Search tags...",
+    "noTagsFound": "Nothing found",
+    "accountDialog": {
+      "title": "Pick an account",
+      "description": "Which account should this idea go to?"
+    },
+    "unlinkDialog": {
+      "title": "Unlink account?",
+      "description": "Channel «{name}» will be unlinked from the brand. Scheduled posts to it won't go through.",
+      "cancel": "Cancel",
+      "confirm": "Unlink"
+    },
+    "deletePostDialog": {
+      "title": "Delete post?",
+      "description": "Post «{title}» will be permanently deleted.",
+      "untitled": "untitled",
+      "cancel": "Cancel",
+      "confirm": "Delete"
+    },
+    "newsSource": "Source: {source}\n{url}",
+    "toasts": {
+      "accountUnlinked": "Account unlinked",
+      "accountUnlinkFailed": "Failed to unlink account",
+      "postDeleteFailed": "Failed to delete post. Try again later.",
+      "loginToCreate": "Sign in to create posts",
+      "connectAccountFirst": "Connect a social account to this workspace first"
+    },
+    "accountsSidebar": {
+      "header": "Accounts",
+      "loading": "Loading…",
+      "empty": "No connected accounts",
+      "connect": "Connect",
+      "connectTooltip": "Connect account",
+      "unlink": "Unlink"
+    },
+    "newsSidebar": {
+      "header": "Trending",
+      "hint": "Drag to the calendar to create an idea",
+      "empty": "No data to display"
+    },
+    "sidebarTabs": {
+      "post": "Post",
+      "day": "Day",
+      "news": "News"
+    },
+    "newPost": {
+      "label": "Post title",
+      "placeholder": "Enter title...",
+      "cancel": "Cancel",
+      "create": "Create"
+    },
+    "noPostsForDate": "No posts for this date",
+    "createPostTooltip": "Create post",
+    "postCard": {
+      "types": {
+        "post": "Post",
+        "story": "Story",
+        "reels": "Reel",
+        "article": "Article"
+      },
+      "statuses": {
+        "idea": "Idea",
+        "draft": "Draft",
+        "ready": "Ready",
+        "publishing": "Publishing",
+        "published": "Published",
+        "failed": "Failed"
+      }
+    },
+    "postPreview": {
+      "openPost": "Open post",
+      "edit": "Edit",
+      "deleteTooltip": "Delete post",
+      "publishedLinkLabel": "Published link",
+      "open": "Open",
+      "atTime": "at {time}",
+      "publish": "Publish",
+      "statuses": {
+        "idea": "Idea",
+        "draft": "Draft",
+        "ready": "Ready to publish",
+        "publishing": "Publishing...",
+        "published": "Published",
+        "failed": "Publish failed"
+      },
+      "publishDialog": {
+        "title": "Publish post?",
+        "description": "The post will be published to the selected social network. This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Publish"
+      }
+    }
+  },
+  "activityLogFilters": {
+    "user": "Member",
+    "all": "All",
+    "from": "From",
+    "to": "To",
+    "notSet": "Not set",
+    "reset": "Reset"
+  },
   "landingNew": {
     "seo": {
       "title": "Writelo — Instagram trend analytics, Reels breakdowns & content calendar for SMM",
@@ -743,7 +1299,10 @@
         "pricing": "Pricing",
         "contacts": "Contact",
         "login": "Sign in",
-        "start": "Start"
+        "start": "Start",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "dataDeletion": "Data Deletion"
       }
     }
   }

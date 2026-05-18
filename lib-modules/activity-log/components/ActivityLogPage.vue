@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { Button } from '~/components/ui/button'
 import {
@@ -14,6 +15,7 @@ import ActivityLogItem from './ActivityLogItem.vue'
 import { useActivityLog } from '../composables/useActivityLog'
 import { groupByDay } from '../helpers/formatting'
 
+const { t, locale } = useI18n()
 const { currentWorkspaceId, currentWorkspace } = useWorkspaceContext()
 const { workspaces, initialize: initializeWorkspaces } = useWorkspaces()
 const { canViewActivityLog } = useWorkspacePermissions()
@@ -30,7 +32,7 @@ const {
 } = useActivityLog()
 
 const workspaceName = computed(() => currentWorkspace.value?.name ?? '')
-const groups = computed(() => groupByDay(items.value))
+const groups = computed(() => groupByDay(t, items.value, locale.value))
 
 // Какие дни открыты в аккордеоне. По умолчанию — самый верхний (свежий) день.
 // initializedFor хранит ws-id, для которого мы уже выставили дефолт, чтобы
@@ -67,9 +69,9 @@ watch(
 )
 
 function pluralEvents(n: number): string {
-  if (n === 1) return 'событие'
-  if (n < 5) return 'события'
-  return 'событий'
+  if (n === 1) return t('activityLog.events.one')
+  if (n < 5) return t('activityLog.events.few')
+  return t('activityLog.events.many')
 }
 </script>
 
@@ -81,7 +83,7 @@ function pluralEvents(n: number): string {
   <NoAccessState v-if="currentWorkspace && !canViewActivityLog" />
   <div v-else class="flex flex-col h-full">
     <AppNavbar
-      :breadcrumbs="[{ label: 'Журнал' }]"
+      :breadcrumbs="[{ label: t('activityLog.breadcrumb') }]"
       :show-workspace-selector="true"
     />
 
@@ -89,14 +91,14 @@ function pluralEvents(n: number): string {
       <div class="p-6 max-w-3xl mx-auto space-y-6">
         <header v-if="workspaceName">
           <h1 class="text-xl font-semibold">{{ workspaceName }}</h1>
-          <p class="text-sm text-muted-foreground">История действий в этом бренде.</p>
+          <p class="text-sm text-muted-foreground">{{ t('activityLog.wsSubtitle') }}</p>
         </header>
 
         <div
           v-if="!currentWorkspaceId"
           class="rounded-md border bg-card p-6 text-center text-sm text-muted-foreground"
         >
-          Выберите бренд в селекторе сверху
+          {{ t('activityLog.selectBrand') }}
         </div>
 
         <template v-else>
@@ -110,14 +112,14 @@ function pluralEvents(n: number): string {
             v-if="forbidden"
             class="rounded-md border bg-card p-6 text-center text-sm text-muted-foreground"
           >
-            Журнал доступен только владельцу или администратору воркспейса.
+            {{ t('activityLog.forbidden') }}
           </div>
 
           <div
             v-else-if="!items.length && !loading"
             class="rounded-md border bg-card p-6 text-center text-sm text-muted-foreground"
           >
-            Записей нет
+            {{ t('activityLog.noRecords') }}
           </div>
 
           <Accordion
@@ -157,7 +159,7 @@ function pluralEvents(n: number): string {
                     :disabled="loading"
                     @click="loadMore"
                   >
-                    {{ loading ? 'Загрузка…' : 'Загрузить ещё' }}
+                    {{ loading ? t('activityLog.loading') : t('activityLog.loadMore') }}
                   </Button>
                 </div>
               </AccordionContent>
@@ -168,7 +170,7 @@ function pluralEvents(n: number): string {
             v-if="loading && items.length"
             class="text-center text-xs text-muted-foreground"
           >
-            Загрузка…
+            {{ t('activityLog.loading') }}
           </div>
         </template>
       </div>

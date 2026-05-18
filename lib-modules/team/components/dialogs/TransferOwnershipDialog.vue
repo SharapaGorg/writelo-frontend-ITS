@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import {
@@ -20,6 +21,8 @@ const emit = defineEmits<{
   (e: 'confirm'): void
 }>()
 
+const { t } = useI18n()
+
 const typed = ref('')
 
 watch(
@@ -38,15 +41,15 @@ const matches = computed(
   <AlertDialog :open="open" @update:open="(v: boolean) => emit('update:open', v)">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Передать владение?</AlertDialogTitle>
+        <AlertDialogTitle>{{ t('teamPage.transferDialog.title') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          «{{ target?.name }}» станет владельцем воркспейса. Вы потеряете права владельца —
-          вероятнее всего, останетесь администратором (точное поведение определяется бэком).
-          Действие необратимо без обратной передачи нового владельца.
+          {{ t('teamPage.transferDialog.description1', { name: target?.name ?? '' }) }}
+          {{ t('teamPage.transferDialog.description2') }}
+          {{ t('teamPage.transferDialog.description3') }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div class="space-y-2">
-        <Label for="confirm-email">Введите email нового владельца, чтобы подтвердить</Label>
+        <Label for="confirm-email">{{ t('teamPage.transferDialog.confirmLabel') }}</Label>
         <Input
           id="confirm-email"
           v-model="typed"
@@ -56,13 +59,13 @@ const matches = computed(
         />
       </div>
       <AlertDialogFooter>
-        <AlertDialogCancel>Отмена</AlertDialogCancel>
+        <AlertDialogCancel>{{ t('teamPage.transferDialog.cancel') }}</AlertDialogCancel>
         <AlertDialogAction
           :disabled="!matches"
           class="bg-destructive text-destructive-foreground disabled:opacity-50"
           @click="emit('confirm')"
         >
-          Передать владение
+          {{ t('teamPage.transferDialog.confirm') }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
