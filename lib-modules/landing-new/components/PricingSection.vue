@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { ShieldCheck } from 'lucide-vue-next'
 import SectionHeader from './SectionHeader.vue'
 import PriceCard from './PriceCard.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
@@ -82,6 +83,14 @@ function handleCta(action: PriceCardCtaAction, tier: PriceCardTier) {
           v-bind="card"
           @cta="handleCta"
         />
+      </div>
+      <div class="mt-6 md:mt-8 flex justify-center">
+        <div class="inline-flex items-center gap-3 px-5 py-3 rounded-[6px] border border-[#0a0a0a]/15 dark:border-[#ede8de]/15 bg-[#0a0a0a]/[0.02] dark:bg-[#ede8de]/[0.03]">
+          <ShieldCheck class="w-4 h-4 text-[#5f5f5f] dark:text-[#a8a094] shrink-0" />
+          <span class="lnf-body text-[13px] md:text-[14px] text-[#5f5f5f] dark:text-[#a8a094] leading-snug">
+            {{ t('landingNew.pricing.guarantee') }}
+          </span>
+        </div>
       </div>
     </div>
   </section>
