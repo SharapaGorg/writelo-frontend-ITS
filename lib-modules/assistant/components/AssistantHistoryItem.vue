@@ -95,7 +95,7 @@ function confirmDelete() {
         <Button
           variant="ghost"
           size="icon"
-          class="h-6 w-6 opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100"
+          class="h-6 w-6 opacity-100 md:opacity-0 md:group-hover:opacity-100 data-[state=open]:opacity-100"
           @click.stop
         >
           <MoreHorizontal class="h-4 w-4" />

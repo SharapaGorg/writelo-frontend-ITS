@@ -59,7 +59,7 @@ function onNew() {
 </script>
 
 <template>
-  <aside class="hidden w-[260px] flex-col border-l border-border lg:flex">
+  <aside class="flex h-full w-full flex-col">
     <div class="space-y-2 border-b border-border p-2">
       <Button class="w-full justify-start" variant="outline" size="sm" @click="onNew">
         <Plus class="mr-2 h-4 w-4" /> {{ t('assistantPage.newChat') }}

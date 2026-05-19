@@ -893,6 +893,10 @@
   },
   "assistantPage": {
     "breadcrumb": "Assistant",
+    "tabs": {
+      "chat": "Chat",
+      "history": "History"
+    },
     "messagePlaceholder": "Write a message...",
     "newChat": "New chat",
     "searchPlaceholder": "Search...",
