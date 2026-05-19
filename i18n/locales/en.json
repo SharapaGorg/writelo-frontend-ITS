@@ -1099,13 +1099,13 @@
       "line1": "Find",
       "line2": "your content",
       "line3": "formula",
-      "sub": "Instagram trend analytics, AI breakdowns of competitor and your own reels, brand-tailored news hooks and a content calendar — all in one tool.",
+      "sub": "Instagram trend analytics, AI breakdowns of competitor and your own reels, brand-tailored news hooks and a content calendar — all in one tool",
       "cta": "Try it free",
       "scrollHint": "What's inside"
     },
     "audience": {
       "label": "N°01 / AUDIENCE",
-      "title": "For people who make a living from this.",
+      "title": "For people who make a living from this",
       "cards": {
         "freelancer": {
           "tag": "Reels Maker / Blogger",
@@ -1128,10 +1128,10 @@
       "label": "N°02 / TRENDS",
       "titlePre": "Instagram trends. React",
       "titleAccent": "faster",
-      "titlePost": "than competitors.",
-      "body1": "What's growing in your niche right now — with reach, momentum and links to source reels.",
-      "body2": "Sort, filter, spot the patterns.",
-      "body3": "Trends are picked for your brand — not a generic feed, but what's relevant to your audience.",
+      "titlePost": "than competitors",
+      "body1": "What's growing in your niche right now — with reach, momentum and links to source reels",
+      "body2": "Sort, filter, spot the patterns",
+      "body3": "Trends are picked for your brand — not a generic feed, but what's relevant to your audience",
       "previewLabel": "PREVIEW — NICHE: BEAUTY",
       "liveLabel": "LIVE",
       "liveNote": "Reels database refreshes every 5 minutes — you're always in the moment"
@@ -1140,34 +1140,34 @@
       "label": "N°03 / CALENDAR",
       "titlePre": "News hooks for your",
       "titleAccent": "brand.",
-      "titlePost": "Straight into the content plan.",
-      "sub": "AI monitors news from around the world and matches news hooks to your brand. You pick the relevant ones and drag them into the content plan. Google and Twitter give different angles on the agenda — together they make the picture more complete.",
+      "titlePost": "Straight into the content plan",
+      "sub": "AI monitors news from around the world and matches news hooks to your brand. You pick the relevant ones and drag them into the content plan. Google and Twitter give different angles on the agenda — together they make the picture more complete",
       "mobileLabel": "DESKTOP ONLY",
-      "mobileNote": "The calendar lives on desktop — open the landing page on a computer to see it in action."
+      "mobileNote": "The calendar lives on desktop — open the landing page on a computer to see it in action"
     },
     "brief": {
       "label": "N°04 / BRANDS",
-      "title": "Each brand gets its own workspace.",
-      "body1": "Describe your brand once — style, voice, constraints, references — and never come back to it.",
+      "title": "Each brand gets its own workspace",
+      "body1": "Describe your brand once — style, voice, constraints, references — and never come back to it",
       "body2Pre": "AI remembers everything and keeps working on its own: it pulls",
       "body2Accent1": "news",
       "body2Mid": "for the brand,",
       "body2Accent2": "writes",
-      "body2Post": "in the right voice, respects the constraints.",
-      "body3": "No \"universal\" prompts. No copy-pasting the brand brief into every request. Set it up once — it works forever.",
+      "body2Post": "in the right voice, respects the constraints",
+      "body3": "No \"universal\" prompts. No copy-pasting the brand brief into every request. Set it up once — it works forever",
       "aside": "LIKE PROJECTS IN CHATGPT, BUT FOR SMM"
     },
     "reels": {
       "label": "N°05 / VIDEO",
-      "title": "Video analysis.",
-      "body1": "Drop a link to a short video — YouTube Shorts, TikTok or Instagram Reels — and get a full breakdown: hook, structure, funnel, CTA, what techniques were used and why it worked.",
-      "body2": "Same for your own videos, but deeper. AI walks the clip frame by frame and tells you where attention drops — weak hook, sag in the middle, unclear CTA. Not just Instagram graphs, but a concrete answer: what didn't work, why, and how to fix it.",
+      "title": "Video analysis",
+      "body1": "Drop a link to a short video — YouTube Shorts, TikTok or Instagram Reels — and get a full breakdown: hook, structure, funnel, CTA, what techniques were used and why it worked",
+      "body2": "Same for your own videos, but deeper. AI walks the clip frame by frame and tells you where attention drops — weak hook, sag in the middle, unclear CTA. Not just Instagram graphs, but a concrete answer: what didn't work, why, and how to fix it",
       "previewLabel": "PREVIEW — RECENT ANALYSES"
     },
     "editor": {
       "label": "N°06 / EDITOR",
       "titleLine1": "Content editor",
-      "titleLine2": "with an AI assistant.",
+      "titleLine2": "with an AI assistant",
       "body1Pre": "The screen is split in two: on the left — AI that knows ",
       "body1AccentBrand": "your brand",
       "body1Mid": ", helps you write copy, generate images and search the web. Not sure where to start — pick a ready-made ",
@@ -1181,13 +1181,13 @@
       "body2AccentCalendar": "calendar",
       "body2Mid3": " everything is rendered differently, so you can see at a glance what's in progress and what's already gone live — handy ",
       "body2AccentTeam": "for teams",
-      "body2Post": " and for tracking progress. Set the time and status \"Ready\" — the post will publish itself. Need it now — hit \"Publish\" and it goes out manually.",
+      "body2Post": " and for tracking progress. Set the time and status \"Ready\" — the post will publish itself. Need it now — hit \"Publish\" and it goes out manually",
       "placeholder": "EDITOR SCREENSHOT",
-      "mobileNote": "Two-panel editor with AI chat and post preview — view it from a desktop."
+      "mobileNote": "Two-panel editor with AI chat and post preview — view it from a desktop"
     },
     "publish": {
       "label": "INLINE / N°06½",
-      "line1": "AI remembers your brand.",
+      "line1": "AI remembers your brand",
       "line2": "No need to explain it again in every request"
     },
     "comparison": {
@@ -1226,10 +1226,10 @@
     },
     "pricing": {
       "label": "N°08 / PRICING",
-      "title": "Pricing.",
+      "title": "Pricing",
       "free": {
         "name": "Free",
-        "description": "To try it out.",
+        "description": "To try it out",
         "price": "0 ₽",
         "features": {
           "0": "1 brand",
@@ -1242,7 +1242,7 @@
       },
       "pro": {
         "name": "Pro",
-        "description": "For active SMM specialists.",
+        "description": "For active SMM specialists",
         "price": "1,990 ₽",
         "period": "/mo",
         "features": {
@@ -1258,7 +1258,7 @@
       },
       "business": {
         "name": "Business",
-        "description": "For agencies and teams.",
+        "description": "For agencies and teams",
         "price": "On request",
         "features": {
           "0": "Everything in Pro, no brand limits",
@@ -1274,15 +1274,15 @@
     },
     "finalCta": {
       "titlePart1": "Viral content has a",
-      "titleAccent": "formula.",
+      "titleAccent": "formula",
       "titlePart2": "We give you the",
       "titleAccent2": "calculator",
-      "sub": "Stop doing the math in your head. Time to play big.",
+      "sub": "Stop doing the math in your head. Time to play big",
       "cta": "Try it free"
     },
     "contacts": {
       "label": "N°09 / CONTACTS",
-      "title": "Contact.",
+      "title": "Contact",
       "directLabel": "DIRECT",
       "socialsLabel": "SOCIAL",
       "feedback": {
