@@ -592,7 +592,7 @@ onUnmounted(() => {
       </div>
       <!-- Resizable Sidebar -->
       <div
-        class="relative flex-shrink-0 border-l border-border h-full overflow-hidden"
+        class="relative flex-shrink-0 border-l border-border h-full overflow-hidden hidden md:block"
         :style="{ width: `${effectiveSidebarWidth}px` }"
       >
         <!-- Resize handle (hidden in showcase mode) -->

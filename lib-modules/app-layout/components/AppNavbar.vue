@@ -46,10 +46,17 @@ const currentWorkspaceName = computed(() => {
 
 <template>
   <header
-    class="grid grid-cols-3 items-center h-16 px-6 border-b border-border bg-background"
+    class="flex items-center h-14 md:h-16 px-3 md:px-6 border-b border-border bg-background gap-2 md:grid md:grid-cols-3"
   >
-    <!-- Breadcrumbs -->
-    <nav class="flex items-center gap-1.5 text-sm min-w-0">
+    <!-- Mobile: page title (last breadcrumb segment) -->
+    <div class="flex-1 min-w-0 md:hidden">
+      <h1 class="text-base font-semibold truncate">
+        {{ props.breadcrumbs[props.breadcrumbs.length - 1]?.label }}
+      </h1>
+    </div>
+
+    <!-- Desktop: full breadcrumbs -->
+    <nav class="hidden md:flex items-center gap-1.5 text-sm min-w-0">
       <template v-for="(item, index) in props.breadcrumbs" :key="index">
         <ChevronRight
           v-if="index > 0"
@@ -77,18 +84,18 @@ const currentWorkspaceName = computed(() => {
       </template>
     </nav>
 
-    <!-- Workspace selector (centered) -->
-    <div class="flex justify-center">
+    <!-- Workspace selector -->
+    <div class="flex justify-center shrink-0">
       <Select
         v-if="props.showWorkspaceSelector && workspaces.length > 0"
         v-model="selectedWorkspaceId"
       >
         <SelectTrigger
-          class="w-[260px] bg-card border-border"
+          class="bg-card border-border w-[140px] md:w-[260px]"
         >
           <span class="flex items-center gap-2 min-w-0 w-full">
             <span class="truncate">{{ currentWorkspaceName || t('navbar.selectBrand') }}</span>
-            <RoleBadge v-if="isBusinessPlan" :role="currentRole" class="shrink-0" />
+            <RoleBadge v-if="isBusinessPlan" :role="currentRole" class="shrink-0 hidden md:inline-flex" />
           </span>
         </SelectTrigger>
         <SelectContent>
@@ -115,7 +122,7 @@ const currentWorkspaceName = computed(() => {
           class="h-9 gap-2 bg-brand text-brand-foreground hover:bg-brand/90"
         >
           <Plus class="h-4 w-4" />
-          {{ t('navbar.createBrand') }}
+          <span class="hidden md:inline">{{ t('navbar.createBrand') }}</span>
         </Button>
       </NuxtLink>
     </div>

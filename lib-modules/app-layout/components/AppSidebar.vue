@@ -78,7 +78,7 @@ function navigate(item: SidebarItem) {
 <template>
   <aside
     :class="cn(
-      'flex flex-col h-full bg-background border-r border-border overflow-hidden transition-all duration-300',
+      'hidden md:flex flex-col h-full bg-background border-r border-border overflow-hidden transition-all duration-300',
       isCollapsed ? 'w-16' : 'w-60'
     )"
   >

@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { AppSidebar } from '~/lib-modules/app-layout'
+import { AppSidebar, MobileBottomTabBar } from '~/lib-modules/app-layout'
 </script>
 
 <template>
   <div class="flex h-screen w-screen overflow-hidden bg-background">
-    <!-- Sidebar -->
     <AppSidebar />
 
-    <!-- Main Content Area (no header - calendar has its own) -->
     <div class="flex flex-1 flex-col overflow-hidden bg-white dark:bg-zinc-950">
-      <slot />
+      <main class="flex-1 overflow-auto pb-14 md:pb-0">
+        <slot />
+      </main>
     </div>
+
+    <MobileBottomTabBar />
   </div>
 </template>

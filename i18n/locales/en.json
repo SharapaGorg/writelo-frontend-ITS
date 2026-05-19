@@ -527,6 +527,9 @@
     "ru": "Russian",
     "en": "English"
   },
+  "mobileNav": {
+    "more": "More"
+  },
   "sidebar": {
     "login": "Sign in",
     "unauthBanner": "You're not signed in — some features are unavailable",

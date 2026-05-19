@@ -126,7 +126,7 @@ function isActive(accountId: string): boolean {
 
 <template>
   <aside
-    class="relative flex-shrink-0 border-r border-border bg-card flex flex-col h-full"
+    class="relative flex-shrink-0 border-r border-border bg-card hidden md:flex flex-col h-full"
     :style="{ width: `${sidebarWidth}px` }"
   >
     <div class="px-3 py-3 border-b border-border">
