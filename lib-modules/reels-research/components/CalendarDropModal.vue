@@ -107,7 +107,7 @@ function handleCreatePost(date: string) {
     >
       <div
         v-if="isOpen"
-        class="calendar-island fixed z-50 w-[620px]"
+        class="calendar-island fixed z-50 w-[620px] max-w-[calc(100vw-1rem)]"
         :style="{ top: islandPosition.top + 'px', left: islandPosition.left + 'px' }"
       >
         <!-- Rainbow border wrapper -->

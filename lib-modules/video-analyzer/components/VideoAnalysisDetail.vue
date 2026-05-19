@@ -397,7 +397,7 @@ onUnmounted(() => {
           <!-- Processing -->
           <div
             v-if="status === 'processing'"
-            class="flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-12 text-center"
+            class="flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-6 md:p-12 text-center"
           >
             <Loader2 class="h-8 w-8 animate-spin text-brand" />
             <div>

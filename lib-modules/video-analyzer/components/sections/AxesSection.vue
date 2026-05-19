@@ -287,7 +287,7 @@ const verdict = computed(() => {
               <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <span
                   :class="cn(
-                    'text-4xl font-bold tabular-nums leading-none',
+                    'text-3xl sm:text-4xl font-bold tabular-nums leading-none',
                     overallTone?.text ?? 'text-muted-foreground',
                   )"
                 >{{ displayReel ?? '—' }}</span>

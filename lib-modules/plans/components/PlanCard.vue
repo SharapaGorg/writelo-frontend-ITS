@@ -100,7 +100,7 @@ async function handlePurchase(mode: 'self' | 'gift') {
     </div>
 
     <div class="flex items-baseline gap-2">
-      <span class="text-4xl font-bold tracking-tight">{{ priceLabel }}</span>
+      <span class="text-3xl sm:text-4xl font-bold tracking-tight">{{ priceLabel }}</span>
       <span v-if="durationLabel" class="text-sm text-muted-foreground">/ {{ durationLabel }}</span>
     </div>
 
