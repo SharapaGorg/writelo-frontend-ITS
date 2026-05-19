@@ -56,6 +56,11 @@ export default defineNuxtConfig({
                 {rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap'},
             ],
             script: [
+                {
+                    innerHTML: `(function(){try{var t=localStorage.getItem('theme');var d=t==='dark'||((!t||t==='system')&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.classList.add('dark');}catch(e){}})();`,
+                    tagPosition: 'head',
+                    tagPriority: 'critical',
+                },
                 {src: "https://telegram.org/js/telegram-web-app.js?57", defer: true},
             ],
         },
