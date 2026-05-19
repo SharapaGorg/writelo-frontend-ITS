@@ -82,8 +82,8 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
         </template>
       </SectionHeader>
 
-      <div class="overflow-x-auto -mx-6 md:mx-0 pb-1">
-        <table class="w-full min-w-[680px] mx-6 md:mx-0 border-collapse">
+      <div class="overflow-x-auto overscroll-x-contain -mx-6 md:mx-0 pb-1">
+        <table class="w-full min-w-[680px] mx-6 md:mx-0 border-separate border-spacing-0">
           <thead>
             <tr>
               <th class="sticky left-0 z-20 bg-white dark:bg-[#0a0a0a] w-[44%] md:w-auto" />
@@ -123,7 +123,7 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
               <tr
                 v-for="(row, ri) in group.rows"
                 :key="row.label"
-                class="border-t border-[#0a0a0a]/[0.07] dark:border-[#ede8de]/[0.07]"
+                class="[&>*]:border-t [&>*]:border-t-[#0a0a0a]/[0.07] dark:[&>*]:border-t-[#ede8de]/[0.07]"
               >
                 <th
                   scope="row"
