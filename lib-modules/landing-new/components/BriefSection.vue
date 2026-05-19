@@ -2,6 +2,7 @@
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SectionHeader from './SectionHeader.vue'
+import SectionTryCta from './SectionTryCta.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { BrandBriefSection } from '~/lib-modules/workspaces'
 
@@ -47,6 +48,7 @@ const draft = reactive({
           <p class="lnf-mono text-[11px] uppercase tracking-[0.15em] text-[#8a8a8a] dark:text-[#5a5550] pt-4">
             {{ t('landingNew.brief.aside') }}
           </p>
+          <SectionTryCta section="brief" align="start" to="/app/workspaces" />
         </div>
 
         <div class="border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">

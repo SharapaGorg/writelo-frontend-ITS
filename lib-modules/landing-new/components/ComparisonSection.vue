@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { Check } from 'lucide-vue-next'
 import { useI18n } from 'vue-i18n'
 import SectionHeader from './SectionHeader.vue'
+import SectionTryCta from './SectionTryCta.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
 type Support = 'yes' | 'partial' | 'no'
@@ -187,6 +188,7 @@ function isFinalFeatureRow(groupIndex: number, rowIndex: number) {
           {{ t('landingNew.comparison.legend.no') }}
         </span>
       </div>
+      <SectionTryCta section="comparison" />
     </div>
   </section>
 </template>

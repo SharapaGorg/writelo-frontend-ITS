@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import { ArrowUpRight } from 'lucide-vue-next'
 import SectionHeader from './SectionHeader.vue'
+import SectionTryCta from './SectionTryCta.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
 const { t } = useI18n()
@@ -54,6 +55,7 @@ const trends = [
               {{ t('landingNew.trends.liveNote') }}
             </span>
           </div>
+          <SectionTryCta section="trends" align="start" to="/app/trends" />
         </div>
 
         <div class="border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 p-7 md:p-10 bg-[#fafafa] dark:bg-[#111110]">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import SectionTryCta from './SectionTryCta.vue'
 import VideoAnalyzerShowcase from './VideoAnalyzerShowcase.vue'
 
 const { t } = useI18n()
@@ -31,6 +32,7 @@ const { elementRef, isVisible } = useScrollReveal()
           <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#5f5f5f] dark:text-[#a8a094]">
             {{ t('landingNew.reels.body2') }}
           </p>
+          <SectionTryCta section="reels" align="start" to="/app/video-analyzer" />
         </div>
 
         <div class="rounded-md overflow-hidden border border-[#0a0a0a]/12 dark:border-[#ede8de]/15 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] bg-[#f7f7f7] dark:bg-[#0e0e0e]">

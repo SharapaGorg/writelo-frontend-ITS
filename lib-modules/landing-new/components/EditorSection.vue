@@ -2,6 +2,7 @@
 import { defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SectionHeader from './SectionHeader.vue'
+import SectionTryCta from './SectionTryCta.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
 // Async + ClientOnly: the inner component pulls content-editor → conversations
@@ -74,6 +75,7 @@ const { elementRef, isVisible } = useScrollReveal()
           {{ t('landingNew.editor.mobileNote') }}
         </p>
       </div>
+      <SectionTryCta section="editor" to="/app/editor" />
     </div>
   </section>
 </template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import SectionHeader from './SectionHeader.vue'
+import SectionTryCta from './SectionTryCta.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { ContentCalendarPage } from '~/lib-modules/content-calendar'
 
@@ -55,6 +56,7 @@ const { elementRef, isVisible } = useScrollReveal()
           {{ t('landingNew.calendar.mobileNote') }}
         </p>
       </div>
+      <SectionTryCta section="calendar" to="/app/calendar" />
     </div>
   </section>
 </template>
