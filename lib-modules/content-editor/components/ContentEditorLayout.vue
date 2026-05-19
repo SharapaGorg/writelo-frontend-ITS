@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import interact from 'interactjs'
-import { MessageSquare, Image } from 'lucide-vue-next'
+import { MessageSquare, Image, Users } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
 import { cn } from '~/lib-modules/utils'
 import { useContentEditor } from '../composables/useContentEditor'
@@ -11,6 +11,10 @@ import { useContentProjectStore } from '~/lib-modules/content-calendar/stores/co
 import type { SocialAccount } from '~/lib-modules/content-calendar/types'
 import { AppNavbar, type BreadcrumbItem } from '~/lib-modules/app-layout'
 import { getToasterPosition } from '~/scripts/features/utils/toater'
+import { useViewport } from '~/composables/useViewport'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '~/components/ui/sheet'
+import { Button } from '~/components/ui/button'
+import TabStrip from '~/components/molecules/TabStrip.vue'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -81,7 +85,18 @@ const isDragging = ref(false)
 const MIN_PANEL_WIDTH = 25 // minimum 25%
 const MAX_PANEL_WIDTH = 75 // maximum 75%
 
+// Mobile state
+const { isMobile } = useViewport()
+const accountsSheetOpen = ref(false)
+type EditorTab = 'edit' | 'preview'
+const activeTab = ref<EditorTab>('edit')
+const tabs = computed(() => [
+  { id: 'edit' as const, label: t('contentEditor.tabs.edit') },
+  { id: 'preview' as const, label: t('contentEditor.tabs.preview') },
+])
+
 onMounted(() => {
+  // resize handle is v-if'd off on mobile; bail when not rendered
   if (!resizeHandleRef.value || !containerRef.value) return
 
   interact(resizeHandleRef.value).draggable({
@@ -129,11 +144,28 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
 <template>
   <div :class="cn('flex flex-col', props.showcaseMode ? 'h-[700px]' : 'h-full', isDragging && 'select-none')">
-    <AppNavbar v-if="!props.showcaseMode" :breadcrumbs="breadcrumbs" show-workspace-selector />
+    <AppNavbar v-if="!props.showcaseMode" :breadcrumbs="breadcrumbs" show-workspace-selector>
+      <template #actions>
+        <Button
+          v-if="isMobile && !props.showcaseMode"
+          variant="ghost"
+          size="icon"
+          :title="t('contentEditor.mobile.accounts')"
+          @click="accountsSheetOpen = true"
+        >
+          <Users class="h-5 w-5" />
+        </Button>
+      </template>
+    </AppNavbar>
+
+    <!-- Mobile tab strip -->
+    <div v-if="isMobile && !props.showcaseMode" class="px-3 py-2 border-b border-border">
+      <TabStrip :tabs="tabs" v-model="activeTab" />
+    </div>
 
     <!-- Main content area -->
     <div class="flex flex-1 overflow-hidden">
-      <!-- Accounts Sidebar -->
+      <!-- Accounts Sidebar — desktop inline -->
       <AccountsSidebar
         v-if="!props.showcaseMode"
         :accounts="currentProjectAccounts"
@@ -146,18 +178,20 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
       <!-- Panels container -->
       <div ref="containerRef" class="flex flex-1 overflow-hidden">
-        <!-- Left panel -->
+        <!-- Left panel (Edit) -->
         <div
+          v-show="!isMobile || activeTab === 'edit'"
           :class="cn(
-            'relative flex flex-col border-r border-border'
+            'relative flex flex-col border-r border-border',
+            isMobile ? 'flex-1 w-full' : ''
           )"
-          :style="{ width: `${leftPanelWidth}%` }"
+          :style="!isMobile ? { width: `${leftPanelWidth}%` } : undefined"
           @click="setActivePanel('left')"
           @focusin="setActivePanel('left')"
         >
-          <!-- Active panel border overlay -->
+          <!-- Active panel border overlay (desktop only) -->
           <div
-            v-if="isLeftActive"
+            v-if="isLeftActive && !isMobile"
             class="absolute inset-0 border border-ring/50 rounded-sm pointer-events-none z-10"
           />
           <!-- Mode switcher tabs -->
@@ -194,8 +228,9 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
           </div>
         </div>
 
-        <!-- Resize handle -->
+        <!-- Resize handle — desktop only -->
         <div
+          v-if="!isMobile"
           ref="resizeHandleRef"
           :class="cn(
             'w-1 flex-shrink-0 cursor-col-resize bg-transparent hover:bg-ring/50 transition-colors',
@@ -203,15 +238,19 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
           )"
         />
 
-        <!-- Right panel -->
+        <!-- Right panel (Preview) -->
         <div
-          class="relative flex flex-1 flex-col overflow-hidden"
+          v-show="!isMobile || activeTab === 'preview'"
+          :class="cn(
+            'relative flex flex-col overflow-hidden',
+            isMobile ? 'flex-1 w-full' : 'flex-1'
+          )"
           @click="setActivePanel('right')"
           @focusin="setActivePanel('right')"
         >
-          <!-- Active panel border overlay -->
+          <!-- Active panel border overlay (desktop only) -->
           <div
-            v-if="isRightActive"
+            v-if="isRightActive && !isMobile"
             class="absolute inset-0 border border-ring/50 rounded-sm pointer-events-none z-10"
           />
           <slot name="right-panel" />
@@ -238,5 +277,25 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    <!-- Mobile: AccountsSidebar in a left Sheet -->
+    <Sheet v-if="isMobile && !props.showcaseMode" v-model:open="accountsSheetOpen">
+      <SheetContent side="left" class="w-[88vw] max-w-[320px] p-0 flex flex-col">
+        <SheetHeader class="p-4 border-b border-border">
+          <SheetTitle>{{ t('contentEditor.mobile.accounts') }}</SheetTitle>
+        </SheetHeader>
+        <div class="flex-1 min-h-0 overflow-hidden">
+          <AccountsSidebar
+            :accounts="currentProjectAccounts"
+            :selected-account-id="selectedAccountId ?? undefined"
+            :single-select="true"
+            :loading="projectStore.loading"
+            mobile
+            @select="(id) => { selectAccount(id); accountsSheetOpen = false }"
+            @unlink="onUnlinkRequest"
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
   </div>
 </template>

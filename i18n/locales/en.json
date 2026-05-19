@@ -937,6 +937,13 @@
   "contentEditor": {
     "newPost": "New post",
     "calendarCrumb": "Calendar",
+    "mobile": {
+      "accounts": "Accounts"
+    },
+    "tabs": {
+      "edit": "Edit",
+      "preview": "Preview"
+    },
     "publishedBanner": "Post published — editing is closed",
     "openPublished": "Open",
     "publishComingSoon": "Publishing to {network} is coming soon",

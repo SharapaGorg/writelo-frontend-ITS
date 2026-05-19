@@ -36,6 +36,22 @@ html, body {
     -webkit-touch-callout: none;
 }
 
+/* Disable text selection inside the app shell (not landing).
+   Re-enabled for inputs, textareas, contenteditable and the .select-text opt-in. */
+.app-shell {
+    user-select: none;
+    -webkit-user-select: none;
+}
+.app-shell input,
+.app-shell textarea,
+.app-shell [contenteditable],
+.app-shell [contenteditable] *,
+.app-shell .select-text,
+.app-shell .select-text * {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
 /* iOS specific fixes */
 @supports (-webkit-touch-callout: none) {
     /* Prevent zoom on input focus */

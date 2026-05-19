@@ -1166,6 +1166,13 @@
   "contentEditor": {
     "newPost": "Новый пост",
     "calendarCrumb": "Календарь",
+    "mobile": {
+      "accounts": "Аккаунты"
+    },
+    "tabs": {
+      "edit": "Редактор",
+      "preview": "Превью"
+    },
     "publishedBanner": "Пост опубликован — редактирование закрыто",
     "openPublished": "Открыть",
     "publishComingSoon": "Публикация в {network} скоро появится",
