@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import CalendarGrid from './CalendarGrid.vue'
 import SidebarContainer from './SidebarContainer.vue'
 import AccountsSidebar from './AccountsSidebar.vue'
+import { useViewport } from '~/composables/useViewport'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '~/components/ui/sheet'
+import { Button } from '~/components/ui/button'
+import { Users, PanelRightOpen } from 'lucide-vue-next'
 import {
   Dialog,
   DialogContent,
@@ -14,7 +18,7 @@ import {
 } from '~/components/ui/dialog'
 import { useContentCalendar } from '../composables/useContentCalendar'
 import { useContentProjectStore } from '../stores/contentProjectStore'
-import type { NewsItem, TrendItem, ContentTag, SocialAccount } from '../types'
+import type { NewsItem, TrendItem, SocialAccount } from '../types'
 import { useWorkspaces } from '~/lib-modules/workspaces'
 import { useUserController } from '~/composables/user'
 import { toastError, getToasterPosition } from '~/scripts/features/utils/toater'
@@ -43,7 +47,6 @@ const {
   selectedPostId,
   activeAccountIds,
   activeStatuses,
-  activeTags,
   currentMonth,
   currentProject,
   postsForSelectedDate,
@@ -55,7 +58,6 @@ const {
   selectPost,
   toggleAccount,
   toggleStatus,
-  toggleTag,
   nextMonth,
   prevMonth,
   createPost,
@@ -67,6 +69,15 @@ const {
 } = useContentCalendar()
 
 const projectStore = useContentProjectStore()
+const { isMobile } = useViewport()
+const accountsSheetOpen = ref(false)
+const detailsSheetOpen = ref(false)
+
+watch([selectedDate, selectedPost], ([date, post]) => {
+  if (!isMobile.value) return
+  if (date || post) detailsSheetOpen.value = true
+})
+
 const unlinkDialogOpen = ref(false)
 const pendingUnlink = ref<SocialAccount | null>(null)
 
@@ -288,11 +299,6 @@ const statusConfig = computed(() => [
   { id: 'published' as const, label: t('calendarPage.statuses.published'), icon: 'published', color: 'text-blue-500' }
 ])
 
-// Tag combobox state
-const tagSearch = ref('')
-const tagDropdownOpen = ref(false)
-const tagInputRef = ref<HTMLInputElement | null>(null)
-
 // Sidebar resize state
 const SIDEBAR_STORAGE_KEY = 'content-calendar-sidebar-width'
 const SIDEBAR_MIN_WIDTH = 280
@@ -345,44 +351,9 @@ function stopResize() {
   saveSidebarWidth()
 }
 
-const filteredTags = computed(() => {
-  const search = tagSearch.value.toLowerCase().trim()
-  if (!search) return (currentProject.value?.tags ?? [])
-  return (currentProject.value?.tags ?? []).filter(tag =>
-    tag.name.toLowerCase().includes(search)
-  )
-})
-
-const selectedTagObjects = computed(() =>
-  activeTags.value
-    .map(id => (currentProject.value?.tags ?? []).find(t => t.id === id))
-    .filter((tag): tag is ContentTag => !!tag)
-)
-
-function handleTagSelect(tagId: string) {
-  toggleTag(tagId)
-  tagSearch.value = ''
-}
-
-function removeTag(tagId: string) {
-  toggleTag(tagId)
-}
-
-function openTagDropdown() {
-  tagDropdownOpen.value = true
-  nextTick(() => tagInputRef.value?.focus())
-}
-
-function closeTagDropdown() {
-  tagDropdownOpen.value = false
-  tagSearch.value = ''
-}
-
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') {
-    if (tagDropdownOpen.value) {
-      closeTagDropdown()
-    } else if (selectedPostId.value) {
+    if (selectedPostId.value) {
       selectPost(null)
     } else if (selectedDate.value) {
       selectDate(null)
@@ -428,11 +399,32 @@ onUnmounted(() => {
     <AppNavbar
       :breadcrumbs="[{ label: t('calendarPage.breadcrumb') }]"
       :show-workspace-selector="!props.showcaseMode"
-    />
-    <div class="flex items-center justify-between px-4 py-2 border-b border-border">
-      <div class="flex items-center gap-6">
+    >
+      <template #actions>
+        <Button
+          v-if="isMobile"
+          variant="ghost"
+          size="icon"
+          :title="t('calendarPage.mobile.accounts')"
+          @click="accountsSheetOpen = true"
+        >
+          <Users class="h-5 w-5" />
+        </Button>
+        <Button
+          v-if="isMobile"
+          variant="ghost"
+          size="icon"
+          :title="t('calendarPage.mobile.details')"
+          @click="detailsSheetOpen = true"
+        >
+          <PanelRightOpen class="h-5 w-5" />
+        </Button>
+      </template>
+    </AppNavbar>
+    <div class="flex items-center justify-between gap-2 px-3 md:px-4 py-2 border-b border-border overflow-x-auto scrollbar-thin">
+      <div class="flex items-center gap-6 min-w-0">
         <!-- Status filter -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 shrink-0">
           <span class="text-sm text-muted-foreground">{{ t('calendarPage.statusLabel') }}</span>
           <button
             v-for="status in statusConfig"
@@ -469,7 +461,7 @@ onUnmounted(() => {
         </div>
       </div>
       <!-- Content type legend -->
-      <div class="flex items-center gap-4 text-sm text-muted-foreground">
+      <div class="hidden md:flex items-center gap-4 text-sm text-muted-foreground shrink-0">
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-full bg-blue-500" />
           <span>{{ t('calendarPage.contentTypes.post') }}</span>
@@ -488,81 +480,6 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <!-- Tag filter -->
-    <div class="flex items-center gap-2 px-4 py-2 border-b border-border bg-muted/30">
-      <span class="text-sm text-muted-foreground">{{ t('calendarPage.tagsLabel') }}</span>
-
-      <!-- Selected tags -->
-      <div class="flex items-center gap-1 flex-wrap">
-        <button
-          v-for="tag in selectedTagObjects"
-          :key="tag.id"
-          :class="['px-2 py-0.5 text-xs rounded-full flex items-center gap-1 text-white', tag.color]"
-          @click="removeTag(tag.id)"
-        >
-          {{ tag.name }}
-          <span class="text-white/70 hover:text-white">×</span>
-        </button>
-      </div>
-
-      <!-- Tag combobox -->
-      <div class="relative">
-        <button
-          class="px-3 py-1 text-xs rounded-full border border-border bg-muted text-muted-foreground hover:text-foreground hover:border-border flex items-center gap-1"
-          @click="openTagDropdown"
-        >
-          <span>{{ t('calendarPage.addTag') }}</span>
-        </button>
-
-        <!-- Dropdown -->
-        <div
-          v-if="tagDropdownOpen"
-          class="absolute top-full left-0 mt-1 w-56 bg-popover border border-border rounded-md shadow-xl z-50"
-        >
-          <div class="p-2 border-b border-border">
-            <input
-              ref="tagInputRef"
-              v-model="tagSearch"
-              type="text"
-              :placeholder="t('calendarPage.searchTags')"
-              class="w-full px-2 py-1 text-sm bg-muted border border-border rounded text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-ring"
-              @keydown.escape="closeTagDropdown"
-            />
-          </div>
-          <div class="max-h-48 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-            <button
-              v-for="tag in filteredTags"
-              :key="tag.id"
-              :class="[
-                'w-full px-3 py-1.5 text-sm text-left rounded flex items-center gap-2 transition-colors',
-                activeTags.includes(tag.id)
-                  ? 'bg-secondary text-foreground'
-                  : 'text-muted-foreground hover:bg-accent'
-              ]"
-              @click="handleTagSelect(tag.id)"
-            >
-              <span :class="['w-2.5 h-2.5 rounded-full', tag.color]" />
-              <span>{{ tag.name }}</span>
-              <span v-if="activeTags.includes(tag.id)" class="ml-auto text-green-400">✓</span>
-            </button>
-            <div v-if="filteredTags.length === 0" class="px-3 py-2 text-sm text-muted-foreground">
-              {{ t('calendarPage.noTagsFound') }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Click outside to close -->
-      <div
-        v-if="tagDropdownOpen"
-        class="fixed inset-0 z-40"
-        @click="closeTagDropdown"
-      />
-
-      <span v-if="activeTags.length === 0" class="text-xs text-muted-foreground">
-        {{ t('calendarPage.tagsAll') }}
-      </span>
-    </div>
     <div class="flex-1 flex min-h-0">
       <!-- Left sidebar with accounts -->
       <AccountsSidebar
@@ -574,7 +491,7 @@ onUnmounted(() => {
       />
 
       <div class="flex-1 flex flex-col min-h-0 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-        <div class="p-4">
+        <div class="px-0 py-2 md:p-4">
           <CalendarGrid
             :current-month="currentMonth"
             :selected-date="selectedDate"
@@ -705,5 +622,56 @@ onUnmounted(() => {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    <!-- Mobile: AccountsSidebar in a left Sheet -->
+    <Sheet v-if="isMobile" v-model:open="accountsSheetOpen">
+      <SheetContent side="left" class="w-[88vw] max-w-[320px] p-0 flex flex-col">
+        <SheetHeader class="p-4 border-b border-border">
+          <SheetTitle>{{ t('calendarPage.mobile.accounts') }}</SheetTitle>
+        </SheetHeader>
+        <div class="flex-1 min-h-0 overflow-hidden">
+          <AccountsSidebar
+            :accounts="(currentProject?.accounts ?? [])"
+            :active-account-ids="activeAccountIds"
+            :loading="projectStore.loading"
+            mobile
+            @toggle="toggleAccount"
+            @unlink="onUnlinkRequest"
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
+
+    <!-- Mobile: SidebarContainer (day details / post / news) in a right Sheet -->
+    <Sheet v-if="isMobile" v-model:open="detailsSheetOpen">
+      <SheetContent side="right" class="w-[92vw] max-w-[420px] p-0 flex flex-col">
+        <SheetHeader class="p-4 border-b border-border">
+          <SheetTitle>{{ t('calendarPage.mobile.details') }}</SheetTitle>
+        </SheetHeader>
+        <div class="flex-1 min-h-0 overflow-hidden">
+          <SidebarContainer
+            :selected-date="selectedDate"
+            :selected-post="selectedPost"
+            :posts-for-date="postsForSelectedDate"
+            :info-events="infoEventsForSelectedDate"
+            :project-tags="(currentProject?.tags ?? [])"
+            :accounts="(currentProject?.accounts ?? [])"
+            :news="(currentProject?.news ?? [])"
+            :used-news="usedNews"
+            :trends="(currentProject?.trends ?? [])"
+            :used-trends="usedTrends"
+            :is-creating-post="isCreatingPost"
+            :is-submitting-post="isSubmittingPost"
+            @select-post="selectPost"
+            @close-date="selectDate(null); detailsSheetOpen = false"
+            @close-post="selectPost(null)"
+            @create-post="handleCreatePost(selectedDate!)"
+            @submit-create-post="handleSubmitCreatePost"
+            @cancel-create-post="handleCancelCreatePost"
+            @delete-post="handlePostDelete"
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
   </div>
 </template>

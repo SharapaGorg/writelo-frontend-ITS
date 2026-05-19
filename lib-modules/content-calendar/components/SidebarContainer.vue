@@ -62,7 +62,9 @@ function cancelNewPost() {
   emit('cancelCreatePost')
 }
 
-const activeTab = ref<'context' | 'news'>('news')
+const activeTab = ref<'context' | 'news'>(
+  props.selectedDate !== null || props.selectedPost !== null ? 'context' : 'news',
+)
 
 const showTabs = computed(() =>
   props.selectedDate !== null || props.selectedPost !== null

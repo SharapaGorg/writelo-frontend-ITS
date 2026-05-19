@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { Plus, Trash2, Loader2 } from 'lucide-vue-next'
 import type { SocialAccount, SocialNetwork } from '../types'
 import { useWorkspaceContext, useWorkspacePermissions } from '~/lib-modules/workspaces'
+import { cn } from '~/lib-modules/utils'
 import {
   ContextMenu,
   ContextMenuContent,
@@ -17,10 +18,12 @@ const props = withDefaults(defineProps<{
   selectedAccountId?: string
   singleSelect?: boolean
   loading?: boolean
+  mobile?: boolean
 }>(), {
   activeAccountIds: () => [],
   singleSelect: false,
   loading: false,
+  mobile: false,
 })
 
 const { currentWorkspaceId } = useWorkspaceContext()
@@ -126,8 +129,13 @@ function isActive(accountId: string): boolean {
 
 <template>
   <aside
-    class="relative flex-shrink-0 border-r border-border bg-card hidden md:flex flex-col h-full"
-    :style="{ width: `${sidebarWidth}px` }"
+    :class="cn(
+      'relative h-full flex-col bg-card',
+      mobile
+        ? 'flex w-full'
+        : 'hidden md:flex flex-shrink-0 border-r border-border',
+    )"
+    :style="mobile ? undefined : { width: `${sidebarWidth}px` }"
   >
     <div class="px-3 py-3 border-b border-border">
       <span class="text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -218,8 +226,9 @@ function isActive(accountId: string): boolean {
       </button>
     </div>
 
-    <!-- Resize handle -->
+    <!-- Resize handle: desktop only -->
     <div
+      v-if="!mobile"
       class="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-primary/50 transition-colors z-10"
       :class="{ 'bg-primary/50': isResizing }"
       @mousedown="startResize"

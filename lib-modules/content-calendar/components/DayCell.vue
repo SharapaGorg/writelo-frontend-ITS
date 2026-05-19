@@ -249,8 +249,11 @@ const extraCount = computed(() => props.posts.length - 4)
         </svg>
         </template>
       </div>
-      <!-- Extra count -->
-      <span v-if="extraCount > 0" class="text-xs text-muted-foreground">+{{ extraCount }}</span>
     </div>
+    <!-- Extra count: overlay chip on top of icons -->
+    <span
+      v-if="extraCount > 0"
+      class="absolute bottom-1 right-1 z-10 px-1 py-0.5 rounded bg-background/95 border border-border text-[10px] font-semibold leading-none text-foreground shadow-sm"
+    >+{{ extraCount }}</span>
   </button>
 </template>

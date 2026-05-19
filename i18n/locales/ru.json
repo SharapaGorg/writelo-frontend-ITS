@@ -1198,6 +1198,10 @@
   },
   "calendarPage": {
     "breadcrumb": "Календарь",
+    "mobile": {
+      "accounts": "Аккаунты",
+      "details": "Детали"
+    },
     "statusLabel": "Статус:",
     "statuses": {
       "idea": "Идея",

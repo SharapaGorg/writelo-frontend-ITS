@@ -969,6 +969,10 @@
   },
   "calendarPage": {
     "breadcrumb": "Calendar",
+    "mobile": {
+      "accounts": "Accounts",
+      "details": "Details"
+    },
     "statusLabel": "Status:",
     "statuses": {
       "idea": "Idea",
