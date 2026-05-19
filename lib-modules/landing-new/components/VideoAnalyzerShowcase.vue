@@ -3,6 +3,7 @@ import { ExternalLink, Languages, Gift, ListOrdered, Lightbulb } from 'lucide-vu
 import {
   PlatformIcon,
   SummarySection,
+  AxesSection,
   HooksSection,
   StructureSection,
   FunnelSection,
@@ -75,6 +76,85 @@ const improvements = {
   ],
 }
 
+// 12 content-axes scores for the same bio-Reel above. Tuned to look like a
+// strong-but-not-perfect expert reel: most axes good/excellent, with a
+// realistic weak spot (comment_trigger, loop) so the Improvements section
+// has something to push on.
+const axes = {
+  hook: {
+    score: 78,
+    category: 'good',
+    analysis_ru:
+      'Текстовый крючок «3 ошибки в био эксперта» бьёт прямо в сегмент. Первый кадр — крупный скриншот плохого био с красными зачёркиваниями: визуально считывается с первого момента.',
+  },
+  retention: {
+    score: 82,
+    category: 'good',
+    analysis_ru:
+      'Темп плотный, каждые 2–3 секунды смена плана. Три открытые петли по числу ошибок удерживают до финального CTA.',
+  },
+  storytelling: {
+    score: 70,
+    category: 'good',
+    analysis_ru:
+      'Чёткая арка «было плохо → 3 причины → решение → CTA». Не хватает личного payoff: автор не показывает своё «до».',
+  },
+  structure: {
+    score: 88,
+    category: 'excellent',
+    analysis_ru:
+      'Идеальное деление 0:00–0:04 / 0:04–0:18 / 0:18–0:26 / 0:26–0:30. Концовка не обрывается, ритм держится.',
+  },
+  loop: {
+    score: 52,
+    category: 'average',
+    analysis_ru:
+      'Финальный кадр (стрелка в шапку профиля) не стыкуется с первым (скриншот «плохого» био). Повторный просмотр не закладывается.',
+  },
+  save_worthiness: {
+    score: 84,
+    category: 'good',
+    analysis_ru:
+      'Готовая формула «кому → что → как» + шаблон в шапке. Высокая референсная ценность — сохранять есть зачем.',
+  },
+  comment_trigger: {
+    score: 42,
+    category: 'average',
+    analysis_ru:
+      'Нет прямого вопроса к зрителю и нет поляризации. Возможны «спасибо», но повода ответить или поспорить нет.',
+  },
+  persona: {
+    score: 75,
+    category: 'good',
+    analysis_ru:
+      'Узнаваемая манера: прямое «ты», конкретика, отсылки к опыту. Стиль ровный, считывается как «эксперт-практик по SMM».',
+  },
+  voice: {
+    score: 80,
+    category: 'good',
+    analysis_ru:
+      'Темп быстрый, артикуляция чистая, паузы расставлены под текстовые плашки. Энергии достаточно, чтобы дотянуть до 30-й секунды.',
+  },
+  aesthetic: {
+    score: 76,
+    category: 'good',
+    analysis_ru:
+      'Контрастные плашки крупным шрифтом, спокойный фон рабочего стола. Стиль не вирусный, но опрятный и узнаваемый.',
+  },
+  production: {
+    score: 86,
+    category: 'excellent',
+    analysis_ru:
+      'Фокус и экспозиция стабильны, звук без шума, скриншоты читаются. Размер текста безопасный для всех ориентаций.',
+  },
+  cta: {
+    score: 88,
+    category: 'excellent',
+    analysis_ru:
+      'Двойной CTA: голос «забирай шаблон» + визуальная стрелка в шапку профиля. Воронка собрана аккуратно.',
+  },
+}
+
 const transcription = {
   language: 'ru',
   text_ru:
@@ -89,7 +169,7 @@ const transcription = {
 
 <template>
   <div class="flex h-full flex-col overflow-hidden bg-background text-foreground">
-    <div class="flex-1 overflow-y-auto">
+    <div class="va-showcase-scroll flex-1 overflow-y-auto">
       <div class="mx-auto max-w-3xl space-y-5 p-5">
         <!-- Meta header -->
         <header class="space-y-3 rounded-lg border border-border bg-card p-4">
@@ -141,6 +221,7 @@ const transcription = {
         </div>
 
         <SummarySection :value="summary" />
+        <AxesSection :value="axes" />
         <HooksSection :value="hooks" />
         <StructureSection :value="structure" />
         <FunnelSection :value="funnel" />

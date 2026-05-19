@@ -264,6 +264,44 @@ function switchLang(code: 'ru' | 'en') {
   background-color: rgba(237, 232, 222, 0.24);
 }
 
+/* Reuse the same parchment scrollbar inside the video-analyzer showcase
+   frame — overrides the global `*::-webkit-scrollbar { width: 0 }` rule. */
+.landing-new-root .va-showcase-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(10, 10, 10, 0.18) transparent;
+}
+
+:where(html.dark) .landing-new-root .va-showcase-scroll {
+  scrollbar-color: rgba(237, 232, 222, 0.16) transparent;
+}
+
+.landing-new-root .va-showcase-scroll::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.landing-new-root .va-showcase-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.landing-new-root .va-showcase-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(10, 10, 10, 0.18);
+  border-radius: 9999px;
+  transition: background-color 200ms;
+}
+
+.landing-new-root .va-showcase-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(10, 10, 10, 0.32);
+}
+
+:where(html.dark) .landing-new-root .va-showcase-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(237, 232, 222, 0.16);
+}
+
+:where(html.dark) .landing-new-root .va-showcase-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(237, 232, 222, 0.32);
+}
+
 .landing-new-root .lnu-fade-up {
   opacity: 0;
   transform: translateY(8px);
