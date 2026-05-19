@@ -33,13 +33,13 @@ function ctaClick() {
     <div class="mt-10 md:mt-12 lnu-fade-up" style="animation-delay:1150ms">
       <PrimaryButton @click="ctaClick">
         {{ t('landingNew.hero.cta') }}
-        <ArrowRight class="w-4 h-4" />
+<!--        <ArrowRight class="w-4 h-4" />-->
       </PrimaryButton>
     </div>
 
     <div class="mt-16 md:mt-24 flex flex-col items-center gap-3 lnu-fade-up" style="animation-delay:1400ms">
       <span class="lnf-mono font-bold text-[10px] tracking-[0.15em] uppercase text-[#8a8a8a] dark:text-[#5a5550]">
-        ↓ {{ t('landingNew.hero.scrollHint') }}
+        {{ t('landingNew.hero.scrollHint') }}
       </span>
       <ArrowDown class="w-4 h-4 text-[#8a8a8a] dark:text-[#5a5550] lnu-bounce-slow" />
     </div>

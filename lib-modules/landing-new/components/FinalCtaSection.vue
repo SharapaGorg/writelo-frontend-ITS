@@ -36,7 +36,7 @@ function ctaClick() {
       <div class="mt-12">
         <PrimaryButton @click="ctaClick">
           {{ t('landingNew.finalCta.cta') }}
-          <ArrowRight class="w-4 h-4" />
+<!--          <ArrowRight class="w-4 h-4" />-->
         </PrimaryButton>
       </div>
     </div>
