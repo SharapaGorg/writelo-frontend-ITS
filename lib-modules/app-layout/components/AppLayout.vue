@@ -1,6 +1,32 @@
 <script setup lang="ts">
+import { onMounted, watch } from 'vue'
 import AppSidebar from './AppSidebar.vue'
 import MobileBottomTabBar from './MobileBottomTabBar.vue'
+import { useUserController } from '~/composables/user'
+import { useWorkspaces, useWorkspaceContext } from '~/lib-modules/workspaces'
+
+// /me does not return primaryWorkspaceId in the current API — workspace context only gets bootstrapped
+// when a page calls `useWorkspaces().initialize()` itself. That made sidebar widgets (LimitsPanel)
+// hang on skeleton whenever the landing page was the first hop into pages that don't fetch workspaces
+// themselves (trends, profile, plans, settings, workspaces). Doing the fetch here once the shell mounts
+// covers every /app/* entry point.
+const userController = useUserController()
+const { initialize, workspaces } = useWorkspaces()
+const { currentWorkspaceId } = useWorkspaceContext()
+
+function bootstrapWorkspaces() {
+  if (!userController.isAuthenticated()) return
+  if (workspaces.value.length > 0 || currentWorkspaceId.value) return
+  initialize()
+}
+
+onMounted(bootstrapWorkspaces)
+
+// Auth may finish after mount (post-login redirect into /app/*); re-run once token appears.
+watch(
+  () => userController.isAuthenticated(),
+  (auth) => { if (auth) bootstrapWorkspaces() },
+)
 </script>
 
 <template>
