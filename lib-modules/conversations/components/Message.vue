@@ -161,11 +161,12 @@ onMounted(() => {
 }
 
 .rendered-text-content {
-  @apply flex flex-col gap-y-4
+  @apply flex flex-col gap-y-4 leading-relaxed
 }
 
 .rendered-text-content a {
-  @apply text-blue-400
+  @apply text-brand underline underline-offset-4
+  decoration-brand/40 hover:decoration-brand transition-colors
 }
 
 .rendered-text-content span.katex {
@@ -173,35 +174,32 @@ onMounted(() => {
   scrollbar-thin
 }
 
-.rendered-text-content a:hover {
-  @apply underline
-}
-
-/* Headers styling */
+/* Headers — Unbounded on h1/h2, IBM Plex (inherited) on h3+ */
 .rendered-text-content h1 {
-  @apply text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 mt-6
-  border-b-2 border-blue-200 dark:border-blue-800 pb-2
+  @apply font-display font-medium text-2xl tracking-tight
+  text-foreground mb-4 mt-6
+  border-b border-border pb-2
 }
 
 .rendered-text-content h2 {
-  @apply text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 mt-5
-  border-b border-gray-200 dark:border-gray-700 pb-1
+  @apply font-display font-medium text-xl tracking-tight
+  text-foreground mb-3 mt-5
 }
 
 .rendered-text-content h3 {
-  @apply text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2 mt-4
+  @apply text-lg font-semibold text-foreground mb-2 mt-4
 }
 
 .rendered-text-content h4 {
-  @apply text-base font-semibold text-gray-700 dark:text-gray-300 mb-2 mt-3
+  @apply text-base font-semibold text-foreground mb-2 mt-3
 }
 
 .rendered-text-content h5 {
-  @apply text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1 mt-2
+  @apply text-sm font-semibold text-foreground mb-1 mt-2
 }
 
 .rendered-text-content h6 {
-  @apply text-sm font-medium text-gray-600 dark:text-gray-400 mb-1 mt-2
+  @apply text-sm font-medium text-muted-foreground mb-1 mt-2
 }
 
 /* Lists styling */
@@ -210,7 +208,7 @@ onMounted(() => {
 }
 
 .rendered-text-content ol li {
-  @apply text-gray-800 dark:text-gray-200 pl-2
+  @apply text-foreground pl-2
 }
 
 .rendered-text-content ul {
@@ -218,9 +216,9 @@ onMounted(() => {
 }
 
 .rendered-text-content ul li {
-  @apply relative pl-6 text-gray-800 dark:text-gray-200
+  @apply relative pl-6 text-foreground
   before:content-[''] before:absolute before:left-0 before:top-2
-  before:w-2 before:h-2 before:bg-blue-500 before:rounded-full
+  before:w-2 before:h-2 before:bg-brand/70 before:rounded-full
 }
 
 /* Nested lists */
@@ -232,40 +230,49 @@ onMounted(() => {
 }
 
 .rendered-text-content ul ul li:before {
-  @apply bg-green-500
+  @apply bg-muted-foreground/60
 }
 
 .rendered-text-content ul ul ul li:before {
-  @apply bg-purple-500
+  @apply bg-muted-foreground/30
 }
 
 .rendered-text-content p {
   @apply inline
 }
 
-/* Table styles for markdown */
+/* Blockquote — editorial side rule */
+.rendered-text-content blockquote {
+  @apply border-l-2 border-brand/50 pl-4 italic
+  text-muted-foreground my-3
+}
+
+/* Inline code — distinct from fenced code blocks (.hljs) */
+.rendered-text-content code:not(.hljs) {
+  @apply font-mono text-[0.9em] bg-muted text-foreground
+  px-1.5 py-0.5 rounded
+}
+
+/* Tables — editorial style, no zebra/hover */
 .rendered-text-content table {
   @apply w-full border-collapse my-4 overflow-x-auto block
 }
 
-.rendered-text-content table thead {
-  @apply bg-gray-100 dark:bg-gray-800
+.rendered-text-content table thead tr {
+  @apply border-b border-border
 }
 
 .rendered-text-content table th {
-  @apply px-4 py-2 text-left font-semibold border border-gray-300 dark:border-gray-600
+  @apply px-4 py-2 text-left
+  text-xs uppercase tracking-wider font-medium text-muted-foreground
 }
 
 .rendered-text-content table td {
-  @apply px-4 py-2 border border-gray-300 dark:border-gray-600
+  @apply px-4 py-2 text-foreground
 }
 
 .rendered-text-content table tbody tr {
-  @apply hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors
-}
-
-.rendered-text-content table tbody tr:nth-child(even) {
-  @apply bg-gray-50 dark:bg-gray-900
+  @apply border-b border-border last:border-b-0
 }
 
 /* Make table responsive */
@@ -282,7 +289,7 @@ onMounted(() => {
 }
 
 .rendered-text-content table::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 dark:bg-gray-600 rounded
+  @apply bg-muted-foreground/30 rounded
 }
 
 /* Wrapper for horizontal scroll on small screens */
