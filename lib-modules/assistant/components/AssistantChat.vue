@@ -130,7 +130,7 @@ onUnmounted(() => {
         <EmptyStateHero @pick="onPrompt" />
       </template>
       <template v-else>
-        <div class="mx-auto max-w-[760px] space-y-4 px-4 py-6">
+        <div class="mx-auto max-w-[1400px] space-y-4 px-6 pb-40 pt-6">
           <template v-for="(m, i) in messages" :key="m.id">
             <Message
               :id="m.id"
@@ -157,12 +157,12 @@ onUnmounted(() => {
     </div>
 
     <!-- Floating composer island -->
-    <div class="shrink-0 px-4 pb-4 pt-2">
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 px-4 pb-4 pt-2">
       <Transition name="lazy-loading">
-        <AttachedFileArea v-if="hasAttachedFiles" inline />
+        <AttachedFileArea v-if="hasAttachedFiles" inline class="pointer-events-auto" />
       </Transition>
 
-      <div class="mx-auto w-full max-w-[760px] rounded-2xl border border-border bg-card px-4 py-3 shadow-lg">
+      <div class="pointer-events-auto mx-auto w-full max-w-[1100px] rounded-2xl border border-border bg-card px-4 py-3 shadow-lg">
         <PromptImproverWrapper
           ref="promptImprover"
           v-model="input"

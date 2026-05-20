@@ -10,7 +10,7 @@ const ROWS = [
 </script>
 
 <template>
-  <div class="mx-auto max-w-[760px] space-y-4 px-4 py-6">
+  <div class="mx-auto max-w-[1400px] space-y-4 px-6 pb-40 pt-6">
     <div
       v-for="(row, i) in ROWS"
       :key="i"
