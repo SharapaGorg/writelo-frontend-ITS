@@ -27,10 +27,16 @@ const { elementRef, isVisible } = useScrollReveal()
       <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-10 md:gap-14 items-start">
         <div class="space-y-5 max-w-[60ch]">
           <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#5f5f5f] dark:text-[#a8a094]">
-            {{ t('landingNew.reels.body1') }}
+            <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body1Accent1') }}</span>{{ t('landingNew.reels.body1Mid') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body1Accent2') }}</span>{{ t('landingNew.reels.body1Post') }}
           </p>
           <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#5f5f5f] dark:text-[#a8a094]">
-            {{ t('landingNew.reels.body2') }}
+            {{ t('landingNew.reels.body2Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body2Accent1') }}</span>{{ t('landingNew.reels.body2Mid') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body2Accent2') }}</span>{{ t('landingNew.reels.body2Post') }}
+          </p>
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#5f5f5f] dark:text-[#a8a094]">
+            {{ t('landingNew.reels.body3Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body3Accent') }}</span>{{ t('landingNew.reels.body3Post') }}
+          </p>
+          <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#5f5f5f] dark:text-[#a8a094]">
+            {{ t('landingNew.reels.body4Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body4Accent1') }}</span>{{ t('landingNew.reels.body4Mid1') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body4Accent2') }}</span>{{ t('landingNew.reels.body4Mid2') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body4Accent3') }}</span>{{ t('landingNew.reels.body4Post') }}
           </p>
           <SectionTryCta section="reels" align="start" to="/app/video-analyzer" />
         </div>
