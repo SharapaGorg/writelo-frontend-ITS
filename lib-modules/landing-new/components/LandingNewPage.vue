@@ -64,8 +64,17 @@ function switchLang(code: 'ru' | 'en') {
             </a>
           </nav>
 
-          <div class="flex items-center gap-3 justify-self-end">
-            <div class="hidden md:flex items-center gap-1.5 lnf-mono text-[12px] tracking-[0.04em] mr-2" role="group" aria-label="Language">
+          <button
+            class="md:hidden justify-self-center p-2 text-[#0a0a0a] dark:text-[#ede8de]"
+            :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
+            @click="mobileMenuOpen = !mobileMenuOpen"
+          >
+            <Menu v-if="!mobileMenuOpen" class="w-6 h-6" />
+            <X v-else class="w-6 h-6" />
+          </button>
+
+          <div class="flex items-center gap-3 justify-self-end -mr-4 md:mr-0">
+            <div class="flex items-center gap-1.5 lnf-mono text-[12px] tracking-[0.04em] md:mr-2" role="group" aria-label="Language">
               <button
                 type="button"
                 :class="cn(
@@ -97,14 +106,6 @@ function switchLang(code: 'ru' | 'en') {
             <PrimaryButton size="sm" class="hidden md:inline-flex" @click="goToApp">
               {{ t('landingNew.header.cta') }}
             </PrimaryButton>
-            <button
-              class="md:hidden p-2 text-[#0a0a0a] dark:text-[#ede8de]"
-              :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
-              @click="mobileMenuOpen = !mobileMenuOpen"
-            >
-              <Menu v-if="!mobileMenuOpen" class="w-6 h-6" />
-              <X v-else class="w-6 h-6" />
-            </button>
           </div>
         </div>
       </div>
@@ -128,35 +129,6 @@ function switchLang(code: 'ru' | 'en') {
             <a href="#contacts" class="lnf-body text-[#0a0a0a] dark:text-[#ede8de]" @click="closeMobile">
               {{ t('landingNew.header.nav.contacts') }}
             </a>
-            <div class="flex items-center gap-1.5 lnf-mono text-[12px] tracking-[0.04em] pt-2" role="group" aria-label="Language">
-              <button
-                type="button"
-                :class="cn(
-                  'px-1.5 py-1 uppercase transition-colors',
-                  locale === 'ru'
-                    ? 'text-[#0a0a0a] dark:text-[#ede8de] font-bold'
-                    : 'text-[#8a8a8a] dark:text-[#7a7268]',
-                )"
-                :aria-pressed="locale === 'ru'"
-                @click="switchLang('ru')"
-              >
-                RU
-              </button>
-              <span class="text-[#c4c4c4] dark:text-[#3a3530]">/</span>
-              <button
-                type="button"
-                :class="cn(
-                  'px-1.5 py-1 uppercase transition-colors',
-                  locale === 'en'
-                    ? 'text-[#0a0a0a] dark:text-[#ede8de] font-bold'
-                    : 'text-[#8a8a8a] dark:text-[#7a7268]',
-                )"
-                :aria-pressed="locale === 'en'"
-                @click="switchLang('en')"
-              >
-                EN
-              </button>
-            </div>
             <PrimaryButton size="sm" class="self-start" @click="goToApp">
               {{ t('landingNew.header.cta') }}
             </PrimaryButton>
