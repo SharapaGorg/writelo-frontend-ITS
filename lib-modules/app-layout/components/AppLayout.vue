@@ -1,33 +1,38 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted } from 'vue'
 import AppSidebar from './AppSidebar.vue'
 import MobileBottomTabBar from './MobileBottomTabBar.vue'
 import { useUserController } from '~/composables/user'
 import { useWorkspaces, useWorkspaceContext } from '~/lib-modules/workspaces'
+import { useContentProjectStore } from '~/lib-modules/content-calendar'
 
-// /me does not return primaryWorkspaceId in the current API — workspace context only gets bootstrapped
-// when a page calls `useWorkspaces().initialize()` itself. That left sidebar widgets (LimitsPanel)
-// stuck on skeleton whenever the landing page was the first hop into pages that don't fetch workspaces
-// themselves (trends, profile, plans, settings, workspaces). Doing the fetch here covers every entry
-// point. Calendar still calls `ensureCurrentProjectData()` in its own onMounted because watchers in
-// contentProjectStore race with isDemo flips and can no-op silently.
+// Single app-shell bootstrap covering every /app/* entry:
+//   - flip out of demo mode immediately (sync, before child setup) so pages that read
+//     contentProjectStore in their own setup (e.g. /app/editor pulling currentProjectAccounts)
+//     never see landing-showcase demo data.
+//   - fetch workspaces so sidebar widgets (LimitsPanel) and any consumer of currentWorkspaceId
+//     work regardless of which page triggered the entry.
+//   - explicitly ensure project data is loaded — the store's watchers race with the isDemo flip
+//     and can no-op silently.
 const userController = useUserController()
+const projectStore = useContentProjectStore()
 const { initialize, workspaces } = useWorkspaces()
 const { currentWorkspaceId } = useWorkspaceContext()
 
-function bootstrapWorkspaces() {
-  if (!userController.isAuthenticated()) return
-  if (workspaces.value.length > 0 || currentWorkspaceId.value) return
-  initialize()
+if (userController.isAuthenticated()) {
+  projectStore.disableDemoMode()
 }
 
-onMounted(bootstrapWorkspaces)
+async function bootstrap() {
+  if (!userController.isAuthenticated()) return
+  projectStore.disableDemoMode()
+  if (workspaces.value.length === 0 && !currentWorkspaceId.value) {
+    await initialize()
+  }
+  projectStore.ensureCurrentProjectData()
+}
 
-// Auth may finish after mount (post-login redirect into /app/*); re-run once token appears.
-watch(
-  () => userController.isAuthenticated(),
-  (auth) => { if (auth) bootstrapWorkspaces() },
-)
+onMounted(bootstrap)
 </script>
 
 <template>
