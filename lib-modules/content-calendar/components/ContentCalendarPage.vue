@@ -383,6 +383,10 @@ onMounted(async () => {
     if (workspaces.value.length === 0) {
       await initialize()
     }
+    // Watch in contentProjectStore that triggers fetchProjectData on workspace changes is
+    // unreliable when arriving from landing's calendar showcase (isDemo flips during the same
+    // tick as the workspace fetch lands), so we explicitly kick it after init.
+    projectStore.ensureCurrentProjectData()
   }
 })
 

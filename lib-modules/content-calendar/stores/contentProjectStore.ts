@@ -63,6 +63,21 @@ export const useContentProjectStore = defineStore('contentProject', () => {
     }
   }
 
+  // Imperative escape hatch: caller has reason to believe data should be loaded but the watchers
+  // above may have raced or no-oped (e.g. workspaces were fetched while isDemo was still true from
+  // a landing showcase, or the workspace ref was already populated by the app-shell bootstrap so
+  // nothing reactive changes during disableDemoMode). Calendar's onMounted calls this as a safety net.
+  function ensureCurrentProjectData() {
+    if (isDemo.value) return
+    const currentId = context.currentWorkspaceId.value
+    if (!currentId) return
+    syncProjects()
+    const project = projects.value.find(p => p.id === currentId)
+    if (project && project.accounts.length === 0 && project.posts.length === 0) {
+      fetchProjectData(currentId)
+    }
+  }
+
   async function fetchProjectData(workspaceId: string): Promise<void> {
     if (isDemo.value) return
 
@@ -321,6 +336,7 @@ export const useContentProjectStore = defineStore('contentProject', () => {
     // Actions
     enableDemoMode,
     disableDemoMode,
+    ensureCurrentProjectData,
     selectProject,
     fetchProjectData,
     updatePost,
