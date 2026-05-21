@@ -36,7 +36,7 @@ function navigate(item: BarItem) {
 
 <template>
   <nav
-    class="fixed inset-x-0 bottom-0 z-40 flex items-stretch border-t border-border bg-background md:hidden"
+    class="flex items-stretch border-t border-border bg-background md:hidden"
     style="padding-bottom: env(safe-area-inset-bottom);"
   >
     <button
