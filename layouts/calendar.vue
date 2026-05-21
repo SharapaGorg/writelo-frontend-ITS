@@ -7,7 +7,7 @@ import { AppSidebar, MobileBottomTabBar } from '~/lib-modules/app-layout'
     <AppSidebar />
 
     <div class="flex flex-1 flex-col overflow-hidden bg-white dark:bg-zinc-950">
-      <main class="flex-1 overflow-auto pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
+      <main class="flex-1 overflow-auto">
         <slot />
       </main>
     </div>
