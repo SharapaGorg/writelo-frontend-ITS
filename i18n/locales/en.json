@@ -1,5 +1,25 @@
 {
   "500": "Something went wrong",
+  "errorPage": {
+    "code": "Error {code}",
+    "notFound": {
+      "title": "This page isn't here",
+      "description": "We may have renamed, moved or removed it. It happens."
+    },
+    "badRequest": {
+      "title": "Something's off with the request",
+      "description": "The link is broken or you don't have access. Try going back."
+    },
+    "serverError": {
+      "title": "Something broke on our side",
+      "description": "We already know and we're fixing it. Give it a minute and try again."
+    },
+    "actions": {
+      "goHome": "Back home",
+      "goBack": "Go back",
+      "retry": "Reload"
+    }
+  },
   "demo": {
     "authModal": {
       "title": "Sign in to continue",
