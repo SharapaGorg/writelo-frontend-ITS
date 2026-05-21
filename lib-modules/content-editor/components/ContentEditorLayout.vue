@@ -159,7 +159,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
     </AppNavbar>
 
     <!-- Mobile tab strip -->
-    <div v-if="isMobile && !props.showcaseMode" class="px-3 py-2 border-b border-border">
+    <div v-if="isMobile" class="px-3 py-2 border-b border-border">
       <TabStrip :tabs="tabs" v-model="activeTab" />
     </div>
 

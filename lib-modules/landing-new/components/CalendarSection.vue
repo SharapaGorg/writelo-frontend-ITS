@@ -2,6 +2,7 @@
 import { useI18n } from 'vue-i18n'
 import SectionHeader from './SectionHeader.vue'
 import SectionTryCta from './SectionTryCta.vue'
+import MobilePhoneMockup from './MobilePhoneMockup.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import { ContentCalendarPage } from '~/lib-modules/content-calendar'
 
@@ -48,13 +49,10 @@ const { elementRef, isVisible } = useScrollReveal()
         </div>
       </div>
 
-      <div class="md:hidden border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 p-8 text-center">
-        <div class="lnf-mono text-[10px] uppercase tracking-[0.1em] text-[#8a8a8a] dark:text-[#5a5550] mb-4">
-          {{ t('landingNew.calendar.mobileLabel') }}
-        </div>
-        <p class="lnf-body text-[15px] text-[#5f5f5f] dark:text-[#a8a094] leading-[1.55]">
-          {{ t('landingNew.calendar.mobileNote') }}
-        </p>
+      <div class="md:hidden">
+        <MobilePhoneMockup active="calendar" source="calendar">
+          <ContentCalendarPage :showcase-mode="true" />
+        </MobilePhoneMockup>
       </div>
       <SectionTryCta section="calendar" to="/app/calendar" />
     </div>

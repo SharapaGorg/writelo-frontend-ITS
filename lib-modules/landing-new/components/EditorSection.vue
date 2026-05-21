@@ -3,6 +3,7 @@ import { defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SectionHeader from './SectionHeader.vue'
 import SectionTryCta from './SectionTryCta.vue'
+import MobilePhoneMockup from './MobilePhoneMockup.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
 
 // Async + ClientOnly: the inner component pulls content-editor → conversations
@@ -67,13 +68,17 @@ const { elementRef, isVisible } = useScrollReveal()
         </div>
       </div>
 
-      <div class="md:hidden border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 p-8 text-center">
-        <div class="lnf-mono text-[10px] uppercase tracking-[0.1em] text-[#8a8a8a] dark:text-[#5a5550] mb-4">
-          {{ t('landingNew.editor.placeholder') }}
-        </div>
-        <p class="lnf-body text-[15px] text-[#5f5f5f] dark:text-[#a8a094] leading-[1.55]">
-          {{ t('landingNew.editor.mobileNote') }}
-        </p>
+      <div class="md:hidden">
+        <MobilePhoneMockup source="editor">
+          <ClientOnly>
+            <EditorShowcaseInner />
+            <template #fallback>
+              <div class="h-[700px] flex items-center justify-center text-[#8a8a8a] dark:text-[#5a5550] lnf-mono text-[11px] uppercase tracking-[0.15em]">
+                Загружаем редактор...
+              </div>
+            </template>
+          </ClientOnly>
+        </MobilePhoneMockup>
       </div>
       <SectionTryCta section="editor" to="/app/editor" />
     </div>
