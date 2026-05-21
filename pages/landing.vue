@@ -17,7 +17,7 @@ useSeoMeta({
   description:
     'Writelo (Райтелло) — платформа для SMM: аналитика трендов Instagram под нишу, ИИ-разбор Reels, инфоповоды под бренд и контент-календарь. Бесплатный старт.',
   keywords:
-    'аналитика Instagram, тренды Reels, разбор Reels, AI разбор рилсов, контент-план SMM, инфоповоды для SMM, аналитика соцсетей, Райтелло, Writelo, нейросеть для SMM',
+    'аналитика Instagram, тренды Reels, разбор Reels, AI разбор рилсов, контент-план SMM, инфоповоды для SMM, аналитика соцсетей, Райтелло, Writelo, инструмент для SMM',
   ogTitle: 'Writelo (Райтелло) — аналитика трендов Instagram и разбор Reels',
   ogDescription: 'Writelo (Райтелло): тренды Instagram под нишу, ИИ-разбор Reels, инфоповоды под бренд и контент-план — всё в одном.',
   ogImage: '/og-image.svg',

@@ -16,9 +16,8 @@ const { $trackGoal } = useNuxtApp()
 const { elementRef, isVisible } = useScrollReveal()
 
 function features(key: string): string[] {
-  const raw = tm(key) as Record<string, unknown> | unknown[]
-  const list = Array.isArray(raw) ? raw : Object.values(raw ?? {})
-  return list.map((v) => (typeof v === 'string' ? v : rt(v as never)))
+  const raw = tm(key) as unknown[]
+  return raw.map((v) => (typeof v === 'string' ? v : rt(v as never)))
 }
 
 const cards = computed<PriceCardProps[]>(() => [

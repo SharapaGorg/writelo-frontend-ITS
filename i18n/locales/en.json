@@ -1267,13 +1267,13 @@
         "name": "Free",
         "description": "To try it out",
         "price": "0 ₽",
-        "features": {
-          "0": "1 brand",
-          "1": "Instagram trends — 5 requests per day",
-          "2": "News hooks and calendar",
-          "3": "Basic post editor",
-          "4": "AI assistant with brand knowledge base"
-        },
+        "features": [
+          "1 brand",
+          "Instagram trends — 5 requests per day",
+          "News hooks and calendar",
+          "Basic post editor",
+          "AI assistant with brand knowledge base"
+        ],
         "cta": "Get started"
       },
       "pro": {
@@ -1281,32 +1281,82 @@
         "description": "For active SMM specialists",
         "price": "1,990 ₽",
         "period": "/mo",
-        "features": {
-          "0": "Up to 10 brands",
-          "1": "Unlimited trend analysis",
-          "2": "News hooks for each brand",
-          "3": "Full editor + cross-posting",
-          "4": "Publish to TG, VK",
-          "5": "Video analysis — YouTube Shorts, TikTok, Reels",
-          "6": "AI assistant with brand knowledge base"
-        },
+        "features": [
+          "Up to 10 brands",
+          "Unlimited trend analysis",
+          "News hooks for each brand",
+          "Full editor + cross-posting",
+          "Publish to TG, VK",
+          "Video analysis — YouTube Shorts, TikTok, Reels",
+          "AI assistant with brand knowledge base"
+        ],
         "cta": "Try Pro"
       },
       "business": {
         "name": "Business",
         "description": "For agencies and teams",
         "price": "On request",
-        "features": {
-          "0": "Everything in Pro, no brand limits",
-          "1": "AI limits — 2× higher (per account)",
-          "2": "Team roles and access",
-          "3": "Branding and white-label",
-          "4": "Priority support",
-          "5": "AI assistant with extended knowledge base"
-        },
+        "features": [
+          "Everything in Pro, no brand limits",
+          "AI limits — 2× higher (per account)",
+          "Team roles and access",
+          "Branding and white-label",
+          "Priority support",
+          "AI assistant with extended knowledge base"
+        ],
         "cta": "Book a demo"
       },
       "guarantee": "Full refund within 14 days if the service doesn't work out for you"
+    },
+    "faq": {
+      "label": "N°09 / FAQ",
+      "title": "Frequently asked",
+      "items": [
+        {
+          "q": "What is Writelo?",
+          "a": "Writelo is an SMM tool that covers the entire content cycle: from building a content plan (curating trends and news hooks for your brand) to writing a video script and analyzing an already-published clip. One service instead of separate tools for analytics, content generation, and scheduling"
+        },
+        {
+          "q": "Who is Writelo for?",
+          "a": "Writelo is built first and foremost for professional SMM specialists — both freelancers and in-house. It also fits teams and agencies that need a shared tool for content work"
+        },
+        {
+          "q": "Can a team work in Writelo together?",
+          "a": "Yes — that's what the Business plan is for. The team works on a single shared content calendar, and per-account limits are 2× higher. A fit for agencies and teams running several brands in parallel. Freelancers with several clients usually do fine on Pro"
+        },
+        {
+          "q": "How is Writelo different from schedulers like SMMplanner?",
+          "a": "Schedulers solve one task — plan and publish a post. Writelo covers planning plus what schedulers don't have: Instagram trend search for your niche, AI breakdown of competitor reels, and brand-fitted news hooks. Analytics, content creation, and publishing — all in one place"
+        },
+        {
+          "q": "Which social networks does Writelo find trends in?",
+          "a": "Right now trends are available for Instagram. Writelo shows what's growing in your niche — reels with reach, momentum, and links to the clips, with the base refreshed every 5 minutes. TikTok and YouTube Shorts support is in development"
+        },
+        {
+          "q": "Which videos can the analyzer break down?",
+          "a": "The analyzer breaks down short vertical videos from Instagram Reels, TikTok, and YouTube Shorts — just paste a link. You can analyze competitor videos as well as your own. File upload is in development"
+        },
+        {
+          "q": "How does Writelo analyze a video?",
+          "a": "The analyzer evaluates the clip as a whole — both text and visuals. It splits the video into parts: the hook (text, spoken, visual), structure by timecodes, and the funnel with a lead magnet and CTA. Beyond transcription, it judges the visual delivery — editing, on-screen text, shooting techniques — and identifies which were used and why they worked. Under the hood is an AI analyzer that draws on a base of expert materials on short vertical video and Instagram's official recommendations. A deeper analysis of your own clips — using analytics only the account owner sees (retention graphs, impressions stats) — is in development"
+        },
+        {
+          "q": "Why do I need a brand profile?",
+          "a": "You describe your brand once — niche, style, voice, restrictions, references. From this we build a brand knowledge base for the AI to navigate. Then it works on its own: picks brand-fitted news hooks, writes in the right style, respects stop words. No need to copy the brand description into every prompt"
+        },
+        {
+          "q": "Does Writelo have a free plan?",
+          "a": "Yes. On the free plan every feature of the service is available — you can try Writelo in full, no card required"
+        },
+        {
+          "q": "How much does Writelo cost?",
+          "a": "Free — 0 ₽: all service features. Pro — 1,990 ₽/mo: Instagram trend analysis, AI breakdown of competitor reels, video analysis, brand-fitted news hooks, the full post editor, and a brand profile with an AI assistant. Business — on request: the team works on a single shared content calendar, and per-account limits are 2× higher"
+        },
+        {
+          "q": "Does Writelo work on mobile?",
+          "a": "Yes — Writelo works on mobile via a regular browser, no separate app to install"
+        }
+      ]
     },
     "finalCta": {
       "titlePart1": "Viral content has a",
@@ -1317,7 +1367,7 @@
       "cta": "Try it free"
     },
     "contacts": {
-      "label": "N°09 / CONTACTS",
+      "label": "N°10 / CONTACTS",
       "title": "Contact",
       "directLabel": "DIRECT",
       "socialsLabel": "SOCIAL",

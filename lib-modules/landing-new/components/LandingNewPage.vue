@@ -13,6 +13,7 @@ import EditorSection from './EditorSection.vue'
 import PublishSection from './PublishSection.vue'
 import ComparisonSection from './ComparisonSection.vue'
 import PricingSection from './PricingSection.vue'
+import FaqSection from './FaqSection.vue'
 import FinalCtaSection from './FinalCtaSection.vue'
 import ContactsSection from './ContactsSection.vue'
 import PrimaryButton from './PrimaryButton.vue'
@@ -148,6 +149,7 @@ function switchLang(code: 'ru' | 'en') {
       <PublishSection />
       <ComparisonSection />
       <PricingSection />
+      <FaqSection />
       <FinalCtaSection />
       <ContactsSection />
     </main>
