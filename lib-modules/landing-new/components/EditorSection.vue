@@ -68,8 +68,8 @@ const { elementRef, isVisible } = useScrollReveal()
         </div>
       </div>
 
-      <div class="md:hidden">
-        <MobilePhoneMockup source="editor">
+      <div class="md:hidden -mx-5">
+        <MobilePhoneMockup source="editor" wide>
           <ClientOnly>
             <EditorShowcaseInner />
             <template #fallback>

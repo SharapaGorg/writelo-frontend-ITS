@@ -10,8 +10,9 @@ const props = withDefaults(
   defineProps<{
     active?: TabId | null
     source?: string
+    wide?: boolean
   }>(),
-  { active: null, source: 'phone' }
+  { active: null, source: 'phone', wide: false }
 )
 
 const { t } = useI18n()
@@ -32,7 +33,7 @@ function go(route: string, id: TabId) {
 </script>
 
 <template>
-  <div class="mx-auto max-w-[22rem]">
+  <div :class="['mx-auto', !props.wide && 'max-w-[22rem]']">
     <div class="relative rounded-[2rem] bg-[#0a0a0a] dark:bg-[#161616] p-1.5 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] ring-1 ring-[#0a0a0a]/40 dark:ring-[#ede8de]/15">
       <div class="relative flex flex-col overflow-hidden rounded-[1.5rem] bg-background">
         <!-- Status bar with notch -->

@@ -1,20 +1,14 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { ArrowUpRight } from 'lucide-vue-next'
 import SectionHeader from './SectionHeader.vue'
 import SectionTryCta from './SectionTryCta.vue'
+import MobilePhoneMockup from './MobilePhoneMockup.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
+import { ReelsFilters, ReelCard, useReelsResearchStore } from '~/lib-modules/reels-research'
 
 const { t } = useI18n()
 const { elementRef, isVisible } = useScrollReveal()
-
-const trends = [
-  { tag: '#осенниеобразы', reach: '1.2M', delta: '+34%' },
-  { tag: '#нюдмакияж', reach: '890K', delta: '+22%' },
-  { tag: '#капсулагардероб', reach: '640K', delta: '+18%' },
-  { tag: '#утреннийритуал', reach: '420K', delta: '+12%' },
-  { tag: '#стилисткиев', reach: '210K', delta: '+9%' },
-]
+const store = useReelsResearchStore()
 </script>
 
 <template>
@@ -24,7 +18,7 @@ const trends = [
     class="px-6 md:px-12 py-20 md:py-32 transition-all duration-700 ease-out"
     :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'"
   >
-    <div class="max-w-[1200px] mx-auto">
+    <div class="max-w-[1400px] mx-auto">
       <SectionHeader :label="t('landingNew.trends.label')">
         <template #title>
           {{ t('landingNew.trends.titlePre') }}
@@ -32,7 +26,8 @@ const trends = [
           {{ t('landingNew.trends.titlePost') }}
         </template>
       </SectionHeader>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
+
+      <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] gap-12 md:gap-14 items-start">
         <div class="space-y-6 max-w-[60ch]">
           <p class="lnf-body text-[16px] md:text-[17px] leading-[1.6] text-[#0a0a0a] dark:text-[#ede8de]">
             {{ t('landingNew.trends.body1') }}
@@ -55,33 +50,67 @@ const trends = [
               {{ t('landingNew.trends.liveNote') }}
             </span>
           </div>
-          <SectionTryCta section="trends" align="start" to="/app/trends" />
+          <div class="hidden md:block">
+            <SectionTryCta section="trends" align="start" to="/app/trends" />
+          </div>
         </div>
 
-        <div class="border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 p-7 md:p-10 bg-[#fafafa] dark:bg-[#111110]">
-          <div class="lnf-mono text-[10px] uppercase tracking-[0.15em] text-[#8a8a8a] dark:text-[#5a5550] mb-7">
-            {{ t('landingNew.trends.previewLabel') }}
-          </div>
-          <div>
-            <div
-              v-for="(item, i) in trends"
-              :key="item.tag"
-              class="flex items-baseline justify-between gap-4 py-4 border-b border-[#0a0a0a]/10 dark:border-[#ede8de]/10 last:border-0"
-              :style="{ paddingLeft: i % 2 ? '14px' : '0' }"
-            >
-              <div class="flex items-baseline gap-3 min-w-0">
-                <span class="lnf-display font-medium text-[18px] md:text-[22px] tracking-[-0.02em] text-[#0a0a0a] dark:text-[#ede8de] truncate">
-                  {{ item.tag }}
-                </span>
-                <ArrowUpRight class="w-4 h-4 shrink-0 text-[#d4683f]" />
+        <div>
+          <!-- Desktop: Mac browser mockup -->
+          <div class="hidden md:block rounded-md overflow-hidden border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] bg-background">
+            <div class="bg-[#f5f5f5] dark:bg-[#161616] px-4 py-3 flex items-center gap-4 border-b border-[#0a0a0a]/12 dark:border-[#ede8de]/15">
+              <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-[#d4683f]/70" />
+                <div class="w-3 h-3 rounded-full bg-[#c5c5c5] dark:bg-[#5a5550]" />
+                <div class="w-3 h-3 rounded-full bg-[#c5c5c5] dark:bg-[#5a5550]" />
               </div>
-              <div class="flex items-baseline gap-3 shrink-0">
-                <span class="lnf-mono text-[11px] md:text-[12px] text-[#5f5f5f] dark:text-[#a8a094]">{{ item.reach }}</span>
-                <span class="lnf-mono text-[11px] md:text-[12px] text-[#d4683f]">{{ item.delta }}</span>
+              <div class="flex-1 flex justify-center">
+                <div class="lnf-mono text-[12px] text-[#5f5f5f] dark:text-[#a8a094] bg-white dark:bg-[#0a0a0a] px-4 py-1.5 border border-[#0a0a0a]/10 dark:border-[#ede8de]/10">
+                  writelo.app/trends
+                </div>
+              </div>
+              <div class="w-[52px]" />
+            </div>
+            <div class="h-[640px] flex flex-col bg-background">
+              <div class="border-b border-border px-3 py-3 shrink-0">
+                <ClientOnly>
+                  <ReelsFilters />
+                </ClientOnly>
+              </div>
+              <div class="flex-1 overflow-auto px-3 py-3 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                <ClientOnly>
+                  <div class="grid gap-3 grid-cols-[repeat(auto-fill,minmax(180px,1fr))]">
+                    <ReelCard v-for="reel in store.filteredReels" :key="reel.id" :reel="reel" />
+                  </div>
+                </ClientOnly>
               </div>
             </div>
           </div>
+
+          <!-- Mobile: phone mockup -->
+          <div class="md:hidden">
+            <MobilePhoneMockup active="trends" source="trends">
+              <div class="h-[560px] flex flex-col bg-background">
+                <div class="border-b border-border px-2.5 py-2.5 shrink-0">
+                  <ClientOnly>
+                    <ReelsFilters />
+                  </ClientOnly>
+                </div>
+                <div class="flex-1 overflow-auto px-2.5 py-2.5 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+                  <ClientOnly>
+                    <div class="grid gap-2.5 grid-cols-[repeat(auto-fill,minmax(140px,1fr))]">
+                      <ReelCard v-for="reel in store.filteredReels" :key="`m-${reel.id}`" :reel="reel" />
+                    </div>
+                  </ClientOnly>
+                </div>
+              </div>
+            </MobilePhoneMockup>
+          </div>
         </div>
+      </div>
+
+      <div class="md:hidden">
+        <SectionTryCta section="trends" to="/app/trends" />
       </div>
     </div>
   </section>

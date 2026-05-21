@@ -70,27 +70,28 @@ function handlePanelClose() {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="h-full flex flex-col overflow-hidden">
     <AppNavbar :breadcrumbs="[{ label: 'Тренды' }]" />
-    <div class="max-w-7xl mx-auto w-full px-4 py-6">
-      <!-- Filters -->
-      <div class="mb-6">
+    <div class="border-b border-border px-4 py-3">
+      <div class="max-w-7xl mx-auto w-full">
         <ReelsFilters />
       </div>
-
-      <!-- Grid -->
-      <ReelsGrid
-        @drag-start="handleDragStart"
-        @drag-end="handleDragEnd"
-      />
-
-      <!-- Calendar Drop Panel (slides from right) -->
-      <CalendarDropModal
-        :is-open="isCalendarOpen"
-        :reel="draggingReel"
-        @close="handlePanelClose"
-        @drop="handleDrop"
-      />
     </div>
+    <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+      <div class="max-w-7xl mx-auto w-full px-4 py-6">
+        <ReelsGrid
+          @drag-start="handleDragStart"
+          @drag-end="handleDragEnd"
+        />
+      </div>
+    </div>
+
+    <!-- Calendar Drop Panel (slides from right) -->
+    <CalendarDropModal
+      :is-open="isCalendarOpen"
+      :reel="draggingReel"
+      @close="handlePanelClose"
+      @drop="handleDrop"
+    />
   </div>
 </template>

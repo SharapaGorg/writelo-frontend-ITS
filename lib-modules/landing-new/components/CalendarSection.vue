@@ -49,8 +49,8 @@ const { elementRef, isVisible } = useScrollReveal()
         </div>
       </div>
 
-      <div class="md:hidden">
-        <MobilePhoneMockup active="calendar" source="calendar">
+      <div class="md:hidden -mx-5">
+        <MobilePhoneMockup active="calendar" source="calendar" wide>
           <ContentCalendarPage :showcase-mode="true" />
         </MobilePhoneMockup>
       </div>

@@ -48,7 +48,9 @@ const draft = reactive({
           <p class="lnf-mono text-[11px] uppercase tracking-[0.15em] text-[#8a8a8a] dark:text-[#5a5550] pt-4">
             {{ t('landingNew.brief.aside') }}
           </p>
-          <SectionTryCta section="brief" align="start" to="/app/workspaces" />
+          <div class="hidden md:block">
+            <SectionTryCta section="brief" align="start" to="/app/workspaces" />
+          </div>
         </div>
 
         <div class="border border-[#0a0a0a]/15 dark:border-[#ede8de]/20 overflow-hidden shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
@@ -68,6 +70,10 @@ const draft = reactive({
             />
           </div>
         </div>
+      </div>
+
+      <div class="md:hidden">
+        <SectionTryCta section="brief" to="/app/workspaces" />
       </div>
     </div>
   </section>

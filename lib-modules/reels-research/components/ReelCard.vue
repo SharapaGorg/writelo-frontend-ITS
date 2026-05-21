@@ -45,12 +45,6 @@ function formatDuration(seconds: number): string {
   return s ? `${m}:${String(s).padStart(2, '0')}` : `${m}:00`
 }
 
-function openReel() {
-  // Don't open if we were dragging
-  if (isDragging.value) return
-  window.open(props.reel.url, '_blank')
-}
-
 function createGhost() {
   if (!cardRef.value) return
 
@@ -147,10 +141,7 @@ onMounted(() => {
       end(event) {
         clearCellHighlight()
         removeGhost()
-        // Delay reset so click handler sees isDragging=true
-        setTimeout(() => {
-          isDragging.value = false
-        }, 100)
+        isDragging.value = false
         emit('dragEnd', props.reel, event.clientX, event.clientY)
       }
     }
@@ -170,7 +161,6 @@ onUnmounted(() => {
     ref="cardRef"
     class="group cursor-grab rounded-md border border-border bg-card overflow-hidden transition-all hover:border-foreground/30 hover:shadow-lg touch-none"
     :class="{ 'cursor-grabbing': isDragging }"
-    @click="openReel"
     @mouseenter="playVideo"
     @mouseleave="pauseVideo"
   >
@@ -210,18 +200,6 @@ onUnmounted(() => {
       <!-- Duration badge (top-right) -->
       <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-black/55 text-white text-[11px] font-medium backdrop-blur-sm">
         {{ formatDuration(reel.duration) }}
-      </div>
-
-      <!-- Hover play hint — shown only for image-only cards (no inline video) -->
-      <div
-        v-if="!reel.videoUrl"
-        class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-      >
-        <div class="w-12 h-12 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
-          <svg class="w-6 h-6 text-foreground ml-0.5" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </div>
       </div>
 
       <!-- Views badge (bottom-left) -->

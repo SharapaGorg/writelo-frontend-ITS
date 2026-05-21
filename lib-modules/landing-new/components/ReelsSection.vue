@@ -3,6 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { useScrollReveal } from '../composables/useScrollReveal'
 import SectionTryCta from './SectionTryCta.vue'
 import VideoAnalyzerShowcase from './VideoAnalyzerShowcase.vue'
+import MobilePhoneMockup from './MobilePhoneMockup.vue'
 
 const { t } = useI18n()
 const { elementRef, isVisible } = useScrollReveal()
@@ -38,10 +39,12 @@ const { elementRef, isVisible } = useScrollReveal()
           <p class="lnf-body text-[15px] md:text-[16px] leading-[1.65] text-[#5f5f5f] dark:text-[#a8a094]">
             {{ t('landingNew.reels.body4Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body4Accent1') }}</span>{{ t('landingNew.reels.body4Mid1') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body4Accent2') }}</span>{{ t('landingNew.reels.body4Mid2') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.reels.body4Accent3') }}</span>{{ t('landingNew.reels.body4Post') }}
           </p>
-          <SectionTryCta section="reels" align="start" to="/app/video-analyzer" />
+          <div class="hidden md:block">
+            <SectionTryCta section="reels" align="start" to="/app/video-analyzer" />
+          </div>
         </div>
 
-        <div class="rounded-md overflow-hidden border border-[#0a0a0a]/12 dark:border-[#ede8de]/15 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] bg-[#f7f7f7] dark:bg-[#0e0e0e]">
+        <div class="hidden md:block rounded-md overflow-hidden border border-[#0a0a0a]/12 dark:border-[#ede8de]/15 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] bg-[#f7f7f7] dark:bg-[#0e0e0e]">
           <div class="bg-[#f5f5f5] dark:bg-[#161616] px-3 py-2 flex items-center gap-3 border-b border-[#0a0a0a]/10 dark:border-[#ede8de]/10">
             <div class="flex items-center gap-1.5">
               <div class="w-2.5 h-2.5 rounded-full bg-[#d4d4d4] dark:bg-[#3a3a3a]" />
@@ -55,10 +58,22 @@ const { elementRef, isVisible } = useScrollReveal()
             </div>
             <div class="w-[44px]" />
           </div>
-          <div class="h-[560px] md:h-[640px]">
+          <div class="h-[640px]">
             <VideoAnalyzerShowcase />
           </div>
         </div>
+
+        <div class="md:hidden">
+          <MobilePhoneMockup active="video-analyzer" source="reels">
+            <div class="h-[560px] bg-[#f7f7f7] dark:bg-[#0e0e0e]">
+              <VideoAnalyzerShowcase />
+            </div>
+          </MobilePhoneMockup>
+        </div>
+      </div>
+
+      <div class="md:hidden">
+        <SectionTryCta section="reels" to="/app/video-analyzer" />
       </div>
     </div>
   </section>
