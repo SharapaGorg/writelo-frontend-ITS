@@ -538,7 +538,7 @@
     "teamPlanLabel": "Team edition",
     "openPlans": "Open pricing →",
     "contactMe": "Message me 0_^",
-    "contactMeTooltip": "Message me 0_^ — @sharapagorg",
+    "contactMeTooltip": "Message me 0_^ — {'@'}sharapagorg",
     "items": {
       "calendar": "Calendar",
       "editor": "Editor",

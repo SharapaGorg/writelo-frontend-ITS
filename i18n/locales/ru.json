@@ -834,7 +834,7 @@
     "teamPlanLabel": "Командная версия",
     "openPlans": "Открыть тарифы →",
     "contactMe": "Напишите мне 0_^",
-    "contactMeTooltip": "Напишите мне 0_^ — @sharapagorg",
+    "contactMeTooltip": "Напишите мне 0_^ — {'@'}sharapagorg",
     "items": {
       "calendar": "Календарь",
       "editor": "Редактор",
