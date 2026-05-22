@@ -1,256 +1,189 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import interact from 'interactjs'
-import type { ReelItem } from '../types'
+import { ref, computed } from 'vue'
+import { useIntersectionObserver } from '@vueuse/core'
+import { Play, Heart, MessageCircle, TrendingUp, Users } from 'lucide-vue-next'
+import type { TrendingReelDto } from '../types'
 
 const props = defineProps<{
-  reel: ReelItem
+  reel: TrendingReelDto
 }>()
 
 const emit = defineEmits<{
-  dragStart: [reel: ReelItem]
-  dragMove: [reel: ReelItem, x: number, y: number]
-  dragEnd: [reel: ReelItem, x: number, y: number]
+  select: [reel: TrendingReelDto]
 }>()
 
 const cardRef = ref<HTMLElement | null>(null)
-const videoRef = ref<HTMLVideoElement | null>(null)
-const isDragging = ref(false)
-let ghostElement: HTMLElement | null = null
-let lastHoveredCell: Element | null = null
+const inView = ref(false)
+const thumbLoaded = ref(false)
+const thumbFailed = ref(false)
 
-function playVideo() {
-  const v = videoRef.value
-  if (!v || isDragging.value) return
-  v.play().catch(() => { /* autoplay race or removed from DOM */ })
-}
+// Stop observing once we've entered the viewport — thumbnails don't need to
+// re-trigger as the user scrolls past.
+const { stop } = useIntersectionObserver(
+  cardRef,
+  ([entry]) => {
+    if (entry?.isIntersecting) {
+      inView.value = true
+      stop()
+    }
+  },
+  { rootMargin: '200px 0px' }
+)
 
-function pauseVideo() {
-  const v = videoRef.value
-  if (!v) return
-  v.pause()
-  v.currentTime = 0
-}
+const playsCount = computed(() =>
+  props.reel.metrics.plays ?? props.reel.metrics.effectiveViews ?? 0
+)
+const likesCount = computed(() => props.reel.metrics.likes ?? 0)
+const commentsCount = computed(() => props.reel.metrics.comments ?? 0)
+const authorHandle = computed(() => {
+  const u = props.reel.author.username
+  return u ? `@${u}` : (props.reel.author.displayName ?? 'unknown')
+})
+const captionText = computed(() => props.reel.captionPreview ?? '')
+const thumbnail = computed(() => props.reel.thumbnailUrl ?? '')
+const followerCount = computed(() => props.reel.author.followerCount)
+
+// viewsOverAuthorMedian = во сколько раз этот рилс обогнал средний охват автора.
+// Бейдж показываем только когда значение реально стоит внимания.
+const viralMultiplier = computed<number | null>(() => {
+  const m = props.reel.score?.viewsOverAuthorMedian
+  return typeof m === 'number' && m >= 2 ? m : null
+})
+
+const viralBadgeClass = computed(() => {
+  const m = viralMultiplier.value ?? 0
+  if (m >= 20) return 'bg-brand text-brand-foreground'
+  if (m >= 5) return 'bg-orange-500/95 text-white'
+  return 'bg-black/65 text-white'
+})
 
 function formatNumber(n: number): string {
-  if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
-  if (n >= 1000) return `${(n / 1000).toFixed(1)}K`
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
   return n.toString()
 }
 
-function formatDuration(seconds: number): string {
-  if (seconds < 60) return `${seconds}s`
-  const m = Math.floor(seconds / 60)
-  const s = seconds % 60
-  return s ? `${m}:${String(s).padStart(2, '0')}` : `${m}:00`
+function formatMultiplier(m: number): string {
+  if (m >= 100) return `${Math.round(m)}`
+  if (m >= 10) return `${Math.round(m)}`
+  return m.toFixed(1)
 }
 
-function createGhost() {
-  if (!cardRef.value) return
-
-  ghostElement = cardRef.value.cloneNode(true) as HTMLElement
-
-  // Replace any <video> children with an <img> built from their poster — keeps
-  // the ghost lightweight and avoids browser quirks around cloned media elements
-  // that intermittently swallowed pointer events and broke the drag flow.
-  ghostElement.querySelectorAll('video').forEach((v) => {
-    const img = document.createElement('img')
-    img.src = v.getAttribute('poster') ?? ''
-    img.className = v.className
-    v.replaceWith(img)
-  })
-
-  ghostElement.style.position = 'fixed'
-  ghostElement.style.width = `${cardRef.value.offsetWidth}px`
-  ghostElement.style.height = `${cardRef.value.offsetHeight}px`
-  ghostElement.style.pointerEvents = 'none'
-  ghostElement.style.zIndex = '9999'
-  ghostElement.style.opacity = '0.9'
-  ghostElement.style.transform = 'rotate(3deg) scale(1.02)'
-  ghostElement.style.boxShadow = '0 20px 40px rgba(0,0,0,0.3)'
-  ghostElement.style.transition = 'none'
-
-  document.body.appendChild(ghostElement)
-
-  document.body.style.userSelect = 'none'
+function formatDuration(seconds: number | null): string {
+  const s = Math.round(seconds ?? 0)
+  if (s < 60) return `${s}s`
+  const m = Math.floor(s / 60)
+  const r = s % 60
+  return r ? `${m}:${String(r).padStart(2, '0')}` : `${m}:00`
 }
-
-function moveGhost(x: number, y: number) {
-  if (!ghostElement || !cardRef.value) return
-
-  const offsetX = cardRef.value.offsetWidth / 2
-  const offsetY = 20
-
-  ghostElement.style.left = `${x - offsetX}px`
-  ghostElement.style.top = `${y - offsetY}px`
-}
-
-function removeGhost() {
-  if (ghostElement) {
-    ghostElement.remove()
-    ghostElement = null
-  }
-  document.body.style.userSelect = ''
-}
-
-function highlightCellUnderCursor(x: number, y: number) {
-  const elements = document.elementsFromPoint(x, y)
-  const cell = elements.find(el => el.hasAttribute('data-calendar-date'))
-
-  // Remove highlight from previous cell
-  if (lastHoveredCell && lastHoveredCell !== cell) {
-    lastHoveredCell.classList.remove('drag-over-highlight')
-  }
-
-  // Add highlight to current cell
-  if (cell) {
-    cell.classList.add('drag-over-highlight')
-    lastHoveredCell = cell
-  } else {
-    lastHoveredCell = null
-  }
-}
-
-function clearCellHighlight() {
-  if (lastHoveredCell) {
-    lastHoveredCell.classList.remove('drag-over-highlight')
-    lastHoveredCell = null
-  }
-}
-
-onMounted(() => {
-  if (!cardRef.value) return
-
-  interact(cardRef.value).draggable({
-    inertia: false,
-    listeners: {
-      start(event) {
-        isDragging.value = true
-        // Open the drop-target panel BEFORE any DOM work — ghost/clone failures
-        // shouldn't be able to swallow the drag-start signal.
-        emit('dragStart', props.reel)
-        pauseVideo()
-        createGhost()
-        moveGhost(event.clientX, event.clientY)
-      },
-      move(event) {
-        moveGhost(event.clientX, event.clientY)
-        highlightCellUnderCursor(event.clientX, event.clientY)
-        emit('dragMove', props.reel, event.clientX, event.clientY)
-      },
-      end(event) {
-        clearCellHighlight()
-        removeGhost()
-        isDragging.value = false
-        emit('dragEnd', props.reel, event.clientX, event.clientY)
-      }
-    }
-  })
-})
-
-onUnmounted(() => {
-  removeGhost()
-  if (cardRef.value) {
-    interact(cardRef.value).unset()
-  }
-})
 </script>
 
 <template>
-  <div
+  <button
     ref="cardRef"
-    class="group cursor-grab rounded-md border border-border bg-card overflow-hidden transition-all hover:border-foreground/30 hover:shadow-lg touch-none"
-    :class="{ 'cursor-grabbing': isDragging }"
-    @mouseenter="playVideo"
-    @mouseleave="pauseVideo"
+    type="button"
+    class="group text-left rounded-md border border-border bg-card overflow-hidden transition-all hover:border-foreground/30 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    @click="emit('select', reel)"
   >
     <!-- Thumbnail -->
     <div class="relative aspect-[4/5] overflow-hidden bg-muted">
-      <video
-        v-if="reel.videoUrl"
-        ref="videoRef"
-        :src="`${reel.videoUrl}#t=0.5`"
-        :poster="reel.thumbnail"
-        muted
-        loop
-        playsinline
-        preload="metadata"
-        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 pointer-events-none"
+      <!-- Skeleton placeholder until thumbnail is in view + loaded -->
+      <div
+        v-if="!thumbLoaded && !thumbFailed"
+        class="absolute inset-0 bg-gradient-to-br from-muted to-muted/40 animate-pulse"
       />
       <img
-        v-else
-        :src="reel.thumbnail"
-        :alt="reel.description"
+        v-if="inView && thumbnail && !thumbFailed"
+        :src="thumbnail"
+        :alt="captionText || 'Reel thumbnail'"
+        decoding="async"
         loading="lazy"
-        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        class="w-full h-full object-cover transition-all duration-300 group-hover:scale-105"
+        :class="thumbLoaded ? 'opacity-100' : 'opacity-0'"
+        @load="thumbLoaded = true"
+        @error="thumbFailed = true"
       />
+      <!-- Fallback when thumbnail fails or missing -->
+      <div
+        v-if="thumbFailed || (inView && !thumbnail)"
+        class="absolute inset-0 flex items-center justify-center text-muted-foreground"
+      >
+        <Play class="w-8 h-8 opacity-40" />
+      </div>
 
       <!-- Top gradient for badge legibility -->
       <div class="pointer-events-none absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/55 to-transparent" />
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent" />
 
-      <!-- Reels badge (top-left) -->
-      <div class="absolute top-2 left-2 px-1.5 py-0.5 rounded-md bg-black/55 text-white text-[11px] font-medium flex items-center gap-1 backdrop-blur-sm">
-        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none" />
-          <rect x="3" y="3" width="18" height="18" rx="3" />
-        </svg>
-        Reels
+      <!-- Viral multiplier badge (top-left) -->
+      <div
+        v-if="viralMultiplier !== null"
+        class="absolute top-2 left-2 px-1.5 py-0.5 rounded text-[11px] font-bold flex items-center gap-0.5 backdrop-blur-sm shadow-sm"
+        :class="viralBadgeClass"
+        :title="`Этот рилс собрал в ${viralMultiplier.toFixed(1)}× больше проигрываний, чем обычно у автора`"
+      >
+        <TrendingUp class="w-3 h-3" />
+        ×{{ formatMultiplier(viralMultiplier) }}
       </div>
 
       <!-- Duration badge (top-right) -->
-      <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-black/55 text-white text-[11px] font-medium backdrop-blur-sm">
-        {{ formatDuration(reel.duration) }}
+      <div class="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/55 text-white text-[11px] font-medium backdrop-blur-sm">
+        {{ formatDuration(reel.durationSeconds) }}
       </div>
 
-      <!-- Views badge (bottom-left) -->
-      <div class="absolute bottom-2 left-2 px-1.5 py-0.5 rounded-md bg-black/55 text-white text-[11px] font-medium flex items-center gap-1 backdrop-blur-sm">
-        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
-        {{ formatNumber(reel.views) }}
+      <!-- Plays badge (bottom-left) -->
+      <div
+        class="absolute bottom-2 left-2 px-1.5 py-0.5 rounded bg-black/55 text-white text-[11px] font-medium flex items-center gap-1 backdrop-blur-sm"
+        :title="`${playsCount.toLocaleString('ru-RU')} проигрываний`"
+      >
+        <Play class="w-3 h-3 fill-current" />
+        {{ formatNumber(playsCount) }}
       </div>
     </div>
 
     <!-- Content -->
-    <div class="p-2.5">
+    <div class="p-3">
       <!-- Author row -->
-      <div class="flex items-center gap-1.5 mb-1.5">
-        <div class="w-5 h-5 rounded-full overflow-hidden bg-secondary flex-shrink-0">
-          <img
-            v-if="reel.authorAvatar"
-            :src="reel.authorAvatar"
-            :alt="reel.author"
-            loading="lazy"
-            class="w-full h-full object-cover"
-          />
-          <div v-else class="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground">
-            {{ reel.author.charAt(0).toUpperCase() }}
-          </div>
+      <div class="flex items-center gap-1.5 mb-1.5 min-w-0">
+        <div class="w-5 h-5 rounded-full overflow-hidden bg-secondary flex-shrink-0 flex items-center justify-center text-[10px] text-muted-foreground">
+          {{ (reel.author.username ?? reel.author.displayName ?? '?').charAt(0).toUpperCase() }}
         </div>
-        <span class="text-xs text-muted-foreground truncate">{{ reel.author }}</span>
+        <span class="text-xs text-muted-foreground truncate">{{ authorHandle }}</span>
+        <svg
+          v-if="reel.author.isVerified"
+          class="w-3 h-3 text-sky-500 flex-shrink-0"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M12 2l2.39 1.74 2.92-.27.81 2.82 2.34 1.78-.97 2.78.97 2.78-2.34 1.78-.81 2.82-2.92-.27L12 22l-2.39-1.74-2.92.27-.81-2.82L3.54 15.93l.97-2.78-.97-2.78 2.34-1.78.81-2.82 2.92.27L12 2z" />
+          <path d="M9 12.5l2 2 4-4.5" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span
+          v-if="followerCount != null"
+          class="ml-auto inline-flex items-center gap-0.5 text-[10px] text-muted-foreground flex-shrink-0"
+          :title="`${followerCount.toLocaleString('ru-RU')} подписчиков`"
+        >
+          <Users class="w-2.5 h-2.5" />
+          {{ formatNumber(followerCount) }}
+        </span>
       </div>
 
-      <!-- Description -->
+      <!-- Caption -->
       <p class="text-xs text-foreground line-clamp-2 mb-2 leading-snug min-h-[2rem]">
-        {{ reel.description }}
+        {{ captionText || '—' }}
       </p>
 
       <!-- Metrics row -->
       <div class="flex items-center gap-3 text-[11px] text-muted-foreground">
-        <div class="flex items-center gap-1">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-          <span>{{ formatNumber(reel.likes) }}</span>
+        <div class="flex items-center gap-1" :title="`${likesCount.toLocaleString('ru-RU')} лайков`">
+          <Heart class="w-3.5 h-3.5" />
+          <span>{{ formatNumber(likesCount) }}</span>
         </div>
-        <div class="flex items-center gap-1">
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-          </svg>
-          <span>{{ formatNumber(reel.comments) }}</span>
+        <div class="flex items-center gap-1" :title="`${commentsCount.toLocaleString('ru-RU')} комментариев`">
+          <MessageCircle class="w-3.5 h-3.5" />
+          <span>{{ formatNumber(commentsCount) }}</span>
         </div>
       </div>
     </div>
-  </div>
+  </button>
 </template>

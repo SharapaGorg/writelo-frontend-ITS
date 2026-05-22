@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { CalendarPost, SocialNetwork, SocialAccount, NewsItem, TrendItem } from '../types'
-import type { ReelItem } from '~/lib-modules/reels-research'
 
 const props = defineProps<{
   date: string
@@ -18,7 +17,6 @@ const emit = defineEmits<{
   select: [date: string]
   dropNews: [date: string, news: NewsItem]
   dropTrend: [date: string, trend: TrendItem]
-  dropReel: [date: string, reel: ReelItem]
   createPost: [date: string]
 }>()
 
@@ -50,9 +48,6 @@ function handleDrop(e: DragEvent) {
           // Remove the _type marker before emitting
           const { _type, ...trend } = data
           emit('dropTrend', props.date, trend as TrendItem)
-        } else if (data.type === 'reel' && data.reel) {
-          // Reel data from ReelCard is nested under 'reel' key
-          emit('dropReel', props.date, data.reel as ReelItem)
         } else {
           emit('dropNews', props.date, data as NewsItem)
         }
