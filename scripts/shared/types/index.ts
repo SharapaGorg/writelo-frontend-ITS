@@ -110,6 +110,10 @@ export enum ApiAliases {
     workspaceShortVideoAnalysesRun = 'workspaces/{workspaceId}/short-video-analyses/run',
     workspaceShortVideoAnalysesHistory = 'workspaces/{workspaceId}/short-video-analyses/history',
 
+    // Trending Reels (Instagram)
+    workspaceTrendingReelsGlobal = 'workspaces/{workspaceId}/trending-reels/global',
+    workspaceTrendingReelsDetail = 'workspaces/{workspaceId}/trending-reels/{reelId}',
+
     // Workspace usage limits
     workspaceLimits = 'workspaces/{workspaceId}/limits',
 

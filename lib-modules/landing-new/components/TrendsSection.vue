@@ -80,7 +80,7 @@ const store = useReelsResearchStore()
               <div class="flex-1 overflow-auto px-3 py-3 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
                 <ClientOnly>
                   <div class="grid gap-3 grid-cols-[repeat(auto-fill,minmax(180px,1fr))]">
-                    <ReelCard v-for="reel in store.filteredReels" :key="reel.id" :reel="reel" />
+                    <ReelCard v-for="reel in store.filteredReels" :key="reel.reelId" :reel="reel" />
                   </div>
                 </ClientOnly>
               </div>
@@ -99,7 +99,7 @@ const store = useReelsResearchStore()
                 <div class="flex-1 overflow-auto px-2.5 py-2.5 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
                   <ClientOnly>
                     <div class="grid gap-2.5 grid-cols-[repeat(auto-fill,minmax(140px,1fr))]">
-                      <ReelCard v-for="reel in store.filteredReels" :key="`m-${reel.id}`" :reel="reel" />
+                      <ReelCard v-for="reel in store.filteredReels" :key="`m-${reel.reelId}`" :reel="reel" />
                     </div>
                   </ClientOnly>
                 </div>

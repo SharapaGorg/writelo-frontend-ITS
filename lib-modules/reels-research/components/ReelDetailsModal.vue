@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import {
   Play,
   Heart,
@@ -21,28 +21,16 @@ import {
   DialogDescription,
 } from '~/components/ui/dialog'
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
+import ReelVideoPlayer from './ReelVideoPlayer.vue'
 import type { TrendingReelDto } from '../types'
 
 const store = useReelsResearchStore()
 
 const reel = computed<TrendingReelDto | null>(() => store.selectedReel)
-const showEmbed = ref(false)
-
-// Reset embed visibility whenever a different reel is opened — Instagram's
-// embed iframe loads heavy scripts, so we only fetch it on user request.
-watch(
-  () => reel.value?.reelId,
-  () => { showEmbed.value = false }
-)
 
 const open = computed({
   get: () => store.isDetailOpen,
   set: (v: boolean) => { if (!v) store.closeReel() }
-})
-
-const embedUrl = computed(() => {
-  const code = reel.value?.shortcode
-  return code ? `https://www.instagram.com/reel/${code}/embed/captioned/` : null
 })
 
 const authorHandle = computed(() => {
@@ -118,50 +106,12 @@ function formatScore(score: number | null | undefined): string {
       </DialogDescription>
 
       <div v-if="reel" class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_360px] max-h-[88vh]">
-        <!-- Left: video / preview -->
-        <div class="relative bg-black flex items-center justify-center min-h-[300px] md:min-h-[640px]">
-          <!-- Instagram embed -->
-          <iframe
-            v-if="showEmbed && embedUrl"
-            :src="embedUrl"
-            class="w-full h-full min-h-[640px] border-0 bg-white"
-            allow="encrypted-media; picture-in-picture; web-share"
-            allowtransparency="true"
-            scrolling="no"
-            loading="lazy"
+        <!-- Left: video player -->
+        <div class="relative bg-black min-h-[300px] md:min-h-[640px]">
+          <ReelVideoPlayer
+            :src="reel.videoUrl"
+            :poster="reel.thumbnailUrl"
           />
-          <!-- Poster + play CTA -->
-          <template v-else>
-            <img
-              v-if="reel.thumbnailUrl"
-              :src="reel.thumbnailUrl"
-              :alt="reel.captionPreview ?? ''"
-              class="max-h-[640px] w-full object-contain"
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/30">
-              <button
-                v-if="embedUrl"
-                type="button"
-                class="size-16 rounded-full bg-white/95 text-black flex items-center justify-center shadow-2xl hover:scale-105 transition-transform"
-                @click="showEmbed = true"
-              >
-                <Play class="w-7 h-7 ml-1 fill-current" />
-              </button>
-              <a
-                v-else
-                :href="reel.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="px-4 py-2 rounded-md bg-white/95 text-black text-sm font-medium hover:bg-white inline-flex items-center gap-2"
-              >
-                <ExternalLink class="w-4 h-4" />
-                Открыть в Instagram
-              </a>
-              <span v-if="embedUrl" class="text-white/80 text-xs">Нажми, чтобы загрузить плеер</span>
-            </div>
-          </template>
         </div>
 
         <!-- Right: info panel -->

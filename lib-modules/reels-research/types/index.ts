@@ -30,6 +30,11 @@ export interface TrendingReelDto {
   captionPreview: string | null
   thumbnailUrl: string | null
   thumbnailExpiresAt: string | null
+  // Backend-cached video URL, mirrors thumbnailUrl semantics. Optional until the
+  // backend ships the field — when missing, the player shows a "видео пока
+  // недоступно" state.
+  videoUrl?: string | null
+  videoExpiresAt?: string | null
   author: TrendingReelAuthorDto
   postedAt: string | null
   durationSeconds: number | null
