@@ -1287,43 +1287,22 @@
         "description": "To try it out",
         "price": "0 ₽",
         "features": [
-          "1 brand",
-          "Instagram trends — 5 requests per day",
-          "News hooks and calendar",
-          "Basic post editor",
-          "AI assistant with brand knowledge base"
+          "Instagram trends — 1-day trial access",
+          "Video analysis — 5 requests per month (YouTube Shorts, Instagram Reels, TikTok)"
         ],
         "cta": "Get started"
       },
       "pro": {
-        "name": "Pro",
-        "description": "For active SMM specialists",
-        "price": "1,990 ₽",
+        "name": "Nose to the Wind",
+        "description": "Trends and the video analyzer — for people working with content every day",
+        "price": "699 ₽",
         "period": "/mo",
         "features": [
-          "Up to 10 brands",
-          "Unlimited trend analysis",
-          "News hooks for each brand",
-          "Full editor + cross-posting",
-          "Publish to TG, VK",
-          "Video analysis — YouTube Shorts, TikTok, Reels",
-          "AI assistant with brand knowledge base"
+          "100 viral reels hand-picked by our team every day",
+          "Unlimited access to the Instagram trends panel",
+          "250 video analysis requests (YouTube Shorts, Instagram Reels, TikTok)"
         ],
-        "cta": "Try Pro"
-      },
-      "business": {
-        "name": "Business",
-        "description": "For agencies and teams",
-        "price": "On request",
-        "features": [
-          "Everything in Pro, no brand limits",
-          "AI limits — 2× higher (per account)",
-          "Team roles and access",
-          "Branding and white-label",
-          "Priority support",
-          "AI assistant with extended knowledge base"
-        ],
-        "cta": "Book a demo"
+        "cta": "Try it"
       },
       "guarantee": "Full refund within 14 days if the service doesn't work out for you"
     },
@@ -1349,11 +1328,11 @@
         },
         {
           "q": "Does Writelo have a free plan?",
-          "a": "Yes. On the free plan every feature of the service is available — you can try Writelo in full, no card required"
+          "a": "Yes. On the free plan you can try the trends panel for one day and run 5 video analyses per month — no card required"
         },
         {
           "q": "How much does Writelo cost?",
-          "a": "Start — 0 ₽: all service features available. “Nose to the Wind” — 699 ₽/mo: daily reports from our SMM team featuring the 100 most trending clips from the last 24 hours, plus the social-network video analyzer"
+          "a": "Free — 0 ₽: 1-day trial access to the trends panel and 5 video analyses per month. “Nose to the Wind” — 699 ₽/mo: 100 viral reels hand-picked by our team every day, unlimited access to the Instagram trends panel, and 250 video analysis requests (YouTube Shorts, Instagram Reels, TikTok)"
         },
         {
           "q": "Does Writelo work on mobile?",

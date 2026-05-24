@@ -4,9 +4,9 @@ export interface SectionHeaderProps {
   withRule?: boolean
 }
 
-export type PriceCardCtaAction = 'signup' | 'demo'
+export type PriceCardCtaAction = 'signup'
 
-export type PriceCardTier = 'free' | 'pro' | 'business'
+export type PriceCardTier = 'free' | 'pro'
 
 export interface PriceCardCta {
   label: string

@@ -39,22 +39,10 @@ const cards = computed<PriceCardProps[]>(() => [
     cta: { label: t('landingNew.pricing.pro.cta'), action: 'signup' },
     highlighted: true,
   },
-  {
-    tier: 'business',
-    name: t('landingNew.pricing.business.name'),
-    description: t('landingNew.pricing.business.description'),
-    price: t('landingNew.pricing.business.price'),
-    features: features('landingNew.pricing.business.features'),
-    cta: { label: t('landingNew.pricing.business.cta'), action: 'demo' },
-  },
 ])
 
-function handleCta(action: PriceCardCtaAction, tier: PriceCardTier) {
+function handleCta(_action: PriceCardCtaAction, tier: PriceCardTier) {
   $trackGoal('landing_cta_click', { button: `pricing_${tier}` })
-  if (action === 'demo') {
-    window.location.href = 'mailto:hello@writelo.io?subject=' + encodeURIComponent('Демо Writelo Business')
-    return
-  }
   if (userController.getToken()) {
     router.push(Routes.app)
   } else {
@@ -75,7 +63,7 @@ function handleCta(action: PriceCardCtaAction, tier: PriceCardTier) {
         :label="t('landingNew.pricing.label')"
         :title="t('landingNew.pricing.title')"
       />
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-stretch max-w-[820px] mx-auto">
         <PriceCard
           v-for="card in cards"
           :key="card.name"

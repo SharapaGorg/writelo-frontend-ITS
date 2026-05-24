@@ -65,7 +65,7 @@ const emit = defineEmits<{ cta: [action: PriceCardCtaAction, tier: PriceCardTier
     </ul>
 
     <PrimaryButton
-      v-if="highlighted || cta.action === 'demo'"
+      v-if="highlighted"
       class="w-full"
       @click="emit('cta', cta.action, tier)"
     >
