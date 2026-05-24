@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import type { SectionHeaderProps } from '../types'
+import SectionDetailLink from './SectionDetailLink.vue'
 
-withDefaults(defineProps<SectionHeaderProps>(), {
+const props = withDefaults(defineProps<SectionHeaderProps>(), {
   withRule: false,
 })
+
+const detailAriaLabel = computed(() => props.detailLabel || props.detailSection || props.title || '')
 </script>
 
 <template>
@@ -13,6 +16,12 @@ withDefaults(defineProps<SectionHeaderProps>(), {
     </div>
     <h2 class="lnf-display font-bold text-[36px] md:text-[56px] lg:text-[64px] leading-[1.05] tracking-[-0.03em] text-[#0a0a0a] dark:text-[#ede8de] max-w-[18ch]">
       <slot name="title">{{ title }}</slot>
+      <SectionDetailLink
+        v-if="detailUrl && detailSection"
+        :to="detailUrl"
+        :section="detailSection"
+        :label="detailAriaLabel"
+      />
     </h2>
     <div v-if="withRule" class="mt-8 h-px bg-[#0a0a0a]/20 dark:bg-[#ede8de]/30" />
   </div>

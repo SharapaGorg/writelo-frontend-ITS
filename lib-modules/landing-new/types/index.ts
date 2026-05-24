@@ -2,6 +2,12 @@ export interface SectionHeaderProps {
   label: string
   title?: string
   withRule?: boolean
+  /** When set, renders an inline "open detail page" icon-link next to the heading. */
+  detailUrl?: string
+  /** Section name used for analytics + aria-label fallback. */
+  detailSection?: string
+  /** aria-label override for the detail link. */
+  detailLabel?: string
 }
 
 export type PriceCardCtaAction = 'signup'

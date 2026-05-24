@@ -22,6 +22,11 @@ export default defineNuxtConfig({
         '/auth/**': {ssr: true},
         '/landing': {ssr: true, prerender: true},
         '/start': {ssr: true, prerender: true},
+        // Feature detail pages (RU) — нужны prerender + SSR для SEO и LLM-краулеров
+        '/poisk-trendov-v-instagrame': {ssr: true, prerender: true},
+        '/kontent-plan-dlya-smm': {ssr: true, prerender: true},
+        '/ai-razbor-reels': {ssr: true, prerender: true},
+        '/brif-brenda-dlya-ai': {ssr: true, prerender: true},
         // SPA для приложения и остального
         '/app/**': {ssr: false},
         '/**': {ssr: false},
@@ -140,7 +145,17 @@ export default defineNuxtConfig({
 
     nitro: {
         prerender: {
-            routes: ['/en', '/ru', '/landing', '/start', '/auth'],
+            routes: [
+                '/en',
+                '/ru',
+                '/landing',
+                '/start',
+                '/auth',
+                '/poisk-trendov-v-instagrame',
+                '/kontent-plan-dlya-smm',
+                '/ai-razbor-reels',
+                '/brif-brenda-dlya-ai',
+            ],
         },
         // Ускоряем билд
         minify: false,

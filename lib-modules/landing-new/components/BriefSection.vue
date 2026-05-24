@@ -29,6 +29,9 @@ const draft = reactive({
       <SectionHeader
         :label="t('landingNew.brief.label')"
         :title="t('landingNew.brief.title')"
+        detail-url="/brif-brenda-dlya-ai"
+        detail-section="brand-brief"
+        detail-label="Бриф бренда для ИИ — подробнее"
       />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
         <div class="space-y-6 max-w-[60ch]">
