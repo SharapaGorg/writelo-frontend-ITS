@@ -18,7 +18,12 @@ const { elementRef, isVisible } = useScrollReveal()
     :class="isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'"
   >
     <div class="max-w-[1400px] mx-auto">
-      <SectionHeader :label="t('landingNew.calendar.label')">
+      <SectionHeader
+        :label="t('landingNew.calendar.label')"
+        detail-url="/kontent-plan-dlya-smm"
+        detail-section="calendar"
+        detail-label="Контент-план для SMM — подробнее"
+      >
         <template #title>
           {{ t('landingNew.calendar.titlePre') }}
           <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.calendar.titleAccent') }}</span>
@@ -50,7 +55,7 @@ const { elementRef, isVisible } = useScrollReveal()
       </div>
 
       <div class="md:hidden -mx-5">
-        <MobilePhoneMockup active="calendar" source="calendar" wide>
+        <MobilePhoneMockup source="calendar" wide>
           <ContentCalendarPage :showcase-mode="true" />
         </MobilePhoneMockup>
       </div>

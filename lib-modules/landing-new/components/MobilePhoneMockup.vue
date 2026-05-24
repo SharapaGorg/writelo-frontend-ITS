@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Calendar, ScanSearch, TrendingUp, MoreHorizontal } from 'lucide-vue-next'
+import { ScanSearch, TrendingUp, MoreHorizontal } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 
-type TabId = 'calendar' | 'video-analyzer' | 'trends' | 'more'
+type TabId = 'trends' | 'video-analyzer' | 'more'
 
 const props = withDefaults(
   defineProps<{
@@ -20,9 +20,8 @@ const router = useRouter()
 const { $trackGoal } = useNuxtApp()
 
 const items = computed(() => [
-  { id: 'calendar' as const, icon: Calendar, label: t('sidebar.items.calendar'), route: '/app/calendar' },
-  { id: 'video-analyzer' as const, icon: ScanSearch, label: t('sidebar.items.videoAnalyzer'), route: '/app/video-analyzer' },
   { id: 'trends' as const, icon: TrendingUp, label: t('sidebar.items.trends'), route: '/app/trends' },
+  { id: 'video-analyzer' as const, icon: ScanSearch, label: t('sidebar.items.videoAnalyzer'), route: '/app/video-analyzer' },
   { id: 'more' as const, icon: MoreHorizontal, label: t('mobileNav.more'), route: '/app' },
 ])
 
