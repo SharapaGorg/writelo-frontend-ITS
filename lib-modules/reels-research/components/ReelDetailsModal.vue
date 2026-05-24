@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import {
   Play,
   Heart,
   MessageCircle,
   Share2,
   Bookmark,
-  Users,
   Clock,
   Calendar,
   TrendingUp,
@@ -14,16 +13,17 @@ import {
   Tag,
   Globe,
   ExternalLink,
-  Loader2,
+  RotateCcw,
+  X,
 } from 'lucide-vue-next'
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogDescription,
+  DialogClose,
 } from '~/components/ui/dialog'
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
-import ReelVideoPlayer from './ReelVideoPlayer.vue'
 import type { TrendingReelDto } from '../types'
 
 const store = useReelsResearchStore()
@@ -35,13 +35,25 @@ const open = computed({
   set: (v: boolean) => { if (!v) store.closeReel() }
 })
 
-const authorHandle = computed(() => {
+// Bumping this key force-remounts the iframe — used to "replay" since
+// Instagram's embed locks playback behind a "Watch again on Instagram"
+// overlay once the reel ends and there's no way to control it from outside.
+const embedNonce = ref(0)
+
+const embedUrl = computed(() => {
   const r = reel.value
-  if (!r) return ''
-  return r.author.username ? `@${r.author.username}` : (r.author.displayName ?? 'unknown')
+  if (!r) return null
+  const code = r.shortcode || r.url.match(/instagram\.com\/(?:reel|reels|p|tv)\/([^/?#]+)/)?.[1]
+  if (!code) return null
+  // Append a no-op query param tied to the nonce so the iframe actually
+  // refetches when the key changes (some browsers cache identical srcs).
+  const bust = embedNonce.value ? `?_=${embedNonce.value}` : ''
+  return `https://www.instagram.com/reel/${code}/embed/${bust}`
 })
 
-const authorDisplayName = computed(() => reel.value?.author.displayName ?? '')
+function replayEmbed() {
+  embedNonce.value += 1
+}
 
 function formatNumber(n: number | null | undefined): string {
   if (n == null) return '—'
@@ -87,7 +99,7 @@ function formatMultiplier(m: number | null | undefined): string {
 <template>
   <Dialog v-model:open="open">
     <DialogContent
-      class="!max-w-5xl p-0 overflow-hidden"
+      class="!max-w-5xl p-0 overflow-hidden h-[100dvh] max-h-[100dvh] !rounded-none top-0 !translate-y-0 md:top-1/2 md:!-translate-y-1/2 md:h-auto md:max-h-[88vh] md:!rounded-lg"
     >
       <DialogTitle class="sr-only">
         Детали Reels
@@ -96,49 +108,64 @@ function formatMultiplier(m: number | null | undefined): string {
         Просмотр видео и метрик рилса
       </DialogDescription>
 
-      <div v-if="reel" class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_360px] max-h-[88vh]">
-        <!-- Left: video player. Video URL is not part of the public DTO —
-             the player falls back to the preview image + a "видео пока
-             недоступно" notice. -->
-        <div class="relative bg-black min-h-[300px] md:min-h-[640px]">
-          <ReelVideoPlayer :poster="reel.previewImage?.url ?? null" />
+      <!-- Mobile close: prominent circular button with backdrop, sits over
+           the dark video area where the default white-X is invisible. -->
+      <DialogClose
+        class="md:hidden absolute right-3 top-3 z-50 size-10 rounded-full bg-black/65 backdrop-blur-md text-white flex items-center justify-center ring-1 ring-white/15 active:scale-95 transition-transform"
+        aria-label="Закрыть"
+      >
+        <X class="w-5 h-5" />
+      </DialogClose>
+
+      <div v-if="reel" class="flex flex-col md:grid md:grid-cols-[minmax(0,1fr)_360px] h-full md:h-auto md:max-h-[88vh] min-h-0">
+        <!-- Left: Instagram reel embed. Chrome (header + likes/comments +
+             "View more" footer) is uncontrollable, so we clip it: shift
+             the iframe up past the header and pad its height so the
+             footer ends up below the wrapper bottom edge. A small bottom
+             mask catches any residual bleed. -->
+        <div class="relative bg-black flex items-center justify-center overflow-hidden flex-shrink-0 h-[calc(55dvh_+_100px)] md:h-auto md:min-h-[560px]">
+          <img
+            v-if="reel.previewImage?.url"
+            :src="reel.previewImage.url"
+            aria-hidden="true"
+            class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-40 pointer-events-none"
+          />
+          <div
+            v-if="embedUrl"
+            class="relative z-10 w-full h-full md:max-w-[420px] overflow-hidden bg-black"
+          >
+            <iframe
+              :key="embedUrl"
+              :src="embedUrl"
+              class="absolute inset-x-0 w-full bg-black"
+              style="top: -55px; height: calc(100% + 220px);"
+              frameborder="0"
+              scrolling="no"
+              allowtransparency="true"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowfullscreen
+              loading="lazy"
+            />
+            <!-- Insurance mask for any "View more on Instagram" pixels
+                 that still bleed past the clip. -->
+            <div class="absolute inset-x-0 bottom-0 h-[80px] bg-black pointer-events-none z-10" />
+            <!-- Replay: force-remounts the iframe to blow away Instagram's
+                 "Watch again on Instagram" overlay. -->
+            <button
+              type="button"
+              class="absolute right-2 bottom-2 z-20 size-9 rounded-full bg-black/70 backdrop-blur-md text-white flex items-center justify-center ring-1 ring-white/15 active:scale-95 transition-transform"
+              aria-label="Перезапустить видео"
+              @click="replayEmbed"
+            >
+              <RotateCcw class="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        <!-- Right: info panel -->
-        <div class="flex flex-col overflow-y-auto bg-card">
-          <!-- Author -->
-          <div class="px-5 pt-5 pb-4 border-b border-border">
-            <div class="flex items-center gap-3">
-              <div class="size-10 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center text-white font-semibold">
-                {{ (reel.author.username ?? reel.author.displayName ?? '?').charAt(0).toUpperCase() }}
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-1">
-                  <span class="font-semibold text-sm text-foreground truncate">
-                    {{ authorDisplayName || authorHandle }}
-                  </span>
-                  <svg
-                    v-if="reel.author.isVerified"
-                    class="w-4 h-4 text-sky-500 flex-shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M12 2l2.39 1.74 2.92-.27.81 2.82 2.34 1.78-.97 2.78.97 2.78-2.34 1.78-.81 2.82-2.92-.27L12 22l-2.39-1.74-2.92.27-.81-2.82L3.54 15.93l.97-2.78-.97-2.78 2.34-1.78.81-2.82 2.92.27L12 2z" />
-                    <path d="M9 12.5l2 2 4-4.5" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </div>
-                <div class="text-xs text-muted-foreground truncate">
-                  {{ authorHandle }}
-                </div>
-              </div>
-              <Loader2 v-if="store.isLoadingDetail" class="w-4 h-4 text-muted-foreground animate-spin" />
-            </div>
-            <div v-if="reel.author.followerCount != null" class="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
-              <Users class="w-3.5 h-3.5" />
-              <span>{{ fullNumber(reel.author.followerCount) }} подписчиков</span>
-            </div>
-          </div>
-
+        <!-- Right: info panel. Single scrolling column on both mobile and
+             desktop — description sits above metrics/meta/virality with the
+             "Открыть в Instagram" CTA sticky at the bottom. -->
+        <div class="flex flex-col flex-1 min-h-0 overflow-y-auto bg-card border-t border-border md:border-t-0 md:border-l">
           <!-- Description -->
           <div v-if="reel.description" class="px-5 py-4 border-b border-border">
             <p class="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{{ reel.description }}</p>
@@ -244,7 +271,7 @@ function formatMultiplier(m: number | null | undefined): string {
             </dl>
           </div>
 
-          <!-- Actions -->
+          <!-- Sticky CTA at the bottom of the info column. -->
           <div class="px-5 py-4 mt-auto sticky bottom-0 bg-card border-t border-border">
             <a
               :href="reel.url"
