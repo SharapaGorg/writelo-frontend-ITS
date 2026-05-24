@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Clock, LogOut } from 'lucide-vue-next'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -42,11 +41,6 @@ const displayEmail = computed(() => {
 })
 
 const pendingEmail = computed(() => user.value?.pendingEmail)
-const initials = computed(() => {
-  const parts = displayName.value.trim().split(/\s+/)
-  const letters = parts.slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('')
-  return letters || 'U'
-})
 
 const logoutDialogOpen = ref(false)
 const canLogout = computed(() => !isInTelegramApp.value)
@@ -72,10 +66,6 @@ async function handleLogout() {
       <div class="max-w-5xl mx-auto w-full px-4 sm:px-6 py-6 flex flex-col gap-6">
         <!-- Hero -->
         <section class="flex items-center gap-4 rounded-xl border bg-card px-5 py-4 shadow-sm">
-          <Avatar class="h-16 w-16 sm:h-20 sm:w-20 shrink-0">
-            <AvatarImage src="https://github.com/shadcn.png" alt="@avatar" />
-            <AvatarFallback>{{ initials }}</AvatarFallback>
-          </Avatar>
           <div class="flex flex-col min-w-0 flex-1">
             <span class="text-lg sm:text-xl font-semibold truncate">{{ displayName }}</span>
             <span class="text-sm text-muted-foreground truncate">{{ displayEmail }}</span>
