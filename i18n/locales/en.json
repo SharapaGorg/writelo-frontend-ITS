@@ -1147,19 +1147,19 @@
       "title": "For people who make a living from this",
       "cards": {
         "freelancer": {
-          "tag": "Reels Maker / Blogger",
-          "title": "Content is your product",
-          "body": "Analyze trends and break down viral reels to know what works — instead of guessing"
+          "tag": "Blogger",
+          "title": "Unlock the potential of your blog",
+          "body": "Find fresh trends for your blog and adapt other people's virality to your voice. No one can replace your creativity"
         },
         "team": {
-          "tag": "SMM Specialist",
-          "title": "Clients, brands, content plan",
-          "body": "Trends, news hooks and a calendar tailored to each brand"
+          "tag": "SMM Freelancer",
+          "title": "Clients will be obsessed with you",
+          "body": "Your clients will be obsessed with how on top of things you are and how you adapt content to the brand's specifics"
         },
         "agency": {
-          "tag": "Team / Business",
-          "title": "One tool for the whole team",
-          "body": "Trend analytics, vertical video breakdowns, brand-tailored news hooks and content calendar — in a shared workspace"
+          "tag": "In-house SMM",
+          "title": "Content plan without scrolling the feed",
+          "body": "To build a content plan you don't need to scroll the feed for hours every day — use our daily reports"
         }
       }
     },
