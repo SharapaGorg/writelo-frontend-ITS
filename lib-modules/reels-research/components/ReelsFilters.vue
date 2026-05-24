@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue'
 import {
   ChevronDown,
   Rocket,
@@ -11,6 +11,7 @@ import {
   Check,
   Users,
   Clock,
+  SlidersHorizontal,
 } from 'lucide-vue-next'
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
 import { Input } from '~/components/ui/input'
@@ -98,21 +99,55 @@ const triggerClass =
 
 const activeTriggerClass = (active: boolean) =>
   active ? 'ring-1 ring-ring bg-accent/60' : ''
+
+const isExpanded = ref(false)
+const activeNonSearchCount = computed(() => {
+  let n = 0
+  if (store.filters.duration !== 'all') n++
+  if (store.filters.authorSize !== 'all') n++
+  if (store.filters.postedRange !== 'all') n++
+  if (store.filters.sortBy !== 'newest') n++
+  return n
+})
 </script>
 
 <template>
-  <div class="flex flex-wrap items-center gap-2">
-    <!-- Search -->
-    <div class="relative flex-1 min-w-[220px] max-w-sm">
-      <Search class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-      <Input
-        v-model="searchModel"
-        placeholder="Поиск по описанию или автору"
-        class="pl-8"
-      />
+  <div class="flex flex-col gap-2">
+    <!-- Row 1: search + mobile filters toggle -->
+    <div class="flex items-center gap-2">
+      <div class="relative flex-1 min-w-0 sm:max-w-sm">
+        <Search class="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+        <Input
+          v-model="searchModel"
+          placeholder="Поиск по описанию или автору"
+          class="pl-8"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="sm:hidden inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm font-medium text-foreground border border-border hover:bg-accent transition-colors flex-shrink-0"
+        :aria-expanded="isExpanded"
+        @click="isExpanded = !isExpanded"
+      >
+        <SlidersHorizontal class="size-4" />
+        <span>Фильтры</span>
+        <span
+          v-if="activeNonSearchCount > 0"
+          class="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-brand text-brand-foreground text-[10px] font-semibold leading-none"
+        >
+          {{ activeNonSearchCount }}
+        </span>
+        <ChevronDown
+          class="size-4 text-muted-foreground transition-transform"
+          :class="{ 'rotate-180': isExpanded }"
+        />
+      </button>
     </div>
 
-    <!-- Sort -->
+    <!-- Row 2: dropdowns — collapsed on mobile by default, always visible on sm+ -->
+    <div :class="[isExpanded ? 'flex' : 'hidden', 'sm:flex flex-wrap items-center gap-2']">
+      <!-- Sort -->
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <button type="button" :class="triggerClass">
@@ -204,5 +239,6 @@ const activeTriggerClass = (active: boolean) =>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+    </div>
   </div>
 </template>
