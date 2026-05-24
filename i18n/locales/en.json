@@ -1136,7 +1136,8 @@
       "line1": "Find",
       "line2": "your content",
       "line3": "formula",
-      "sub": "Instagram trend analytics, AI breakdowns of competitor and your own reels, brand-tailored news hooks and a content calendar — all in one tool",
+      "subLine1": "We keep our finger on the pulse and give you the analytics,",
+      "subLine2": "and you stay creative and grow the brand",
       "cta": "Try it free",
       "scrollHint": "What's inside"
     },
@@ -1202,25 +1203,20 @@
     "reels": {
       "label": "N°05 / VIDEO",
       "title": "Video analysis",
-      "body1Accent1": "Paste",
-      "body1Mid": " a link to a short video — YouTube Shorts, TikTok or Instagram Reels — and get a ",
-      "body1Accent2": "full breakdown",
-      "body1Post": ": hook, structure, funnel, CTA, what techniques were used and why it worked",
-      "body2Pre": "Every side of the clip gets its own ",
-      "body2Accent1": "score",
-      "body2Mid": ": hook — 78, retention — 82, loop — 52. ",
-      "body2Accent2": "12",
-      "body2Post": " metrics, traffic-light coded — see at a glance where it lands and where it sags",
-      "body3Pre": "Under the scores — a deep recommendation engine. Dozens of factors per axis, built on modern reel-making ",
-      "body3Accent": "frameworks",
-      "body3Post": "",
-      "body4Pre": "Same for ",
-      "body4Accent1": "your own",
-      "body4Mid1": " videos, but deeper. AI walks the clip ",
-      "body4Accent2": "frame by frame",
-      "body4Mid2": " and ",
-      "body4Accent3": "tells you",
-      "body4Post": " where attention drops — weak hook, sag in the middle, unclear CTA",
+      "body1Pre": "Paste a link to a short video — YouTube Shorts, TikTok or Instagram Reels — and get a ",
+      "body1Accent": "full breakdown",
+      "body1Post": ": video structure, transcript, score and improvement recommendations from our AI model",
+      "body2Pre": "The AI score is built on ",
+      "body2Accent1": "4 sections",
+      "body2Mid1": " — content gravity, engagement triggers, author and funnel. Each section has multiple ",
+      "body2Accent2": "axes",
+      "body2Mid2": ", and for each one you can get ",
+      "body2Accent3": "recommendations",
+      "body2Post": " for improvement",
+      "body3Pre": "We break the clip down ",
+      "body3Accent1": "to atoms",
+      "body3Mid": " — you adapt it ",
+      "body3Accent2": "for your brand",
       "previewLabel": "PREVIEW — RECENT ANALYSES"
     },
     "editor": {
@@ -1336,20 +1332,8 @@
       "title": "Frequently asked",
       "items": [
         {
-          "q": "What is Writelo?",
-          "a": "Writelo is an SMM tool that covers the entire content cycle: from building a content plan (curating trends and news hooks for your brand) to writing a video script and analyzing an already-published clip. One service instead of separate tools for analytics, content generation, and scheduling"
-        },
-        {
           "q": "Who is Writelo for?",
-          "a": "Writelo is built first and foremost for professional SMM specialists — both freelancers and in-house. It also fits teams and agencies that need a shared tool for content work"
-        },
-        {
-          "q": "Can a team work in Writelo together?",
-          "a": "Yes — that's what the Business plan is for. The team works on a single shared content calendar, and per-account limits are 2× higher. A fit for agencies and teams running several brands in parallel. Freelancers with several clients usually do fine on Pro"
-        },
-        {
-          "q": "How is Writelo different from schedulers like SMMplanner?",
-          "a": "Schedulers solve one task — plan and publish a post. Writelo covers planning plus what schedulers don't have: Instagram trend search for your niche, AI breakdown of competitor reels, and brand-fitted news hooks. Analytics, content creation, and publishing — all in one place"
+          "a": "Writelo is for SMM specialists and bloggers. The core job of the service is to keep users on top of trends and give them relevant analytics"
         },
         {
           "q": "Which social networks does Writelo find trends in?",
@@ -1361,11 +1345,7 @@
         },
         {
           "q": "How does Writelo analyze a video?",
-          "a": "The analyzer evaluates the clip as a whole — both text and visuals. It splits the video into parts: the hook (text, spoken, visual), structure by timecodes, and the funnel with a lead magnet and CTA. Beyond transcription, it judges the visual delivery — editing, on-screen text, shooting techniques — and identifies which were used and why they worked. Under the hood is an AI analyzer that draws on a base of expert materials on short vertical video and Instagram's official recommendations. A deeper analysis of your own clips — using analytics only the account owner sees (retention graphs, impressions stats) — is in development"
-        },
-        {
-          "q": "Why do I need a brand profile?",
-          "a": "You describe your brand once — niche, style, voice, restrictions, references. From this we build a brand knowledge base for the AI to navigate. Then it works on its own: picks brand-fitted news hooks, writes in the right style, respects stop words. No need to copy the brand description into every prompt"
+          "a": "The analyzer evaluates the clip as a whole — both text and visuals. It splits the video into parts: the hook (text, spoken, visual), structure by timecodes, and the funnel with a lead magnet and CTA. Beyond transcription, it judges the visual delivery — editing, on-screen text, shooting techniques — and identifies which were used and why they worked. Under the hood is an AI analyzer that draws on a base of expert materials on short vertical content and Instagram's official recommendations"
         },
         {
           "q": "Does Writelo have a free plan?",
@@ -1373,7 +1353,7 @@
         },
         {
           "q": "How much does Writelo cost?",
-          "a": "Free — 0 ₽: all service features. Pro — 1,990 ₽/mo: Instagram trend analysis, AI breakdown of competitor reels, video analysis, brand-fitted news hooks, the full post editor, and a brand profile with an AI assistant. Business — on request: the team works on a single shared content calendar, and per-account limits are 2× higher"
+          "a": "Start — 0 ₽: all service features available. “Nose to the Wind” — 699 ₽/mo: daily reports from our SMM team featuring the 100 most trending clips from the last 24 hours, plus the social-network video analyzer"
         },
         {
           "q": "Does Writelo work on mobile?",
