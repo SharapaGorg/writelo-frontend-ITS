@@ -1177,7 +1177,13 @@
       "body3Accent2": "filter",
       "body3Post": " by publication time, author's audience and other parameters",
       "previewLabel": "PREVIEW — NICHE: BEAUTY",
-      "humansBadge": "We're humans, not AI"
+      "humansBadge": "We're humans, not AI",
+      "lockedCard": {
+        "thumbCaption": "Unlocks after sign in",
+        "title": "3 reels unlocked",
+        "body": "Sign in to access the full 90-day archive with filters and sorting",
+        "cta": "Sign in"
+      }
     },
     "calendar": {
       "label": "N°03 / CALENDAR",

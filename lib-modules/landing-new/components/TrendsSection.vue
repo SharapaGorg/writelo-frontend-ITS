@@ -1,14 +1,18 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import { computed } from 'vue'
 import SectionHeader from './SectionHeader.vue'
 import SectionTryCta from './SectionTryCta.vue'
 import MobilePhoneMockup from './MobilePhoneMockup.vue'
+import ReelLockedCard from './ReelLockedCard.vue'
 import { useScrollReveal } from '../composables/useScrollReveal'
-import { ReelsFilters, ReelCard, useReelsResearchStore } from '~/lib-modules/reels-research'
+import { ReelsFilters, ReelCard } from '~/lib-modules/reels-research'
+import { landingReelsMock } from '../helpers/landingReelsMock'
 
 const { t } = useI18n()
 const { elementRef, isVisible } = useScrollReveal()
-const store = useReelsResearchStore()
+
+const previewReels = computed(() => landingReelsMock)
 </script>
 
 <template>
@@ -73,7 +77,8 @@ const store = useReelsResearchStore()
               <div class="flex-1 overflow-auto px-3 py-3 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
                 <ClientOnly>
                   <div class="grid gap-3 grid-cols-[repeat(auto-fill,minmax(180px,1fr))]">
-                    <ReelCard v-for="reel in store.filteredReels" :key="reel.reelId" :reel="reel" />
+                    <ReelCard v-for="reel in previewReels" :key="reel.reelId" :reel="reel" />
+                    <ReelLockedCard />
                   </div>
                 </ClientOnly>
               </div>
@@ -92,7 +97,8 @@ const store = useReelsResearchStore()
                 <div class="flex-1 overflow-auto px-2.5 py-2.5 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
                   <ClientOnly>
                     <div class="grid gap-2.5 grid-cols-[repeat(auto-fill,minmax(140px,1fr))]">
-                      <ReelCard v-for="reel in store.filteredReels" :key="`m-${reel.reelId}`" :reel="reel" />
+                      <ReelCard v-for="reel in previewReels" :key="`m-${reel.reelId}`" :reel="reel" />
+                      <ReelLockedCard />
                     </div>
                   </ClientOnly>
                 </div>
