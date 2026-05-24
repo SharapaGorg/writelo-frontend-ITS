@@ -7,17 +7,10 @@ import type {
   ReelDurationBucket,
   ReelAuthorBucket,
   ReelPostedRange,
+  TrendingReelsFeedQuery,
 } from '../types'
 import { useTrendingReelsApi } from '../helpers/api'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
-
-function num(n: number | null | undefined): number {
-  return typeof n === 'number' ? n : 0
-}
-
-function plays(r: TrendingReelDto): number {
-  return r.metrics.plays ?? r.metrics.effectiveViews
-}
 
 function matchesDuration(seconds: number | null, bucket: ReelDurationBucket): boolean {
   const s = seconds ?? 0
@@ -54,11 +47,13 @@ function postedAfterIso(range: ReelPostedRange): string | undefined {
 export const useReelsResearchStore = defineStore('reelsResearch', () => {
   const reels = ref<TrendingReelDto[]>([])
   const filters = ref<ReelsFilters>({
-    sortBy: 'most_viral',
+    sortBy: 'newest',
     duration: 'all',
     authorSize: 'all',
     postedRange: 'all',
     search: '',
+    category: null,
+    language: null,
   })
   const nextCursor = ref<string | null>(null)
   const isLoading = ref(false)
@@ -70,18 +65,32 @@ export const useReelsResearchStore = defineStore('reelsResearch', () => {
   const isLoadingDetail = ref(false)
   const detailError = ref<string | null>(null)
 
-  function buildQuery(): Record<string, string | number> {
+  function buildQuery(): TrendingReelsFeedQuery {
     const followerRange = authorSizeRange(filters.value.authorSize)
     const postedAfter = postedAfterIso(filters.value.postedRange)
-    const q: Record<string, string | number> = {
+    const search = filters.value.search.trim()
+    const q: TrendingReelsFeedQuery = {
       sort: filters.value.sortBy,
       limit: 50,
     }
     if (followerRange.min != null) q.minAuthorFollowers = followerRange.min
     if (followerRange.max != null) q.maxAuthorFollowers = followerRange.max
     if (postedAfter) q.postedAfter = postedAfter
+    if (search) q.q = search
+    if (filters.value.category) q.category = filters.value.category
+    if (filters.value.language) q.language = filters.value.language
     return q
   }
+
+  // Filters/sort changes invalidate the cursor — restart pagination.
+  const hasActiveFilters = computed(() =>
+    filters.value.duration !== 'all'
+    || filters.value.authorSize !== 'all'
+    || filters.value.postedRange !== 'all'
+    || filters.value.search.trim() !== ''
+    || filters.value.category !== null
+    || filters.value.language !== null
+  )
 
   async function fetchFeed() {
     const { currentWorkspaceId } = useWorkspaceContext()
@@ -93,7 +102,9 @@ export const useReelsResearchStore = defineStore('reelsResearch', () => {
     isLoading.value = true
     loadError.value = null
     try {
-      const response = await useTrendingReelsApi().getGlobalFeed(currentWorkspaceId.value, buildQuery())
+      const query = buildQuery()
+      // Bust browser cache via Date.now stamp from the controller.
+      const response = await useTrendingReelsApi().getGlobalFeed(currentWorkspaceId.value, query)
       reels.value = response?.items ?? []
       nextCursor.value = response?.nextCursor ?? null
     } catch (e: any) {
@@ -155,47 +166,14 @@ export const useReelsResearchStore = defineStore('reelsResearch', () => {
     }
   }
 
+  // Server already filters and sorts; only the client-side duration bucket
+  // (not exposed as a server param) needs local filtering.
   const filteredReels = computed(() => {
-    let result = [...reels.value]
-
-    if (filters.value.duration !== 'all') {
-      result = result.filter(r => matchesDuration(r.durationSeconds, filters.value.duration))
-    }
-
-    const q = filters.value.search.trim().toLowerCase()
-    if (q) {
-      result = result.filter(r => {
-        const caption = r.captionPreview?.toLowerCase() ?? ''
-        const username = r.author.username?.toLowerCase() ?? ''
-        const displayName = r.author.displayName?.toLowerCase() ?? ''
-        return caption.includes(q) || username.includes(q) || displayName.includes(q)
-      })
-    }
-
-    switch (filters.value.sortBy) {
-      case 'newest':
-        result.sort((a, b) => {
-          const ta = a.postedAt ? new Date(a.postedAt).getTime() : 0
-          const tb = b.postedAt ? new Date(b.postedAt).getTime() : 0
-          return tb - ta
-        })
-        break
-      case 'most_plays':
-        result.sort((a, b) => plays(b) - plays(a))
-        break
-      case 'most_likes':
-        result.sort((a, b) => num(b.metrics.likes) - num(a.metrics.likes))
-        break
-      case 'most_comments':
-        result.sort((a, b) => num(b.metrics.comments) - num(a.metrics.comments))
-        break
-      // most_viral: trust backend order
-    }
-
-    return result
+    if (filters.value.duration === 'all') return reels.value
+    return reels.value.filter(r => matchesDuration(r.durationSeconds, filters.value.duration))
   })
 
-  // Server-affecting setters trigger a refetch; client-only setters don't.
+  // Server-affecting setters reset cursor + refetch.
   function setSortBy(sortBy: ReelSortBy) {
     filters.value.sortBy = sortBy
     fetchFeed()
@@ -208,17 +186,30 @@ export const useReelsResearchStore = defineStore('reelsResearch', () => {
     filters.value.postedRange = postedRange
     fetchFeed()
   }
+  function setCategory(category: string | null) {
+    filters.value.category = category
+    fetchFeed()
+  }
+  function setLanguage(language: string | null) {
+    filters.value.language = language
+    fetchFeed()
+  }
   function setDuration(duration: ReelDurationBucket) {
     filters.value.duration = duration
   }
   function setSearch(search: string) {
     filters.value.search = search
   }
+  // Search is server-side via `q`; expose a way to commit it (debounce in UI).
+  function commitSearch() {
+    fetchFeed()
+  }
 
   return {
     reels,
     filters,
     filteredReels,
+    hasActiveFilters,
     nextCursor,
     isLoading,
     isLoadingMore,
@@ -235,6 +226,9 @@ export const useReelsResearchStore = defineStore('reelsResearch', () => {
     setDuration,
     setAuthorSize,
     setPostedRange,
+    setCategory,
+    setLanguage,
     setSearch,
+    commitSearch,
   }
 })

@@ -465,7 +465,7 @@ onUnmounted(() => {
             <ImprovementsSection :value="detail.improvements" />
             <TranscriptionSection :value="detail.transcription" />
 
-            <FeedbackForm source="video-analysis" :target-id="analysisId" />
+            <FeedbackForm source="reel-analysis" :target-id="analysisId" />
           </template>
         </template>
       </div>

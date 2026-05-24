@@ -30,23 +30,21 @@ const { stop } = useIntersectionObserver(
   { rootMargin: '200px 0px' }
 )
 
-const playsCount = computed(() =>
-  props.reel.metrics.plays ?? props.reel.metrics.effectiveViews ?? 0
-)
+const playsCount = computed(() => props.reel.metrics.plays ?? 0)
 const likesCount = computed(() => props.reel.metrics.likes ?? 0)
 const commentsCount = computed(() => props.reel.metrics.comments ?? 0)
 const authorHandle = computed(() => {
   const u = props.reel.author.username
   return u ? `@${u}` : (props.reel.author.displayName ?? 'unknown')
 })
-const captionText = computed(() => props.reel.captionPreview ?? '')
-const thumbnail = computed(() => props.reel.thumbnailUrl ?? '')
+const captionText = computed(() => props.reel.description ?? '')
+const thumbnail = computed(() => props.reel.previewImage?.url ?? '')
 const followerCount = computed(() => props.reel.author.followerCount)
 
-// viewsOverAuthorMedian = во сколько раз этот рилс обогнал средний охват автора.
+// viewsOverAuthorBaseline = во сколько раз этот рилс обогнал средний охват автора.
 // Бейдж показываем только когда значение реально стоит внимания.
 const viralMultiplier = computed<number | null>(() => {
-  const m = props.reel.score?.viewsOverAuthorMedian
+  const m = props.reel.metrics.viewsOverAuthorBaseline
   return typeof m === 'number' && m >= 2 ? m : null
 })
 

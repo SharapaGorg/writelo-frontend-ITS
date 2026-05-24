@@ -5,12 +5,14 @@ import {
   Heart,
   MessageCircle,
   Share2,
-  Eye,
+  Bookmark,
   Users,
   Clock,
   Calendar,
   TrendingUp,
   Hash,
+  Tag,
+  Globe,
   ExternalLink,
   Loader2,
 } from 'lucide-vue-next'
@@ -76,20 +78,9 @@ function formatDateTime(iso: string | null | undefined): string {
   }
 }
 
-function formatAge(ageSeconds: number | null | undefined): string {
-  if (ageSeconds == null) return '—'
-  const s = Math.round(ageSeconds)
-  const days = Math.floor(s / 86400)
-  if (days >= 1) return `${days} дн назад`
-  const hours = Math.floor(s / 3600)
-  if (hours >= 1) return `${hours} ч назад`
-  const mins = Math.floor(s / 60)
-  return `${mins} мин назад`
-}
-
-function formatScore(score: number | null | undefined): string {
-  if (score == null) return '—'
-  return score.toFixed(2)
+function formatMultiplier(m: number | null | undefined): string {
+  if (m == null) return '—'
+  return `${m.toFixed(2)}×`
 }
 </script>
 
@@ -106,12 +97,11 @@ function formatScore(score: number | null | undefined): string {
       </DialogDescription>
 
       <div v-if="reel" class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_360px] max-h-[88vh]">
-        <!-- Left: video player -->
+        <!-- Left: video player. Video URL is not part of the public DTO —
+             the player falls back to the preview image + a "видео пока
+             недоступно" notice. -->
         <div class="relative bg-black min-h-[300px] md:min-h-[640px]">
-          <ReelVideoPlayer
-            :src="reel.videoUrl"
-            :poster="reel.thumbnailUrl"
-          />
+          <ReelVideoPlayer :poster="reel.previewImage?.url ?? null" />
         </div>
 
         <!-- Right: info panel -->
@@ -149,9 +139,9 @@ function formatScore(score: number | null | undefined): string {
             </div>
           </div>
 
-          <!-- Caption -->
-          <div v-if="reel.captionPreview" class="px-5 py-4 border-b border-border">
-            <p class="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{{ reel.captionPreview }}</p>
+          <!-- Description -->
+          <div v-if="reel.description" class="px-5 py-4 border-b border-border">
+            <p class="text-sm text-foreground whitespace-pre-wrap leading-relaxed">{{ reel.description }}</p>
           </div>
 
           <!-- Primary metrics -->
@@ -163,8 +153,8 @@ function formatScore(score: number | null | undefined): string {
                   <Play class="w-3 h-3" />
                   Проигрывания
                 </div>
-                <div class="text-lg font-semibold text-foreground" :title="fullNumber(reel.metrics.plays ?? reel.metrics.effectiveViews)">
-                  {{ formatNumber(reel.metrics.plays ?? reel.metrics.effectiveViews) }}
+                <div class="text-lg font-semibold text-foreground" :title="fullNumber(reel.metrics.plays)">
+                  {{ formatNumber(reel.metrics.plays) }}
                 </div>
               </div>
               <div class="rounded-md border border-border bg-background p-3">
@@ -194,13 +184,13 @@ function formatScore(score: number | null | undefined): string {
                   {{ formatNumber(reel.metrics.shares) }}
                 </div>
               </div>
-              <div v-if="reel.metrics.views != null" class="rounded-md border border-border bg-background p-3 col-span-2">
+              <div class="rounded-md border border-border bg-background p-3 col-span-2">
                 <div class="flex items-center gap-1.5 text-[11px] text-muted-foreground mb-1">
-                  <Eye class="w-3 h-3" />
-                  Просмотры (raw)
+                  <Bookmark class="w-3 h-3" />
+                  Сохранения
                 </div>
-                <div class="text-sm font-medium text-foreground">
-                  {{ fullNumber(reel.metrics.views) }}
+                <div class="text-sm font-medium text-foreground" :title="fullNumber(reel.metrics.saves)">
+                  {{ formatNumber(reel.metrics.saves) }}
                 </div>
               </div>
             </div>
@@ -211,17 +201,27 @@ function formatScore(score: number | null | undefined): string {
             <div class="flex items-center gap-2 text-xs">
               <Calendar class="w-3.5 h-3.5 text-muted-foreground" />
               <span class="text-muted-foreground">Опубликовано:</span>
-              <span class="text-foreground font-medium">{{ formatDateTime(reel.postedAt) }}</span>
+              <span class="text-foreground font-medium">{{ formatDateTime(reel.publishedAt ?? reel.postedAt) }}</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <Calendar class="w-3.5 h-3.5 text-muted-foreground" />
+              <span class="text-muted-foreground">Добавлено:</span>
+              <span class="text-foreground font-medium">{{ formatDateTime(reel.addedAt) }}</span>
             </div>
             <div class="flex items-center gap-2 text-xs">
               <Clock class="w-3.5 h-3.5 text-muted-foreground" />
               <span class="text-muted-foreground">Длительность:</span>
               <span class="text-foreground font-medium">{{ formatDuration(reel.durationSeconds) }}</span>
             </div>
-            <div v-if="reel.metrics.ageSeconds != null" class="flex items-center gap-2 text-xs">
-              <Clock class="w-3.5 h-3.5 text-muted-foreground" />
-              <span class="text-muted-foreground">Возраст:</span>
-              <span class="text-foreground font-medium">{{ formatAge(reel.metrics.ageSeconds) }}</span>
+            <div v-if="reel.category" class="flex items-center gap-2 text-xs">
+              <Tag class="w-3.5 h-3.5 text-muted-foreground" />
+              <span class="text-muted-foreground">Категория:</span>
+              <span class="text-foreground font-medium">{{ reel.category }}</span>
+            </div>
+            <div v-if="reel.language" class="flex items-center gap-2 text-xs">
+              <Globe class="w-3.5 h-3.5 text-muted-foreground" />
+              <span class="text-muted-foreground">Язык:</span>
+              <span class="text-foreground font-medium uppercase">{{ reel.language }}</span>
             </div>
             <div v-if="reel.shortcode" class="flex items-center gap-2 text-xs">
               <Hash class="w-3.5 h-3.5 text-muted-foreground" />
@@ -230,36 +230,16 @@ function formatScore(score: number | null | undefined): string {
             </div>
           </div>
 
-          <!-- Score / Ranking -->
-          <div class="px-5 py-4 border-b border-border">
+          <!-- Virality vs author baseline -->
+          <div v-if="reel.metrics.viewsOverAuthorBaseline != null" class="px-5 py-4 border-b border-border">
             <div class="text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-3 flex items-center gap-1.5">
               <TrendingUp class="w-3 h-3" />
-              Ранжирование
+              Вирусность
             </div>
             <dl class="space-y-2 text-xs">
               <div class="flex justify-between">
-                <dt class="text-muted-foreground">Глобальный ранг</dt>
-                <dd class="text-foreground font-medium">#{{ reel.rank }}</dd>
-              </div>
-              <div class="flex justify-between">
-                <dt class="text-muted-foreground">Rank score</dt>
-                <dd class="text-foreground font-medium">{{ formatScore(reel.rankScore) }}</dd>
-              </div>
-              <div class="flex justify-between">
-                <dt class="text-muted-foreground">Global score</dt>
-                <dd class="text-foreground font-medium">{{ formatScore(reel.score.global) }}</dd>
-              </div>
-              <div class="flex justify-between">
-                <dt class="text-muted-foreground">Views / author median</dt>
-                <dd class="text-foreground font-medium">{{ formatScore(reel.score.viewsOverAuthorMedian) }}×</dd>
-              </div>
-              <div class="flex justify-between gap-2">
-                <dt class="text-muted-foreground">Впервые увидели</dt>
-                <dd class="text-foreground font-medium text-right">{{ formatDateTime(reel.firstSeenAt) }}</dd>
-              </div>
-              <div class="flex justify-between gap-2">
-                <dt class="text-muted-foreground">Последний снимок</dt>
-                <dd class="text-foreground font-medium text-right">{{ formatDateTime(reel.metrics.capturedAt ?? reel.lastSeenAt) }}</dd>
+                <dt class="text-muted-foreground">Относительно среднего у автора</dt>
+                <dd class="text-foreground font-medium">{{ formatMultiplier(reel.metrics.viewsOverAuthorBaseline) }}</dd>
               </div>
             </dl>
           </div>

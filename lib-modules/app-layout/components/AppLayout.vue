@@ -53,7 +53,7 @@ onMounted(bootstrap)
       v-if="isAuthenticated"
       class="hidden md:block fixed bottom-4 right-4 z-40"
     >
-      <FeedbackForm source="general" compact collapsible />
+      <FeedbackForm source="site" compact collapsible />
     </div>
   </div>
 </template>

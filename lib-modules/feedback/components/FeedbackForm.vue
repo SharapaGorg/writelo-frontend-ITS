@@ -4,30 +4,45 @@ import { Frown, Meh, Smile, Loader2, Check, X } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import { Button } from '~/components/ui/button'
 import { Textarea } from '~/components/ui/textarea'
-import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { useFeedbackApi } from '../helpers/api'
-import type { FeedbackRating, FeedbackSource } from '../types'
+import type {
+  FeedbackSection,
+  FeedbackSentiment,
+  CreateFeedbackContextDto,
+  CreateFeedbackReelReferenceDto,
+} from '../types'
+
+// UI source → backend section. `targetId`/`curatedReelId` only meaningful
+// for the reel-analysis section.
+type Source = 'site' | 'today-reels' | 'reel-analysis'
 
 const props = withDefaults(
   defineProps<{
-    source: FeedbackSource
+    source: Source
+    // For arbitrary reel-analysis context (e.g. user-submitted external video):
+    // sent as externalId on the reel reference.
     targetId?: string
+    // For curated trending reels (TrendingReelDto.reelId).
+    curatedReelId?: string
+    // For arbitrary reels that have a URL.
+    reelUrl?: string
     compact?: boolean
     collapsible?: boolean
   }>(),
   { compact: false, collapsible: false },
 )
 
-const { requireWorkspaceId } = useWorkspaceContext()
 const api = useFeedbackApi()
 
 const storageKey = computed(
-  () => `feedback:collapsed:${props.source}:${props.targetId ?? '_'}`,
+  () => `feedback:collapsed:${props.source}:${props.curatedReelId ?? props.targetId ?? '_'}`,
 )
 
-type State = 'idle' | 'submitting' | 'done'
+type Rating = 1 | 2 | 3
+type State = 'idle' | 'submitting' | 'done' | 'error'
+
 const state = ref<State>('idle')
-const rating = ref<FeedbackRating | null>(null)
+const rating = ref<Rating | null>(null)
 const comment = ref('')
 const expanded = ref(true)
 
@@ -55,12 +70,17 @@ function collapse() {
   persistCollapsed(true)
 }
 
-const title = computed(() =>
-  props.source === 'video-analysis' ? 'Как вам разбор?' : 'Как вам Writelo?',
-)
+const title = computed(() => {
+  switch (props.source) {
+    case 'reel-analysis': return 'Как вам разбор?'
+    case 'today-reels': return 'Как сегодняшние рилсы?'
+    default: return 'Как вам Writelo?'
+  }
+})
 
 interface Face {
-  value: FeedbackRating
+  value: Rating
+  sentiment: FeedbackSentiment
   icon: typeof Frown
   label: string
   tone: string
@@ -70,6 +90,7 @@ interface Face {
 const faces: Face[] = [
   {
     value: 1,
+    sentiment: 'dislike',
     icon: Frown,
     label: 'Плохо',
     tone: 'text-rose-500',
@@ -77,6 +98,7 @@ const faces: Face[] = [
   },
   {
     value: 2,
+    sentiment: 'neutral',
     icon: Meh,
     label: 'Нормально',
     tone: 'text-amber-500',
@@ -84,6 +106,7 @@ const faces: Face[] = [
   },
   {
     value: 3,
+    sentiment: 'like',
     icon: Smile,
     label: 'Огонь',
     tone: 'text-emerald-500',
@@ -91,15 +114,41 @@ const faces: Face[] = [
   },
 ]
 
+function sourceToSection(source: Source): FeedbackSection {
+  switch (source) {
+    case 'reel-analysis': return 'reel_analysis'
+    case 'today-reels': return 'today_reels'
+    default: return 'generic'
+  }
+}
+
+// Backend rejects context for generic + today_reels; only build one for reel_analysis.
+function buildContext(): CreateFeedbackContextDto | null {
+  if (props.source !== 'reel-analysis') return null
+  let reel: CreateFeedbackReelReferenceDto
+  if (props.curatedReelId) {
+    reel = { kind: 'curated', curatedReelId: props.curatedReelId }
+  } else {
+    reel = {
+      kind: 'arbitrary',
+      url: props.reelUrl ?? null,
+      externalId: props.targetId ?? null,
+    }
+  }
+  return { analysis: { reel } }
+}
+
 async function submit() {
   if (!rating.value || state.value !== 'idle') return
+  const face = faces.find(f => f.value === rating.value)
+  if (!face) return
   state.value = 'submitting'
   try {
-    await api.submitFeedback(requireWorkspaceId(), {
-      source: props.source,
-      targetId: props.targetId,
-      rating: rating.value,
-      comment: comment.value.trim() || undefined,
+    await api.createFeedback({
+      section: sourceToSection(props.source),
+      sentiment: face.sentiment,
+      context: buildContext(),
+      message: comment.value.trim() || null,
     })
     state.value = 'done'
     setTimeout(() => {
@@ -187,6 +236,7 @@ async function submit() {
         v-model="comment"
         :placeholder="compact ? 'Комментарий (опционально)' : 'Расскажите подробнее (опционально)'"
         :disabled="state === 'submitting'"
+        :maxlength="2000"
         :class="cn(
           'min-h-[52px] resize-none mb-2',
           compact ? 'text-xs' : 'text-sm',

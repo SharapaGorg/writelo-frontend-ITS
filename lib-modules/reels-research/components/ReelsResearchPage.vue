@@ -1,16 +1,30 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
-import { Loader2, AlertCircle, RefreshCw } from 'lucide-vue-next'
+import { onMounted, watch, computed } from 'vue'
+import { Loader2, AlertCircle, RefreshCw, Sparkles } from 'lucide-vue-next'
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
 import ReelsFilters from './ReelsFilters.vue'
 import ReelsGrid from './ReelsGrid.vue'
 import ReelDetailsModal from './ReelDetailsModal.vue'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
+import { useSettings } from '~/composables/settings'
 import type { TrendingReelDto } from '../types'
 
 const store = useReelsResearchStore()
 const { currentWorkspaceId } = useWorkspaceContext()
+const $settings = useSettings()
+
+// Free-tier cap inference: backend hides everything past the top 6 curated
+// reels for free users past the 24h grace window. Response has no explicit
+// flag — infer paywall state from settings + feed shape.
+const isFreeUser = computed(() => !$settings.isPaidUser())
+const showFreeTierCallout = computed(() =>
+  isFreeUser.value
+  && !store.hasActiveFilters
+  && !store.isLoading
+  && store.reels.length === 6
+  && store.nextCursor === null,
+)
 
 onMounted(() => {
   if (currentWorkspaceId.value) store.fetchFeed()
@@ -86,6 +100,30 @@ function handleSelect(reel: TrendingReelDto) {
 
         <!-- Grid -->
         <ReelsGrid v-else @select="handleSelect" />
+
+        <!-- Free-tier callout: shown when the default unfiltered feed returns
+             exactly 6 reels with no cursor (the backend cap) and the user is
+             on a free plan. -->
+        <div
+          v-if="showFreeTierCallout"
+          class="mt-8 rounded-md border border-border bg-card p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4"
+        >
+          <div class="size-10 rounded-full bg-brand/15 text-brand flex items-center justify-center flex-shrink-0">
+            <Sparkles class="size-5" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-semibold text-foreground mb-1">Бесплатный тариф: доступно 6 рилсов</div>
+            <p class="text-xs text-muted-foreground">
+              Оформите подписку, чтобы открыть полный каталог трендовых рилсов.
+            </p>
+          </div>
+          <NuxtLink
+            to="/app/plans"
+            class="inline-flex items-center justify-center px-4 py-2 rounded-md bg-brand text-brand-foreground text-sm font-medium hover:bg-brand/90 transition-colors flex-shrink-0"
+          >
+            Оформить подписку
+          </NuxtLink>
+        </div>
 
         <!-- Load more -->
         <div v-if="store.nextCursor && store.reels.length > 0" class="flex justify-center mt-8">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onBeforeUnmount } from 'vue'
 import {
   ChevronDown,
   Rocket,
@@ -25,11 +25,12 @@ import { cn } from '~/lib-modules/utils'
 const store = useReelsResearchStore()
 
 const sortOptions = [
-  { value: 'most_viral' as const, label: 'Самые вирусные', icon: Rocket, iconClass: 'text-orange-500' },
   { value: 'newest' as const, label: 'Сначала новые', icon: Calendar, iconClass: 'text-emerald-600' },
-  { value: 'most_plays' as const, label: 'Больше проигрываний', icon: Play, iconClass: 'text-blue-500' },
-  { value: 'most_likes' as const, label: 'Больше лайков', icon: Heart, iconClass: 'text-rose-500' },
-  { value: 'most_comments' as const, label: 'Больше комментариев', icon: MessageCircle, iconClass: 'text-amber-600' },
+  { value: 'rank_score' as const, label: 'Самые вирусные', icon: Rocket, iconClass: 'text-orange-500' },
+  { value: 'plays' as const, label: 'Больше проигрываний', icon: Play, iconClass: 'text-blue-500' },
+  { value: 'views' as const, label: 'Больше просмотров', icon: Play, iconClass: 'text-sky-500' },
+  { value: 'likes' as const, label: 'Больше лайков', icon: Heart, iconClass: 'text-rose-500' },
+  { value: 'comments' as const, label: 'Больше комментариев', icon: MessageCircle, iconClass: 'text-amber-600' },
 ]
 
 const durationOptions = [
@@ -75,9 +76,19 @@ const durationTriggerLabel = computed(() =>
 const authorSizeTriggerLabel = computed(() => activeAuthorSize.value.short)
 const postedRangeTriggerLabel = computed(() => activePostedRange.value.short)
 
+// Search drives the server-side `q` filter — debounce so each keystroke
+// doesn't reset the cursor + refetch.
+let searchTimer: ReturnType<typeof setTimeout> | null = null
 const searchModel = computed({
   get: () => store.filters.search,
-  set: (v: string | number) => store.setSearch(String(v))
+  set: (v: string | number) => {
+    store.setSearch(String(v))
+    if (searchTimer) clearTimeout(searchTimer)
+    searchTimer = setTimeout(() => store.commitSearch(), 350)
+  },
+})
+onBeforeUnmount(() => {
+  if (searchTimer) clearTimeout(searchTimer)
 })
 
 const triggerClass =

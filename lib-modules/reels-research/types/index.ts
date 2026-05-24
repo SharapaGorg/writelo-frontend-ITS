@@ -1,5 +1,11 @@
 // Public Trending Reels API (Instagram). DTOs mirror the backend response shape.
 
+export interface SignedAssetDto {
+  objectId: string
+  url: string
+  expiresAt: string
+}
+
 export interface TrendingReelAuthorDto {
   username: string | null
   displayName: string | null
@@ -8,76 +14,47 @@ export interface TrendingReelAuthorDto {
 }
 
 export interface TrendingReelMetricsDto {
-  effectiveViews: number
-  views: number | null
   plays: number | null
   likes: number | null
   comments: number | null
   shares: number | null
-  capturedAt: string | null
-  ageSeconds: number | null
-}
-
-export interface TrendingReelScoreDto {
-  global: number | null
-  viewsOverAuthorMedian: number | null
+  saves: number | null
+  viewsOverAuthorBaseline: number | null
 }
 
 export interface TrendingReelDto {
   reelId: string
   url: string
   shortcode: string | null
-  captionPreview: string | null
-  thumbnailUrl: string | null
-  thumbnailExpiresAt: string | null
-  // Backend-cached video URL, mirrors thumbnailUrl semantics. Optional until the
-  // backend ships the field — when missing, the player shows a "видео пока
-  // недоступно" state.
-  videoUrl?: string | null
-  videoExpiresAt?: string | null
+  description: string | null
   author: TrendingReelAuthorDto
-  postedAt: string | null
-  durationSeconds: number | null
   metrics: TrendingReelMetricsDto
-  score: TrendingReelScoreDto
-  firstSeenAt: string
-  lastSeenAt: string
-  rank: number
-  rankScore: number
-}
-
-export interface TrendingReelsBatchDto {
-  id: string
-  feedType: string
-  status: string
-  itemCount: number
-  asOf: string | null
-  expiresAt: string | null
-  scoringVersion: string
+  category: string | null
+  language: string | null
+  addedAt: string
+  postedAt: string | null
+  publishedAt: string | null
+  durationSeconds: number | null
+  previewImage: SignedAssetDto | null
 }
 
 export interface TrendingReelsFeedResponse {
-  batch: TrendingReelsBatchDto | null
-  asOf: string | null
-  expiresAt: string | null
-  scoringVersion: string | null
   items: TrendingReelDto[]
   nextCursor: string | null
 }
 
 export interface TrendingReelDetailsResponse {
-  asOf: string | null
-  scoringVersion: string
   reel: TrendingReelDto
 }
 
-// Spec sort values. `most_reposts` is intentionally absent — backend doesn't expose it.
+// Spec-accepted sort values; unknown values fall back to `newest` server-side.
 export type ReelSortBy =
-  | 'most_viral'
   | 'newest'
-  | 'most_plays'
-  | 'most_likes'
-  | 'most_comments'
+  | 'views'
+  | 'plays'
+  | 'likes'
+  | 'comments'
+  | 'rank_score'
 
 export type ReelDurationBucket = 'all' | 'short' | 'medium' | 'long' | 'xlong'
 
@@ -93,17 +70,30 @@ export interface ReelsFilters {
   authorSize: ReelAuthorBucket
   postedRange: ReelPostedRange
   search: string
+  category: string | null
+  language: string | null
 }
 
 export interface TrendingReelsFeedQuery {
+  q?: string
   sort?: ReelSortBy
   category?: string
+  language?: string
+  author?: string
   postedAfter?: string
   postedBefore?: string
   minDurationSeconds?: number
   maxDurationSeconds?: number
   minAuthorFollowers?: number
   maxAuthorFollowers?: number
+  minViews?: number
+  maxViews?: number
+  minPlays?: number
+  maxPlays?: number
+  minLikes?: number
+  maxLikes?: number
+  minComments?: number
+  maxComments?: number
   limit?: number
   cursor?: string
 }

@@ -148,7 +148,7 @@ function navigate(itemRoute: string) {
         </Button>
 
         <div v-if="isAuthenticated" class="mt-4">
-          <FeedbackForm source="general" />
+          <FeedbackForm source="site" />
         </div>
 
         <a
