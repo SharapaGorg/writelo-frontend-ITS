@@ -105,8 +105,15 @@ function useTweenedNumber(getter: () => number | null, duration = 800) {
       display.value = null
       return
     }
-    // SSR / reduced motion → snap straight to the target.
-    if (typeof window === 'undefined' || prefersReducedMotion()) {
+    // SSR: keep display at 0 so server HTML matches the client's first paint
+    // (display stays 0 until RAF ticks post-hydration). Avoids Vue hydration
+    // mismatch warnings on the landing showcase, and the count-up plays from 0
+    // as intended once JS takes over.
+    if (typeof window === 'undefined') {
+      display.value = 0
+      return
+    }
+    if (prefersReducedMotion()) {
       display.value = target
       return
     }
