@@ -18,6 +18,7 @@ import GiftsSection from './GiftsSection.vue'
 import EditAccountZone from './EditAccountZone.vue'
 import ConnectionsZone from './ConnectionsZone.vue'
 import DevToolsZone from './DevToolsZone.vue'
+import PreferencesZone from './PreferencesZone.vue'
 import { isInTelegramApp } from '~/scripts/features/utils'
 import { useDemoMode, useDemoGuard } from '~/lib-modules/demo-mode'
 import { useProfileI18n } from '../composables/useProfileI18n'
@@ -107,6 +108,7 @@ async function handleLogout() {
         <!-- Two-column grid on lg+, single column below -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <EditAccountZone />
+          <PreferencesZone />
           <GiftsSection />
           <DevToolsZone v-if="isDev" />
           <ConnectionsZone />

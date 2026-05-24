@@ -58,7 +58,7 @@ const iconMap = {
   'settings': Settings,
 } as const
 
-const BOTTOM_BAR_IDS = new Set(['calendar', 'video-analyzer', 'trends'])
+const BOTTOM_BAR_IDS = new Set(['video-analyzer', 'trends'])
 
 const { sidebarItems, bottomItems } = useAppLayout()
 const restItems = computed(() => [

@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Calendar, ScanSearch, TrendingUp, MoreHorizontal } from 'lucide-vue-next'
+import { ScanSearch, TrendingUp, MoreHorizontal } from 'lucide-vue-next'
 import { cn } from '~/lib-modules/utils'
 import MoreSheet from './MoreSheet.vue'
 
@@ -13,16 +13,15 @@ const { t } = useI18n()
 const moreOpen = ref(false)
 
 interface BarItem {
-  id: 'calendar' | 'video-analyzer' | 'trends'
-  icon: typeof Calendar
+  id: 'video-analyzer' | 'trends'
+  icon: typeof TrendingUp
   label: string
   route: string
 }
 
 const items = computed<BarItem[]>(() => [
-  { id: 'calendar', icon: Calendar, label: t('sidebar.items.calendar'), route: '/app/calendar' },
-  { id: 'video-analyzer', icon: ScanSearch, label: t('sidebar.items.videoAnalyzer'), route: '/app/video-analyzer' },
   { id: 'trends', icon: TrendingUp, label: t('sidebar.items.trends'), route: '/app/trends' },
+  { id: 'video-analyzer', icon: ScanSearch, label: t('sidebar.items.videoAnalyzer'), route: '/app/video-analyzer' },
 ])
 
 function isActive(item: BarItem) {

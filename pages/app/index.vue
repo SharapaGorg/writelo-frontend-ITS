@@ -3,7 +3,7 @@ definePageMeta({
   layout: false
 })
 
-navigateTo('/app/calendar', { replace: true })
+navigateTo('/app/trends', { replace: true })
 </script>
 
 <template>
