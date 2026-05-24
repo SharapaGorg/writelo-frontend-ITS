@@ -33,21 +33,14 @@ const store = useReelsResearchStore()
             {{ t('landingNew.trends.body1') }}
           </p>
           <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#5f5f5f] dark:text-[#a8a094]">
-            {{ t('landingNew.trends.body2') }}
+            {{ t('landingNew.trends.body2Pre') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.trends.body2Accent') }}</span>{{ t('landingNew.trends.body2Post') }}
           </p>
           <p class="lnf-body text-[15px] md:text-[16px] leading-[1.6] text-[#5f5f5f] dark:text-[#a8a094]">
-            {{ t('landingNew.trends.body3') }}
+            <span class="italic font-medium text-[#d4683f]">{{ t('landingNew.trends.body3Accent1') }}</span>{{ t('landingNew.trends.body3Mid') }}<span class="italic font-medium text-[#d4683f]">{{ t('landingNew.trends.body3Accent2') }}</span>{{ t('landingNew.trends.body3Post') }}
           </p>
-          <div class="inline-flex items-center gap-3 border border-[#d4683f]/40 bg-[#d4683f]/5 px-4 py-2.5 mt-2">
-            <span class="relative flex h-2 w-2 shrink-0">
-              <span class="absolute inline-flex h-full w-full rounded-full bg-[#d4683f] opacity-75 animate-ping" />
-              <span class="relative inline-flex h-2 w-2 rounded-full bg-[#d4683f]" />
-            </span>
-            <span class="lnf-mono text-[10px] uppercase tracking-[0.15em] text-[#d4683f]">
-              {{ t('landingNew.trends.liveLabel') }}
-            </span>
-            <span class="lnf-mono text-[11px] text-[#5f5f5f] dark:text-[#a8a094] leading-[1.4]">
-              {{ t('landingNew.trends.liveNote') }}
+          <div class="inline-flex items-center border border-[#d4683f]/50 bg-[#d4683f]/10 px-4 py-2.5 mt-2">
+            <span class="lnf-mono font-bold text-[12px] md:text-[13px] uppercase tracking-[0.12em] text-[#d4683f]">
+              {{ t('landingNew.trends.humansBadge') }}
             </span>
           </div>
           <div class="hidden md:block">

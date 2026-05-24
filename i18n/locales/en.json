@@ -1168,12 +1168,16 @@
       "titlePre": "Instagram trends. React",
       "titleAccent": "faster",
       "titlePost": "than competitors",
-      "body1": "What's growing in your niche right now — with reach, momentum and links to source reels",
-      "body2": "Sort, filter, spot the patterns",
-      "body3": "Trends are picked for your brand — not a generic feed, but what's relevant to your audience",
+      "body1": "Our SMM team hand-picks fresh trends for you every single day",
+      "body2Pre": "Every day we load ",
+      "body2Accent": "100 of the most viral reels",
+      "body2Post": " in the ads / business / SMM niche — fresh ideas for promoting a business, a product or a personal blog",
+      "body3Accent1": "Sort",
+      "body3Mid": " and ",
+      "body3Accent2": "filter",
+      "body3Post": " by publication time, author's audience and other parameters",
       "previewLabel": "PREVIEW — NICHE: BEAUTY",
-      "liveLabel": "LIVE",
-      "liveNote": "Reels database refreshes every 5 minutes — you're always in the moment"
+      "humansBadge": "We're humans, not AI"
     },
     "calendar": {
       "label": "N°03 / CALENDAR",
