@@ -29,7 +29,6 @@ onMounted(async () => {
   <div class="flex h-full flex-col">
     <AppNavbar
       :breadcrumbs="[{ label: t('assistantPage.breadcrumb') }]"
-      :show-workspace-selector="true"
     />
 
     <div v-if="isMobile" class="px-3 py-2 border-b border-border">

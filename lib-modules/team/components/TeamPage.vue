@@ -60,7 +60,6 @@ async function onInvite(payload: { email: string; role: 'admin' | 'editor' | 'vi
   <div class="flex flex-col h-full">
     <AppNavbar
       :breadcrumbs="[{ label: t('teamPage.breadcrumb') }]"
-      :show-workspace-selector="true"
     >
       <template #actions>
         <Button v-if="currentWorkspaceId && canManageInvites" @click="inviteOpen = true">

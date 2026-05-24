@@ -41,7 +41,6 @@ watch(currentWorkspaceId, (id) => {
   <div class="flex h-full flex-col">
     <AppNavbar
       :breadcrumbs="[{ label: t('videoAnalyzer.breadcrumb') }]"
-      :show-workspace-selector="true"
     />
 
     <div class="flex-1 overflow-y-auto">

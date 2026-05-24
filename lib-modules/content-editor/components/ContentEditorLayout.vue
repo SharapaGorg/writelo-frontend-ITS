@@ -144,7 +144,7 @@ const breadcrumbs = computed<BreadcrumbItem[]>(() => [
 
 <template>
   <div :class="cn('flex flex-col', props.showcaseMode ? 'h-[700px]' : 'h-full', isDragging && 'select-none')">
-    <AppNavbar v-if="!props.showcaseMode" :breadcrumbs="breadcrumbs" show-workspace-selector>
+    <AppNavbar v-if="!props.showcaseMode" :breadcrumbs="breadcrumbs">
       <template #actions>
         <Button
           v-if="isMobile && !props.showcaseMode"

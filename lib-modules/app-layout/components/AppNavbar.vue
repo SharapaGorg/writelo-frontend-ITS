@@ -1,52 +1,19 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { ChevronRight, Plus } from 'lucide-vue-next'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '~/components/ui/select'
-import { Button } from '~/components/ui/button'
-import { useWorkspaces, RoleBadge, useWorkspacePermissions } from '~/lib-modules/workspaces'
-import { usePlans } from '~/lib-modules/plans'
+import { ChevronRight } from 'lucide-vue-next'
 
 export interface BreadcrumbItem {
   label: string
   to?: string
 }
 
-const props = withDefaults(
-  defineProps<{
-    breadcrumbs: BreadcrumbItem[]
-    showWorkspaceSelector?: boolean
-  }>(),
-  { showWorkspaceSelector: false }
-)
-
-const { workspaces, currentWorkspaceId, selectWorkspace } = useWorkspaces()
-const { currentRole } = useWorkspacePermissions()
-const { isBusinessPlan } = usePlans()
-const { t } = useI18n()
-
-const selectedWorkspaceId = computed<string>({
-  get: () => currentWorkspaceId.value ?? '',
-  set: (value) => {
-    if (value) selectWorkspace(value)
-  },
-})
-
-const currentWorkspaceName = computed(() => {
-  const id = currentWorkspaceId.value
-  if (!id) return ''
-  return workspaces.value.find(w => w.id === id)?.name ?? ''
-})
+const props = defineProps<{
+  breadcrumbs: BreadcrumbItem[]
+}>()
 </script>
 
 <template>
   <header
-    class="flex items-center h-14 md:h-16 px-3 md:px-6 border-b border-border bg-background gap-2 md:grid md:grid-cols-3"
+    class="flex items-center h-14 md:h-16 px-3 md:px-6 border-b border-border bg-background gap-2"
   >
     <!-- Mobile: page title (last breadcrumb segment) -->
     <div class="flex-1 min-w-0 md:hidden">
@@ -56,7 +23,7 @@ const currentWorkspaceName = computed(() => {
     </div>
 
     <!-- Desktop: full breadcrumbs -->
-    <nav class="hidden md:flex items-center gap-1.5 text-sm min-w-0">
+    <nav class="hidden md:flex flex-1 items-center gap-1.5 text-sm min-w-0">
       <template v-for="(item, index) in props.breadcrumbs" :key="index">
         <ChevronRight
           v-if="index > 0"
@@ -83,49 +50,6 @@ const currentWorkspaceName = computed(() => {
         </span>
       </template>
     </nav>
-
-    <!-- Workspace selector -->
-    <div class="flex justify-center shrink-0">
-      <Select
-        v-if="props.showWorkspaceSelector && workspaces.length > 0"
-        v-model="selectedWorkspaceId"
-      >
-        <SelectTrigger
-          class="bg-card border-border w-[140px] md:w-[260px]"
-        >
-          <span class="flex items-center gap-2 min-w-0 w-full">
-            <span class="truncate">{{ currentWorkspaceName || t('navbar.selectBrand') }}</span>
-            <RoleBadge v-if="isBusinessPlan" :role="currentRole" class="shrink-0 hidden md:inline-flex" />
-          </span>
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem
-            v-for="ws in workspaces"
-            :key="ws.id"
-            :value="ws.id"
-            class="cursor-pointer"
-          >
-            <span class="flex items-center justify-between gap-2 w-full min-w-0">
-              <span class="truncate">{{ ws.name }}</span>
-              <RoleBadge v-if="isBusinessPlan" :role="ws.role" class="shrink-0" />
-            </span>
-          </SelectItem>
-        </SelectContent>
-      </Select>
-      <NuxtLink
-        v-else-if="props.showWorkspaceSelector"
-        to="/app/workspaces"
-        class="inline-flex"
-      >
-        <Button
-          variant="default"
-          class="h-9 gap-2 bg-brand text-brand-foreground hover:bg-brand/90"
-        >
-          <Plus class="h-4 w-4" />
-          <span class="hidden md:inline">{{ t('navbar.createBrand') }}</span>
-        </Button>
-      </NuxtLink>
-    </div>
 
     <!-- Right-side actions -->
     <div class="flex items-center justify-end gap-2">

@@ -28,7 +28,7 @@ function handleSelect(reel: TrendingReelDto) {
 
 <template>
   <div class="h-full flex flex-col overflow-hidden">
-    <AppNavbar :breadcrumbs="[{ label: 'Тренды' }]" show-workspace-selector />
+    <AppNavbar :breadcrumbs="[{ label: 'Тренды' }]" />
 
     <div class="border-b border-border px-4 py-3">
       <div class="max-w-7xl mx-auto w-full">

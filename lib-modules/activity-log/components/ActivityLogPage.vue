@@ -84,7 +84,6 @@ function pluralEvents(n: number): string {
   <div v-else class="flex flex-col h-full">
     <AppNavbar
       :breadcrumbs="[{ label: t('activityLog.breadcrumb') }]"
-      :show-workspace-selector="true"
     />
 
     <div class="flex-1 overflow-auto">

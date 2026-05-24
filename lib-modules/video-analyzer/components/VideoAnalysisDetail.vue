@@ -317,7 +317,6 @@ onUnmounted(() => {
         { label: t('videoAnalyzer.breadcrumb'), to: '/app/video-analyzer' },
         { label: t('videoAnalyzer.breadcrumbDetail') },
       ]"
-      :show-workspace-selector="true"
     />
 
     <div class="flex-1 overflow-y-auto">

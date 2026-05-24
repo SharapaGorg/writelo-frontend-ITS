@@ -402,7 +402,6 @@ onUnmounted(() => {
   ]">
     <AppNavbar
       :breadcrumbs="[{ label: t('calendarPage.breadcrumb') }]"
-      :show-workspace-selector="!props.showcaseMode"
     >
       <template #actions>
         <Button
