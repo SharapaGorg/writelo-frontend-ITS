@@ -27,7 +27,7 @@ function ctaClick() {
     </h1>
 
     <p class="lnf-body text-[15px] md:text-[17px] leading-[1.55] text-[#5f5f5f] dark:text-[#a8a094] text-center max-w-[60ch] mt-10 md:mt-12 lnu-fade-up" style="animation-delay:1000ms">
-      {{ t('landingNew.hero.sub') }}
+      {{ t('landingNew.hero.subLine1') }}<br>{{ t('landingNew.hero.subLine2') }}
     </p>
 
     <div class="mt-10 md:mt-12 lnu-fade-up" style="animation-delay:1150ms">
