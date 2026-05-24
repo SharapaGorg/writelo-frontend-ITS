@@ -580,8 +580,7 @@
       "openPublishedTitle": "Open published post"
     },
     "limits": {
-      "model": "Model requests",
-      "search": "Web search"
+      "video": "Video analyses"
     }
   },
   "navbar": {

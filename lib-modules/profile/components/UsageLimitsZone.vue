@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
-import { Sparkles, Globe, Film, RefreshCw } from 'lucide-vue-next'
+import { Film, RefreshCw } from 'lucide-vue-next'
 import { useWorkspaceContext, useWorkspaceLimits } from '~/lib-modules/workspaces'
 import { useProfileI18n } from '../composables/useProfileI18n'
 import ProfilePageBlock from './ProfilePageBlock.vue'
@@ -17,9 +17,9 @@ watch(
 )
 
 interface Row {
-  key: 'model' | 'search' | 'video'
+  key: 'video'
   label: string
-  icon: typeof Sparkles
+  icon: typeof Film
   bar: string
   text: string
   left: number
@@ -31,24 +31,6 @@ function asNum(v: number | string | undefined | null): number {
 }
 
 const rows = computed<Row[]>(() => [
-  {
-    key: 'model',
-    label: t('usageLimits.rows.model'),
-    icon: Sparkles,
-    bar: 'bg-brand',
-    text: 'text-brand',
-    left: asNum(wl.modelRequests.value?.left),
-    total: asNum(wl.modelRequests.value?.total),
-  },
-  {
-    key: 'search',
-    label: t('usageLimits.rows.search'),
-    icon: Globe,
-    bar: 'bg-sky-500',
-    text: 'text-sky-600 dark:text-sky-400',
-    left: asNum(wl.searchRequests.value?.left),
-    total: asNum(wl.searchRequests.value?.total),
-  },
   {
     key: 'video',
     label: t('usageLimits.rows.video'),
@@ -85,11 +67,7 @@ const moodComment = computed<string>(() => {
 const hasAnyLimit = computed<boolean>(() => rows.value.some(r => r.total > 0))
 
 const resetAtText = computed(() => {
-  const at =
-    wl.modelRequests.value?.resetAt ||
-    wl.searchRequests.value?.resetAt ||
-    wl.shortVideoAnalysisRequests.value?.resetAt ||
-    null
+  const at = wl.shortVideoAnalysisRequests.value?.resetAt || null
   if (!at) return ''
   try {
     const localeTag = locale.value === 'en' ? 'en-US' : 'ru-RU'
@@ -112,7 +90,7 @@ const resetAtText = computed(() => {
       <!-- Skeleton: same row geometry so height doesn't shift on data arrival. -->
       <div v-if="!wl.isLoaded.value" class="flex flex-col gap-5">
         <div class="h-4 w-72 max-w-full rounded bg-muted animate-pulse" />
-        <div v-for="n in 3" :key="n" class="flex flex-col gap-1.5">
+        <div v-for="n in 1" :key="n" class="flex flex-col gap-1.5">
           <div class="flex items-center justify-between gap-3">
             <span class="flex items-center gap-2 min-w-0">
               <span class="h-4 w-4 shrink-0 rounded-sm bg-muted animate-pulse" />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { Sparkles, Globe } from 'lucide-vue-next'
+import { Film } from 'lucide-vue-next'
 import { useWorkspaceContext, useWorkspaceLimits } from '~/lib-modules/workspaces'
 import { useUserController } from '~/composables/user'
 import { cn } from '~/lib-modules/utils'
@@ -28,9 +28,9 @@ function asNum(v: number | string | undefined | null): number {
 }
 
 interface Row {
-  key: 'model' | 'search'
+  key: 'video'
   label: string
-  icon: typeof Sparkles
+  icon: typeof Film
   bar: string
   text: string
   left: number
@@ -39,22 +39,13 @@ interface Row {
 
 const rows = computed<Row[]>(() => [
   {
-    key: 'model',
-    label: t('sidebar.limits.model'),
-    icon: Sparkles,
-    bar: 'bg-brand',
-    text: 'text-brand',
-    left: asNum(wl.modelRequests.value?.left),
-    total: asNum(wl.modelRequests.value?.total),
-  },
-  {
-    key: 'search',
-    label: t('sidebar.limits.search'),
-    icon: Globe,
-    bar: 'bg-sky-500',
-    text: 'text-sky-600 dark:text-sky-400',
-    left: asNum(wl.searchRequests.value?.left),
-    total: asNum(wl.searchRequests.value?.total),
+    key: 'video',
+    label: t('sidebar.limits.video'),
+    icon: Film,
+    bar: 'bg-violet-500',
+    text: 'text-violet-600 dark:text-violet-400',
+    left: asNum(wl.shortVideoAnalysisRequests.value?.left),
+    total: asNum(wl.shortVideoAnalysisRequests.value?.total),
   },
 ])
 
@@ -116,7 +107,7 @@ function leftPercent(left: number, total: number): number {
     <!-- Skeleton — same row geometry so height doesn't jump when data arrives. -->
     <ul v-else class="flex flex-col gap-1.5">
       <li
-        v-for="n in 2"
+        v-for="n in 1"
         :key="n"
         :class="cn(
           'rounded-md',
