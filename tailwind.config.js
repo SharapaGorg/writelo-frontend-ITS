@@ -123,6 +123,9 @@ export default {
                     '0%': { transform: 'translateX(0)' },
                     '100%': { transform: 'translateX(-50%)' },
                 },
+                'shimmer': {
+                    '100%': { transform: 'translateX(200%)' },
+                },
             },
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',
@@ -130,6 +133,7 @@ export default {
                 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                 'marquee': 'marquee 8s linear infinite',
                 'marquee-slow': 'marquee 20s linear infinite',
+                'shimmer': 'shimmer 1.6s ease-in-out infinite',
             }
         }
     },

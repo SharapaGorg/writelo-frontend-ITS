@@ -85,11 +85,15 @@ function formatDuration(seconds: number | null): string {
   >
     <!-- Thumbnail -->
     <div class="relative aspect-[4/5] overflow-hidden bg-muted">
-      <!-- Skeleton placeholder until thumbnail is in view + loaded -->
+      <!-- Opaque skeleton with sweeping shimmer band. Opaque base hides
+           progressive-JPEG scanlines from the IG CDN that would otherwise
+           bleed through a translucent placeholder. -->
       <div
         v-if="!thumbLoaded && !thumbFailed"
-        class="absolute inset-0 bg-gradient-to-br from-muted to-muted/40 animate-pulse"
-      />
+        class="absolute inset-0 bg-muted overflow-hidden"
+      >
+        <div class="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent" />
+      </div>
       <img
         v-if="inView && thumbnail && !thumbFailed"
         :src="thumbnail"
