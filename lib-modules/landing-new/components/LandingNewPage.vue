@@ -6,12 +6,7 @@ import { cn } from '~/lib-modules/utils'
 import HeroSection from './HeroSection.vue'
 import AudienceSection from './AudienceSection.vue'
 import TrendsSection from './TrendsSection.vue'
-import CalendarSection from './CalendarSection.vue'
-import BriefSection from './BriefSection.vue'
 import ReelsSection from './ReelsSection.vue'
-import EditorSection from './EditorSection.vue'
-import PublishSection from './PublishSection.vue'
-import ComparisonSection from './ComparisonSection.vue'
 import PricingSection from './PricingSection.vue'
 import FaqSection from './FaqSection.vue'
 import FinalCtaSection from './FinalCtaSection.vue'
@@ -142,12 +137,7 @@ function switchLang(code: 'ru' | 'en') {
       <HeroSection />
       <AudienceSection />
       <TrendsSection />
-      <CalendarSection />
-      <BriefSection />
       <ReelsSection />
-      <EditorSection />
-      <PublishSection />
-      <ComparisonSection />
       <PricingSection />
       <FaqSection />
       <FinalCtaSection />
