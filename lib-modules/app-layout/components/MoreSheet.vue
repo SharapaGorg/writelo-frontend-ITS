@@ -28,6 +28,7 @@ import { useSettings } from '~/composables/settings'
 import { usePlans } from '~/lib-modules/plans'
 import LimitsPanel from './LimitsPanel.vue'
 import PublicationsPanel from './PublicationsPanel.vue'
+import { FeedbackForm } from '~/lib-modules/feedback'
 
 defineProps<{ open: boolean }>()
 const emit = defineEmits<{ 'update:open': [v: boolean] }>()
@@ -145,6 +146,10 @@ function navigate(itemRoute: string) {
           <LogIn class="h-5 w-5" />
           <span>{{ t('sidebar.login') }}</span>
         </Button>
+
+        <div v-if="isAuthenticated" class="mt-4">
+          <FeedbackForm source="general" />
+        </div>
 
         <a
           href="https://t.me/sharapagorg"

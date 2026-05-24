@@ -17,6 +17,7 @@ import {
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { Button } from '~/components/ui/button'
 import { useWorkspaces, useWorkspaceContext } from '~/lib-modules/workspaces'
+import { FeedbackForm } from '~/lib-modules/feedback'
 import PlatformIcon from './PlatformIcon.vue'
 import AnalysisStatusBadge from './AnalysisStatusBadge.vue'
 import SummarySection from './sections/SummarySection.vue'
@@ -463,6 +464,8 @@ onUnmounted(() => {
             <TagsSection :value="detail.tags" />
             <ImprovementsSection :value="detail.improvements" />
             <TranscriptionSection :value="detail.transcription" />
+
+            <FeedbackForm source="video-analysis" :target-id="analysisId" />
           </template>
         </template>
       </div>

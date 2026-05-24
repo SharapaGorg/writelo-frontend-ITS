@@ -117,6 +117,9 @@ export enum ApiAliases {
     // Workspace usage limits
     workspaceLimits = 'workspaces/{workspaceId}/limits',
 
+    // Product feedback (rating + optional comment, per source)
+    workspaceFeedback = 'workspaces/{workspaceId}/feedback',
+
     // Dev-only endpoints (available only on staging/local backend)
     devUserSubscription = 'dev/users/{userId}/subscription',
 

@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import AppSidebar from './AppSidebar.vue'
 import MobileBottomTabBar from './MobileBottomTabBar.vue'
 import { useUserController } from '~/composables/user'
 import { useWorkspaces, useWorkspaceContext } from '~/lib-modules/workspaces'
 import { useContentProjectStore } from '~/lib-modules/content-calendar'
+import { FeedbackForm } from '~/lib-modules/feedback'
 
 // Single app-shell bootstrap covering every /app/* entry:
 //   - flip out of demo mode immediately (sync, before child setup) so pages that read
@@ -18,6 +19,8 @@ const userController = useUserController()
 const projectStore = useContentProjectStore()
 const { initialize, workspaces } = useWorkspaces()
 const { currentWorkspaceId } = useWorkspaceContext()
+
+const isAuthenticated = computed(() => userController.isAuthenticated())
 
 if (userController.isAuthenticated()) {
   projectStore.disableDemoMode()
@@ -44,6 +47,13 @@ onMounted(bootstrap)
         <slot />
       </main>
       <MobileBottomTabBar />
+    </div>
+
+    <div
+      v-if="isAuthenticated"
+      class="hidden md:block fixed bottom-4 right-4 z-40"
+    >
+      <FeedbackForm source="general" compact collapsible />
     </div>
   </div>
 </template>
