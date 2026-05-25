@@ -129,7 +129,7 @@ const onSubmit = handleSubmit(async (values) => {
 
     if (response?.token) {
       console.log('OBTAINED TOKEN:', response.token);
-      userController.setAuthToken(response.token)
+      userController.setAuthToken(response.token, response.user)
       await settings.init(locale)
 
       toast.success(t('login.success'), {

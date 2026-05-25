@@ -73,7 +73,7 @@ onMounted(async () => {
     const response = await authApi.verifyEmail(token)
 
     if (response?.token) {
-      userController.setAuthToken(response.token)
+      userController.setAuthToken(response.token, response.user)
       await settings.init(locale)
       isSuccess.value = true
     } else {

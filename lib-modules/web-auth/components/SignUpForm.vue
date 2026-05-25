@@ -159,7 +159,7 @@ const onSubmit = handleSubmit(async (values) => {
 
     // If server returns token directly, user is already verified (e.g. OAuth)
     if (response?.token) {
-      userController.setAuthToken(response.token)
+      userController.setAuthToken(response.token, response.user)
       await settings.init(locale)
 
       toast.success(t('signup.success'), {

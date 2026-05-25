@@ -98,7 +98,7 @@ export function useGoogleOAuth() {
       if (mode === 'signin') {
         const authResponse = await authApi.signinGoogle(idToken)
         if (authResponse?.token) {
-          userController.setAuthToken(authResponse.token)
+          userController.setAuthToken(authResponse.token, authResponse.user)
           await settings.init(locale)
           toast.success(t('google.success'), { position: getToasterPosition() })
           await navigateTo(Routes.app)

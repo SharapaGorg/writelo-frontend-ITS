@@ -3,7 +3,7 @@ import { computed, onMounted } from 'vue'
 import AppSidebar from './AppSidebar.vue'
 import MobileBottomTabBar from './MobileBottomTabBar.vue'
 import { useUserController } from '~/composables/user'
-import { useWorkspaces, useWorkspaceContext } from '~/lib-modules/workspaces'
+import { useWorkspaces } from '~/lib-modules/workspaces'
 import { useContentProjectStore } from '~/lib-modules/content-calendar'
 import { FeedbackForm } from '~/lib-modules/feedback'
 
@@ -18,7 +18,6 @@ import { FeedbackForm } from '~/lib-modules/feedback'
 const userController = useUserController()
 const projectStore = useContentProjectStore()
 const { initialize, workspaces } = useWorkspaces()
-const { currentWorkspaceId } = useWorkspaceContext()
 
 const isAuthenticated = computed(() => userController.isAuthenticated())
 
@@ -29,7 +28,10 @@ if (userController.isAuthenticated()) {
 async function bootstrap() {
   if (!userController.isAuthenticated()) return
   projectStore.disableDemoMode()
-  if (workspaces.value.length === 0 && !currentWorkspaceId.value) {
+  // currentWorkspaceId may already be set by setAuthToken(token, user)
+  // post-auth, but the full workspaces list still needs fetching for
+  // sidebar widgets and pages that read `workspaces.value`.
+  if (workspaces.value.length === 0) {
     await initialize()
   }
   projectStore.ensureCurrentProjectData()

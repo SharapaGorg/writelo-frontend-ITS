@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, watch, computed } from 'vue'
-import { Loader2, AlertCircle, RefreshCw, Sparkles } from 'lucide-vue-next'
+import { Loader2, AlertCircle, RefreshCw, Sparkles, Lock, ArrowRight } from 'lucide-vue-next'
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
 import ReelsFilters from './ReelsFilters.vue'
 import ReelsGrid from './ReelsGrid.vue'
@@ -8,11 +8,14 @@ import ReelDetailsModal from './ReelDetailsModal.vue'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { useSettings } from '~/composables/settings'
+import { useUserController } from '~/composables/user'
 import type { TrendingReelDto } from '../types'
 
 const store = useReelsResearchStore()
 const { currentWorkspaceId } = useWorkspaceContext()
 const $settings = useSettings()
+const userController = useUserController()
+const isAuthenticated = computed(() => userController.isAuthenticated())
 
 // Free-tier cap inference: backend hides everything past the top 6 curated
 // reels for free users past the 24h grace window. Response has no explicit
@@ -44,7 +47,7 @@ function handleSelect(reel: TrendingReelDto) {
   <div class="h-full flex flex-col overflow-hidden">
     <AppNavbar :breadcrumbs="[{ label: 'Тренды' }]" />
 
-    <div class="border-b border-border px-4 py-3">
+    <div v-if="isAuthenticated" class="border-b border-border px-4 py-3">
       <div class="max-w-7xl mx-auto w-full">
         <ReelsFilters />
       </div>
@@ -52,20 +55,38 @@ function handleSelect(reel: TrendingReelDto) {
 
     <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
       <div class="max-w-7xl mx-auto w-full px-4 py-6">
-        <!-- No workspace -->
+        <!-- Guest: no token, no workspace — show registration CTA instead of
+             a fake loader (the feed will never fetch without auth). -->
         <div
-          v-if="!currentWorkspaceId"
-          class="py-20 flex flex-col items-center justify-center text-center gap-3"
+          v-if="!isAuthenticated"
+          class="py-16 flex flex-col items-center justify-center text-center gap-4"
         >
-          <AlertCircle class="size-10 text-muted-foreground" />
-          <p class="text-sm text-muted-foreground max-w-sm">
-            Выбери воркспейс в шапке, чтобы посмотреть трендовые рилсы.
-          </p>
+          <div class="size-12 rounded-full bg-brand/15 text-brand flex items-center justify-center">
+            <Lock class="size-6" />
+          </div>
+          <div class="space-y-1.5 max-w-md">
+            <p class="text-base font-semibold text-foreground">
+              Тренды доступны после регистрации
+            </p>
+            <p class="text-sm text-muted-foreground">
+              Заведите бесплатный аккаунт за минуту — и получайте свежие вирусные рилсы каждый день
+            </p>
+          </div>
+          <NuxtLink
+            to="/auth"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-brand text-brand-foreground text-sm font-medium hover:bg-brand/90 transition-colors"
+          >
+            Создать аккаунт
+            <ArrowRight class="size-4" />
+          </NuxtLink>
         </div>
 
-        <!-- Loading -->
+        <!-- Loading: covers both workspace bootstrap and feed fetch.
+             Showing "select workspace" here is wrong now — there is no header
+             selector and the bootstrap in AppLayout sets the context within
+             a few hundred ms. -->
         <div
-          v-else-if="store.isLoading && store.reels.length === 0"
+          v-else-if="!currentWorkspaceId || (store.isLoading && store.reels.length === 0)"
           class="py-20 flex flex-col items-center justify-center text-muted-foreground"
         >
           <Loader2 class="size-8 animate-spin" />

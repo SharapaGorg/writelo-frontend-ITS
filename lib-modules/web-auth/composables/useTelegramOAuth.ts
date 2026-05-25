@@ -146,7 +146,7 @@ export function useTelegramOAuth() {
       if (mode === 'signin') {
         const authResponse = await authApi.signinTelegram(data)
         if (authResponse?.token) {
-          userController.setAuthToken(authResponse.token)
+          userController.setAuthToken(authResponse.token, authResponse.user)
           await settings.init(locale)
           toast.success(t('telegram.success'), { position: getToasterPosition() })
           await navigateTo(Routes.app)
