@@ -25,12 +25,15 @@ const initialPromoFromUrl = computed(() => {
   return typeof raw === 'string' ? raw.trim() : ''
 })
 
-onMounted(() => {
-  if (initialPromoFromUrl.value) {
-    promoState.code.value = initialPromoFromUrl.value
-    promoState.apply(initialPromoFromUrl.value)
-  }
-})
+// Disabled: backend /payments/promo-code/prices returns 401 for anonymous
+// callers despite being documented as public. Re-enable once the endpoint
+// truly accepts unauthenticated previews.
+// onMounted(() => {
+//   if (initialPromoFromUrl.value) {
+//     promoState.code.value = initialPromoFromUrl.value
+//     promoState.apply(initialPromoFromUrl.value)
+//   }
+// })
 
 // Pro card maps to the most-expensive applicable subscription in the preview.
 // Falls back to null when promo isn't applied or doesn't fit any paid tier.
@@ -120,14 +123,19 @@ function handleCta(_action: PriceCardCtaAction, tier: PriceCardTier) {
         />
       </div>
 
+      <!-- Promo input on the landing is disabled until the preview endpoint
+           accepts anonymous calls. `?promo=` URL param still flows through
+           the CTA into /app/plans?intent=auto where the preview works under auth. -->
+      <!--
       <div class="mt-8 md:mt-10">
         <LandingPromoInput
           :state="promoState"
           :initially-open="!!initialPromoFromUrl"
         />
       </div>
+      -->
 
-      <div class="mt-6 md:mt-8 flex justify-center">
+      <div class="mt-12 md:mt-16 flex justify-center">
         <div class="inline-flex items-center gap-3 px-5 py-3 rounded-[6px] border border-[#0a0a0a]/15 dark:border-[#ede8de]/15 bg-[#0a0a0a]/[0.02] dark:bg-[#ede8de]/[0.03]">
           <ShieldCheck class="w-4 h-4 text-[#5f5f5f] dark:text-[#a8a094] shrink-0" />
           <span class="lnf-body text-[13px] md:text-[14px] text-[#5f5f5f] dark:text-[#a8a094] leading-snug">
