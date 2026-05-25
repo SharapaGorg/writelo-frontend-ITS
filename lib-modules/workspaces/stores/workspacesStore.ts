@@ -90,6 +90,11 @@ export const useWorkspacesStore = defineStore('workspaces', {
       try {
         const api = useWorkspacesApi()
         const response = await api.getWorkspaces()
+        // ApiController.request() returns undefined when there's no auth
+        // token (the "жесткий волл" guard). Pages that bootstrap workspaces
+        // on mount can run before auth — treat that as "nothing to load"
+        // instead of crashing on `response.items`.
+        if (!response) return
         this.workspaces = response.items
 
         // Initialize workspace context with fetched workspaces
