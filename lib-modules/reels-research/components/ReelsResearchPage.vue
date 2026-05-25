@@ -4,11 +4,13 @@ import { Loader2, AlertCircle, RefreshCw, Sparkles, Lock, ArrowRight } from 'luc
 import { useReelsResearchStore } from '../stores/reelsResearchStore'
 import ReelsFilters from './ReelsFilters.vue'
 import ReelsGrid from './ReelsGrid.vue'
+import ReelCard from './ReelCard.vue'
 import ReelDetailsModal from './ReelDetailsModal.vue'
 import { AppNavbar } from '~/lib-modules/app-layout'
 import { useWorkspaceContext } from '~/lib-modules/workspaces'
 import { useSettings } from '~/composables/settings'
 import { useUserController } from '~/composables/user'
+import { landingReelsMock } from '~/lib-modules/landing-new/helpers/landingReelsMock'
 import type { TrendingReelDto } from '../types'
 
 const store = useReelsResearchStore()
@@ -47,38 +49,51 @@ function handleSelect(reel: TrendingReelDto) {
   <div class="h-full flex flex-col overflow-hidden">
     <AppNavbar :breadcrumbs="[{ label: 'Тренды' }]" />
 
-    <div v-if="isAuthenticated" class="border-b border-border px-4 py-3">
-      <div class="max-w-7xl mx-auto w-full">
+    <div class="border-b border-border px-4 py-3">
+      <div :class="['max-w-7xl mx-auto w-full', !isAuthenticated && 'pointer-events-none select-none opacity-60']">
         <ReelsFilters />
       </div>
     </div>
 
     <div class="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-      <div class="max-w-7xl mx-auto w-full px-4 py-6">
-        <!-- Guest: no token, no workspace — show registration CTA instead of
-             a fake loader (the feed will never fetch without auth). -->
+      <div class="max-w-7xl mx-auto w-full px-4 py-6 space-y-6">
+        <!-- Guest: sticky CTA banner above a dimmed preview of the real feed.
+             The mock reels come from the landing module so they look like
+             actual cards, not a placeholder grid. -->
         <div
           v-if="!isAuthenticated"
-          class="py-16 flex flex-col items-center justify-center text-center gap-4"
+          class="flex flex-col gap-3 rounded-lg border border-brand/30 bg-brand/10 p-4 sm:flex-row sm:items-center"
         >
-          <div class="size-12 rounded-full bg-brand/15 text-brand flex items-center justify-center">
-            <Lock class="size-6" />
+          <div class="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand/15 text-brand">
+            <Lock class="size-4" />
           </div>
-          <div class="space-y-1.5 max-w-md">
-            <p class="text-base font-semibold text-foreground">
-              Тренды доступны после регистрации
+          <div class="min-w-0 flex-1 space-y-0.5">
+            <p class="text-sm font-semibold text-foreground">
+              Войдите, чтобы смотреть тренды
             </p>
-            <p class="text-sm text-muted-foreground">
-              Заведите бесплатный аккаунт за минуту — и получайте свежие вирусные рилсы каждый день
+            <p class="text-xs text-muted-foreground">
+              Превью интерфейса доступно всем — свежий вирусный фид и фильтры по нишам открываются после регистрации
             </p>
           </div>
           <NuxtLink
             to="/auth"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-brand text-brand-foreground text-sm font-medium hover:bg-brand/90 transition-colors"
+            class="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90"
           >
             Создать аккаунт
             <ArrowRight class="size-4" />
           </NuxtLink>
+        </div>
+
+        <!-- Guest preview grid: mock reels from landing, dimmed + non-interactive. -->
+        <div
+          v-if="!isAuthenticated"
+          class="pointer-events-none select-none opacity-60 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"
+        >
+          <ReelCard
+            v-for="reel in landingReelsMock"
+            :key="reel.reelId"
+            :reel="reel"
+          />
         </div>
 
         <!-- Loading: covers both workspace bootstrap and feed fetch.
