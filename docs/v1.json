@@ -2730,6 +2730,159 @@
         ]
       }
     },
+    "/feedback": {
+      "post": {
+        "tags": [
+          "Feedback"
+        ],
+        "summary": "Creates feedback for the site or a site section.",
+        "description": "Request checks\n- Request body validation:\n- `context`: feedback context is not allowed for this section; required.\n- `context.Analysis`: required.\n- `context.Analysis.Reel`: arbitrary reel feedback requires a URL or external ID; required.\n- `context.Analysis.Reel.CuratedReelId`: required.\n- `context.Analysis.Reel.Kind`: accepted JSON values: `curated`, `arbitrary`.\n- `context.Analysis.Reel.Url`: maximum length 2048 characters.\n- `message`: maximum length 2000 characters.\n- `section`: accepted JSON values: `generic`, `today_reels`, `reel_analysis`.\n- `sentiment`: accepted JSON values: `like`, `neutral`, `dislike`.",
+        "operationId": "Feedback_CreateFeedback",
+        "requestBody": {
+          "description": "The Create Feedback payload.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeedbackRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeedbackRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFeedbackRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "title": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "status": {
+                      "pattern": "^-?(?:0|[1-9]\\d*)$",
+                      "type": [
+                        "null",
+                        "integer",
+                        "string"
+                      ],
+                      "format": "int32"
+                    },
+                    "detail": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "instance": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Missing or invalid bearer token."
+          },
+          "403": {
+            "description": "Forbidden. Authenticated caller does not satisfy the endpoint access requirements."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
     "/workspaces/{workspaceId}/temporary-files": {
       "get": {
         "tags": [
@@ -4791,7 +4944,28 @@
             }
           },
           {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "author",
             "in": "query",
             "schema": {
               "type": "string"
@@ -4851,6 +5025,102 @@
           },
           {
             "name": "maxAuthorFollowers",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "minViews",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "maxViews",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "minPlays",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "maxPlays",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "minLikes",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "maxLikes",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "minComments",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int64"
+            }
+          },
+          {
+            "name": "maxComments",
             "in": "query",
             "schema": {
               "pattern": "^-?(?:0|[1-9]\\d*)$",
@@ -9022,6 +9292,96 @@
         },
         "description": "Describes a new conversation to create."
       },
+      "CreateFeedbackAnalysisReferenceDto": {
+        "type": "object",
+        "properties": {
+          "reel": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CreateFeedbackReelReferenceDto"
+              }
+            ]
+          }
+        }
+      },
+      "CreateFeedbackContextDto": {
+        "type": "object",
+        "properties": {
+          "analysis": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CreateFeedbackAnalysisReferenceDto"
+              }
+            ]
+          }
+        }
+      },
+      "CreateFeedbackReelReferenceDto": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/FeedbackReelReferenceKind"
+          },
+          "curatedReelId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "url": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "externalId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CreateFeedbackRequest": {
+        "required": [
+          "section",
+          "sentiment",
+          "context",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "section": {
+            "$ref": "#/components/schemas/FeedbackSection"
+          },
+          "sentiment": {
+            "$ref": "#/components/schemas/FeedbackSentiment"
+          },
+          "context": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/CreateFeedbackContextDto"
+              }
+            ]
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CreatePaymentRequest": {
         "required": [
           "provider",
@@ -9151,6 +9511,68 @@
           "pending",
           "done",
           "failed"
+        ],
+        "type": "string"
+      },
+      "FeedbackDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "section": {
+            "$ref": "#/components/schemas/FeedbackSection"
+          },
+          "context": {
+            "$ref": "#/components/schemas/JsonElement"
+          },
+          "sentiment": {
+            "$ref": "#/components/schemas/FeedbackSentiment"
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "viewedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "FeedbackReelReferenceKind": {
+        "enum": [
+          "curated",
+          "arbitrary"
+        ],
+        "type": "string"
+      },
+      "FeedbackSection": {
+        "enum": [
+          "generic",
+          "today_reels",
+          "reel_analysis"
+        ],
+        "type": "string"
+      },
+      "FeedbackSentiment": {
+        "enum": [
+          "like",
+          "neutral",
+          "dislike"
         ],
         "type": "string"
       },
@@ -11703,16 +12125,6 @@
       "TrendingReelDetailsResponse": {
         "type": "object",
         "properties": {
-          "asOf": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "scoringVersion": {
-            "type": "string"
-          },
           "reel": {
             "$ref": "#/components/schemas/TrendingReelDto"
           }
@@ -11734,29 +12146,42 @@
               "string"
             ]
           },
-          "captionPreview": {
+          "description": {
             "type": [
               "null",
               "string"
             ]
           },
-          "thumbnailUrl": {
+          "author": {
+            "$ref": "#/components/schemas/TrendingReelAuthorDto"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/TrendingReelMetricsDto"
+          },
+          "category": {
             "type": [
               "null",
               "string"
             ]
           },
-          "thumbnailExpiresAt": {
+          "language": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "addedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "postedAt": {
             "type": [
               "null",
               "string"
             ],
             "format": "date-time"
           },
-          "author": {
-            "$ref": "#/components/schemas/TrendingReelAuthorDto"
-          },
-          "postedAt": {
+          "publishedAt": {
             "type": [
               "null",
               "string"
@@ -11772,58 +12197,21 @@
             ],
             "format": "double"
           },
-          "metrics": {
-            "$ref": "#/components/schemas/TrendingReelMetricsDto"
-          },
-          "score": {
-            "$ref": "#/components/schemas/TrendingReelScoreDto"
-          },
-          "firstSeenAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "lastSeenAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "rank": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "rankScore": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
-            "type": [
-              "number",
-              "string"
-            ],
-            "format": "double"
+          "previewImage": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/SignedAssetDto"
+              }
+            ]
           }
         }
       },
       "TrendingReelMetricsDto": {
         "type": "object",
         "properties": {
-          "effectiveViews": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int64"
-          },
-          "views": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "null",
-              "integer",
-              "string"
-            ],
-            "format": "int64"
-          },
           "plays": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
@@ -11860,14 +12248,7 @@
             ],
             "format": "int64"
           },
-          "capturedAt": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "ageSeconds": {
+          "saves": {
             "pattern": "^-?(?:0|[1-9]\\d*)$",
             "type": [
               "null",
@@ -11875,62 +12256,8 @@
               "string"
             ],
             "format": "int64"
-          }
-        }
-      },
-      "TrendingReelsBatchDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
           },
-          "feedType": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "itemCount": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "asOf": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "expiresAt": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "scoringVersion": {
-            "type": "string"
-          }
-        }
-      },
-      "TrendingReelScoreDto": {
-        "type": "object",
-        "properties": {
-          "global": {
-            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
-            "type": [
-              "null",
-              "number",
-              "string"
-            ],
-            "format": "double"
-          },
-          "viewsOverAuthorMedian": {
+          "viewsOverAuthorBaseline": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
             "type": [
               "null",
@@ -11944,36 +12271,6 @@
       "TrendingReelsFeedResponse": {
         "type": "object",
         "properties": {
-          "batch": {
-            "oneOf": [
-              {
-                "type": "null"
-              },
-              {
-                "$ref": "#/components/schemas/TrendingReelsBatchDto"
-              }
-            ]
-          },
-          "asOf": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "expiresAt": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "scoringVersion": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
           "items": {
             "type": "array",
             "items": {
@@ -12882,6 +13179,10 @@
     },
     {
       "name": "Conversations",
+      "description": "Authentication: requires a JWT bearer token."
+    },
+    {
+      "name": "Feedback",
       "description": "Authentication: requires a JWT bearer token."
     },
     {
