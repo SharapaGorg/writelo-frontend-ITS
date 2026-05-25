@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch, onBeforeUnmount } from 'vue'
 import {
   Play,
   Heart,
@@ -39,6 +39,12 @@ const open = computed({
 // Instagram's embed locks playback behind a "Watch again on Instagram"
 // overlay once the reel ends and there's no way to control it from outside.
 const embedNonce = ref(0)
+// Tracks whether we've seen at least one iframe `load` for the current
+// reel. Drives the cover skin that hides IG's loading shell on first open;
+// stays `true` across auto-replays so the cover doesn't flash each loop.
+const initialLoadComplete = ref(false)
+let replayTimer: number | null = null
+let coverFallbackTimer: number | null = null
 
 const embedUrl = computed(() => {
   const r = reel.value
@@ -51,9 +57,73 @@ const embedUrl = computed(() => {
   return `https://www.instagram.com/reel/${code}/embed/${bust}`
 })
 
+function clearReplayTimer() {
+  if (replayTimer != null) {
+    clearTimeout(replayTimer)
+    replayTimer = null
+  }
+}
+
+function clearCoverFallbackTimer() {
+  if (coverFallbackTimer != null) {
+    clearTimeout(coverFallbackTimer)
+    coverFallbackTimer = null
+  }
+}
+
+function scheduleAutoReplay() {
+  clearReplayTimer()
+  const dur = reel.value?.durationSeconds
+  if (!dur || dur <= 0) return
+  // Force-remount the iframe just before IG's "Watch again on Instagram"
+  // overlay would surface. Cross-origin so we can't observe the video
+  // element directly; buffer accounts for the gap between iframe load
+  // and the first frame painting.
+  const ms = Math.round(dur * 1000) + 1200
+  replayTimer = window.setTimeout(() => {
+    embedNonce.value += 1
+  }, ms)
+}
+
+function onIframeLoad() {
+  scheduleAutoReplay()
+  clearCoverFallbackTimer()
+  // Small delay so IG's embed JS finishes booting and the first frame paints
+  // before we lift the cover — otherwise the user catches the embed in its
+  // loading-shell state with the Instagram logo on screen.
+  window.setTimeout(() => {
+    initialLoadComplete.value = true
+  }, 350)
+}
+
 function replayEmbed() {
   embedNonce.value += 1
 }
+
+watch(() => reel.value?.reelId, (id) => {
+  if (!id) return
+  initialLoadComplete.value = false
+  clearReplayTimer()
+  clearCoverFallbackTimer()
+  // If iframe.load never fires (network error, sandbox quirk), lift the
+  // cover anyway so the user isn't stuck at a spinner forever.
+  coverFallbackTimer = window.setTimeout(() => {
+    initialLoadComplete.value = true
+  }, 5000)
+})
+
+watch(open, (v) => {
+  if (!v) {
+    clearReplayTimer()
+    clearCoverFallbackTimer()
+    initialLoadComplete.value = false
+  }
+})
+
+onBeforeUnmount(() => {
+  clearReplayTimer()
+  clearCoverFallbackTimer()
+})
 
 function formatNumber(n: number | null | undefined): string {
   if (n == null) return '—'
@@ -130,25 +200,53 @@ function formatMultiplier(m: number | null | undefined): string {
             aria-hidden="true"
             class="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-40 pointer-events-none"
           />
+          <!-- Embed slot sized at the reel's native 9:16 aspect so the video
+               fills the slot edge-to-edge with no letterboxing inside it. We
+               then over-extend the iframe in slot coordinates so IG's header
+               sits above the visible region and the entire chrome below the
+               video (likes bar, caption, "View more on Instagram" footer)
+               ends up past the bottom edge, clipped by overflow-hidden. -->
           <div
             v-if="embedUrl"
-            class="relative z-10 w-full h-full md:max-w-[420px] overflow-hidden bg-black"
+            class="relative z-10 aspect-[9/16] h-full max-w-full overflow-hidden bg-black"
           >
             <iframe
               :key="embedUrl"
               :src="embedUrl"
               class="absolute inset-x-0 w-full bg-black"
-              style="top: -55px; height: calc(100% + 220px);"
+              style="top: -56px; height: calc(100% + 350px);"
               frameborder="0"
               scrolling="no"
               allowtransparency="true"
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               allowfullscreen
               loading="lazy"
+              @load="onIframeLoad"
             />
-            <!-- Insurance mask for any "View more on Instagram" pixels
-                 that still bleed past the clip. -->
-            <div class="absolute inset-x-0 bottom-0 h-[80px] bg-black pointer-events-none z-10" />
+            <!-- Insurance mask covering the last few pixels where IG's
+                 likes-bar can peek through if header height drifted from
+                 the 56px assumption. Narrow on purpose — slot is already
+                 aspect-correct so we don't need to mask away video. -->
+            <div class="absolute inset-x-0 bottom-0 h-[30px] bg-black pointer-events-none z-10" />
+            <!-- First-load cover: hides IG's loading shell (logo + skeleton)
+                 behind the reel's own preview frame + a spinner. Fades out
+                 once we believe the first video frame has painted, then
+                 stays hidden through every auto-replay of the same reel. -->
+            <div
+              class="absolute inset-0 z-[12] transition-opacity duration-500 pointer-events-none"
+              :class="initialLoadComplete ? 'opacity-0' : 'opacity-100'"
+            >
+              <img
+                v-if="reel.previewImage?.url"
+                :src="reel.previewImage.url"
+                aria-hidden="true"
+                class="absolute inset-0 w-full h-full object-cover"
+              />
+              <div class="absolute inset-0 bg-black/40" />
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="size-10 rounded-full border-2 border-white/25 border-t-white animate-spin" />
+              </div>
+            </div>
             <!-- Replay: force-remounts the iframe to blow away Instagram's
                  "Watch again on Instagram" overlay. -->
             <button
