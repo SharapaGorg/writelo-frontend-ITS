@@ -121,7 +121,7 @@ import GoogleButton from "~/lib-modules/web-auth/components/GoogleButton.vue";
 import TelegramLoginButton from "./TelegramLoginButton.vue";
 import YandexAuthButton from "./YandexAuthButton.vue";
 import {AuthApiController} from '../helpers/api'
-import {Routes} from '~/scripts/shared/types'
+import {getPostAuthRedirect} from '../helpers/postAuthRedirect'
 import {toast} from 'vue-sonner'
 import {getToasterPosition} from '~/scripts/features/utils/toater'
 
@@ -166,7 +166,7 @@ const onSubmit = handleSubmit(async (values) => {
         position: getToasterPosition()
       })
 
-      await navigateTo(Routes.app)
+      await navigateTo(getPostAuthRedirect())
     } else {
       // Email verification required - redirect to verification page
       await navigateTo({

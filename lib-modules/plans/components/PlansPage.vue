@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount } from 'vue'
+import { onBeforeUnmount, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { Send } from 'lucide-vue-next'
@@ -8,10 +8,17 @@ import AppLoader from '~/components/atoms/AppLoader.vue'
 import { Button } from '~/components/ui/button'
 import { getToasterPosition, toastError } from '~/scripts/features/utils/toater'
 import PlanCard from './PlanCard.vue'
+import PromoCodeInput from './PromoCodeInput.vue'
 import { usePlans } from '../composables/usePlans'
+import { usePromoCode } from '../composables/usePromoCode'
+import { usePurchase } from '../composables/usePurchase'
 
 const { plans, loaded, isCurrentPlan, isPopularPlan } = usePlans()
+const promoState = usePromoCode()
+const { purchase: triggerCheckout, isPurchasing: autoCheckoutInFlight } = usePurchase()
 const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
 
 async function handlePaymentMessage(event: MessageEvent) {
   if (event.origin !== window.location.origin) return
@@ -37,6 +44,57 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('message', handlePaymentMessage)
 })
+
+// Auto-checkout intent from landing: ?intent=auto&promo=...
+// Triggers as soon as plans are loaded. We strip the query immediately
+// so a back-navigation or re-mount doesn't re-fire the checkout.
+let autoCheckoutAttempted = false
+
+function pickAutoCheckoutTarget() {
+  const paid = plans.value.filter(p => p.price > 0 && p.type !== 'business')
+  if (!paid.length) return null
+  return [...paid].sort((a, b) => b.price - a.price)[0]
+}
+
+async function runAutoCheckout(promoCode: string | null) {
+  const target = pickAutoCheckoutTarget()
+  if (!target) {
+    toastError('Не нашли подходящий тариф для покупки')
+    return
+  }
+  await triggerCheckout({
+    subscriptionId: target.id,
+    mode: 'self',
+    promoCode,
+    forceSameTab: true,
+  })
+}
+
+watch(
+  [loaded, () => route.query.intent],
+  ([isLoaded, intent]) => {
+    if (autoCheckoutAttempted) return
+    if (!isLoaded) return
+    if (intent !== 'auto') return
+    if (!plans.value.length) return
+
+    autoCheckoutAttempted = true
+
+    const rawPromo = route.query.promo
+    const promo = typeof rawPromo === 'string' ? rawPromo.trim() : ''
+
+    // Clear the intent from URL up front so a refresh doesn't re-trigger checkout.
+    router.replace({ query: {} })
+
+    if (promo) {
+      promoState.code.value = promo
+      promoState.apply(promo).finally(() => runAutoCheckout(promo))
+    } else {
+      runAutoCheckout(null)
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -54,18 +112,21 @@ onBeforeUnmount(() => {
 
         <AppLoader v-if="!loaded" :show-texts="false" />
 
-        <div
-          v-else-if="plans.length"
-          class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
-        >
-          <PlanCard
-            v-for="plan in plans"
-            :key="plan.id"
-            :plan="plan"
-            :is-current="isCurrentPlan(plan.id)"
-            :is-popular="isPopularPlan(plan.id)"
-          />
-        </div>
+        <template v-else-if="plans.length">
+          <PromoCodeInput :state="promoState" />
+
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <PlanCard
+              v-for="plan in plans"
+              :key="plan.id"
+              :plan="plan"
+              :is-current="isCurrentPlan(plan.id)"
+              :is-popular="isPopularPlan(plan.id)"
+              :promo-preview="promoState.previewFor(plan.id)"
+              :promo-code="promoState.codeForSubscription(plan.id)"
+            />
+          </div>
+        </template>
 
         <div
           v-else

@@ -28,4 +28,12 @@ export interface PriceCardProps {
   features: string[]
   cta: PriceCardCta
   highlighted?: boolean
+  /** Backend promo-preview snapshot. When `applicable` and `discountAmount > 0`,
+   *  the card swaps the marketing price for the real final/original numbers. */
+  promoPreview?: {
+    originalPrice: number
+    discountAmount: number
+    finalPrice: number
+    applicable: boolean
+  } | null
 }

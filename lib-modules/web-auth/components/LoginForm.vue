@@ -87,8 +87,7 @@ import YandexAuthButton from "./YandexAuthButton.vue";
 import {type LoginFormData, loginSchema} from "~/lib-modules/web-auth";
 import {toast} from "vue-sonner";
 import {getToasterPosition} from "~/scripts/features/utils/toater";
-import {Routes} from "~/scripts/shared/types";
-import {AuthApiController} from "~/lib-modules/web-auth/helpers";
+import {AuthApiController, getPostAuthRedirect} from "~/lib-modules/web-auth/helpers";
 
 const {t, globalT} = useWebAuthI18n()
 const {locale} = useI18n()
@@ -136,7 +135,7 @@ const onSubmit = handleSubmit(async (values) => {
         position: getToasterPosition()
       })
 
-      await navigateTo(Routes.app)
+      await navigateTo(getPostAuthRedirect())
     }
   } catch (error: any) {
     // ApiController already shows toast for server errors

@@ -7,9 +7,28 @@ import GhostButton from './GhostButton.vue'
 
 const props = withDefaults(defineProps<PriceCardProps>(), {
   highlighted: false,
+  promoPreview: null,
 })
 
 const isNumericPrice = computed(() => /\d/.test(props.price))
+
+const discountActive = computed(() =>
+  !!props.promoPreview
+  && props.promoPreview.applicable
+  && props.promoPreview.discountAmount > 0,
+)
+
+const finalPriceLabel = computed(() =>
+  discountActive.value ? `${props.promoPreview!.finalPrice} ₽` : null,
+)
+
+const originalPriceLabel = computed(() =>
+  discountActive.value ? `${props.promoPreview!.originalPrice} ₽` : null,
+)
+
+const discountBadgeLabel = computed(() =>
+  discountActive.value ? `−${props.promoPreview!.discountAmount} ₽ по промокоду` : null,
+)
 
 const emit = defineEmits<{ cta: [action: PriceCardCtaAction, tier: PriceCardTier] }>()
 </script>
@@ -23,30 +42,47 @@ const emit = defineEmits<{ cta: [action: PriceCardCtaAction, tier: PriceCardTier
   >
     <div v-if="highlighted" class="absolute top-0 left-0 right-0 h-1 bg-[#d4683f]" />
 
-    <div class="flex items-baseline justify-between mb-3 gap-4">
+    <div class="flex flex-col gap-2 mb-4">
       <h3 class="lnf-display font-medium text-[22px] md:text-[26px] tracking-[-0.02em] text-[#0a0a0a] dark:text-[#ede8de]">
         {{ name }}
       </h3>
-      <div
-        :class="[
-          'flex items-baseline gap-1 shrink-0',
-          !isNumericPrice && 'self-center',
-        ]"
-      >
-        <span
-          v-if="isNumericPrice"
-          class="lnf-display font-bold text-[26px] md:text-[36px] text-[#0a0a0a] dark:text-[#ede8de] tracking-[-0.02em] leading-none"
-        >
-          {{ price }}
-        </span>
-        <span
-          v-else
-          class="lnf-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-[#d4683f] border border-[#d4683f] px-2.5 py-1.5"
-        >
-          {{ price }}
-        </span>
-        <span v-if="period" class="text-sm text-[#8a8a8a] dark:text-[#5a5550]">{{ period }}</span>
+      <div class="flex items-baseline flex-wrap gap-x-3 gap-y-1">
+        <template v-if="discountActive">
+          <span class="inline-flex items-baseline gap-1">
+            <span class="lnf-display font-bold text-[26px] md:text-[36px] text-[#d4683f] tracking-[-0.02em] leading-none">
+              {{ finalPriceLabel }}
+            </span>
+            <span v-if="period" class="text-sm text-[#8a8a8a] dark:text-[#5a5550]">{{ period }}</span>
+          </span>
+          <span class="lnf-display text-[16px] md:text-[20px] text-[#8a8a8a] dark:text-[#5a5550] line-through decoration-1 leading-none">
+            {{ originalPriceLabel }}
+          </span>
+        </template>
+        <template v-else>
+          <span class="inline-flex items-baseline gap-1">
+            <span
+              v-if="isNumericPrice"
+              class="lnf-display font-bold text-[26px] md:text-[36px] text-[#0a0a0a] dark:text-[#ede8de] tracking-[-0.02em] leading-none"
+            >
+              {{ price }}
+            </span>
+            <span
+              v-else
+              class="lnf-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-[#d4683f] border border-[#d4683f] px-2.5 py-1.5"
+            >
+              {{ price }}
+            </span>
+            <span v-if="period" class="text-sm text-[#8a8a8a] dark:text-[#5a5550]">{{ period }}</span>
+          </span>
+        </template>
       </div>
+    </div>
+
+    <div
+      v-if="discountBadgeLabel"
+      class="mb-4 inline-flex self-start lnf-mono text-[10px] md:text-[11px] uppercase tracking-[0.15em] text-[#d4683f] border border-[#d4683f] px-2.5 py-1.5"
+    >
+      {{ discountBadgeLabel }}
     </div>
 
     <p class="lnf-body text-[14px] md:text-[15px] text-[#5f5f5f] dark:text-[#a8a094] mb-8 leading-[1.55]">

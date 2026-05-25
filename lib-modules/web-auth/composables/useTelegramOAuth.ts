@@ -2,10 +2,10 @@ import { ref, computed, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { AuthApiController } from '../helpers/api'
+import { getPostAuthRedirect } from '../helpers/postAuthRedirect'
 import { useWebAuthI18n } from './useWebAuthI18n'
 import type { TelegramAuthData } from '../types'
 import { getToasterPosition } from '~/scripts/features/utils/toater'
-import { Routes } from '~/scripts/shared/types'
 import { useDemoGuard } from '~/lib-modules/demo-mode'
 
 export type TelegramOAuthMode = 'signin' | 'link'
@@ -149,7 +149,7 @@ export function useTelegramOAuth() {
           userController.setAuthToken(authResponse.token, authResponse.user)
           await settings.init(locale)
           toast.success(t('telegram.success'), { position: getToasterPosition() })
-          await navigateTo(Routes.app)
+          await navigateTo(getPostAuthRedirect())
           return true
         }
         return false

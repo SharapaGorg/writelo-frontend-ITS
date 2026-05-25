@@ -3889,7 +3889,7 @@
           "Payments"
         ],
         "summary": "Create Payment",
-        "description": "Request checks\n- Request body validation:\n- `provider`: invalid payment provider. Supported: tinkoff, crypto_bot, stars; required.\n- `subscriptionId`: must be greater than `0`.",
+        "description": "Request checks\n- Request body validation:\n- `promoCode`: maximum length 128 characters.\n- `provider`: invalid payment provider. Supported: tinkoff, crypto_bot, stars; required.\n- `subscriptionId`: must be greater than `0`.",
         "operationId": "Payment_CreatePayment",
         "requestBody": {
           "description": "Contains the data required to start a payment session.",
@@ -3929,6 +3929,148 @@
               "text/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaymentSessionDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/problem+json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "title": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "status": {
+                      "pattern": "^-?(?:0|[1-9]\\d*)$",
+                      "type": [
+                        "null",
+                        "integer",
+                        "string"
+                      ],
+                      "format": "int32"
+                    },
+                    "detail": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "instance": {
+                      "type": [
+                        "null",
+                        "string"
+                      ]
+                    },
+                    "errors": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Missing or invalid bearer token."
+          },
+          "403": {
+            "description": "Forbidden. Authenticated caller does not satisfy the endpoint access requirements."
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/payments/promo-code/prices": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Preview Promo Code Prices",
+        "description": "Request checks\n- Request body validation:\n- `promoCode`: maximum length 128 characters; required.",
+        "operationId": "Payment_PreviewPromoCodePrices",
+        "requestBody": {
+          "description": "Contains the promo code used to preview discounted subscription prices.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromoCodePricesRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromoCodePricesRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromoCodePricesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromoCodePriceDto"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromoCodePriceDto"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromoCodePriceDto"
+                  }
                 }
               }
             }
@@ -9385,7 +9527,8 @@
       "CreatePaymentRequest": {
         "required": [
           "provider",
-          "subscriptionId"
+          "subscriptionId",
+          "promoCode"
         ],
         "type": "object",
         "properties": {
@@ -9408,6 +9551,13 @@
               "boolean"
             ],
             "description": "When `true`, the payment creates a gift activation link instead of immediately applying the subscription\nto the purchaser."
+          },
+          "promoCode": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The optional promo code applied to the payment."
           }
         },
         "description": "Contains the data required to start a payment session.",
@@ -10886,7 +11036,10 @@
           "subscriptionId",
           "checkoutUrl",
           "status",
-          "isGift"
+          "isGift",
+          "originalAmount",
+          "discountAmount",
+          "finalAmount"
         ],
         "type": "object",
         "properties": {
@@ -10923,6 +11076,40 @@
           "isGift": {
             "type": "boolean",
             "description": "Indicates whether the payment is purchasing a gift subscription."
+          },
+          "originalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "description": "The original amount before promo code discounts.",
+            "format": "double"
+          },
+          "discountAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "description": "The promo code discount amount.",
+            "format": "double"
+          },
+          "finalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "description": "The final amount sent to the payment provider.",
+            "format": "double"
+          },
+          "promoCode": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The promo code applied to the payment."
           }
         },
         "description": "Contains the checkout session returned by the payment initiation flow.",
@@ -11343,6 +11530,68 @@
             ]
           }
         }
+      },
+      "PromoCodePriceDto": {
+        "type": "object",
+        "properties": {
+          "subscriptionId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "description": "The subscription identifier.",
+            "format": "int32"
+          },
+          "originalPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "description": "The original subscription price.",
+            "format": "double"
+          },
+          "discountAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "description": "The discount amount.",
+            "format": "double"
+          },
+          "finalPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "description": "The final price after discount.",
+            "format": "double"
+          },
+          "applicable": {
+            "type": "boolean",
+            "description": "Indicates whether the promo code can be applied to this subscription."
+          }
+        },
+        "description": "Describes the price of a subscription after promo code evaluation."
+      },
+      "PromoCodePricesRequest": {
+        "required": [
+          "promoCode"
+        ],
+        "type": "object",
+        "properties": {
+          "promoCode": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The promo code entered by the user."
+          }
+        },
+        "description": "Contains the promo code used to preview discounted subscription prices."
       },
       "PublicationStatus": {
         "enum": [

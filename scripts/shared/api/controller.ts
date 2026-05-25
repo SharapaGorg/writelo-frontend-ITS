@@ -9,7 +9,7 @@ import type {
     UploadFileResponse
 } from '~/lib-modules/conversations'
 import type { SendMessageBody } from '~/scripts/shared/types/private'
-import type { PaymentSessionDto, PaymentProvider } from '~/scripts/shared/types/payment'
+import type { PaymentSessionDto, PaymentProvider, PromoCodePricePreviewDto } from '~/scripts/shared/types/payment'
 import { toastError, toastForbidden, toastRateLimit, toastGenericError } from '~/scripts/features/utils/toater'
 import { process } from 'std-env'
 import { useAttachMedia } from '~/composables/useAttachMedia'
@@ -132,7 +132,8 @@ export class ApiController {
         method: RequestMethod = RequestMethod.GET,
         data = {},
         streaming: boolean = false,
-        silent: boolean = false
+        silent: boolean = false,
+        noAuth: boolean = false,
     ): Promise<ReadableStream<Uint8Array> | any | null> {
         const $user = useUserController();
 
@@ -142,17 +143,22 @@ export class ApiController {
             const token = $user.getToken();
             const isAuthRequest = url.includes('auth/');
 
-            if (!token && !isAuthRequest) {
+            if (!token && !isAuthRequest && !noAuth) {
                 // жесткий волл, разрешаем отправлять только запросы на авторизацию
+                // (или явно публичные эндпоинты, помеченные noAuth — например,
+                // превью промокодов с лендинга, до того как юзер залогинился)
                 return;
             }
 
 
+            const headers: Record<string, string> = {}
+            if (token) {
+                headers.Authorization = this.getAuthHeader(token)
+            }
+
             let opts: any = {
                 method: method,
-                headers: {
-                    "Authorization": this.getAuthHeader(token)
-                }
+                headers,
             }
 
             if (method === RequestMethod.POST || method === RequestMethod.PATCH) {
@@ -547,13 +553,40 @@ export class ApiController {
      *
      * @returns url for pay money for subscription
      */
-    async createPayment(subscriptionId: number, provider: PaymentProvider, forGift?: boolean): Promise<PaymentSessionDto> {
+    async createPayment(
+        subscriptionId: number,
+        provider: PaymentProvider,
+        forGift?: boolean,
+        promoCode?: string | null,
+    ): Promise<PaymentSessionDto> {
         const body: Record<string, unknown> = {
             subscriptionId,
             provider,
         };
         if (forGift) body.forGift = true;
+        // Backend rejects promoCode + forGift combination (error-promo-code-invalid),
+        // so we drop the code when buying as a gift instead of letting the request 400.
+        if (promoCode && !forGift) body.promoCode = promoCode;
         return this.request(ApiAliases.payments, RequestMethod.POST, body);
+    }
+
+    /**
+     * Preview discounted prices for visible paid subscriptions for the given promo code.
+     * Caller handles error toast — pass `silent: true` so the controller doesn't show one.
+     */
+    async previewPromoCodePrices(promoCode: string): Promise<PromoCodePricePreviewDto[]> {
+        // Public endpoint: callable both from landing (unauthenticated) and from
+        // /app/plans (authenticated). noAuth=true bypasses the "no token" wall;
+        // when a token is present we still send it so per-user rules
+        // (firstPurchaseOnly, repeated-use checks) work.
+        return this.request(
+            ApiAliases.paymentsPromoCodePrices,
+            RequestMethod.POST,
+            { promoCode },
+            false,
+            true,
+            true,
+        );
     }
 
     /**

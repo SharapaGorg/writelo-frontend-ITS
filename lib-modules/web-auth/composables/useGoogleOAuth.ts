@@ -2,9 +2,9 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { toast } from 'vue-sonner'
 import { AuthApiController } from '../helpers/api'
+import { getPostAuthRedirect } from '../helpers/postAuthRedirect'
 import { useWebAuthI18n } from './useWebAuthI18n'
 import { getToasterPosition } from '~/scripts/features/utils/toater'
-import { Routes } from '~/scripts/shared/types'
 import { useDemoGuard } from '~/lib-modules/demo-mode'
 
 const GOOGLE_CLIENT_ID =
@@ -101,7 +101,7 @@ export function useGoogleOAuth() {
           userController.setAuthToken(authResponse.token, authResponse.user)
           await settings.init(locale)
           toast.success(t('google.success'), { position: getToasterPosition() })
-          await navigateTo(Routes.app)
+          await navigateTo(getPostAuthRedirect())
           return true
         }
         return false

@@ -24,6 +24,7 @@ export enum ApiAliases {
 
     // Payments
     payments = 'payments',
+    paymentsPromoCodePrices = 'payments/promo-code/prices',
 
     // Auth endpoints
     authSignup = 'auth/signup/email',

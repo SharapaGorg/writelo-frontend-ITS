@@ -1,52 +1,57 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { Check, Crown, Sparkles, Star, Users } from 'lucide-vue-next'
 import { Button } from '~/components/ui/button'
 import { cn } from '~/lib-modules/utils'
-import { toastError } from '~/scripts/features/utils/toater'
-import { ApiController } from '~/scripts/shared/api/controller'
-import { PaymentProvider } from '~/scripts/shared/types/payment'
+import type { PromoCodePricePreviewDto } from '~/scripts/shared/types/payment'
 import type { SubscriptionType } from '~/scripts/shared/types/common'
 import { formatDuration } from '../helpers/duration'
+import { usePurchase, type PurchaseMode } from '../composables/usePurchase'
 import PlanPurchaseButton from './PlanPurchaseButton.vue'
 
 const props = defineProps<{
   plan: SubscriptionType
   isCurrent: boolean
   isPopular?: boolean
+  promoPreview?: PromoCodePricePreviewDto | null
+  promoCode?: string | null
 }>()
 
 const isFree = computed(() => props.plan.price <= 0)
 const isBusiness = computed(() => props.plan.type === 'business')
 const durationLabel = computed(() => formatDuration(props.plan.duration))
-const priceLabel = computed(() => (isFree.value ? '0 ₽' : `${props.plan.price} ₽`))
 const showPopularBadge = computed(() => props.isPopular && !props.isCurrent)
 const showPurchase = computed(() => !props.isCurrent && !isFree.value)
 
-const api = new ApiController()
-const isPurchasing = ref(false)
+const discountActive = computed(() =>
+  !!props.promoPreview
+  && props.promoPreview.applicable
+  && props.promoPreview.discountAmount > 0,
+)
 
-async function handlePurchase(mode: 'self' | 'gift') {
-  if (isPurchasing.value) return
-  isPurchasing.value = true
-  try {
-    const session = await api.createPayment(
-      props.plan.id,
-      PaymentProvider.tinkoff,
-      mode === 'gift',
-    )
-    const popup = window.open(
-      session.checkoutUrl,
-      'writelo-pay',
-      'popup=yes,width=520,height=720',
-    )
-    if (!popup || popup.closed) window.location.href = session.checkoutUrl
-  } catch (e) {
-    console.error('createPayment failed', e)
-    toastError('Не удалось создать платёж, попробуйте позже')
-  } finally {
-    isPurchasing.value = false
-  }
+const priceLabel = computed(() => {
+  if (isFree.value) return '0 ₽'
+  if (discountActive.value) return `${props.promoPreview!.finalPrice} ₽`
+  return `${props.plan.price} ₽`
+})
+
+const originalPriceLabel = computed(() =>
+  discountActive.value ? `${props.promoPreview!.originalPrice} ₽` : null,
+)
+
+const discountLabel = computed(() =>
+  discountActive.value ? `−${props.promoPreview!.discountAmount} ₽ по промокоду` : null,
+)
+
+const { purchase, isPurchasing } = usePurchase()
+
+async function handlePurchase(mode: PurchaseMode) {
+  await purchase({
+    subscriptionId: props.plan.id,
+    mode,
+    // Promo codes don't apply to gift purchases (backend rejects the combo).
+    promoCode: mode === 'gift' ? null : props.promoCode ?? null,
+  })
 }
 </script>
 
@@ -99,9 +104,23 @@ async function handlePurchase(mode: 'self' | 'gift') {
       </div>
     </div>
 
-    <div class="flex items-baseline gap-2">
-      <span class="text-3xl sm:text-4xl font-bold tracking-tight">{{ priceLabel }}</span>
-      <span v-if="durationLabel" class="text-sm text-muted-foreground">/ {{ durationLabel }}</span>
+    <div class="flex flex-col gap-1">
+      <div class="flex items-baseline gap-2">
+        <span class="text-3xl sm:text-4xl font-bold tracking-tight">{{ priceLabel }}</span>
+        <span
+          v-if="originalPriceLabel"
+          class="text-base text-muted-foreground line-through decoration-1"
+        >
+          {{ originalPriceLabel }}
+        </span>
+        <span v-if="durationLabel" class="text-sm text-muted-foreground">/ {{ durationLabel }}</span>
+      </div>
+      <span
+        v-if="discountLabel"
+        class="inline-flex items-center self-start rounded-full bg-brand/10 text-brand px-2 py-0.5 text-[11px] font-medium"
+      >
+        {{ discountLabel }}
+      </span>
     </div>
 
     <p v-if="plan.description" class="text-sm text-muted-foreground leading-relaxed">
