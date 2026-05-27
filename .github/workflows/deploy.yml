@@ -23,7 +23,7 @@ jobs:
       - name: Log in to Docker registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ secrets.REGISTRY_HOST }}
+          registry: gitea.radolyn.com
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
