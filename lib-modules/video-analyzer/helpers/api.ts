@@ -4,6 +4,7 @@ import type { WorkspaceLimitsDto } from '~/scripts/shared/types/workspace'
 import type {
   ShortVideoAnalysisDto,
   ShortVideoAnalysisHistoryItemDto,
+  ShortVideoAnalysisShareDto,
 } from '../types'
 
 export class VideoAnalyzerApiController {
@@ -53,6 +54,35 @@ export class VideoAnalyzerApiController {
   async getLimits(workspaceId: string): Promise<WorkspaceLimitsDto> {
     const path = buildUrl(ApiAliases.workspaceLimits, { workspaceId })
     return this.api.request(path, RequestMethod.GET, { _t: Date.now() })
+  }
+
+  // POST .../share — idempotent: returns the existing token if already shared.
+  // Body is required (`{}`) even though it's empty.
+  shareAnalysis(workspaceId: string, analysisId: string): Promise<ShortVideoAnalysisShareDto> {
+    const path = buildUrl(ApiAliases.workspaceShortVideoAnalysisShare, { workspaceId, analysisId })
+    return this.api.request(path, RequestMethod.POST, {})
+  }
+
+  // DELETE .../share — 204 on success, 404 if no active share.
+  // Silent so caller can treat 404 (race: already revoked elsewhere) as success.
+  unshareAnalysis(workspaceId: string, analysisId: string): Promise<void> {
+    const path = buildUrl(ApiAliases.workspaceShortVideoAnalysisShare, { workspaceId, analysisId })
+    return this.api.request(path, RequestMethod.DELETE, {}, false, true)
+  }
+
+  // Public, anonymous: no workspace, no auth. Returns null on 404 so the
+  // public viewer can render a "link no longer available" state without a
+  // try/catch at the call site.
+  async getSharedAnalysis(token: string): Promise<ShortVideoAnalysisDto | null> {
+    const path = buildUrl(ApiAliases.shortVideoAnalysisShared, { token })
+    try {
+      // silent: don't toast 4xx; noAuth: bypass the "no token → drop request" wall.
+      return await this.api.request(path, RequestMethod.GET, { _t: Date.now() }, false, true, true)
+    } catch (e: any) {
+      const status = e?.status || e?.statusCode
+      if (status === 404) return null
+      throw e
+    }
   }
 }
 

@@ -188,6 +188,51 @@ export function useVideoAnalyzer() {
     isSubmitting.value = false
   }
 
+  // Create-or-fetch a public share token for a completed analysis. Idempotent
+  // on the backend; we also cache the response per-analysis so re-opening the
+  // share popover within the session is instant. Returns null if the request
+  // failed (toast already surfaced by ApiController).
+  async function share(analysisId: string) {
+    let wid: string
+    try {
+      wid = requireWorkspaceId()
+    } catch {
+      return null
+    }
+    try {
+      const dto = await api.shareAnalysis(wid, analysisId)
+      store.setShare(analysisId, dto)
+      return dto
+    } catch (e) {
+      console.warn('[VideoAnalyzer] share failed', e)
+      return null
+    }
+  }
+
+  // DELETE the active share. Treat 404 (already revoked elsewhere) as success
+  // since the user-visible outcome — "no longer shared" — is the same.
+  async function unshare(analysisId: string): Promise<boolean> {
+    let wid: string
+    try {
+      wid = requireWorkspaceId()
+    } catch {
+      return false
+    }
+    try {
+      await api.unshareAnalysis(wid, analysisId)
+      store.clearShare(analysisId)
+      return true
+    } catch (e: any) {
+      const status = e?.status || e?.statusCode
+      if (status === 404) {
+        store.clearShare(analysisId)
+        return true
+      }
+      console.warn('[VideoAnalyzer] unshare failed', e)
+      return false
+    }
+  }
+
   // Poll history every 5s while a specific analysis is still `processing`.
   // The caller is responsible for stopping (returned function).
   function pollIfProcessing(analysisId: string): () => void {
@@ -246,5 +291,7 @@ export function useVideoAnalyzer() {
     submit,
     cancel,
     pollIfProcessing,
+    share,
+    unshare,
   }
 }

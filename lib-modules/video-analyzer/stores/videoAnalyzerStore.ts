@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import type {
   ShortVideoAnalysisDto,
   ShortVideoAnalysisHistoryItemDto,
+  ShortVideoAnalysisShareDto,
 } from '../types'
 
 // Per-workspace history (last 50 from backend, sorted desc by requestedAt).
@@ -15,6 +16,10 @@ const urlIndexById = ref<Record<string, string>>({})
 // backend hasn't returned in /history yet. Renders as a pseudo-card.
 const inFlightUrls = ref<Record<string, Set<string>>>({})
 const isHistoryLoadingByWorkspace = ref<Record<string, boolean>>({})
+// Cached share tokens keyed by analysis id. Backend is idempotent so we can
+// re-POST any time to refresh; this cache just spares the round-trip when
+// re-opening the share popover within the same session.
+const shareByAnalysisId = ref<Record<string, ShortVideoAnalysisShareDto>>({})
 
 function sortHistoryDesc(
   list: ShortVideoAnalysisHistoryItemDto[],
@@ -102,12 +107,28 @@ export function useVideoAnalyzerStore() {
     return isHistoryLoadingByWorkspace.value[workspaceId] ?? false
   }
 
+  function setShare(analysisId: string, share: ShortVideoAnalysisShareDto) {
+    shareByAnalysisId.value = { ...shareByAnalysisId.value, [analysisId]: share }
+  }
+
+  function getShare(analysisId: string): ShortVideoAnalysisShareDto | null {
+    return shareByAnalysisId.value[analysisId] ?? null
+  }
+
+  function clearShare(analysisId: string) {
+    if (!(analysisId in shareByAnalysisId.value)) return
+    const next = { ...shareByAnalysisId.value }
+    delete next[analysisId]
+    shareByAnalysisId.value = next
+  }
+
   return {
     historyByWorkspace,
     detailById,
     urlIndexById,
     inFlightUrls,
     isHistoryLoadingByWorkspace,
+    shareByAnalysisId,
 
     setHistory,
     getHistory,
@@ -121,5 +142,8 @@ export function useVideoAnalyzerStore() {
     isInFlight,
     setHistoryLoading,
     getHistoryLoading,
+    setShare,
+    getShare,
+    clearShare,
   }
 }

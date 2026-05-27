@@ -110,6 +110,9 @@ export enum ApiAliases {
     workspaceShortVideoAnalyses = 'workspaces/{workspaceId}/short-video-analyses',
     workspaceShortVideoAnalysesRun = 'workspaces/{workspaceId}/short-video-analyses/run',
     workspaceShortVideoAnalysesHistory = 'workspaces/{workspaceId}/short-video-analyses/history',
+    workspaceShortVideoAnalysisShare = 'workspaces/{workspaceId}/short-video-analyses/{analysisId}/share',
+    // Public, anonymous viewer (no workspace, no auth).
+    shortVideoAnalysisShared = 'short-video-analyses/shared/{token}',
 
     // Trending Reels (Instagram)
     workspaceTrendingReelsGlobal = 'workspaces/{workspaceId}/trending-reels/global',

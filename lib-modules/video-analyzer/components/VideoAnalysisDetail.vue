@@ -20,6 +20,7 @@ import { useWorkspaces, useWorkspaceContext } from '~/lib-modules/workspaces'
 import { FeedbackForm } from '~/lib-modules/feedback'
 import PlatformIcon from './PlatformIcon.vue'
 import AnalysisStatusBadge from './AnalysisStatusBadge.vue'
+import ShareReelPopover from './ShareReelPopover.vue'
 import SummarySection from './sections/SummarySection.vue'
 import HooksSection from './sections/HooksSection.vue'
 import StructureSection from './sections/StructureSection.vue'
@@ -320,16 +321,22 @@ onUnmounted(() => {
       ]"
     />
 
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto thin-scrollbar">
       <div class="mx-auto max-w-4xl space-y-6 p-6">
-        <Button
-          variant="ghost"
-          class="-ml-2 h-8 gap-1.5 px-2 text-sm text-muted-foreground hover:text-foreground"
-          @click="router.push('/app/video-analyzer')"
-        >
-          <ArrowLeft class="h-3.5 w-3.5" />
-          {{ t('videoAnalyzer.backToList') }}
-        </Button>
+        <div class="flex items-center justify-between gap-2">
+          <Button
+            variant="ghost"
+            class="-ml-2 h-8 gap-1.5 px-2 text-sm text-muted-foreground hover:text-foreground"
+            @click="router.push('/app/video-analyzer')"
+          >
+            <ArrowLeft class="h-3.5 w-3.5" />
+            {{ t('videoAnalyzer.backToList') }}
+          </Button>
+          <ShareReelPopover
+            v-if="status === 'completed' && detail && !mockMode"
+            :analysis-id="analysisId"
+          />
+        </div>
 
         <div
           v-if="mockMode"
@@ -465,7 +472,11 @@ onUnmounted(() => {
             <ImprovementsSection :value="detail.improvements" />
             <TranscriptionSection :value="detail.transcription" />
 
-            <FeedbackForm source="reel-analysis" :target-id="analysisId" />
+            <FeedbackForm
+              source="reel-analysis"
+              :target-id="analysisId"
+              :reel-url="originalUrl || undefined"
+            />
           </template>
         </template>
       </div>

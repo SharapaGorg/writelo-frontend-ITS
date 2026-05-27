@@ -82,12 +82,18 @@ textarea::-webkit-resizer {
     background: transparent;
 }
 
-/* Standalone document pages (privacy / terms / data-deletion) — give them a visible scrollbar */
+/* Opt-in thin scrollbar. The global `*::-webkit-scrollbar { width: 0 }` rule
+   above hides scrollbars app-wide via the WebKit pseudo-element; modern Chrome
+   (121+) / Firefox / Safari render scrollbars via the standard `scrollbar-*`
+   properties below, which bypass that rule. Apply to any element that owns
+   its own overflow-y-auto viewport (standalone pages, app content panes). */
+.thin-scrollbar,
 .legal-doc-root {
     scrollbar-width: thin;
     scrollbar-color: rgba(10, 10, 10, 0.18) transparent;
 }
 
+:where(html.dark) .thin-scrollbar,
 :where(html.dark) .legal-doc-root {
     scrollbar-color: rgba(237, 232, 222, 0.16) transparent;
 }

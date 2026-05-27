@@ -2,6 +2,7 @@
 
 export { default as VideoAnalyzerPage } from './components/VideoAnalyzerPage.vue'
 export { default as VideoAnalysisDetail } from './components/VideoAnalysisDetail.vue'
+export { default as SharedVideoAnalysisPage } from './components/SharedVideoAnalysisPage.vue'
 
 // Section renderers — exposed for showcases / external embeds. Each accepts
 // `value: unknown` and falls back to RawJsonViewer when the shape doesn't match.

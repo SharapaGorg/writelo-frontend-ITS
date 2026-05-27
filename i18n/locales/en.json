@@ -707,6 +707,27 @@
       "previewFailed": "Failed to fetch video preview.",
       "missingVideo": "No video found at this link.",
       "generic": "Couldn't run the analysis."
+    },
+    "share": {
+      "button": "Share",
+      "title": "Public link",
+      "subtitle": "Anyone with this link will see the analysis — no Writelo login needed",
+      "generating": "Generating link…",
+      "failed": "Couldn't generate the link",
+      "retry": "Try again",
+      "copy": "Copy",
+      "revoke": "Revoke link"
+    },
+    "shared": {
+      "loading": "Opening analysis…",
+      "unavailableTitle": "This link is no longer available",
+      "unavailableDesc": "The owner may have revoked access, or the analysis was deleted",
+      "runYourOwn": "Run your own analysis",
+      "publicView": "Public view",
+      "tryCta": "Try Writelo",
+      "ctaTitle": "Want this kind of breakdown for your own video?",
+      "ctaDesc": "Paste a YouTube Shorts, TikTok or Instagram Reels link — get a transcript, structure breakdown, and improvement ideas",
+      "ctaButton": "Analyze my video"
     }
   },
   "activityLog": {

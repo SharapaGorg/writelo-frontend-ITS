@@ -47,7 +47,7 @@ watch(currentWorkspaceId, (id) => {
       :breadcrumbs="[{ label: t('videoAnalyzer.breadcrumb') }]"
     />
 
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto thin-scrollbar">
       <div class="mx-auto max-w-7xl space-y-6 p-6">
         <!-- Guest: show a sticky CTA banner above the real interface so they
              can preview how the analyser looks. The dimmed wrapper below

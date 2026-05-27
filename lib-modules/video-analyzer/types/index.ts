@@ -32,6 +32,16 @@ export interface SignedAssetDto {
   expiresAt: string
 }
 
+// Returned by POST /…/short-video-analyses/{id}/share. Idempotent: re-POSTing
+// on an already-shared analysis returns the same token. No analogue for
+// "is it shared?" exists — the frontend caches the response in-session and
+// treats the absence of a cached token as "not shared this session".
+export interface ShortVideoAnalysisShareDto {
+  token: string
+  publicPath: string
+  createdAt: string
+}
+
 export interface ShortVideoAnalysisHistoryItemDto {
   id: string
   socialVideoEntryId: string

@@ -3889,7 +3889,7 @@
           "Payments"
         ],
         "summary": "Create Payment",
-        "description": "Request checks\n- Request body validation:\n- `promoCode`: maximum length 128 characters.\n- `provider`: invalid payment provider. Supported: tinkoff, crypto_bot, stars; required.\n- `subscriptionId`: must be greater than `0`.",
+        "description": "Request checks\n- Request body validation:\n- `promoCode`: maximum length 128 characters.\n- `provider`: invalid payment provider. Supported: tinkoff, crypto_bot; required.\n- `subscriptionId`: must be greater than `0`.",
         "operationId": "Payment_CreatePayment",
         "requestBody": {
           "description": "Contains the data required to start a payment session.",
@@ -4022,7 +4022,7 @@
           "Payments"
         ],
         "summary": "Preview Promo Code Prices",
-        "description": "Request checks\n- Request body validation:\n- `promoCode`: maximum length 128 characters; required.",
+        "description": "Request checks\n- Allows anonymous access.\n- Request body validation:\n- `promoCode`: maximum length 128 characters; required.",
         "operationId": "Payment_PreviewPromoCodePrices",
         "requestBody": {
           "description": "Contains the promo code used to preview discounted subscription prices.",
@@ -4051,26 +4051,17 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PromoCodePriceDto"
-                  }
+                  "$ref": "#/components/schemas/PromoCodePricesResponse"
                 }
               },
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PromoCodePriceDto"
-                  }
+                  "$ref": "#/components/schemas/PromoCodePricesResponse"
                 }
               },
               "text/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/PromoCodePriceDto"
-                  }
+                  "$ref": "#/components/schemas/PromoCodePricesResponse"
                 }
               }
             }
@@ -4143,19 +4134,8 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "Unauthorized. Missing or invalid bearer token."
-          },
-          "403": {
-            "description": "Forbidden. Authenticated caller does not satisfy the endpoint access requirements."
           }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
+        }
       }
     },
     "/payments/{paymentId}": {
@@ -4475,6 +4455,215 @@
             "Bearer": []
           }
         ]
+      }
+    },
+    "/workspaces/{workspaceId}/short-video-analyses/{analysisId}/share": {
+      "post": {
+        "tags": [
+          "Workspace Short Video Analysis"
+        ],
+        "summary": "Share Analysis",
+        "description": "Request checks\n- Requires workspace access to analyze short videos.",
+        "operationId": "WorkspaceShortVideoAnalysis_ShareAnalysis",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "analysisId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShortVideoAnalysisShareDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShortVideoAnalysisShareDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShortVideoAnalysisShareDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Missing or invalid bearer token."
+          },
+          "403": {
+            "description": "Forbidden. Authenticated caller does not satisfy the endpoint access requirements."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Workspace Short Video Analysis"
+        ],
+        "summary": "Revoke Share",
+        "description": "Request checks\n- Requires workspace access to analyze short videos.",
+        "operationId": "WorkspaceShortVideoAnalysis_RevokeShare",
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "analysisId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized. Missing or invalid bearer token."
+          },
+          "403": {
+            "description": "Forbidden. Authenticated caller does not satisfy the endpoint access requirements."
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/short-video-analyses/shared/{token}": {
+      "get": {
+        "tags": [
+          "Workspace Short Video Analysis"
+        ],
+        "summary": "Get Shared Analysis",
+        "description": "Request checks\n- Allows anonymous access.",
+        "operationId": "WorkspaceShortVideoAnalysis_GetSharedAnalysis",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShortVideoAnalysisDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShortVideoAnalysisDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShortVideoAnalysisDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/workspaces/{workspaceId}/social-accounts": {
@@ -11115,7 +11304,7 @@
         "description": "Contains the checkout session returned by the payment initiation flow.",
         "example": {
           "paymentId": 42,
-          "provider": "stars",
+          "provider": "crypto_bot",
           "subscriptionId": 2,
           "checkoutUrl": "https://payments.example.com/checkout/session_123",
           "status": "Pending",
@@ -11593,6 +11782,27 @@
         },
         "description": "Contains the promo code used to preview discounted subscription prices."
       },
+      "PromoCodePricesResponse": {
+        "type": "object",
+        "properties": {
+          "used": {
+            "type": "boolean",
+            "description": "Indicates whether the current user has already used this promo code."
+          },
+          "applied": {
+            "type": "boolean",
+            "description": "Indicates whether the promo code can be applied to at least one subscription."
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromoCodePriceDto"
+            },
+            "description": "The subscription prices after promo code evaluation."
+          }
+        },
+        "description": "Describes promo code preview results across available subscriptions."
+      },
       "PublicationStatus": {
         "enum": [
           "pending",
@@ -11905,6 +12115,21 @@
               "null",
               "string"
             ],
+            "format": "date-time"
+          }
+        }
+      },
+      "ShortVideoAnalysisShareDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "publicPath": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
             "format": "date-time"
           }
         }
@@ -13444,11 +13669,11 @@
     },
     {
       "name": "Payments",
-      "description": "Payment initiation and purchase flow endpoints. Authentication: requires a JWT bearer token."
+      "description": "Payment initiation and purchase flow endpoints. Authentication: requires a JWT bearer token by default. Individual operations may explicitly allow anonymous access."
     },
     {
       "name": "Workspace Short Video Analysis",
-      "description": "Authentication: requires a JWT bearer token."
+      "description": "Authentication: requires a JWT bearer token by default. Individual operations may explicitly allow anonymous access."
     },
     {
       "name": "Social Accounts",
