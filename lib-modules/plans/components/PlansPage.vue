@@ -81,7 +81,7 @@ watch(
     autoCheckoutAttempted = true
 
     const rawPromo = route.query.promo
-    const promo = typeof rawPromo === 'string' ? rawPromo.trim() : ''
+    const promo = typeof rawPromo === 'string' ? rawPromo.trim().toUpperCase() : ''
 
     // Clear the intent from URL up front so a refresh doesn't re-trigger checkout.
     router.replace({ query: {} })

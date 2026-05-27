@@ -19,7 +19,7 @@ watch(() => props.initiallyOpen, (v) => {
 const codeValue = computed({
   get: () => state.code.value,
   set: (v: string) => {
-    state.code.value = v
+    state.code.value = v.toUpperCase()
     if (state.error.value) state.error.value = null
   },
 })
@@ -45,10 +45,10 @@ const statusLine = computed(() => {
   if (state.error.value) return { tone: 'error' as const, text: state.error.value }
   if (state.isApplied.value) {
     return state.hasAnyApplicable.value
-      ? { tone: 'success' as const, text: `Промокод «${state.appliedCode.value}» применён.` }
+      ? { tone: 'success' as const, text: `Промокод «${state.appliedCode.value}» применён` }
       : {
           tone: 'warn' as const,
-          text: `Промокод «${state.appliedCode.value}» не подходит ни к одному тарифу.`,
+          text: `Промокод «${state.appliedCode.value}» уже использован или не подходит к вашим тарифам`,
         }
   }
   return null

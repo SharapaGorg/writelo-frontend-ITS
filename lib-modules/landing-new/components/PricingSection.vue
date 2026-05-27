@@ -22,7 +22,7 @@ const promoState = usePromoCode()
 
 const initialPromoFromUrl = computed(() => {
   const raw = route.query.promo
-  return typeof raw === 'string' ? raw.trim() : ''
+  return typeof raw === 'string' ? raw.trim().toUpperCase() : ''
 })
 
 onMounted(() => {

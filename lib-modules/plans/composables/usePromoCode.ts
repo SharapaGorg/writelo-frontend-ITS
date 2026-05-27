@@ -35,7 +35,11 @@ export function usePromoCode() {
   }
 
   async function apply(rawCode?: string): Promise<boolean> {
-    const trimmed = (rawCode ?? code.value).trim()
+    // Canonicalise to uppercase so the same code shape goes to the backend
+    // regardless of casing in URL/input. Backend matches case-insensitively,
+    // but we want input display, applied code, and createPayment payload to
+    // all agree.
+    const trimmed = (rawCode ?? code.value).trim().toUpperCase()
     if (!trimmed) {
       clear()
       return false
