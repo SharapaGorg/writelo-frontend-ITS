@@ -10,7 +10,7 @@ export function useUserController() {
 }
 
 class UserController {
-    private telegram_id: number | null = 778327202;
+    private telegram_id: number | null = null;
     private authToken: Ref<string>;
     private authTokenName = 'neovision-ai-bot-auth-token';
 
@@ -48,10 +48,6 @@ class UserController {
                 await this.initUserFromTelegram();
             } else {
                 await new Promise(resolve => setTimeout(resolve, 1));
-                // this.authToken.value = this.telegram_id as any;
-                // this.authToken.value = '__DEV__778327202__RADOLYN__';
-                // this.authToken.value = '__DEV__139303278__RADOLYN__'
-                // this.authToken.value = '__DEV__6118371448__RADOLYN__';
             }
         } catch (e) {
             console.error('[UserController] init error:', e);

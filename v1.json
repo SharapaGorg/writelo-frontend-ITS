@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "https://nv2.radolyn.com/api",
+      "url": "https://api.example.com/api",
       "description": "Production server"
     }
   ],

@@ -73,16 +73,16 @@ function handleTelegramAuth() {
   }
 }
 
-// Dev mode: use real test data for local development
+// Dev mode: use placeholder test data for local development
 function handleDevAuth() {
   const mockData: TelegramAuthData = {
-    id: 778327202,
-    firstName: '/ Egor',
-    lastName: 'Dushin /',
-    username: 'sharapagorg',
-    photoUrl: 'https://t.me/i/userpic/320/Md5N9YXeexDa_ZllvGf12yBwFLFYkU7Zs0O1_YEdbFI.jpg',
-    authDate: 1769265945,
-    hash: '07d29fc8d3fb908d29299d438c440022457dab2b63ebde558199ff917c131e2f'
+    id: 0,
+    firstName: 'Dev',
+    lastName: 'User',
+    username: 'devuser',
+    photoUrl: '',
+    authDate: 0,
+    hash: ''
   }
 
   toast.info('Dev mode: Using test Telegram auth', {position: getToasterPosition()})
