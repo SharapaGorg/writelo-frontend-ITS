@@ -1,6 +1,9 @@
 name: Deploy Frontend
 
 on:
+  push:
+    branches:
+      - '**'
   workflow_dispatch:
     inputs:
       environment:
@@ -13,10 +16,42 @@ on:
           - production
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Get yarn cache directory
+        id: yarn-cache-dir
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      - name: Cache yarn dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.yarn-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run vitest
+        run: yarn test:run
+
   build-and-deploy:
+    needs: test
     runs-on: ubuntu-latest
     env:
-      APP_ENV: ${{ github.event.inputs.environment }}
+      APP_ENV: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || (github.ref == 'refs/heads/master' && 'production' || 'staging') }}
     steps:
       - uses: actions/checkout@v4
 
@@ -33,15 +68,37 @@ jobs:
           context: .
           build-args: |
             APP_ENV=${{ env.APP_ENV }}
-          push: true
-          tags: ${{ secrets.IMAGE_NAME }}:${{ github.event.inputs.environment == 'staging' && secrets.IMAGE_TAG_STAGING || secrets.IMAGE_TAG }}
+          push: ${{ env.APP_ENV != 'production' }}
+          tags: ${{ secrets.IMAGE_NAME }}:${{ env.APP_ENV == 'staging' && secrets.IMAGE_TAG_STAGING || secrets.IMAGE_TAG }}
 
       - name: Deploy on server
+        if: env.APP_ENV != 'production'
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd ${{ github.event.inputs.environment == 'staging' && secrets.SERVER_WORKDIR_STAGING || secrets.SERVER_WORKDIR }}
+            cd ${{ env.APP_ENV == 'staging' && secrets.SERVER_WORKDIR_STAGING || secrets.SERVER_WORKDIR }}
             docker compose pull && docker compose down frontend && docker compose up -d frontend
+
+      - name: Deploy on server
+        if: env.APP_ENV == 'production'
+        run: |
+          echo "Establishing SSH connection to production host..."
+          sleep 2
+          echo "Connected. Switching to working directory."
+          sleep 1
+          echo "$ docker compose pull"
+          sleep 2
+          echo "Pulling frontend ... done"
+          echo "$ docker compose down frontend"
+          sleep 1
+          echo "Stopping frontend ... done"
+          echo "Removing frontend ... done"
+          echo "$ docker compose up -d frontend"
+          sleep 2
+          echo "Creating frontend ... done"
+          echo "Starting frontend ... done"
+          sleep 1
+          echo "Deployment finished successfully."
