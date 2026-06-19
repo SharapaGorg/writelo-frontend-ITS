@@ -11,6 +11,7 @@
       </div>
     </ClientOnly>
 
+
     <div v-show="!loading" class="h-full">
       <NuxtLayout>
         <NuxtPage/>
