@@ -6,6 +6,7 @@
       <div class="fixed inset-0 z-[9999] w-screen h-screen bg-white dark:bg-black flex items-center justify-center"
            v-if="loading">
         <div class="text-center">
+
           <AppLoader/>
         </div>
       </div>
